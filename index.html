@@ -1,0 +1,2567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The Loathsome Lands</title>
+<style>
+  :root{
+    --black:#2b2b28;
+    --white:#f4efe4;
+    --grey:#b9b3a4;
+    --grey-dark:#8a8477;
+    --red:#b5453f;
+    --blue:#3d5a80;
+    --yellow:#d1a94e;
+    --green:#5c8a5c;
+    --magenta:#b06a97;
+    --tan:#a97c53;
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{margin:0; padding:0; background:#1f1e1c; height:100%;}
+  body{
+    font-family:Verdana, Geneva, Arial, sans-serif;
+    color:var(--black);
+    display:flex;
+    justify-content:center;
+  }
+
+  #app{
+    width:100%;
+    max-width:420px;
+    height:100vh;
+    height:100dvh;
+    background:var(--white);
+    background-image:
+      radial-gradient(circle, #2b2b2809 1px, transparent 1px);
+    background-size: 14px 14px;
+    display:flex;
+    flex-direction:column;
+    position:relative;
+    overflow:hidden;
+    border-left:4px solid var(--black);
+    border-right:4px solid var(--black);
+  }
+
+  /* ---- Header ---- */
+  header{
+    background:var(--white);
+    color:var(--black);
+    padding:10px 12px 9px;
+    flex-shrink:0;
+    border-bottom:4px solid var(--black);
+  }
+  header h1{
+    font-weight:700;
+    font-size:1.2rem;
+    margin:0 0 8px;
+    color:var(--blue);
+    text-shadow: 1px 1px 0 #2b2b2822;
+    transform:rotate(-1deg);
+    display:inline-block;
+    border-bottom:3px solid var(--yellow);
+    padding-bottom:1px;
+  }
+  .stats-row{
+    display:flex;
+    gap:6px;
+  }
+  .stat{
+    flex:1;
+    background:var(--white);
+    color:var(--black);
+    border:3px solid var(--black);
+    padding:5px 6px;
+  }
+  .stat .label{
+    font-size:0.6rem;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:3px;
+    margin-bottom:2px;
+  }
+  .stat .label svg{ width:13px; height:13px; flex-shrink:0; }
+  .bar-track{
+    height:8px;
+    background:var(--white);
+    border:2px solid var(--black);
+    overflow:hidden;
+    margin-top:2px;
+  }
+  .bar-fill{ height:100%; }
+  .fill-hp{ background:var(--red); }
+  .fill-mp{ background:var(--blue); }
+  .fill-xp{ background:var(--magenta); }
+  .stat .value{ font-size:0.68rem; font-weight:700; }
+  .biscuit-stat{ flex:0 0 auto; text-align:center; cursor:pointer; }
+  .biscuit-stat.dev-active{ border-color:var(--green); box-shadow:0 0 0 2px var(--green) inset; }
+  .poptab-stat{ flex:0 0 auto; text-align:center; margin-left:6px; }
+  .biscuit-count{
+    font-weight:700;
+    font-size:1rem;
+    color:var(--black);
+  }
+  .biscuit-icon-row{ display:flex; align-items:center; justify-content:center; gap:4px; }
+  .biscuit-icon-row svg{ width:20px; height:20px; }
+  .biscuit-track{ width:56px; height:6px; margin:3px auto 0; }
+  .fill-biscuit{ background:var(--tan); }
+
+  .xp-row{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:6px;
+  }
+  .xp-level{
+    font-size:0.68rem;
+    font-weight:700;
+    flex-shrink:0;
+  }
+  .xp-track{ flex:1; height:7px; margin-top:0; }
+  .xp-value{
+    font-size:0.6rem;
+    font-weight:700;
+    flex-shrink:0;
+  }
+
+  /* ---- Stage ---- */
+  #stage{
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
+    padding:14px 14px 8px;
+  }
+  .zone-title{
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--red);
+    text-shadow:1px 1px 0 #2b2b28;
+    margin:0 0 6px;
+    transform:rotate(0.6deg);
+    display:inline-block;
+  }
+  .victory-banner{
+    font-weight:700;
+    font-size:1.15rem;
+    color:var(--green);
+    text-shadow:1px 1px 0 #2b2b28;
+    text-align:center;
+    transform:rotate(-1.2deg);
+    margin:2px 0 4px;
+  }
+  .scene-art{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:8px 0 4px;
+    background:var(--white);
+    border:3px dashed var(--black);
+    margin-bottom:10px;
+  }
+  .scene-art svg{ width:120px; height:120px; }
+  .scene-art svg.town-scene-svg{ width:100%; max-width:400px; height:auto; }
+
+  .quest-flag{
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: questPulse 1.1s ease-in-out infinite;
+    cursor:pointer;
+  }
+  @keyframes questPulse{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-3px); }
+  }
+  .building-hit{ cursor:pointer; }
+  .building-label{ font-family:Verdana, Geneva, Arial, sans-serif; }
+
+  #quest-box{
+    background:var(--white);
+    border:2px dashed var(--black);
+    padding:8px 10px;
+    margin-bottom:12px;
+  }
+  .quest-name{
+    font-weight:700;
+    font-size:0.82rem;
+    color:var(--blue);
+    margin-bottom:3px;
+  }
+  .quest-desc{ font-size:0.76rem; line-height:1.4; margin-bottom:5px; }
+  .quest-progress{ font-size:0.72rem; font-weight:700; color:var(--tan); }
+
+  #shop-list{ display:none; margin-bottom:12px; }
+  .shop-section-title{
+    font-weight:700;
+    font-size:0.78rem;
+    color:var(--blue);
+    margin:4px 0 6px;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+  }
+  .shop-item{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    background:var(--white);
+    border:2px solid var(--black);
+    padding:8px 9px;
+    margin-bottom:8px;
+  }
+  .shop-item .icon-box{
+    flex-shrink:0;
+    width:42px; height:42px;
+    border:2px solid var(--black);
+    background:#fff;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .shop-item .icon-box svg{ width:32px; height:32px; }
+  .shop-item .name{ font-weight:700; font-size:0.85rem; }
+  .shop-item .desc{ font-size:0.74rem; margin:3px 0 6px; }
+  .shop-item button{ font-size:0.7rem; padding:5px; }
+  .shop-empty{ font-size:0.82rem; font-style:italic; padding:6px 2px; }
+
+  .btn-row{ display:flex; gap:8px; margin:0 0 14px; }
+  button{
+    font-family:Verdana, Geneva, Arial, sans-serif;
+    font-weight:700;
+    font-size:0.82rem;
+    cursor:pointer;
+    flex:1;
+    padding:10px 6px;
+    background:var(--grey);
+    color:var(--black);
+    border-top:3px solid var(--white);
+    border-left:3px solid var(--white);
+    border-right:3px solid var(--black);
+    border-bottom:3px solid var(--black);
+  }
+  button:active:not(:disabled){
+    border-top:3px solid var(--black);
+    border-left:3px solid var(--black);
+    border-right:3px solid var(--white);
+    border-bottom:3px solid var(--white);
+    transform:translate(1px,1px);
+  }
+  button:disabled{ opacity:0.45; cursor:default; }
+  .btn-primary{
+    background-color:var(--yellow);
+    background-image:repeating-linear-gradient(135deg, rgba(43,43,40,0.08) 0px, rgba(43,43,40,0.08) 2px, transparent 2px, transparent 8px);
+  }
+  .btn-attack{
+    background-color:var(--red);
+    background-image:repeating-linear-gradient(135deg, rgba(244,239,228,0.14) 0px, rgba(244,239,228,0.14) 2px, transparent 2px, transparent 8px);
+    color:var(--white);
+  }
+  .btn-flee{ background:var(--grey); }
+  .btn-secondary{ background:var(--white); }
+
+  #log{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .entry{
+    font-size:0.86rem;
+    line-height:1.4;
+    color:var(--black);
+    background:var(--white);
+    border:2px solid var(--black);
+    padding:7px 9px;
+  }
+  .entry.damage{
+    color:var(--red);
+    background:var(--white);
+    border-color:var(--red);
+    font-weight:700;
+  }
+
+  /* ---- Monster combat card ---- */
+  #monster-card{
+    display:none;
+    background:var(--white);
+    color:var(--black);
+    border:3px solid var(--red);
+    padding:10px 12px 12px;
+    margin-bottom:10px;
+    transform:rotate(-0.4deg);
+  }
+  #monster-card.active{ display:block; }
+  .monster-name{
+    font-size:0.98rem;
+    font-weight:700;
+    color:var(--red);
+    margin-bottom:6px;
+  }
+  .monster-hp-row{ display:flex; align-items:center; gap:8px; }
+  .monster-hp-row .bar-track{ flex:1; height:9px; background:var(--white); }
+
+  /* ---- Bottom tab bar (Windows-95 toolbar vibe) ---- */
+  #tabbar{
+    flex-shrink:0;
+    display:flex;
+    background:var(--grey);
+    border-top:3px solid var(--black);
+    padding:5px 4px calc(5px + env(safe-area-inset-bottom));
+    gap:4px;
+  }
+  .tab-btn{
+    flex:1;
+    background:var(--grey);
+    border-top:2px solid var(--white);
+    border-left:2px solid var(--white);
+    border-right:2px solid var(--black);
+    border-bottom:2px solid var(--black);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+    padding:6px 2px 5px;
+    cursor:pointer;
+    color:var(--black);
+  }
+  .tab-btn:active:not(.placeholder){
+    border-top:2px solid var(--black);
+    border-left:2px solid var(--black);
+    border-right:2px solid var(--white);
+    border-bottom:2px solid var(--white);
+  }
+  .tab-btn svg{ width:20px; height:20px; }
+  .tab-btn .tab-label{
+    font-size:0.55rem;
+    font-weight:700;
+  }
+  .tab-btn.placeholder{ opacity:0.4; }
+  .tab-btn.acct-signed-in svg{ filter: drop-shadow(0 0 0 var(--green)); }
+  .tab-btn .acct-dot{
+    position:absolute;
+    width:8px; height:8px;
+    border-radius:0;
+    background:var(--green);
+    border:1px solid var(--black);
+    transform:translate(9px,-9px);
+  }
+
+  /* ---- Slide-up drawer ---- */
+  .drawer{
+    position:absolute;
+    left:0; right:0; bottom:0;
+    max-height:72%;
+    background:var(--white);
+    border-top:4px solid var(--black);
+    transform:translateY(100%);
+    transition:transform .22s ease;
+    z-index:10;
+    display:flex;
+    flex-direction:column;
+  }
+  .drawer.open{ transform:translateY(0); }
+  .drawer-header{
+    background:var(--white);
+    color:var(--black);
+    border-bottom:3px solid var(--black);
+    font-weight:700;
+    padding:12px 14px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .drawer-header span.close{ color:var(--red); cursor:pointer; font-size:1.1rem; }
+  .drawer-body{ padding:12px 14px; overflow-y:auto; }
+
+  .inv-item{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    background:var(--white);
+    border:2px solid var(--black);
+    padding:8px 9px;
+    margin-bottom:8px;
+  }
+  .inv-item .icon-box{
+    flex-shrink:0;
+    width:42px; height:42px;
+    border:2px solid var(--black);
+    background:#fff;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .inv-item .icon-box svg{ width:32px; height:32px; }
+  .inv-item .name{ font-weight:700; font-size:0.85rem; }
+  .qty-badge{
+    display:inline-block;
+    margin-left:6px;
+    font-size:0.7rem;
+    font-weight:700;
+    color:var(--white);
+    background:var(--tan);
+    border:2px solid var(--black);
+    padding:0 5px;
+    vertical-align:middle;
+  }
+  .inv-item .desc{ font-size:0.74rem; margin:3px 0 6px; }
+  .inv-item button{ font-size:0.7rem; padding:5px; }
+  .inv-empty{ font-size:0.82rem; font-style:italic; padding:6px 2px; }
+
+  .zone-card{
+    background:var(--white);
+    border:2px solid var(--black);
+    padding:10px;
+    margin-bottom:10px;
+  }
+  .zone-card .zname{ font-weight:700; font-size:0.9rem; }
+  .zone-card .zdesc{ font-size:0.76rem; margin-top:4px; }
+  .zone-card.locked{ opacity:0.5; pointer-events:none; }
+  .zone-card.travel-card{ cursor:pointer; }
+  .zone-card .ztag{ font-size:0.64rem; color:var(--red); font-weight:700; margin-top:6px; display:block; }
+
+  .char-portrait{
+    display:flex;
+    justify-content:center;
+    background:var(--white);
+    border:3px dashed var(--black);
+    padding:8px 0;
+    margin-bottom:10px;
+  }
+  .char-portrait svg{ width:110px; height:110px; }
+  .char-title{
+    text-align:center;
+    font-weight:700;
+    font-size:0.95rem;
+    color:var(--blue);
+    margin-bottom:12px;
+  }
+  .stat-block{
+    background:var(--white);
+    border:2px solid var(--black);
+    padding:10px;
+    margin-bottom:12px;
+  }
+  .stat-block-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .stat-block-row:last-child{ margin-bottom:0; }
+  .stat-block-label{ font-weight:700; font-size:0.72rem; width:26px; flex-shrink:0; }
+  .stat-block-row .bar-track{ flex:1; height:9px; margin-top:0; }
+  .stat-block-value{ font-size:0.68rem; font-weight:700; flex-shrink:0; width:64px; text-align:right; }
+  .char-facts{ font-size:0.8rem; line-height:1.9; }
+  .char-facts .fact-label{ font-weight:700; }
+
+  .block-title{
+    font-weight:700;
+    font-size:0.78rem;
+    color:var(--blue);
+    margin:0 0 8px;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+  }
+  .stat-points-note{
+    font-size:0.76rem;
+    font-weight:700;
+    color:var(--red);
+    margin-bottom:8px;
+  }
+  .stat-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 0;
+    border-bottom:1px dashed var(--grey);
+  }
+  .stat-row:last-child{ border-bottom:none; }
+  .stat-row-label{ font-weight:700; font-size:0.8rem; }
+  .stat-row-hint{ font-size:0.68rem; color:var(--grey-dark); margin-top:1px; }
+  .stat-row-value{ font-weight:700; font-size:0.85rem; width:22px; text-align:center; flex-shrink:0; }
+  .stat-plus-btn{ flex:0 0 auto; width:38px; padding:5px 0; font-size:0.75rem; }
+
+  .equip-row{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    padding:7px 0;
+    border-bottom:1px dashed var(--grey);
+  }
+  .equip-row:last-child{ border-bottom:none; }
+  .equip-row .icon-box{
+    flex-shrink:0;
+    width:42px; height:42px;
+    border:2px solid var(--black);
+    background:#fff;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .equip-row .icon-box svg{ width:32px; height:32px; }
+  .equip-row .name{ font-weight:700; font-size:0.85rem; }
+  .equip-row .desc{ font-size:0.74rem; margin:3px 0 6px; }
+  .equip-slot-label{ font-size:0.62rem; font-weight:700; color:var(--tan); text-transform:uppercase; letter-spacing:0.03em; margin-bottom:2px; }
+  .equip-empty-icon{ display:flex; align-items:center; justify-content:center; color:var(--grey-dark); font-weight:700; font-size:1.1rem; }
+  .equip-empty-text{ font-size:0.76rem; font-style:italic; color:var(--grey-dark); margin-top:2px; }
+  .equip-row button{ font-size:0.68rem; padding:4px 6px; margin-top:4px; flex:0 0 auto; }
+
+  .quest-log-section-title{
+    font-weight:700;
+    font-size:0.78rem;
+    color:var(--blue);
+    margin:4px 0 6px;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+  }
+  .quest-log-entry{
+    background:var(--white);
+    border:2px solid var(--black);
+    padding:8px 10px;
+    margin-bottom:10px;
+  }
+  .quest-log-entry .quest-name{ margin-bottom:3px; }
+  .quest-log-empty{ font-size:0.8rem; font-style:italic; padding:2px 2px 12px; }
+
+  /* ---- Account drawer ---- */
+  .acct-status-line{
+    font-size:0.8rem;
+    margin-bottom:12px;
+    padding:8px 9px;
+    background:var(--white);
+    border:2px dashed var(--black);
+  }
+  .acct-status-line b{ color:var(--blue); }
+  .acct-form{
+    background:var(--white);
+    border:2px solid var(--black);
+    padding:10px;
+    margin-bottom:12px;
+  }
+  .acct-form label{
+    display:block;
+    font-size:0.7rem;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    color:var(--tan);
+    margin:8px 0 3px;
+  }
+  .acct-form label:first-child{ margin-top:0; }
+  .acct-form input{
+    width:100%;
+    font-family:Verdana, Geneva, Arial, sans-serif;
+    font-size:0.85rem;
+    padding:7px 8px;
+    border:2px solid var(--black);
+    background:var(--white);
+    color:var(--black);
+  }
+  .acct-form .btn-row{ margin:12px 0 0; }
+  .acct-msg{
+    font-size:0.76rem;
+    font-weight:700;
+    margin-top:8px;
+    line-height:1.4;
+  }
+  .acct-msg.err{ color:var(--red); }
+  .acct-msg.ok{ color:var(--green); }
+  .acct-link{
+    display:inline-block;
+    margin-top:10px;
+    font-size:0.76rem;
+    color:var(--blue);
+    font-weight:700;
+    cursor:pointer;
+    text-decoration:underline;
+  }
+
+  #backdrop{
+    position:absolute; inset:0; background:rgba(43,43,40,0.35);
+    opacity:0; pointer-events:none; transition:opacity .2s ease; z-index:9;
+  }
+  #backdrop.show{ opacity:1; pointer-events:auto; }
+
+  /* ---- Pre-game gate ---- */
+  #gate-screen{
+    position:absolute; inset:0; z-index:20;
+    background:var(--white);
+    background-image: radial-gradient(circle, #2b2b2809 1px, transparent 1px);
+    background-size: 14px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow-y:auto;
+    padding:20px 18px;
+  }
+  .gate-inner{ width:100%; max-width:320px; }
+  .gate-title{
+    font-weight:700;
+    font-size:1.4rem;
+    margin:0 0 4px;
+    color:var(--blue);
+    text-shadow: 1px 1px 0 #2b2b2822;
+    transform:rotate(-1deg);
+    display:inline-block;
+    border-bottom:3px solid var(--yellow);
+    padding-bottom:1px;
+  }
+  .gate-tagline{
+    font-size:0.78rem;
+    font-style:italic;
+    color:var(--grey-dark);
+    margin:6px 0 16px;
+    line-height:1.4;
+  }
+  .gate-divider{
+    display:flex;
+    align-items:center;
+    text-align:center;
+    font-size:0.68rem;
+    font-weight:700;
+    color:var(--grey-dark);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    margin:14px 0;
+  }
+  .gate-divider::before, .gate-divider::after{
+    content:'';
+    flex:1;
+    border-bottom:2px dashed var(--grey);
+  }
+  .gate-divider span{ padding:0 10px; }
+  .gate-guest-hint{
+    font-size:0.7rem;
+    font-style:italic;
+    color:var(--grey-dark);
+    text-align:center;
+    margin-top:6px;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div id="gate-screen">
+    <div class="gate-inner">
+      <h1 class="gate-title">The Loathsome Lands</h1>
+      <div class="gate-tagline">A comedic little RPG about gnomes, biscuits, and bad decisions.</div>
+      <div id="gate-body"></div>
+      <div class="gate-divider"><span>or</span></div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="playAsGuest()">Play as Guest</button>
+      </div>
+      <div class="gate-guest-hint">No account needed — just won't save your progress.</div>
+    </div>
+  </div>
+
+  <header>
+    <h1>The Loathsome Lands</h1>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="label">HP</div>
+        <div class="bar-track"><div class="bar-fill fill-hp" id="hp-bar"></div></div>
+        <div class="value" id="hp-text"></div>
+      </div>
+      <div class="stat">
+        <div class="label">MP</div>
+        <div class="bar-track"><div class="bar-fill fill-mp" id="mp-bar"></div></div>
+        <div class="value" id="mp-text"></div>
+      </div>
+      <div class="stat biscuit-stat" id="biscuit-stat" onclick="toggleDevMode()" title="Click to toggle dev mode (unlimited Biscuits)">
+        <div class="biscuit-icon-row">
+          <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" stroke-linejoin="round">
+            <circle cx="30" cy="30" r="24" fill="#a97c53"/>
+            <circle cx="20" cy="22" r="3" fill="#2b2b28" stroke="none"/>
+            <circle cx="38" cy="18" r="3" fill="#2b2b28" stroke="none"/>
+            <circle cx="40" cy="36" r="3" fill="#2b2b28" stroke="none"/>
+            <circle cx="22" cy="40" r="3" fill="#2b2b28" stroke="none"/>
+            <circle cx="30" cy="30" r="3" fill="#2b2b28" stroke="none"/>
+          </svg>
+          <span class="biscuit-count" id="adv-text">100</span>
+        </div>
+        <div class="value" style="text-align:center;">Biscuits</div>
+        <div class="bar-track biscuit-track" id="biscuit-track">
+          <div class="bar-fill fill-biscuit" id="biscuit-bar"></div>
+        </div>
+      </div>
+      <div class="stat poptab-stat">
+        <div class="biscuit-icon-row">
+          <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" stroke-linejoin="round">
+            <ellipse cx="28" cy="36" rx="18" ry="10" fill="#b9b3a4"/>
+            <ellipse cx="28" cy="36" rx="8" ry="4" fill="#f4efe4"/>
+            <rect x="24" y="10" width="8" height="16" fill="#b9b3a4"/>
+            <circle cx="28" cy="14" r="5" fill="#f4efe4"/>
+          </svg>
+          <span class="biscuit-count" id="poptab-text">0</span>
+        </div>
+        <div class="value" style="text-align:center;">Pop Tabs</div>
+      </div>
+    </div>
+    <div class="xp-row">
+      <span class="xp-level">Lv. <span id="level-text">1</span></span>
+      <div class="bar-track xp-track"><div class="bar-fill fill-xp" id="xp-bar"></div></div>
+      <span class="xp-value" id="xp-text">0/25</span>
+    </div>
+  </header>
+
+  <div id="stage">
+    <div class="zone-title" id="zone-title">Gladstone Hollow</div>
+    <div class="victory-banner" id="victory-banner" style="display:none;">Victory!</div>
+    <div class="scene-art" id="scene-art"></div>
+
+    <div id="quest-box">
+      <div class="quest-name" id="quest-name"></div>
+      <div class="quest-desc" id="quest-desc"></div>
+      <div class="quest-progress" id="quest-progress"></div>
+    </div>
+
+    <div id="shop-list"></div>
+
+    <div id="monster-card">
+      <div class="monster-name" id="monster-name"></div>
+      <div class="monster-hp-row">
+        <div class="bar-track"><div class="bar-fill fill-hp" id="monster-hp-bar"></div></div>
+        <span id="monster-hp-text" style="font-size:0.72rem;"></span>
+      </div>
+    </div>
+
+    <div class="btn-row" id="town-row">
+      <button class="btn-primary" onclick="toggleDrawer('map')">Return to Map</button>
+    </div>
+    <div class="btn-row" id="gaffer-row" style="display:none;">
+      <button class="btn-primary" id="accept-quest-btn" onclick="acceptQuest()" style="display:none;">Accept Quest</button>
+      <button class="btn-secondary" id="give-tines-btn" onclick="giveRakeTines()" style="display:none;">Give Rake Tines</button>
+      <button class="btn-secondary" onclick="leaveGafferHouse()">Leave</button>
+    </div>
+    <div class="btn-row" id="guild-row" style="display:none;">
+      <button class="btn-primary" id="accept-quest2-btn" onclick="acceptQuest2()" style="display:none;">Accept Quest</button>
+      <button class="btn-secondary" id="report-kill-btn" onclick="reportCommanderKill()" style="display:none;">Report the Kill</button>
+      <button class="btn-secondary" onclick="leaveGuild()">Leave</button>
+    </div>
+    <div class="btn-row" id="shop-row" style="display:none;">
+      <button class="btn-secondary" onclick="leaveShop()">Leave</button>
+    </div>
+    <div class="btn-row" id="casino-bet-row" style="display:none;">
+      <button class="btn-primary" id="bet-5-btn" onclick="gambleCasino(5)">Bet 5</button>
+      <button class="btn-primary" id="bet-10-btn" onclick="gambleCasino(10)">Bet 10</button>
+      <button class="btn-primary" id="bet-25-btn" onclick="gambleCasino(25)">Bet 25</button>
+    </div>
+    <div class="btn-row" id="casino-row" style="display:none;">
+      <button class="btn-secondary" onclick="leaveCasino()">Leave</button>
+    </div>
+    <div class="btn-row" id="explore-row" style="display:none;">
+      <button class="btn-primary" id="adv-btn" onclick="goAdventuring()">Adventure!</button>
+      <button class="btn-secondary" onclick="toggleDrawer('map')">Return to Map</button>
+    </div>
+    <div class="btn-row" id="combat-row" style="display:none;">
+      <button class="btn-attack" onclick="playerAttack()">Attack</button>
+      <button class="btn-flee" onclick="playerFlee()">Flee</button>
+    </div>
+
+    <div id="log"></div>
+  </div>
+
+  <div id="backdrop" onclick="closeAllDrawers()"></div>
+
+  <nav id="tabbar">
+    <button class="tab-btn" onclick="toggleDrawer('inv')">
+      <svg viewBox="0 0 60 60" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linejoin="round"><path d="M18 24 L18 50 L42 50 L42 24 Z" fill="#d1a94e"/><path d="M24 24 L24 14 Q30 6 36 14 L36 24" fill="none"/></svg>
+      <span class="tab-label">Pack (<span id="inv-count">0</span>)</span>
+    </button>
+    <button class="tab-btn" onclick="toggleDrawer('map')">
+      <svg viewBox="0 0 60 60" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linejoin="round"><path d="M10 14 L24 9 L38 14 L50 9 L50 46 L38 51 L24 46 L10 51 Z" fill="#5c8a5c"/><line x1="24" y1="9" x2="24" y2="46"/><line x1="38" y1="14" x2="38" y2="51"/></svg>
+      <span class="tab-label">Map</span>
+    </button>
+    <button class="tab-btn" onclick="toggleDrawer('character')">
+      <svg viewBox="0 0 60 60" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linejoin="round"><circle cx="30" cy="20" r="12" fill="#e0c49a"/><path d="M12 52 Q30 36 48 52 L48 54 L12 54 Z" fill="#3d5a80"/></svg>
+      <span class="tab-label">Character</span>
+    </button>
+    <button class="tab-btn" onclick="toggleDrawer('quests')">
+      <svg viewBox="0 0 60 60" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linejoin="round"><rect x="14" y="10" width="32" height="40" fill="#f4efe4"/><line x1="20" y1="20" x2="40" y2="20"/><line x1="20" y1="28" x2="40" y2="28"/><line x1="20" y1="36" x2="34" y2="36"/><circle cx="14" cy="10" r="4" fill="#d1a94e"/><circle cx="14" cy="50" r="4" fill="#d1a94e"/><circle cx="46" cy="10" r="4" fill="#d1a94e"/><circle cx="46" cy="50" r="4" fill="#d1a94e"/></svg>
+      <span class="tab-label">Quests</span>
+    </button>
+    <button class="tab-btn" id="account-tab-btn" onclick="toggleDrawer('account')" style="position:relative;">
+      <svg viewBox="0 0 60 60" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linejoin="round"><circle cx="30" cy="22" r="11" fill="#d1a94e"/><path d="M14 50 Q30 34 46 50" fill="none"/><rect x="10" y="8" width="40" height="44" fill="none" stroke-dasharray="4,3"/></svg>
+      <span class="tab-label" id="account-tab-label">Account</span>
+    </button>
+  </nav>
+
+  <div class="drawer" id="inv-drawer">
+    <div class="drawer-header">
+      <span>Your Pack</span>
+      <span class="close" onclick="closeAllDrawers()">✕</span>
+    </div>
+    <div class="drawer-body" id="inv-list"></div>
+  </div>
+
+  <div class="drawer" id="map-drawer">
+    <div class="drawer-header">
+      <span>Map</span>
+      <span class="close" onclick="closeAllDrawers()">✕</span>
+    </div>
+    <div class="drawer-body">
+      <div class="zone-card travel-card" id="zone-card-town" onclick="travelTo('town')">
+        <div class="zname">Gladstone Hollow</div>
+        <div class="zdesc">A small town with an Inn, a nervous population, and one very upset owner of a formerly-intact rake.</div>
+        <span class="ztag" id="ztag-town">You are here</span>
+      </div>
+      <div class="zone-card travel-card" id="zone-card-commons" onclick="travelTo('commons')">
+        <div class="zname">The Overgrown Commons</div>
+        <div class="zdesc">A patchy stretch of park that's been quietly overrun by garden gnomes — feral ones, mounted ones, ones with whistles and delusions of rank. Nobody official has noticed yet.</div>
+        <span class="ztag" id="ztag-commons">You are here</span>
+      </div>
+      <div class="zone-card travel-card" id="zone-card-sewers" onclick="travelTo('sewers')">
+        <div class="zname">Dank Sewers</div>
+        <div class="zdesc">A rat-run maze beneath Gladstone Hollow. Nobody thought to check it until the guild ran out of gnomes to worry about. Tougher fights than the Commons, and it smells worse.</div>
+        <span class="ztag" id="ztag-sewers">Locked</span>
+      </div>
+      <div class="zone-card locked">
+        <div class="zname">??? — uncharted</div>
+        <div class="zdesc">Rumored to exist. Nobody's brought back proof, or much else.</div>
+        <span class="ztag">Locked</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer" id="character-drawer">
+    <div class="drawer-header">
+      <span>Character</span>
+      <span class="close" onclick="closeAllDrawers()">✕</span>
+    </div>
+    <div class="drawer-body">
+      <div class="char-portrait" id="char-portrait"></div>
+      <div class="char-title" id="char-title"></div>
+
+      <div class="stat-block">
+        <div class="stat-block-row">
+          <span class="stat-block-label">HP</span>
+          <div class="bar-track"><div class="bar-fill fill-hp" id="char-hp-bar"></div></div>
+          <span class="stat-block-value" id="char-hp-value"></span>
+        </div>
+        <div class="stat-block-row">
+          <span class="stat-block-label">MP</span>
+          <div class="bar-track"><div class="bar-fill fill-mp" id="char-mp-bar"></div></div>
+          <span class="stat-block-value" id="char-mp-value"></span>
+        </div>
+        <div class="stat-block-row">
+          <span class="stat-block-label">XP</span>
+          <div class="bar-track"><div class="bar-fill fill-xp" id="char-xp-bar"></div></div>
+          <span class="stat-block-value" id="char-xp-value"></span>
+        </div>
+      </div>
+
+      <div class="stat-block" id="stats-block"></div>
+
+      <div class="stat-block" id="equip-block"></div>
+
+      <div class="char-facts" id="char-facts"></div>
+    </div>
+  </div>
+
+  <div class="drawer" id="quest-log-drawer">
+    <div class="drawer-header">
+      <span>Quest Log</span>
+      <span class="close" onclick="closeAllDrawers()">✕</span>
+    </div>
+    <div class="drawer-body">
+      <div class="quest-log-section-title">Active</div>
+      <div id="quest-log-active"></div>
+      <div class="quest-log-section-title">Completed</div>
+      <div id="quest-log-completed"></div>
+    </div>
+  </div>
+
+  <div class="drawer" id="account-drawer">
+    <div class="drawer-header">
+      <span>Account</span>
+      <span class="close" onclick="closeAllDrawers()">✕</span>
+    </div>
+    <div class="drawer-body" id="account-body"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+/* ---------------- Supabase (accounts + save/load) ---------------- */
+/* The Supabase JS library loads from a CDN <script> tag above this one.
+   If that fails (offline, ad blocker, a network policy blocking the CDN),
+   `supabase` is undefined — guard against that so the rest of the game
+   still boots and plays fine; only the Account drawer degrades. */
+const sb = (typeof supabase !== 'undefined')
+  ? supabase.createClient(
+      'https://vrjetkysmrsuygsgpotu.supabase.co',
+      'sb_publishable_V_YMQsayD-Q33N-NgXsLxQ_n0xhU-Mv'
+    )
+  : null;
+if(!sb) console.warn('Supabase JS failed to load — accounts/save/load are disabled for this session.');
+
+/* Current signed-in state, kept in sync by onAuthStateChange below. Not part
+   of `state` — it's session/account plumbing, not save data. */
+let acctSession = null;
+let acctUsername = null;
+
+/* The login/register/forgot-password forms are shared markup rendered into
+   two different spots: the full-screen gate shown before the game starts
+   ('gate'), and the always-available Account drawer during play ('acct').
+   Each keeps its own "which form is showing" / "is a request in flight"
+   state so switching one doesn't affect the other. */
+let authView = { gate: 'login', acct: 'login' }; /* 'login' | 'register' | 'forgot' */
+let authBusy = { gate: false, acct: false };
+
+/* Whether the pre-game gate is still up. Skipped entirely (see boot logic
+   at the bottom of this script) when Supabase never loaded — there's
+   nothing useful to gate on in that case. */
+let gateOpen = true;
+
+/* ---------------- State ---------------- */
+const QUEST_TINES_NEEDED = 3;
+
+/* Dev mode: unlimited Biscuits, for testing without the energy economy
+   getting in the way. Auto-enables via ?dev=1 in the URL, or toggle at
+   runtime by clicking the Biscuits box in the header. Not player-facing —
+   purely a development convenience. */
+let devMode = new URLSearchParams(location.search).has('dev');
+
+function toggleDevMode(){
+  devMode = !devMode;
+  log(devMode ? "Dev mode ON — Biscuits won't run out." : "Dev mode off — Biscuits behave normally again.");
+  render();
+}
+
+const state = {
+  hp: 30, maxHp: 30,
+  mp: 10, maxMp: 10,
+  baseMaxHp: 30, /* level-derived HP ceiling, before Grit bonuses */
+  baseMaxMp: 10, /* level-derived MP ceiling, before Hoodoo bonuses */
+  adventures: 100, /* "Biscuits" */
+  popTabs: 0,
+  lastRegenAt: Date.now(),
+  level: 1, xp: 0, xpToLevel: 40,
+  stats: { beef: 0, zip: 0, grit: 0, hoodoo: 0 },
+  statPoints: 0,
+  equipment: { head: null, chest: null, legs: null, boots: null, weapon: null },
+  inventory: [],
+  inCombat: false,
+  monster: null,
+  showVictory: false,
+  victoryMonster: null,
+  location: 'town',
+  questTinesGiven: 0,
+  questAccepted: false,
+  questComplete: false,
+  quest2Accepted: false,
+  commanderDefeated: false,
+  quest2Complete: false
+};
+
+/* Fun names for the four core stats. Beef = melee punch, Zip = speed/evasion,
+   Grit = toughness (raises max HP), Hoodoo = odd mystical aptitude (raises max MP). */
+const STAT_LABELS = { beef:'Beef', zip:'Zip', grit:'Grit', hoodoo:'Hoodoo' };
+const STAT_HINTS = {
+  beef:'Hit harder in a fight.',
+  zip:'Dodge attacks and flee more often.',
+  grit:'Tougher constitution — raises max HP.',
+  hoodoo:'A knack for the weird — raises max MP.'
+};
+const SLOT_LABELS = { head:'Head', chest:'Chest', legs:'Legs', boots:'Boots', weapon:'Weapon' };
+const SLOT_ORDER = ['head','chest','legs','boots','weapon'];
+
+/* ---------------- Item icons (crude MS-Paint-style doodles) ---------------- */
+function iconWrap(inner, fill){
+  return `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" fill="none">${inner}</svg>`;
+}
+function iconApple(){
+  return iconWrap(`<circle cx="28" cy="34" r="18" fill="#b5453f"/><path d="M28 16 Q30 8 36 6" fill="none"/><path d="M32 10 Q42 6 44 16 Q34 18 32 10 Z" fill="#5c8a5c"/>`);
+}
+function iconJerky(){
+  return iconWrap(`<path d="M10 40 Q14 18 30 14 Q48 10 50 26 Q52 42 34 46 Q16 50 10 40 Z" fill="#8a5a3a"/><line x1="20" y1="34" x2="30" y2="26"/><line x1="28" y1="40" x2="40" y2="28"/>`);
+}
+function iconSoil(){
+  return iconWrap(`<path d="M10 42 Q14 26 30 28 Q46 22 50 38 Q52 48 30 48 Q10 50 10 42 Z" fill="#5f4632"/><circle cx="20" cy="38" r="2" fill="#2b2b28" stroke="none"/><circle cx="34" cy="34" r="2" fill="#2b2b28" stroke="none"/><circle cx="42" cy="40" r="2" fill="#2b2b28" stroke="none"/>`);
+}
+function iconRakeTine(){
+  return iconWrap(`<line x1="30" y1="52" x2="30" y2="14"/><line x1="18" y1="20" x2="12" y2="8"/><line x1="24" y1="18" x2="20" y2="6"/><line x1="30" y1="18" x2="30" y2="4"/><line x1="36" y1="18" x2="40" y2="6"/><line x1="42" y1="20" x2="48" y2="8"/>`);
+}
+function iconLure(){
+  return iconWrap(`<ellipse cx="26" cy="26" rx="14" ry="8" fill="#3d5a80" transform="rotate(-20 26 26)"/><path d="M36 34 Q46 40 42 50 Q40 54 34 50" fill="none" stroke-width="3"/><circle cx="44" cy="48" r="3" fill="#2b2b28" stroke="none"/>`);
+}
+function iconShellFragment(){
+  return iconWrap(`<path d="M10 44 Q10 20 34 20 Q52 20 52 36 Q52 48 38 48 Q28 48 28 38 Q28 30 36 30" fill="#b9b3a4"/>`);
+}
+function iconWhistle(){
+  return iconWrap(`<circle cx="26" cy="30" r="16" fill="#d1a94e"/><circle cx="26" cy="30" r="5" fill="#2b2b28" stroke="none"/><path d="M40 24 L52 14" stroke-width="3"/><path d="M40 20 Q52 20 50 10" fill="none" stroke-width="3"/>`);
+}
+function iconFigurine(){
+  return iconWrap(`<path d="M30 6 L20 24 L40 24 Z" fill="#b06a97"/><circle cx="30" cy="32" r="8" fill="#e0c49a"/><path d="M22 40 Q30 46 38 40 L36 54 L24 54 Z" fill="#5c8a5c"/>`);
+}
+function iconClover(){
+  return iconWrap(`<circle cx="22" cy="20" r="9" fill="#5c8a5c"/><circle cx="38" cy="20" r="9" fill="#5c8a5c"/><circle cx="22" cy="36" r="9" fill="#5c8a5c"/><circle cx="38" cy="36" r="9" fill="#5c8a5c"/><line x1="30" y1="28" x2="30" y2="52"/>`);
+}
+function iconBiscuit(){
+  return iconWrap(`<circle cx="30" cy="30" r="22" fill="#a97c53"/><circle cx="20" cy="22" r="3" fill="#2b2b28" stroke="none"/><circle cx="38" cy="18" r="3" fill="#2b2b28" stroke="none"/><circle cx="40" cy="36" r="3" fill="#2b2b28" stroke="none"/><circle cx="22" cy="40" r="3" fill="#2b2b28" stroke="none"/>`);
+}
+function iconPopTab(){
+  return iconWrap(`<ellipse cx="28" cy="36" rx="18" ry="10" fill="#b9b3a4"/><ellipse cx="28" cy="36" rx="8" ry="4" fill="#f4efe4"/><rect x="24" y="10" width="8" height="16" fill="#b9b3a4"/><circle cx="28" cy="14" r="5" fill="#f4efe4"/>`);
+}
+function iconRatTail(){
+  return iconWrap(`<path d="M14 44 Q20 20 40 16 Q50 14 46 22 Q30 26 24 44 Z" fill="#b06a97"/>`);
+}
+function iconBottlecapHelmet(){
+  return iconWrap(`<circle cx="30" cy="32" r="18" fill="#b9b3a4"/><path d="M12 32 L14 24 M18 20 L22 14 M30 14 L30 8 M38 14 L42 20 M46 24 L48 32" stroke-width="3"/>`);
+}
+function iconPipeFitting(){
+  return iconWrap(`<path d="M14 44 L14 26 Q14 14 26 14 L44 14" fill="none" stroke-width="8"/>`);
+}
+function iconCoatButton(){
+  return iconWrap(`<circle cx="30" cy="30" r="18" fill="#5f4632"/><circle cx="24" cy="24" r="2" fill="#2b2b28" stroke="none"/><circle cx="36" cy="24" r="2" fill="#2b2b28" stroke="none"/><circle cx="24" cy="36" r="2" fill="#2b2b28" stroke="none"/><circle cx="36" cy="36" r="2" fill="#2b2b28" stroke="none"/>`);
+}
+
+/* ---------------- Equipment icons (starter gear + shop upgrades) ---------------- */
+function iconFork(){
+  return iconWrap(`<line x1="30" y1="12" x2="30" y2="26"/><line x1="22" y1="12" x2="22" y2="26"/><line x1="38" y1="12" x2="38" y2="26"/><path d="M18 26 Q30 32 42 26" fill="none"/><line x1="30" y1="30" x2="30" y2="52"/>`);
+}
+function iconCap(){
+  return iconWrap(`<path d="M14 40 Q14 20 30 20 Q46 20 46 40 Z" fill="#3d5a80"/><rect x="10" y="38" width="40" height="6" fill="#3d5a80"/><circle cx="30" cy="20" r="3" fill="#d1a94e" stroke="none"/>`);
+}
+function iconTunic(){
+  return iconWrap(`<path d="M20 16 L40 16 L46 28 L40 26 L40 50 L20 50 L20 26 L14 28 Z" fill="#b06a97"/>`);
+}
+function iconTrousers(){
+  return iconWrap(`<path d="M20 12 L40 12 L40 30 L36 52 L30 52 L30 32 L24 52 L18 52 L20 30 Z" fill="#5f4632"/>`);
+}
+function iconMismatchedBoots(){
+  return iconWrap(`<rect x="10" y="34" width="14" height="18" fill="#8a8477"/><rect x="30" y="30" width="16" height="22" fill="#a97c53"/><line x1="10" y1="44" x2="24" y2="44"/><line x1="30" y1="40" x2="46" y2="40"/>`);
+}
+function iconRakeShank(){
+  return iconWrap(`<line x1="30" y1="52" x2="30" y2="14"/><path d="M30 14 L22 22 M30 14 L38 22" stroke-width="3"/>`);
+}
+function iconWandStick(){
+  return iconWrap(`<line x1="18" y1="50" x2="42" y2="14"/><path d="M42 14 L46 8 M42 14 L48 16 M42 14 L38 8"/>`);
+}
+function iconPotLid(){
+  return iconWrap(`<ellipse cx="30" cy="34" rx="20" ry="8" fill="#b9b3a4"/><rect x="26" y="14" width="8" height="14" fill="#8a8477"/><circle cx="30" cy="14" r="4" fill="#8a8477"/>`);
+}
+function iconVest(){
+  return iconWrap(`<path d="M18 16 L42 16 L38 50 L22 50 Z" fill="#5f4632"/><line x1="24" y1="22" x2="24" y2="44"/><line x1="36" y1="22" x2="36" y2="44"/>`);
+}
+function iconShinGuard(){
+  return iconWrap(`<path d="M22 12 L38 12 L36 48 L24 48 Z" fill="#8a5a3a"/><line x1="26" y1="20" x2="34" y2="20"/><line x1="26" y1="30" x2="34" y2="30"/><line x1="26" y1="40" x2="34" y2="40"/>`);
+}
+function iconGripBoots(){
+  return iconWrap(`<rect x="14" y="28" width="32" height="22" fill="#3d5a80"/><line x1="18" y1="46" x2="42" y2="46"/><path d="M18 50 L20 54 M26 50 L28 54 M34 50 L36 54 M42 50 L44 54"/>`);
+}
+
+/* ---------------- Monster + player scene art ---------------- */
+function sceneWrap(inner, rot){
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(${rot||0}deg)">${inner}</svg>`;
+}
+function artIdle(){
+  return sceneWrap(`<circle cx="50" cy="26" r="13" fill="#d1a94e"/><line x1="50" y1="39" x2="50" y2="68"/><line x1="50" y1="48" x2="32" y2="58"/><line x1="50" y1="48" x2="68" y2="58"/><line x1="50" y1="68" x2="36" y2="92"/><line x1="50" y1="68" x2="64" y2="92"/>`, 0);
+}
+function artVillager(){
+  return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M38 20 Q50 6 62 20 L60 22 Q50 12 40 22 Z" fill="#5f4632"/><path d="M34 36 Q50 30 66 36 L64 76 Q50 82 36 76 Z" fill="#3d5a80"/><line x1="34" y1="40" x2="18" y2="58"/><line x1="18" y1="58" x2="10" y2="42"/><line x1="66" y1="40" x2="76" y2="52"/><line x1="50" y1="82" x2="42" y2="98"/><line x1="50" y1="82" x2="58" y2="98"/>`, -1);
+}
+function artShopkeeper(){
+  return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M34 36 Q50 30 66 36 L64 76 Q50 82 36 76 Z" fill="#5c8a5c"/><rect x="40" y="50" width="20" height="24" fill="#f4efe4"/><line x1="34" y1="40" x2="20" y2="56"/><line x1="20" y1="56" x2="26" y2="70"/><line x1="66" y1="40" x2="80" y2="56"/><line x1="80" y1="56" x2="74" y2="70"/><line x1="50" y1="82" x2="42" y2="98"/><line x1="50" y1="82" x2="58" y2="98"/>`, 1);
+}
+function artGuildmaster(){
+  return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M34 36 Q50 30 66 36 L64 76 Q50 82 36 76 Z" fill="#8a8477"/><line x1="38" y1="38" x2="62" y2="72"/><circle cx="50" cy="55" r="4" fill="#d1a94e" stroke="none"/><line x1="34" y1="40" x2="20" y2="56"/><line x1="20" y1="56" x2="26" y2="70"/><line x1="66" y1="40" x2="82" y2="46"/><line x1="82" y1="46" x2="86" y2="66"/><line x1="50" y1="82" x2="42" y2="98"/><line x1="50" y1="82" x2="58" y2="98"/>`, -1);
+}
+function artCroupier(){
+  return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M36 20 Q50 14 64 20 L62 24 Q50 18 38 24 Z" fill="#2b2b28"/><path d="M34 36 Q50 30 66 36 L64 76 Q50 82 36 76 Z" fill="#b06a97"/><rect x="40" y="50" width="20" height="14" fill="#f4efe4"/><line x1="45" y1="57" x2="55" y2="57"/><line x1="34" y1="40" x2="20" y2="56"/><line x1="20" y1="56" x2="26" y2="70"/><line x1="66" y1="40" x2="80" y2="52"/><path d="M74 46 L86 40 M78 50 L90 46" stroke-width="3"/><line x1="50" y1="82" x2="42" y2="98"/><line x1="50" y1="82" x2="58" y2="98"/>`, 1);
+}
+function artTownSquare(gafferFlagType, guildFlagType){
+  const makeFlag = (flagType) => {
+    if(!flagType) return '';
+    const bg = flagType==='offer' ? '#b5453f' : '#5c8a5c';
+    const symbol = flagType==='offer' ? '!' : '?';
+    return `
+      <g class="quest-flag">
+        <circle cx="50" cy="16" r="9" fill="${bg}" stroke="#2b2b28" stroke-width="3"/>
+        <text x="50" y="21" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-size="12" font-weight="700" fill="#f4efe4" stroke="none">${symbol}</text>
+      </g>`;
+  };
+  const plate = (label, fontSize) => `
+      <rect x="6" y="76" width="88" height="18" fill="#f4efe4" stroke="#2b2b28" stroke-width="2"/>
+      <text x="50" y="89" text-anchor="middle" class="building-label" font-size="${fontSize}" fill="#2b2b28" stroke="none">${label}</text>`;
+  return `<svg class="town-scene-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="4" width="292" height="292" fill="none" stroke="#2b2b28" stroke-width="9" stroke-dasharray="17,4" stroke-linecap="butt" stroke-linejoin="miter"/>
+
+    <g transform="translate(0,0)" class="building-hit" data-action="gaffer">
+      <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+      <path d="M18 34 L50 22 L82 34 Z" fill="#b5453f"/>
+      <rect x="27" y="34" width="46" height="32" fill="#a97c53"/>
+      <rect x="42" y="50" width="16" height="16" fill="#5f4632"/>
+      <rect x="32" y="40" width="9" height="9" fill="#f4efe4"/>
+      <line x1="36" y1="40" x2="36" y2="49"/><line x1="32" y1="44" x2="41" y2="44"/>
+      ${makeFlag(gafferFlagType)}
+      ${plate("Gaffer's Cottage", 8)}
+    </g>
+
+    <g transform="translate(200,0)" class="building-hit" data-action="rest">
+      <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+      <path d="M14 36 L50 14 L86 36 Z" fill="#8a8477"/>
+      <rect x="24" y="36" width="52" height="30" fill="#b9b3a4"/>
+      <rect x="43" y="50" width="14" height="16" fill="#5f4632"/>
+      <rect x="32" y="42" width="8" height="8" fill="#f4efe4"/>
+      <rect x="60" y="42" width="8" height="8" fill="#f4efe4"/>
+      <line x1="24" y1="28" x2="12" y2="28"/>
+      <rect x="4" y="22" width="12" height="9" fill="#d1a94e"/>
+      ${plate("The Inn", 10)}
+    </g>
+
+    <g transform="translate(100,200)" class="building-hit" data-action="shop">
+      <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+      <path d="M16 44 L23 26 L30 44 L37 26 L44 44 L51 26 L58 44 L65 26 L72 44 L79 26 L84 44 Z" fill="#b5453f"/>
+      <rect x="20" y="44" width="60" height="22" fill="#d1a94e"/>
+      <rect x="28" y="54" width="44" height="12" fill="#f4efe4"/>
+      <line x1="28" y1="60" x2="72" y2="60"/>
+      <circle cx="38" cy="59" r="2.5" fill="#5c8a5c"/>
+      <circle cx="50" cy="59" r="2.5" fill="#b06a97"/>
+      <circle cx="62" cy="59" r="2.5" fill="#3d5a80"/>
+      ${plate("The Shop", 10)}
+    </g>
+
+    <g transform="translate(0,200)" class="building-hit" data-action="guild">
+      <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+      <path d="M20 42 L20 34 L28 34 L28 42 L36 42 L36 34 L44 34 L44 42 L56 42 L56 34 L64 34 L64 42 L72 42 L72 34 L80 34 L80 42 Z" fill="#8a8477"/>
+      <rect x="20" y="42" width="60" height="30" fill="#b9b3a4"/>
+      <rect x="42" y="56" width="16" height="16" fill="#5f4632"/>
+      <line x1="50" y1="34" x2="50" y2="12"/>
+      <path d="M50 12 L68 18 L50 24 Z" fill="#3d5a80"/>
+      ${makeFlag(guildFlagType)}
+      ${plate("The Guild", 9)}
+    </g>
+
+    <g transform="translate(100,100)">
+      <ellipse cx="50" cy="62" rx="28" ry="10" fill="#3d5a80"/>
+      <ellipse cx="50" cy="56" rx="30" ry="8" fill="none" stroke="#2b2b28" stroke-width="4"/>
+      <rect x="44" y="44" width="12" height="20" fill="#b9b3a4"/>
+      <ellipse cx="50" cy="36" rx="15" ry="5" fill="#3d5a80"/>
+      <circle cx="50" cy="28" r="4" fill="#b9b3a4"/>
+      <line x1="50" y1="23" x2="50" y2="16"/>
+      <circle cx="46" cy="19" r="1.8" fill="#3d5a80" stroke="none"/>
+      <circle cx="54" cy="17" r="1.8" fill="#3d5a80" stroke="none"/>
+      ${plate("Fountain", 10)}
+    </g>
+
+    <g transform="translate(200,200)" class="building-hit" data-action="casino">
+      <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+      <path d="M14 40 L22 26 L30 40 L38 26 L46 40 L54 26 L62 40 L70 26 L78 40 L86 26 L90 40 Z" fill="#b06a97"/>
+      <rect x="18" y="40" width="64" height="26" fill="#a97c53"/>
+      <circle cx="50" cy="53" r="10" fill="#f4efe4" stroke="#2b2b28" stroke-width="3"/>
+      <circle cx="50" cy="53" r="3" fill="#d1a94e" stroke="none"/>
+      <line x1="50" y1="43" x2="50" y2="46"/><line x1="50" y1="60" x2="50" y2="63"/><line x1="40" y1="53" x2="43" y2="53"/><line x1="57" y1="53" x2="60" y2="53"/>
+      ${plate("Casino", 10)}
+    </g>
+  </svg>`;
+}
+function artCompostGnome(){
+  return sceneWrap(`<path d="M50 12 L32 46 L68 46 Z" fill="#b5453f"/><circle cx="50" cy="58" r="12" fill="#e0c49a"/><line x1="50" y1="70" x2="50" y2="88"/><line x1="50" y1="76" x2="34" y2="84"/><line x1="50" y1="76" x2="66" y2="84"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, -3);
+}
+function artGnomeFeral(){
+  return sceneWrap(`<path d="M50 12 L28 48 L72 48 Z" fill="#5c8a5c"/><circle cx="50" cy="60" r="12" fill="#e0c49a"/><line x1="50" y1="72" x2="50" y2="90"/><line x1="50" y1="78" x2="26" y2="66"/><line x1="26" y1="66" x2="18" y2="52"/><line x1="10" y1="50" x2="26" y2="58"/><line x1="50" y1="78" x2="68" y2="88"/><line x1="50" y1="90" x2="40" y2="99"/><line x1="50" y1="90" x2="60" y2="99"/>`, -8);
+}
+function artGnomeFishing(){
+  return sceneWrap(`<path d="M50 12 L33 44 L67 44 Z" fill="#3d5a80"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="72" y2="58"/><path d="M72 58 Q80 60 78 70" fill="none"/><line x1="50" y1="74" x2="34" y2="84"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 2);
+}
+function artGnomeSnail(){
+  return sceneWrap(`<ellipse cx="50" cy="72" rx="26" ry="14" fill="#b9b3a4"/><circle cx="58" cy="54" r="16" fill="#b9b3a4"/><circle cx="58" cy="54" r="9" fill="#8a8477"/><circle cx="58" cy="54" r="3" fill="#8a8477"/><path d="M50 44 L40 26 L60 26 Z" fill="#b06a97"/><circle cx="50" cy="40" r="8" fill="#e0c49a"/><line x1="30" y1="76" x2="18" y2="70"/><line x1="30" y1="80" x2="18" y2="84"/>`, -2);
+}
+function artGnomeSergeant(){
+  return sceneWrap(`<path d="M50 10 L30 46 L70 46 Z" fill="#d1a94e"/><circle cx="50" cy="58" r="13" fill="#e0c49a"/><circle cx="42" cy="58" r="2" fill="#2b2b28" stroke="none"/><circle cx="58" cy="58" r="2" fill="#2b2b28" stroke="none"/><line x1="50" y1="71" x2="50" y2="90"/><line x1="50" y1="78" x2="32" y2="86"/><line x1="50" y1="78" x2="68" y2="86"/><path d="M42 74 L58 74 L54 82 L46 82 Z" fill="#b5453f"/><line x1="50" y1="90" x2="38" y2="99"/><line x1="50" y1="90" x2="62" y2="99"/>`, 0);
+}
+function artGnomeCommander(){
+  return sceneWrap(`<path d="M28 78 Q50 68 72 78 L66 40 Q50 34 34 40 Z" fill="#b5453f"/><path d="M50 6 L28 44 L72 44 Z" fill="#d1a94e"/><rect x="42" y="8" width="16" height="6" fill="#b06a97"/><circle cx="50" cy="56" r="14" fill="#e0c49a"/><circle cx="41" cy="56" r="2.4" fill="#2b2b28" stroke="none"/><circle cx="59" cy="56" r="2.4" fill="#2b2b28" stroke="none"/><line x1="50" y1="70" x2="50" y2="90"/><line x1="50" y1="76" x2="24" y2="70"/><line x1="24" y1="70" x2="16" y2="82"/><line x1="50" y1="76" x2="72" y2="84"/><path d="M42 82 L58 82 L54 92 L46 92 Z" fill="#3d5a80"/><line x1="50" y1="90" x2="38" y2="99"/><line x1="50" y1="90" x2="62" y2="99"/>`, 0);
+}
+function artSewerRat(){
+  return sceneWrap(`<ellipse cx="42" cy="64" rx="26" ry="15" fill="#8a8477"/><circle cx="74" cy="52" r="13" fill="#8a8477"/><circle cx="66" cy="42" r="5" fill="#8a8477"/><circle cx="80" cy="42" r="5" fill="#8a8477"/><circle cx="79" cy="49" r="1.8" fill="#2b2b28" stroke="none"/><line x1="85" y1="52" x2="96" y2="48"/><line x1="85" y1="56" x2="97" y2="58"/><path d="M18 66 Q4 74 10 90" fill="none"/><line x1="30" y1="76" x2="26" y2="88"/><line x1="42" y1="78" x2="42" y2="90"/><line x1="54" y1="76" x2="58" y2="88"/>`, -2);
+}
+function artRatHelmet(){
+  return sceneWrap(`<ellipse cx="42" cy="64" rx="26" ry="15" fill="#a97c53"/><circle cx="74" cy="52" r="13" fill="#a97c53"/><circle cx="66" cy="42" r="5" fill="#a97c53"/><circle cx="80" cy="42" r="5" fill="#a97c53"/><circle cx="79" cy="49" r="1.8" fill="#2b2b28" stroke="none"/><line x1="85" y1="52" x2="96" y2="48"/><line x1="85" y1="56" x2="97" y2="58"/><path d="M18 66 Q4 74 10 90" fill="none"/><line x1="30" y1="76" x2="26" y2="88"/><line x1="42" y1="78" x2="42" y2="90"/><line x1="54" y1="76" x2="58" y2="88"/><path d="M62 40 A13 13 0 0 1 86 40" fill="#b9b3a4"/><path d="M62 40 L64 34 M68 36 L70 30 M74 35 L74 29 M80 36 L82 30 M86 40 L88 34" stroke-width="2.5"/>`, -1);
+}
+function artGiantSewerRat(){
+  return sceneWrap(`<ellipse cx="40" cy="66" rx="30" ry="18" fill="#5f4632"/><circle cx="76" cy="52" r="15" fill="#5f4632"/><circle cx="66" cy="40" r="6" fill="#5f4632"/><circle cx="84" cy="40" r="6" fill="#5f4632"/><circle cx="82" cy="48" r="2.2" fill="#2b2b28" stroke="none"/><line x1="88" y1="52" x2="99" y2="47"/><line x1="88" y1="57" x2="99" y2="60"/><path d="M14 68 Q0 78 6 94" fill="none"/><line x1="26" y1="80" x2="20" y2="94"/><line x1="40" y1="82" x2="40" y2="96"/><line x1="54" y1="80" x2="60" y2="94"/>`, -2);
+}
+function artRatTrenchcoat(){
+  return sceneWrap(`<path d="M30 40 L50 40 L58 92 L22 92 Z" fill="#5f4632"/><line x1="40" y1="46" x2="40" y2="88"/><circle cx="34" cy="30" r="9" fill="#8a8477"/><circle cx="50" cy="26" r="9" fill="#8a8477"/><circle cx="66" cy="32" r="9" fill="#8a8477"/><circle cx="30" cy="27" r="2.5" fill="#8a8477"/><circle cx="38" cy="27" r="2.5" fill="#8a8477"/><circle cx="46" cy="23" r="2.5" fill="#8a8477"/><circle cx="54" cy="23" r="2.5" fill="#8a8477"/><circle cx="62" cy="29" r="2.5" fill="#8a8477"/><circle cx="70" cy="29" r="2.5" fill="#8a8477"/><circle cx="33" cy="30" r="1.4" fill="#2b2b28" stroke="none"/><circle cx="50" cy="26" r="1.4" fill="#2b2b28" stroke="none"/><circle cx="66" cy="32" r="1.4" fill="#2b2b28" stroke="none"/><line x1="26" y1="92" x2="24" y2="98"/><line x1="40" y1="92" x2="40" y2="98"/><line x1="54" y1="92" x2="56" y2="98"/>`, 0);
+}
+function artDefeated(monsterArtFn){
+  const inner = monsterArtFn();
+  return `<div style="position:relative; display:flex; justify-content:center; align-items:center;">
+    <div style="transform:rotate(88deg); filter:grayscale(55%); opacity:0.75;">${inner}</div>
+    <svg viewBox="0 0 40 40" style="position:absolute; top:2px; left:18px; width:26px; height:26px;" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" stroke-linecap="round">
+      <line x1="4" y1="4" x2="16" y2="16"/><line x1="16" y1="4" x2="4" y2="16"/>
+      <line x1="24" y1="4" x2="36" y2="16"/><line x1="36" y1="4" x2="24" y2="16"/>
+    </svg>
+    <svg viewBox="0 0 30 30" style="position:absolute; bottom:6px; right:8px; width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" stroke="#a97c53" stroke-width="3" stroke-linecap="round" fill="none">
+      <path d="M15 4 L17 12 L25 14 L17 16 L15 24 L13 16 L5 14 L13 12 Z"/>
+    </svg>
+  </div>`;
+}
+
+/* ---------------- Content ---------------- */
+const monsters = [
+  { name:"a disgruntled compost gnome", hp:9, atkMin:1, atkMax:2, xp:3, zone:"commons",
+    art: artCompostGnome, loot:{name:"a fistful of righteous soil", desc:"Smells like victory and mulch.", type:"junk", sell:1, icon:iconSoil} },
+  { name:"a feral lawn gnome, off its stake", hp:8, atkMin:1, atkMax:3, xp:4, zone:"commons",
+    art: artGnomeFeral, loot:{name:"a bent rake tine", desc:"Still menacing, somehow.", type:"junk", key:"rakeTine", icon:iconRakeTine} },
+  { name:"a fishing gnome with an empty bucket", hp:11, atkMin:1, atkMax:2, xp:4, zone:"commons",
+    art: artGnomeFishing, loot:{name:"a suspiciously confident lure", desc:"Has never once caught anything.", type:"junk", sell:2, icon:iconLure} },
+  { name:"a gnome cavalry unit, mounted on a garden snail", hp:13, atkMin:1, atkMax:3, xp:5, zone:"commons",
+    art: artGnomeSnail, loot:{name:"a spiral shell fragment", desc:"Still faintly slimy.", type:"junk", sell:3, icon:iconShellFragment} },
+  { name:"the self-appointed gnome sergeant", hp:17, atkMin:2, atkMax:4, xp:7, zone:"commons",
+    art: artGnomeSergeant, loot:{name:"a tiny sergeant's whistle", desc:"Blowing it clears your head a little.", type:"mp", value:4, icon:iconWhistle} },
+  { name:"a sewer rat with delusions of grandeur", hp:15, atkMin:2, atkMax:4, xp:6, zone:"sewers",
+    art: artSewerRat, loot:{name:"a slightly damp rat tail", desc:"You're not sure why you kept this.", type:"junk", sell:2, icon:iconRatTail} },
+  { name:"a rat wearing a bottlecap as a helmet", hp:18, atkMin:2, atkMax:5, xp:7, zone:"sewers",
+    art: artRatHelmet, loot:{name:"a dented bottlecap helmet", desc:"Barely fits a rat. Definitely doesn't fit you.", type:"junk", sell:3, icon:iconBottlecapHelmet} },
+  { name:"a positively enormous sewer rat", hp:24, atkMin:3, atkMax:6, xp:9, zone:"sewers",
+    art: artGiantSewerRat, loot:{name:"a rat-gnawed pipe fitting", desc:"Chewed clean through solid metal. Concerning.", type:"junk", sell:4, icon:iconPipeFitting} },
+  { name:"three rats in a trenchcoat, unconvincingly", hp:20, atkMin:3, atkMax:5, xp:8, zone:"sewers",
+    art: artRatTrenchcoat, loot:{name:"a comically oversized coat button", desc:"None of the three rats will admit to owning this.", type:"junk", sell:3, icon:iconCoatButton} },
+];
+
+const gnomeCommander = {
+  name:"the gnome commander", hp:45, atkMin:4, atkMax:8, xp:20, rare:true, zone:"commons",
+  art: artGnomeCommander, loot:null
+};
+const COMMANDER_SPAWN_CHANCE = 0.02;
+
+const rareDrops = [
+  { name:"a suspiciously ornate gnome figurine", desc:"You could swear it's watching you.", type:"junk", sell:8, icon:iconFigurine },
+  { name:"a four-leaf clover, clearly stolen from a gnome's hat", desc:"Feels lucky. Restores a bit of HP and MP.", type:"luck", hpValue:6, mpValue:3, icon:iconClover },
+];
+const RARE_DROP_CHANCE = 0.12;
+
+const noncombatEvents = [
+  "You find a suspiciously comfortable rock and sit on it for a while. Nothing happens, but it was nice.",
+  "A squirrel appraises you, finds you wanting, and leaves.",
+  "You step in something. You choose not to look down.",
+  "An old sign points in three directions at once. You go the fourth way.",
+  "You have a brief, meaningful staring contest with a garden gnome. It wins.",
+  "You count fourteen gnome hats poking out of the hedges. You do not investigate further.",
+  "A gnome-sized wheelbarrow rolls past, unattended. You let it go about its business."
+];
+
+const hazardEvents = [
+  { text:"You trip over a root and land face-first in something unpleasant.", dmg:[1,3] },
+  { text:"A branch swings back and smacks you with the fury of a thousand insulted trees.", dmg:[2,4] },
+  { text:"You step on a gnome trap — really just a rake, but effectively deployed.", dmg:[2,4] },
+];
+
+const healItems = [
+  { name:"a slightly bruised apple", desc:"Restores a modest amount of HP.", type:"hp", value:8, icon:iconApple },
+  { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:12, icon:iconJerky },
+];
+
+/* ---------------- Equipment ---------------- */
+/* Starter gear — equipped automatically at the start of the game so the
+   Character page's 5 equip slots (head/chest/legs/boots/weapon) aren't
+   just empty on day one. No stat bonuses; purely flavor. */
+const starterGear = {
+  weapon: { name:"a bent kitchen fork", desc:"Not built for combat. Works anyway, sort of.", type:"equip", slot:"weapon", bonus:{}, icon: iconFork },
+  head:   { name:"a floppy adventuring cap", desc:"Keeps the sun out of your eyes, mostly.", type:"equip", slot:"head", bonus:{}, icon: iconCap },
+  chest:  { name:"a slightly singed tunic", desc:"Smells like campfire. Always has.", type:"equip", slot:"chest", bonus:{}, icon: iconTunic },
+  legs:   { name:"hand-me-down trousers, one size too big", desc:"Held up entirely by hope and a length of twine.", type:"equip", slot:"legs", bonus:{}, icon: iconTrousers },
+  boots:  { name:"one good boot, one bad boot", desc:"You've stopped noticing the limp.", type:"equip", slot:"boots", bonus:{}, icon: iconMismatchedBoots },
+};
+
+/* Shop-buyable upgrades, one or two per slot, each granting +1 to a stat. */
+const shopGearItems = [
+  { name:"a rake tine repurposed as a shank", desc:"Sharper than it has any right to be.", type:"equip", slot:"weapon", bonus:{beef:1}, price:12, icon: iconRakeShank },
+  { name:"a wand-shaped stick, allegedly magic", desc:"The gnome who sold it swore up and down.", type:"equip", slot:"weapon", bonus:{hoodoo:1}, price:12, icon: iconWandStick },
+  { name:"a dented pot-lid helmet", desc:"Rings like a bell if you get hit. You get used to it.", type:"equip", slot:"head", bonus:{grit:1}, price:10, icon: iconPotLid },
+  { name:"a patched burlap vest", desc:"Itchy. Surprisingly sturdy.", type:"equip", slot:"chest", bonus:{grit:1}, price:12, icon: iconVest },
+  { name:"shin guards whittled from a fence post", desc:"Splintery, but they hold.", type:"equip", slot:"legs", bonus:{zip:1}, price:10, icon: iconShinGuard },
+  { name:"boots with suspiciously good grip", desc:"You don't ask where they came from.", type:"equip", slot:"boots", bonus:{zip:1}, price:10, icon: iconGripBoots },
+];
+
+const shopBuyItems = [
+  { name:"a slightly bruised apple", desc:"Restores a modest amount of HP.", type:"hp", value:8, price:5, icon:iconApple },
+  ...shopGearItems,
+];
+
+/* ---------------- Casino ---------------- */
+const CASINO_WIN_CHANCE = 0.45; /* the house always wins, on average */
+const casinoWinLines = [
+  "The wheel clatters to a stop on gold. You win!",
+  "Against all odds — and the Croupier's raised eyebrow — you win!",
+  "The dice tumble your way, somehow. You win!",
+];
+const casinoLoseLines = [
+  "The wheel clatters to a stop on absolutely nothing. You lose your stake.",
+  "The Croupier doesn't even try to hide the smirk. You lose your stake.",
+  "The dice betray you completely. You lose your stake.",
+];
+
+/* ---------------- Rendering ---------------- */
+function render(){
+  document.getElementById('hp-bar').style.width = (state.hp/state.maxHp*100)+'%';
+  document.getElementById('hp-text').textContent = state.hp+' / '+state.maxHp;
+  document.getElementById('mp-bar').style.width = (state.mp/state.maxMp*100)+'%';
+  document.getElementById('mp-text').textContent = state.mp+' / '+state.maxMp;
+  document.getElementById('inv-count').textContent = state.inventory.length;
+  updateBiscuitDisplay();
+
+  document.getElementById('level-text').textContent = state.level;
+  document.getElementById('xp-bar').style.width = (state.xp/state.xpToLevel*100)+'%';
+  document.getElementById('xp-text').textContent = state.xp+'/'+state.xpToLevel;
+
+  const isTownSquare = state.location === 'town';
+  const isGafferHouse = state.location === 'gaffer';
+  const isShop = state.location === 'shop';
+  const isGuild = state.location === 'guild';
+  const isCommons = state.location === 'commons';
+  const isSewers = state.location === 'sewers';
+  const isCasino = state.location === 'casino';
+  const inTownArea = isTownSquare || isGafferHouse || isShop || isGuild || isCasino;
+
+  document.getElementById('poptab-text').textContent = state.popTabs;
+
+  document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer Thistlewick's Cottage" : (isShop ? 'The Shop' : (isGuild ? 'The Adventurers\' Guild' : (isCasino ? 'The Casino' : (isTownSquare ? 'Gladstone Hollow' : (isSewers ? 'Dank Sewers' : 'The Overgrown Commons')))));
+  document.getElementById('ztag-town').style.display = inTownArea ? 'block' : 'none';
+  document.getElementById('ztag-commons').style.display = isCommons ? 'block' : 'none';
+  document.getElementById('quest-box').style.display = (isGafferHouse || isGuild) ? 'block' : 'none';
+  document.getElementById('town-row').style.display = (isTownSquare && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('shop-row').style.display = (isShop && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('shop-list').style.display = isShop ? 'block' : 'none';
+  if(isShop) renderShop();
+
+  document.getElementById('casino-bet-row').style.display = (isCasino && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('casino-row').style.display = (isCasino && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('bet-5-btn').disabled = state.popTabs < 5;
+  document.getElementById('bet-10-btn').disabled = state.popTabs < 10;
+  document.getElementById('bet-25-btn').disabled = state.popTabs < 25;
+
+  const sewersUnlocked = state.quest2Complete;
+  document.getElementById('zone-card-sewers').classList.toggle('locked', !sewersUnlocked);
+  document.getElementById('ztag-sewers').textContent = sewersUnlocked ? 'You are here' : 'Locked';
+  document.getElementById('ztag-sewers').style.display = sewersUnlocked ? (isSewers ? 'block' : 'none') : 'block';
+
+  const questState = state.questComplete ? 'complete' : (state.questAccepted ? 'active' : 'offer');
+  const tinesHeld = countRakeTines();
+  const tinesStillNeeded = QUEST_TINES_NEEDED - state.questTinesGiven;
+  const canGive = isGafferHouse && questState==='active' && tinesHeld > 0;
+
+  const quest2State = state.quest2Complete ? 'complete' : (state.quest2Accepted ? 'active' : (state.questComplete ? 'offer' : 'locked'));
+  const canReport = isGuild && quest2State==='active' && state.commanderDefeated;
+
+  document.getElementById('gaffer-row').style.display = (isGafferHouse && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('accept-quest-btn').style.display = questState==='offer' ? '' : 'none';
+  document.getElementById('give-tines-btn').style.display = questState==='active' ? '' : 'none';
+  document.getElementById('give-tines-btn').disabled = !canGive;
+  document.getElementById('give-tines-btn').textContent = tinesHeld>0 ? `Give Rake Tines (${Math.min(tinesHeld,tinesStillNeeded)})` : 'Give Rake Tines';
+
+  document.getElementById('guild-row').style.display = (isGuild && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('accept-quest2-btn').style.display = quest2State==='offer' ? '' : 'none';
+  document.getElementById('report-kill-btn').style.display = quest2State==='active' ? '' : 'none';
+  document.getElementById('report-kill-btn').disabled = !canReport;
+  document.getElementById('report-kill-btn').textContent = state.commanderDefeated ? 'Report the Kill' : 'Report the Kill (not yet)';
+
+  if(isGafferHouse){
+    if(questState==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: A Proper Rake';
+      document.getElementById('quest-desc').textContent = "Gaffer Thistlewick's rake was stolen and stripped apart by gnomes in the Overgrown Commons. He's looking for someone to bring back its tines.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(questState==='active'){
+      document.getElementById('quest-name').textContent = 'Quest: A Proper Rake';
+      document.getElementById('quest-desc').textContent = "Bring back the rake's tines from the gnomes in the Overgrown Commons, and Gaffer will put it back together.";
+      document.getElementById('quest-progress').textContent = `Rake tines turned in: ${state.questTinesGiven}/${QUEST_TINES_NEEDED}`;
+    } else {
+      document.getElementById('quest-name').textContent = 'Quest complete: A Proper Rake';
+      document.getElementById('quest-desc').textContent = "Gaffer Thistlewick's rake stands whole again. He's out back, raking his lawn with the quiet satisfaction of a man at peace.";
+      document.getElementById('quest-progress').textContent = 'Reward claimed.';
+    }
+  } else if(isGuild){
+    if(quest2State==='locked'){
+      document.getElementById('quest-name').textContent = 'The Guild';
+      document.getElementById('quest-desc').textContent = "The guildmaster looks you over. \"Prove yourself around town first — come back when you've done something useful.\"";
+      document.getElementById('quest-progress').textContent = 'No quest available yet.';
+    } else if(quest2State==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: The Gnome Commander';
+      document.getElementById('quest-desc').textContent = "Word has spread of a gnome commander rallying the Overgrown Commons. He's rare, dangerous, and worth putting down.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(quest2State==='active'){
+      document.getElementById('quest-name').textContent = 'Quest: The Gnome Commander';
+      document.getElementById('quest-desc').textContent = "Hunt down and defeat the gnome commander in the Overgrown Commons. He's rare — keep adventuring until he shows himself.";
+      document.getElementById('quest-progress').textContent = state.commanderDefeated ? 'Commander defeated — report back!' : 'Commander not yet encountered.';
+    } else {
+      document.getElementById('quest-name').textContent = 'Quest complete: The Gnome Commander';
+      document.getElementById('quest-desc').textContent = "The gnome commander has been dealt with. The guildmaster seems genuinely impressed, which seems rare for him. He mentions the sewers under the square have been acting up too — worth a look, if you're not afraid of rats.";
+      document.getElementById('quest-progress').textContent = 'Reward claimed. The Dank Sewers are now open — check the Map.';
+    }
+  }
+
+  document.getElementById('combat-row').style.display = state.inCombat ? 'flex' : 'none';
+  document.getElementById('explore-row').style.display = ((isCommons || isSewers) && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('monster-card').classList.toggle('active', state.inCombat);
+
+  if(state.inCombat){
+    document.getElementById('scene-art').innerHTML = state.monster.art();
+    document.getElementById('victory-banner').style.display = 'none';
+  } else if(state.showVictory && state.victoryMonster){
+    document.getElementById('scene-art').innerHTML = artDefeated(state.victoryMonster.art);
+    document.getElementById('victory-banner').style.display = 'block';
+  } else if(isGafferHouse){
+    document.getElementById('scene-art').innerHTML = artVillager();
+    document.getElementById('victory-banner').style.display = 'none';
+  } else if(isShop){
+    document.getElementById('scene-art').innerHTML = artShopkeeper();
+    document.getElementById('victory-banner').style.display = 'none';
+  } else if(isGuild){
+    document.getElementById('scene-art').innerHTML = artGuildmaster();
+    document.getElementById('victory-banner').style.display = 'none';
+  } else if(isCasino){
+    document.getElementById('scene-art').innerHTML = artCroupier();
+    document.getElementById('victory-banner').style.display = 'none';
+  } else if(isTownSquare){
+    const gafferFlag = questState==='offer' ? 'offer' : (questState==='active' && tinesHeld>0 ? 'turnin' : null);
+    const guildFlag = quest2State==='offer' ? 'offer' : (quest2State==='active' && state.commanderDefeated ? 'turnin' : null);
+    document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag);
+    document.getElementById('victory-banner').style.display = 'none';
+  } else {
+    document.getElementById('scene-art').innerHTML = artIdle();
+    document.getElementById('victory-banner').style.display = 'none';
+  }
+
+  if(state.inCombat){
+    document.getElementById('monster-name').textContent = capitalize(state.monster.name);
+    document.getElementById('monster-hp-bar').style.width = (state.monster.hp/state.monster.maxHp*100)+'%';
+    document.getElementById('monster-hp-text').textContent = state.monster.hp+'/'+state.monster.maxHp;
+  }
+
+  renderInventory();
+  renderAccountTab();
+}
+
+function countRakeTines(){
+  return state.inventory.filter(it => it.key === 'rakeTine').length;
+}
+
+function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+function log(text, cls){
+  const div = document.createElement('div');
+  div.className = 'entry '+(cls||'');
+  div.textContent = text;
+  const logEl = document.getElementById('log');
+  logEl.insertBefore(div, logEl.firstChild);
+}
+
+function clearLog(){
+  document.getElementById('log').innerHTML = '';
+}
+
+function renderInventory(){
+  const list = document.getElementById('inv-list');
+  if(state.inventory.length===0){
+    list.innerHTML = '<div class="inv-empty">Empty. Bring me things.</div>';
+    return;
+  }
+  list.innerHTML = '';
+
+  const groups = new Map();
+  state.inventory.forEach((item, idx)=>{
+    if(!groups.has(item.name)){
+      groups.set(item.name, { item, count:0, firstIdx:idx });
+    }
+    groups.get(item.name).count++;
+  });
+
+  groups.forEach(({item, count, firstIdx})=>{
+    const div = document.createElement('div');
+    div.className='inv-item';
+    let btn = '';
+    if(item.type==='hp' || item.type==='mp' || item.type==='luck'){
+      btn = `<button class="btn-secondary" onclick="useItem(${firstIdx})">Use</button>`;
+    } else if(item.type==='equip'){
+      btn = `<button class="btn-secondary" onclick="equipItem(${firstIdx})">Equip</button>`;
+    }
+    const iconSvg = item.icon ? item.icon() : '';
+    const qtyBadge = count>1 ? `<span class="qty-badge">×${count}</span>` : '';
+    const slotBadge = item.type==='equip' ? ` <span class="qty-badge">${SLOT_LABELS[item.slot]}</span>` : '';
+    const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
+      ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
+      : '';
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name}${qtyBadge}${slotBadge}</div><div class="desc">${item.desc}${bonusText}</div>${btn}</div>`;
+    list.appendChild(div);
+  });
+}
+
+function renderShop(){
+  const shopList = document.getElementById('shop-list');
+  shopList.innerHTML = '';
+
+  const buySection = document.createElement('div');
+  buySection.innerHTML = '<div class="shop-section-title">For Sale</div>';
+  shopBuyItems.forEach(def=>{
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+    const iconSvg = def.icon ? def.icon() : '';
+    const canAfford = state.popTabs >= def.price;
+    const slotTag = def.slot ? ` <span class="qty-badge">${SLOT_LABELS[def.slot]}</span>` : '';
+    const bonusTag = def.bonus && Object.keys(def.bonus).length
+      ? ` (${Object.entries(def.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
+      : '';
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${def.name}${slotTag}</div><div class="desc">${def.desc}${bonusTag} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyItemByName('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
+    buySection.appendChild(div);
+  });
+  shopList.appendChild(buySection);
+
+  const sellSection = document.createElement('div');
+  sellSection.innerHTML = '<div class="shop-section-title">Sell Your Junk</div>';
+  const sellable = state.inventory.filter(it => it.type==='junk' && it.sell);
+
+  if(sellable.length===0){
+    sellSection.innerHTML += '<div class="shop-empty">Nothing in your pack worth selling. Bring back some gnome junk.</div>';
+  } else {
+    const groups = new Map();
+    sellable.forEach(item=>{
+      if(!groups.has(item.name)) groups.set(item.name, { item, count:0 });
+      groups.get(item.name).count++;
+    });
+    groups.forEach(({item, count})=>{
+      const div = document.createElement('div');
+      div.className = 'shop-item';
+      const iconSvg = item.icon ? item.icon() : '';
+      const total = item.sell * count;
+      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name} <span class="qty-badge">×${count}</span></div><div class="desc">${item.desc} (${item.sell} Pop Tab${item.sell>1?'s':''} each)</div><button class="btn-secondary" onclick="sellItemByName('${item.name.replace(/'/g,"\\'")}')">Sell All — ${total} Pop Tabs</button></div>`;
+      sellSection.appendChild(div);
+    });
+  }
+  shopList.appendChild(sellSection);
+}
+
+function renderCharacterDrawer(){
+  document.getElementById('char-portrait').innerHTML = artIdle();
+  document.getElementById('char-title').textContent = `Level ${state.level} Adventurer`;
+
+  document.getElementById('char-hp-bar').style.width = (state.hp/state.maxHp*100)+'%';
+  document.getElementById('char-hp-value').textContent = state.hp+' / '+state.maxHp;
+  document.getElementById('char-mp-bar').style.width = (state.mp/state.maxMp*100)+'%';
+  document.getElementById('char-mp-value').textContent = state.mp+' / '+state.maxMp;
+  document.getElementById('char-xp-bar').style.width = (state.xp/state.xpToLevel*100)+'%';
+  document.getElementById('char-xp-value').textContent = state.xp+' / '+state.xpToLevel;
+
+  document.getElementById('char-facts').innerHTML = `
+    <div><span class="fact-label">Biscuits:</span> ${devMode ? '∞ (dev mode)' : state.adventures + ' / ' + BISCUIT_MAX}</div>
+    <div><span class="fact-label">Pop Tabs:</span> ${state.popTabs}</div>
+    <div><span class="fact-label">Items carried:</span> ${state.inventory.length}</div>
+  `;
+
+  renderStatsBlock();
+  renderEquipmentBlock();
+}
+
+function renderStatsBlock(){
+  const el = document.getElementById('stats-block');
+  const eff = getEffectiveStats();
+  const pointsNote = state.statPoints>0
+    ? `<div class="stat-points-note">${state.statPoints} stat point${state.statPoints>1?'s':''} to spend!</div>`
+    : '';
+  const rows = Object.keys(STAT_LABELS).map(key=>{
+    const base = state.stats[key];
+    const bonus = eff[key] - base;
+    const bonusText = bonus>0 ? ` <span class="qty-badge">+${bonus}</span>` : '';
+    const btn = state.statPoints>0
+      ? `<button class="btn-secondary stat-plus-btn" onclick="spendStatPoint('${key}')">+1</button>`
+      : '';
+    return `<div class="stat-row">
+      <div style="flex:1;">
+        <div class="stat-row-label">${STAT_LABELS[key]}${bonusText}</div>
+        <div class="stat-row-hint">${STAT_HINTS[key]}</div>
+      </div>
+      <div class="stat-row-value">${eff[key]}</div>
+      ${btn}
+    </div>`;
+  }).join('');
+  el.innerHTML = `<div class="block-title">Stats</div>${pointsNote}${rows}`;
+}
+
+function renderEquipmentBlock(){
+  const el = document.getElementById('equip-block');
+  const rows = SLOT_ORDER.map(slot=>{
+    const item = state.equipment[slot];
+    if(!item){
+      return `<div class="equip-row">
+        <div class="icon-box equip-empty-icon">—</div>
+        <div style="flex:1;">
+          <div class="equip-slot-label">${SLOT_LABELS[slot]}</div>
+          <div class="equip-empty-text">Nothing equipped.</div>
+        </div>
+      </div>`;
+    }
+    const iconSvg = item.icon ? item.icon() : '';
+    const bonusText = item.bonus && Object.keys(item.bonus).length
+      ? Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')
+      : 'No bonus — just flavor.';
+    return `<div class="equip-row">
+      <div class="icon-box">${iconSvg}</div>
+      <div style="flex:1;">
+        <div class="equip-slot-label">${SLOT_LABELS[slot]}</div>
+        <div class="name">${item.name}</div>
+        <div class="desc">${bonusText}</div>
+        <button class="btn-secondary" onclick="unequipItem('${slot}')">Unequip</button>
+      </div>
+    </div>`;
+  }).join('');
+  el.innerHTML = `<div class="block-title">Equipped</div>${rows}`;
+}
+
+function renderQuestLogDrawer(){
+  const activeEl = document.getElementById('quest-log-active');
+  const completedEl = document.getElementById('quest-log-completed');
+  const activeEntries = [];
+  const completedEntries = [];
+
+  if(state.questComplete){
+    completedEntries.push(`
+      <div class="quest-log-entry">
+        <div class="quest-name">A Proper Rake</div>
+        <div class="quest-desc">You gathered the gnome-stolen rake tines and Gaffer Thistlewick put his rake back together.</div>
+        <div class="quest-progress">Reward claimed: 15 Pop Tabs, 25 XP</div>
+      </div>`);
+  } else if(state.questAccepted){
+    activeEntries.push(`
+      <div class="quest-log-entry">
+        <div class="quest-name">A Proper Rake</div>
+        <div class="quest-desc">Bring back the rake's tines from the gnomes in the Overgrown Commons, and Gaffer will put it back together.</div>
+        <div class="quest-progress">Rake tines turned in: ${state.questTinesGiven}/${QUEST_TINES_NEEDED}</div>
+      </div>`);
+  }
+
+  if(state.quest2Complete){
+    completedEntries.push(`
+      <div class="quest-log-entry">
+        <div class="quest-name">The Gnome Commander</div>
+        <div class="quest-desc">You hunted down and defeated the rare gnome commander terrorizing the Overgrown Commons.</div>
+        <div class="quest-progress">Reward claimed: 30 Pop Tabs, 50 XP</div>
+      </div>`);
+  } else if(state.quest2Accepted){
+    activeEntries.push(`
+      <div class="quest-log-entry">
+        <div class="quest-name">The Gnome Commander</div>
+        <div class="quest-desc">Hunt down and defeat the gnome commander in the Overgrown Commons. He's rare — keep adventuring until he shows himself.</div>
+        <div class="quest-progress">${state.commanderDefeated ? 'Commander defeated — report back at the Guild!' : 'Commander not yet encountered.'}</div>
+      </div>`);
+  }
+
+  activeEl.innerHTML = activeEntries.length ? activeEntries.join('') : '<div class="quest-log-empty">No active quests. Explore Gladstone Hollow to find one.</div>';
+  completedEl.innerHTML = completedEntries.length ? completedEntries.join('') : '<div class="quest-log-empty">No completed quests yet.</div>';
+}
+
+/* ---------------- Auth forms, shared between the pre-game gate and the Account drawer ---------------- */
+/* `prefix` is 'gate' or 'acct' — it picks which element IDs to read/write
+   (${prefix}-login-username, ${prefix}-msg, etc.) so the two copies of the
+   form never collide, and lets each remember its own view/busy state via
+   authView[prefix]/authBusy[prefix]. */
+function authSetView(prefix, view){
+  authView[prefix] = view;
+  renderAuthUI(prefix);
+}
+
+function renderAuthUI(prefix){
+  if(prefix === 'gate') renderGate(); else renderAccountTab();
+}
+
+function renderAuthForms(prefix){
+  const view = authView[prefix];
+  const busy = authBusy[prefix];
+  if(view === 'register'){
+    return `
+      <div class="acct-form">
+        <label>Username</label><input type="text" id="${prefix}-reg-username" autocomplete="username">
+        <label>Email</label><input type="email" id="${prefix}-reg-email" autocomplete="email">
+        <label>Password</label><input type="password" id="${prefix}-reg-password" autocomplete="new-password">
+        <div class="btn-row">
+          <button class="btn-primary" onclick="doRegister('${prefix}')" ${busy?'disabled':''}>Register</button>
+        </div>
+        <div class="acct-msg" id="${prefix}-msg"></div>
+        <span class="acct-link" onclick="authSetView('${prefix}','login')">Already have an account? Log in</span>
+      </div>`;
+  } else if(view === 'forgot'){
+    return `
+      <div class="acct-form">
+        <label>Username</label><input type="text" id="${prefix}-forgot-username" autocomplete="username">
+        <div class="btn-row">
+          <button class="btn-primary" onclick="doForgotPassword('${prefix}')" ${busy?'disabled':''}>Send Reset Link</button>
+        </div>
+        <div class="acct-msg" id="${prefix}-msg"></div>
+        <span class="acct-link" onclick="authSetView('${prefix}','login')">Back to log in</span>
+      </div>`;
+  }
+  return `
+    <div class="acct-form">
+      <label>Username</label><input type="text" id="${prefix}-login-username" autocomplete="username">
+      <label>Password</label><input type="password" id="${prefix}-login-password" autocomplete="current-password">
+      <div class="btn-row">
+        <button class="btn-primary" onclick="doLogin('${prefix}')" ${busy?'disabled':''}>Log In</button>
+      </div>
+      <div class="acct-msg" id="${prefix}-msg"></div>
+      <span class="acct-link" onclick="authSetView('${prefix}','register')">Need an account? Register</span><br>
+      <span class="acct-link" onclick="authSetView('${prefix}','forgot')">Forgot password?</span>
+    </div>`;
+}
+
+function acctMsg(prefix, text, isErr){
+  const el = document.getElementById(`${prefix}-msg`);
+  if(!el) return;
+  el.textContent = text;
+  el.className = 'acct-msg ' + (isErr ? 'err' : 'ok');
+}
+
+/* ---------------- The pre-game gate ---------------- */
+function showGate(){
+  gateOpen = true;
+  const el = document.getElementById('gate-screen');
+  if(el) el.style.display = 'flex';
+}
+function closeGate(){
+  gateOpen = false;
+  const el = document.getElementById('gate-screen');
+  if(el) el.style.display = 'none';
+}
+
+function renderGate(){
+  const el = document.getElementById('gate-body');
+  if(!el) return;
+  if(acctSession){
+    /* Only visible for the instant between a successful login and
+       enterGameAfterAuth() closing the gate — but render something sane
+       just in case. */
+    el.innerHTML = `<div class="acct-status-line">Signed in as <b>${acctUsername || '...'}</b> — loading your game...</div>`;
+    return;
+  }
+  el.innerHTML = renderAuthForms('gate');
+}
+
+function playAsGuest(){
+  closeGate();
+  startFreshGame();
+}
+
+/* Called once, right after the gate closes because of a real login (not a
+   guest). `loaded` says whether an existing save was found and hydrated. */
+function enterGameAfterAuth(loaded){
+  closeGate();
+  if(loaded){
+    clearLog();
+    log("Welcome back! Your save has been loaded.");
+    render();
+  } else {
+    startFreshGame();
+  }
+}
+
+/* ---------------- Account drawer (available during play regardless of guest/signed-in status) ---------------- */
+function renderAccountTab(){
+  const btn = document.getElementById('account-tab-btn');
+  const label = document.getElementById('account-tab-label');
+  const el = document.getElementById('account-body');
+
+  if(!sb){
+    label.textContent = 'Account';
+    if(el) el.innerHTML = `<div class="acct-status-line">Accounts aren't available right now — the login service didn't load (check your connection and reload). You can still play; nothing will be saved.</div>`;
+    return;
+  }
+
+  const existingDot = btn.querySelector('.acct-dot');
+  if(acctSession){
+    label.textContent = 'Account';
+    if(!existingDot){
+      const dot = document.createElement('span');
+      dot.className = 'acct-dot';
+      btn.appendChild(dot);
+    }
+  } else if(existingDot){
+    existingDot.remove();
+  }
+
+  if(!el) return;
+
+  if(acctSession){
+    el.innerHTML = `
+      <div class="acct-status-line">Signed in as <b>${acctUsername || '...'}</b></div>
+      <div class="btn-row">
+        <button class="btn-primary" id="acct-save-btn" onclick="manualSaveGame()">Save</button>
+        <button class="btn-secondary" id="acct-load-btn" onclick="manualLoadGame()">Load</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="doLogout()">Log Out</button>
+      </div>
+      <div class="acct-msg" id="acct-msg"></div>
+    `;
+    return;
+  }
+
+  el.innerHTML = `<div class="acct-status-line">Playing as a guest — nothing you do will be saved. Log in or register below to enable Save/Load.</div>` + renderAuthForms('acct');
+}
+
+async function doRegister(prefix){
+  if(authBusy[prefix]) return;
+  const username = document.getElementById(`${prefix}-reg-username`).value.trim();
+  const email = document.getElementById(`${prefix}-reg-email`).value.trim();
+  const password = document.getElementById(`${prefix}-reg-password`).value;
+  if(!username || !email || !password){ acctMsg(prefix, 'Fill in all three fields.', true); return; }
+
+  authBusy[prefix] = true; renderAuthUI(prefix);
+  const { data: existingEmail } = await sb.rpc('email_for_username', { lookup_username: username });
+  if(existingEmail){
+    authBusy[prefix] = false; renderAuthUI(prefix);
+    acctMsg(prefix, 'That username is already taken.', true);
+    return;
+  }
+  const { error } = await sb.auth.signUp({
+    email, password,
+    options: { data: { username }, emailRedirectTo: location.href.split('?')[0] },
+  });
+  authBusy[prefix] = false; renderAuthUI(prefix);
+  if(error){ acctMsg(prefix, error.message, true); return; }
+  acctMsg(prefix, 'Check your email to confirm your account, then log in.', false);
+}
+
+async function doLogin(prefix){
+  if(authBusy[prefix]) return;
+  const username = document.getElementById(`${prefix}-login-username`).value.trim();
+  const password = document.getElementById(`${prefix}-login-password`).value;
+  if(!username || !password){ acctMsg(prefix, 'Enter your username and password.', true); return; }
+
+  authBusy[prefix] = true; renderAuthUI(prefix);
+  const { data: email } = await sb.rpc('email_for_username', { lookup_username: username });
+  if(!email){
+    authBusy[prefix] = false; renderAuthUI(prefix);
+    acctMsg(prefix, 'No account found with that username.', true);
+    return;
+  }
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  authBusy[prefix] = false;
+  if(error){
+    renderAuthUI(prefix);
+    acctMsg(prefix, error.message.toLowerCase().includes('confirm')
+      ? "This account hasn't confirmed its email yet — check your inbox."
+      : error.message, true);
+    return;
+  }
+  /* onAuthStateChange also fires from here and updates acctSession/renders
+     the drawer independently; we still drive the gate/load/message flow
+     directly so we can sequence "load, then reveal the game". */
+  const loaded = await loadGame().catch(() => false);
+  if(prefix === 'gate'){
+    enterGameAfterAuth(loaded);
+  } else {
+    renderAuthUI(prefix);
+    acctMsg(prefix, loaded ? 'Logged in — save loaded.' : 'Logged in — no save found yet. Play a bit, then hit Save.', false);
+  }
+}
+
+async function doForgotPassword(prefix){
+  if(authBusy[prefix]) return;
+  const username = document.getElementById(`${prefix}-forgot-username`).value.trim();
+  if(!username){ acctMsg(prefix, 'Enter your username.', true); return; }
+
+  authBusy[prefix] = true; renderAuthUI(prefix);
+  const { data: email } = await sb.rpc('email_for_username', { lookup_username: username });
+  if(email){
+    await sb.auth.resetPasswordForEmail(email, { redirectTo: location.href.split('?')[0] });
+  }
+  authBusy[prefix] = false; renderAuthUI(prefix);
+  /* Same message regardless of whether the account exists, to avoid username enumeration. */
+  acctMsg(prefix, 'If that account exists, a password reset link has been sent to its email.', false);
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  authSetView('acct', 'login');
+}
+
+async function manualSaveGame(){
+  acctMsg('acct', 'Saving...', false);
+  try{
+    await saveGame();
+    acctMsg('acct', 'Saved!', false);
+  }catch(e){
+    acctMsg('acct', 'Save failed: ' + e.message, true);
+  }
+}
+
+async function manualLoadGame(){
+  acctMsg('acct', 'Loading...', false);
+  try{
+    const loaded = await loadGame();
+    acctMsg('acct', loaded ? 'Loaded!' : 'No save found yet.', !loaded);
+    render();
+  }catch(e){
+    acctMsg('acct', 'Load failed: ' + e.message, true);
+  }
+}
+
+if(sb){
+  sb.auth.onAuthStateChange((event, session) => {
+    if(event === 'PASSWORD_RECOVERY'){
+      const newPassword = prompt('Enter a new password:');
+      if(newPassword){
+        sb.auth.updateUser({ password: newPassword }).then(({error})=>{
+          alert(error ? ('Password update failed: '+error.message) : 'Password updated — you are now logged in.');
+        });
+      }
+      return;
+    }
+    acctSession = session || null;
+    acctUsername = session ? (session.user.user_metadata && session.user.user_metadata.username) : null;
+    renderAccountTab();
+
+    /* INITIAL_SESSION fires once, shortly after the client is created, with
+       whatever session Supabase already had persisted (a returning player
+       who never logged out). If the gate is still up at that point, either
+       auto-continue them straight into their save, or — if there's no
+       existing session — just let the gate's login/register/guest options
+       sit there as already rendered. Later SIGNED_IN events (an explicit
+       login from the gate or drawer) are handled by doLogin() itself, not
+       here, so a real login isn't double-processed. */
+    if(gateOpen && event === 'INITIAL_SESSION'){
+      if(session){
+        loadGame().catch(() => false).then(loaded => enterGameAfterAuth(loaded));
+      } else {
+        renderGate();
+      }
+    }
+  });
+}
+
+/* ---------------- Save / load (serialize/hydrate around the icon-function gotcha) ---------------- */
+function allItemDefs(){
+  const monsterLoot = monsters.map(m => m.loot).filter(Boolean);
+  const commanderLoot = gnomeCommander.loot ? [gnomeCommander.loot] : [];
+  return [...healItems, ...shopBuyItems, ...monsterLoot, ...commanderLoot,
+          ...rareDrops, ...Object.values(starterGear)];
+}
+function itemByName(name){
+  return allItemDefs().find(d => d.name === name) || null;
+}
+function serializeItem(item){ return item ? item.name : null; }
+function hydrateItem(name){
+  if(!name) return null;
+  const def = itemByName(name);
+  if(!def){ console.warn(`Save referenced unknown item "${name}" — dropped.`); return null; }
+  return { ...def };
+}
+
+function serializeState(){
+  const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
+          lastRegenAt, level, xp, xpToLevel, stats, statPoints, location,
+          questTinesGiven, questAccepted, questComplete, quest2Accepted,
+          commanderDefeated, quest2Complete } = state;
+  return {
+    hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
+    lastRegenAt, level, xp, xpToLevel, stats, statPoints, location,
+    questTinesGiven, questAccepted, questComplete, quest2Accepted,
+    commanderDefeated, quest2Complete,
+    equipment: Object.fromEntries(
+      SLOT_ORDER.map(slot => [slot, serializeItem(state.equipment[slot])])
+    ),
+    inventory: state.inventory.map(serializeItem),
+  };
+}
+
+function hydrateState(saved){
+  Object.assign(state, saved);
+  state.equipment = {};
+  SLOT_ORDER.forEach(slot => { state.equipment[slot] = hydrateItem(saved.equipment && saved.equipment[slot]); });
+  state.inventory = (saved.inventory || []).map(hydrateItem).filter(Boolean);
+  state.inCombat = false; state.monster = null;
+  state.showVictory = false; state.victoryMonster = null;
+  recomputeMaxStats();
+}
+
+async function saveGame(){
+  if(!sb) throw new Error('Accounts are unavailable — the login service failed to load.');
+  const { data: { user } } = await sb.auth.getUser();
+  if(!user) throw new Error('Not signed in.');
+  const { error } = await sb.from('saves').upsert({ user_id: user.id, state: serializeState() });
+  if(error) throw error;
+}
+async function loadGame(){
+  if(!sb) return false;
+  const { data: { user } } = await sb.auth.getUser();
+  if(!user) return false;
+  const { data, error } = await sb.from('saves').select('state').eq('user_id', user.id).maybeSingle();
+  if(error) throw error;
+  if(data && data.state){ hydrateState(data.state); render(); return true; }
+  return false;
+}
+
+/* Autosave at the game's natural checkpoints. Fire-and-forget — a failed
+   autosave logs to the console rather than interrupting play; the player
+   can still hit Save manually from the Account drawer. */
+function autosave(){
+  if(!acctSession) return;
+  saveGame().catch(e => console.warn('Autosave failed:', e.message));
+}
+
+/* ---------------- Drawers (Inventory / Map / Character / Quests / Account) ---------------- */
+const DRAWER_IDS = { inv:'inv-drawer', map:'map-drawer', character:'character-drawer', quests:'quest-log-drawer', account:'account-drawer' };
+
+function toggleDrawer(which){
+  const targetId = DRAWER_IDS[which];
+  const wasOpen = document.getElementById(targetId).classList.contains('open');
+  closeAllDrawers();
+  if(!wasOpen){
+    openDrawer(targetId);
+    if(which==='character') renderCharacterDrawer();
+    if(which==='quests') renderQuestLogDrawer();
+    if(which==='account') renderAccountTab();
+  }
+}
+function openDrawer(id){
+  document.getElementById(id).classList.add('open');
+  document.getElementById('backdrop').classList.add('show');
+}
+function closeAllDrawers(){
+  Object.values(DRAWER_IDS).forEach(id => document.getElementById(id).classList.remove('open'));
+  document.getElementById('backdrop').classList.remove('show');
+}
+
+function useItem(idx){
+  const item = state.inventory[idx];
+  if(item.type==='hp'){
+    state.hp = Math.min(state.maxHp, state.hp+item.value);
+    log(`You eat ${item.name}. Solid choice. (+${item.value} HP)`);
+  } else if(item.type==='mp'){
+    state.mp = Math.min(state.maxMp, state.mp+item.value);
+    log(`You puzzle through ${item.name}. (+${item.value} MP)`);
+  } else if(item.type==='luck'){
+    state.hp = Math.min(state.maxHp, state.hp+item.hpValue);
+    state.mp = Math.min(state.maxMp, state.mp+item.mpValue);
+    log(`You tuck ${item.name} behind your ear for luck. (+${item.hpValue} HP, +${item.mpValue} MP)`);
+  }
+  state.inventory.splice(idx,1);
+  render();
+}
+
+/* ---------------- Equipment & stats ---------------- */
+/* Effective stats = base stats (raised by spending level-up points) plus
+   whatever bonuses are on currently-equipped gear. Nothing here mutates
+   state.stats itself — equipment bonuses are only ever additive on top. */
+function getEffectiveStats(){
+  const eff = { beef: state.stats.beef, zip: state.stats.zip, grit: state.stats.grit, hoodoo: state.stats.hoodoo };
+  Object.values(state.equipment).forEach(item=>{
+    if(item && item.bonus){
+      Object.keys(item.bonus).forEach(k=>{ eff[k] = (eff[k]||0) + item.bonus[k]; });
+    }
+  });
+  return eff;
+}
+
+/* Grit/Hoodoo (base + equipment) push max HP/MP above the level-derived
+   floor. Call this after anything that changes stats or equipment. */
+function recomputeMaxStats(){
+  const eff = getEffectiveStats();
+  state.maxHp = state.baseMaxHp + eff.grit*3;
+  state.maxMp = state.baseMaxMp + eff.hoodoo*2;
+  state.hp = Math.min(state.hp, state.maxHp);
+  state.mp = Math.min(state.mp, state.maxMp);
+}
+
+function spendStatPoint(stat){
+  if(state.statPoints<=0 || !STAT_LABELS[stat]) return;
+  state.stats[stat]++;
+  state.statPoints--;
+  recomputeMaxStats();
+  clearLog();
+  log(`You put your training to use. ${STAT_LABELS[stat]} increases!`);
+  render();
+}
+
+function equipItem(idx){
+  const item = state.inventory[idx];
+  if(!item || item.type!=='equip') return;
+  const slot = item.slot;
+  const prev = state.equipment[slot];
+  state.equipment[slot] = item;
+  state.inventory.splice(idx,1);
+  if(prev) state.inventory.push(prev);
+  recomputeMaxStats();
+  clearLog();
+  log(`You equip ${item.name}.`);
+  render();
+}
+
+function unequipItem(slot){
+  const item = state.equipment[slot];
+  if(!item) return;
+  state.equipment[slot] = null;
+  state.inventory.push(item);
+  recomputeMaxStats();
+  clearLog();
+  log(`You unequip ${item.name}.`);
+  render();
+}
+
+/* ---------------- Core loop ---------------- */
+function goAdventuring(){
+  if(state.inCombat || (state.location !== 'commons' && state.location !== 'sewers')) return;
+  regenBiscuits();
+  if(!devMode && state.adventures<=0){
+    clearLog();
+    log(`You're out of Biscuits, and spite alone won't carry you any further. The next batch is still in the oven — check back in ${formatMs(msUntilNextBiscuit())}.`);
+    render();
+    return;
+  }
+  if(!devMode) state.adventures--;
+  clearLog();
+  state.showVictory = false;
+  state.victoryMonster = null;
+
+  const commanderHunt = state.location==='commons' && state.quest2Accepted && !state.quest2Complete && !state.commanderDefeated;
+  if(commanderHunt && Math.random() < COMMANDER_SPAWN_CHANCE){
+    startCombat(gnomeCommander);
+    render();
+    return;
+  }
+
+  const roll = Math.random();
+  if(roll < 0.5){
+    startCombat();
+  } else if(roll < 0.75){
+    const evt = hazardEvents[Math.floor(Math.random()*hazardEvents.length)];
+    const dmg = randInt(evt.dmg[0], evt.dmg[1]);
+    state.hp = Math.max(0, state.hp-dmg);
+    log(`${evt.text} (-${dmg} HP)`, 'damage');
+    checkDefeat();
+  } else {
+    const line = noncombatEvents[Math.floor(Math.random()*noncombatEvents.length)];
+    log(line);
+  }
+  render();
+}
+
+function startCombat(forceTemplate){
+  const pool = monsters.filter(m => m.zone === state.location);
+  const template = forceTemplate || pool[Math.floor(Math.random()*pool.length)];
+  state.monster = { ...template, maxHp: template.hp };
+  state.inCombat = true;
+  log(template.rare
+    ? "The gnome commander himself marches out to meet you. This looks serious."
+    : `A wild ${state.monster.name} shuffles into view!`);
+}
+
+function playerAttack(){
+  if(!state.inCombat) return;
+  const eff = getEffectiveStats();
+  const dmg = randInt(3,7) + (state.level-1) + eff.beef;
+  state.monster.hp = Math.max(0, state.monster.hp-dmg);
+  log(`You strike ${state.monster.name} for ${dmg} damage.`);
+
+  if(state.monster.hp<=0){
+    winCombat();
+    return;
+  }
+
+  const dodgeChance = Math.min(0.5, eff.zip*0.03);
+  if(Math.random() < dodgeChance){
+    log(`You dodge ${state.monster.name}'s counterattack completely.`);
+  } else {
+    const mdmg = randInt(state.monster.atkMin, state.monster.atkMax);
+    state.hp = Math.max(0, state.hp-mdmg);
+    log(`${capitalize(state.monster.name)} retaliates for ${mdmg} damage.`, 'damage');
+  }
+  checkDefeat();
+  render();
+}
+
+function playerFlee(){
+  if(!state.inCombat) return;
+  const eff = getEffectiveStats();
+  const fleeChance = Math.min(0.9, 0.65 + eff.zip*0.02);
+  if(Math.random() < fleeChance){
+    log(`You flee from ${state.monster.name}, dignity mostly intact.`);
+    endCombat();
+  } else {
+    const mdmg = randInt(state.monster.atkMin, state.monster.atkMax);
+    state.hp = Math.max(0, state.hp-mdmg);
+    log(`You fail to escape. ${capitalize(state.monster.name)} gets a free hit for ${mdmg}.`, 'damage');
+    checkDefeat();
+  }
+  render();
+}
+
+function winCombat(){
+  const defeatedName = state.monster.name;
+  const xpGain = state.monster.xp;
+  const wasCommander = !!state.monster.rare;
+  const isNeededQuestItem = state.monster.loot && state.monster.loot.key==='rakeTine' && state.questAccepted && !state.questComplete;
+  const lootRoll = state.monster.loot && (isNeededQuestItem || Math.random()<0.7) ? state.monster.loot : null;
+  const rareRoll = Math.random()<RARE_DROP_CHANCE ? rareDrops[Math.floor(Math.random()*rareDrops.length)] : null;
+
+  state.victoryMonster = { art: state.monster.art, name: state.monster.name };
+  state.showVictory = true;
+
+  clearLog();
+  if(wasCommander){
+    state.commanderDefeated = true;
+    log(`You defeat ${defeatedName}! The rest of his gnomes scatter into the hedges. (+${xpGain} XP)`);
+  } else {
+    log(`You defeat ${defeatedName}! (+${xpGain} XP)`);
+  }
+  state.xp += xpGain;
+  if(lootRoll){
+    state.inventory.push({...lootRoll});
+    log(`You loot: ${lootRoll.name}.`);
+  }
+  if(rareRoll){
+    state.inventory.push({...rareRoll});
+    log(`Wait — something rare. You find: ${rareRoll.name}!`);
+  }
+  checkLevelUp();
+  endCombat();
+  render();
+}
+
+function endCombat(){
+  state.inCombat = false;
+  state.monster = null;
+}
+
+function checkDefeat(){
+  if(state.hp<=0){
+    clearLog();
+    log(devMode
+      ? "Everything goes dark. You wake up outside the Inn, patched up but humbled. (dev mode — no Biscuit penalty)"
+      : "Everything goes dark. You wake up outside the Inn, patched up but humbled. (-2 Biscuits for the walk of shame)", 'damage');
+    state.hp = Math.floor(state.maxHp*0.5);
+    if(!devMode) state.adventures = Math.max(0, state.adventures-2);
+    state.location = 'town';
+    state.showVictory = false;
+    state.victoryMonster = null;
+    endCombat();
+    autosave();
+  }
+}
+
+function checkLevelUp(){
+  if(state.xp>=state.xpToLevel){
+    state.xp -= state.xpToLevel;
+    state.xpToLevel = Math.floor(state.xpToLevel*1.5);
+    state.level++;
+    state.baseMaxHp += 6;
+    state.baseMaxMp += 2;
+    state.statPoints++;
+    recomputeMaxStats();
+    state.hp = state.maxHp;
+    state.mp = state.maxMp;
+    log(`You feel sturdier. You are now level ${state.level}! (+1 stat point to spend — check your Character page)`);
+    autosave();
+  }
+}
+
+function restAtInn(){
+  if(state.inCombat || state.location !== 'town') return;
+  regenBiscuits();
+  clearLog();
+  if(!devMode && state.adventures<=0){
+    log(`The innkeeper eyes your empty pockets. "No Biscuits, no bed." Next one's ready in ${formatMs(msUntilNextBiscuit())}.`);
+    render();
+    return;
+  }
+  if(!devMode) state.adventures--;
+  state.hp = state.maxHp;
+  state.mp = state.maxMp;
+  state.showVictory = false;
+  state.victoryMonster = null;
+  log("You duck into the Inn and rest up. You feel merely acceptable again. (-1 Biscuit)");
+  render();
+}
+
+function travelTo(dest){
+  if(state.inCombat) return;
+  if(dest === state.location){ closeAllDrawers(); return; }
+  if(dest === 'sewers' && !state.quest2Complete) return;
+  if(dest === 'town'){
+    const wasGaffer = state.location === 'gaffer';
+    state.location = 'town';
+    state.showVictory = false;
+    state.victoryMonster = null;
+    clearLog();
+    log(wasGaffer ? "You step back out into Gladstone Hollow." : "You head back into Gladstone Hollow, dirt-streaked and modestly victorious.");
+  } else if(dest === 'commons'){
+    state.location = 'commons';
+    state.showVictory = false;
+    state.victoryMonster = null;
+    clearLog();
+    log("You leave Gladstone Hollow behind and head into the Overgrown Commons.");
+  } else if(dest === 'sewers'){
+    state.location = 'sewers';
+    state.showVictory = false;
+    state.victoryMonster = null;
+    clearLog();
+    log("You climb down into the Dank Sewers. The air is thick, the walls are slick, and something skitters just out of sight.");
+  }
+  closeAllDrawers();
+  render();
+}
+
+function enterGafferHouse(){
+  if(state.inCombat || state.location !== 'town') return;
+  state.location = 'gaffer';
+  clearLog();
+  if(state.questComplete){
+    log("You step inside. Gaffer Thistlewick is out back, happily raking away.");
+  } else if(state.questAccepted){
+    log("You step inside. Gaffer Thistlewick glances up from his half-finished rake.");
+  } else {
+    log("You step inside. Gaffer Thistlewick looks up hopefully — he's got a favor to ask.");
+  }
+  render();
+}
+
+function acceptQuest(){
+  if(state.location !== 'gaffer' || state.questAccepted || state.questComplete) return;
+  state.questAccepted = true;
+  clearLog();
+  log("You accept Gaffer Thistlewick's quest: gather 3 rake tines from the gnomes in the Overgrown Commons.");
+  render();
+}
+
+function leaveGafferHouse(){
+  if(state.inCombat || state.location !== 'gaffer') return;
+  state.location = 'town';
+  clearLog();
+  render();
+}
+
+function enterShop(){
+  if(state.inCombat || state.location !== 'town') return;
+  state.location = 'shop';
+  clearLog();
+  log("You step into the shop. The shopkeeper eyes your pack with professional interest.");
+  render();
+}
+
+function leaveShop(){
+  if(state.inCombat || state.location !== 'shop') return;
+  state.location = 'town';
+  clearLog();
+  render();
+}
+
+function enterCasino(){
+  if(state.inCombat || state.location !== 'town') return;
+  state.location = 'casino';
+  clearLog();
+  log("You step into the Casino. The Croupier straightens a stack of chips and gives you a knowing look.");
+  render();
+}
+
+function leaveCasino(){
+  if(state.inCombat || state.location !== 'casino') return;
+  state.location = 'town';
+  clearLog();
+  render();
+}
+
+function gambleCasino(amount){
+  if(state.location !== 'casino' || state.popTabs < amount) return;
+  state.popTabs -= amount;
+  clearLog();
+  if(Math.random() < CASINO_WIN_CHANCE){
+    const winnings = amount * 2;
+    state.popTabs += winnings;
+    log(`${casinoWinLines[Math.floor(Math.random()*casinoWinLines.length)]} (+${winnings} Pop Tabs)`);
+  } else {
+    log(`${casinoLoseLines[Math.floor(Math.random()*casinoLoseLines.length)]} (-${amount} Pop Tabs)`);
+  }
+  render();
+}
+
+function enterGuild(){
+  if(state.inCombat || state.location !== 'town') return;
+  state.location = 'guild';
+  clearLog();
+  if(state.quest2Complete){
+    log("You step into the guild hall. The guildmaster nods at you approvingly.");
+  } else if(state.quest2Accepted){
+    log(state.commanderDefeated
+      ? "You step into the guild hall, commander's defeat fresh in your memory."
+      : "You step into the guild hall. The guildmaster asks if you've found him yet.");
+  } else if(state.questComplete){
+    log("You step into the guild hall. The guildmaster looks up with sudden interest.");
+  } else {
+    log("You step into the guild hall. The guildmaster barely glances up.");
+  }
+  render();
+}
+
+function leaveGuild(){
+  if(state.inCombat || state.location !== 'guild') return;
+  state.location = 'town';
+  clearLog();
+  render();
+}
+
+function acceptQuest2(){
+  if(state.location !== 'guild' || !state.questComplete || state.quest2Accepted || state.quest2Complete) return;
+  state.quest2Accepted = true;
+  clearLog();
+  log("You accept the guild's quest: track down and defeat the gnome commander in the Overgrown Commons. He's rare — you'll have to keep adventuring and hope he shows himself.");
+  render();
+}
+
+function reportCommanderKill(){
+  if(state.location !== 'guild' || !state.quest2Accepted || state.quest2Complete || !state.commanderDefeated) return;
+  state.quest2Complete = true;
+  state.popTabs += 30;
+  state.xp += 50;
+  clearLog();
+  log("You describe the fight in more detail than the guildmaster asked for. He hands over your reward regardless. (+30 Pop Tabs, +50 XP)");
+  log("As you turn to leave, he adds: \"...and since you're clearly not afraid of gnomes, the sewers under the square are yours to deal with too, if you're feeling brave.\"");
+  checkLevelUp();
+  render();
+  autosave();
+}
+
+function sellItemByName(name){
+  if(state.location !== 'shop') return;
+  const idxList = [];
+  state.inventory.forEach((it,i)=>{ if(it.name===name && it.type==='junk' && it.sell) idxList.push(i); });
+  if(idxList.length===0) return;
+  const sellPrice = state.inventory[idxList[0]].sell;
+  const count = idxList.length;
+  const earned = sellPrice * count;
+  for(let n=idxList.length-1; n>=0; n--){ state.inventory.splice(idxList[n],1); }
+  state.popTabs += earned;
+  clearLog();
+  log(`You sell ${count} × ${name} for ${earned} Pop Tabs.`);
+  render();
+}
+
+function buyItemByName(name){
+  if(state.location !== 'shop') return;
+  const def = shopBuyItems.find(i=>i.name===name);
+  if(!def || state.popTabs < def.price) return;
+  state.popTabs -= def.price;
+  state.inventory.push({...def});
+  clearLog();
+  log(`You buy ${def.name} for ${def.price} Pop Tabs.`);
+  render();
+}
+
+function giveRakeTines(){
+  if(state.location !== 'gaffer' || !state.questAccepted || state.questComplete) return;
+  const tineIdx = [];
+  state.inventory.forEach((it, i)=>{ if(it.key==='rakeTine') tineIdx.push(i); });
+  if(tineIdx.length===0) return;
+
+  const stillNeeded = QUEST_TINES_NEEDED - state.questTinesGiven;
+  const giveCount = Math.min(tineIdx.length, stillNeeded);
+  for(let n=0; n<giveCount; n++){
+    const idx = tineIdx[tineIdx.length-1-n];
+    state.inventory.splice(idx,1);
+  }
+  state.questTinesGiven += giveCount;
+
+  clearLog();
+  log(`You hand over ${giveCount} rake tine${giveCount>1?'s':''}. Gaffer Thistlewick counts them twice, then a third time for luck.`);
+
+  if(state.questTinesGiven >= QUEST_TINES_NEEDED){
+    state.questComplete = true;
+    state.popTabs += 15;
+    state.xp += 25;
+    log("The rake is whole again! Gaffer Thistlewick hands you 15 Pop Tabs and thanks you properly. (+15 Pop Tabs, +25 XP)");
+    checkLevelUp();
+    autosave();
+  }
+  render();
+}
+
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+/* ---------------- Biscuit regeneration ---------------- */
+const BISCUIT_MAX = 200;
+const BISCUIT_REGEN_MS = 60 * 1000; /* one new Biscuit every minute */
+
+function regenBiscuits(){
+  if(state.adventures >= BISCUIT_MAX){
+    state.lastRegenAt = Date.now();
+    return;
+  }
+  const elapsed = Date.now() - state.lastRegenAt;
+  const gained = Math.floor(elapsed / BISCUIT_REGEN_MS);
+  if(gained > 0){
+    state.adventures = Math.min(BISCUIT_MAX, state.adventures + gained);
+    state.lastRegenAt += gained * BISCUIT_REGEN_MS;
+  }
+}
+
+function msUntilNextBiscuit(){
+  if(state.adventures >= BISCUIT_MAX) return 0;
+  return Math.max(0, BISCUIT_REGEN_MS - (Date.now() - state.lastRegenAt));
+}
+
+function formatMs(ms){
+  const totalSec = Math.ceil(ms/1000);
+  const m = Math.floor(totalSec/60);
+  const s = totalSec % 60;
+  return m+':'+String(s).padStart(2,'0');
+}
+
+function updateBiscuitDisplay(){
+  document.getElementById('biscuit-stat').classList.toggle('dev-active', devMode);
+  if(devMode){
+    state.adventures = BISCUIT_MAX;
+    state.lastRegenAt = Date.now();
+    document.getElementById('adv-text').textContent = '∞';
+    document.getElementById('adv-btn').disabled = state.inCombat;
+    document.getElementById('biscuit-bar').style.width = '100%';
+    return;
+  }
+  regenBiscuits();
+  document.getElementById('adv-text').textContent = state.adventures;
+  document.getElementById('adv-btn').disabled = state.inCombat;
+  const bar = document.getElementById('biscuit-bar');
+  if(state.adventures >= BISCUIT_MAX){
+    bar.style.width = '100%';
+  } else {
+    const progress = 1 - (msUntilNextBiscuit() / BISCUIT_REGEN_MS);
+    bar.style.width = (progress*100)+'%';
+  }
+}
+setInterval(updateBiscuitDisplay, 1000);
+
+/* ---------------- Town scene click handling (delegated, works on dynamically-inserted SVG) ---------------- */
+document.getElementById('scene-art').addEventListener('click', function(e){
+  const el = e.target.closest('[data-action]');
+  if(!el) return;
+  const action = el.getAttribute('data-action');
+  if(action === 'gaffer') enterGafferHouse();
+  else if(action === 'rest') restAtInn();
+  else if(action === 'shop') enterShop();
+  else if(action === 'guild') enterGuild();
+  else if(action === 'casino') enterCasino();
+});
+
+/* Seed a brand-new run: starter gear (equipped) and a couple of starter
+   items, then the opening log line. Called for a guest, for a freshly
+   registered/logged-in account with no save yet, and (in degraded mode,
+   no Supabase) unconditionally at boot. */
+function startFreshGame(){
+  Object.keys(starterGear).forEach(slot => { state.equipment[slot] = {...starterGear[slot]}; });
+  recomputeMaxStats();
+  state.inventory.push({...healItems[0]});
+  clearLog();
+  log("You arrive in Gladstone Hollow. A cottage on the square has a rather urgent-looking flag over it.");
+  if(devMode) log("Dev mode ON (via ?dev=1) — Biscuits won't run out.");
+  render();
+}
+
+/* ---------------- Boot ---------------- */
+if(sb){
+  /* Show the gate immediately with a login/register form (no need to wait
+     on the network) — if a persisted session turns up via the
+     INITIAL_SESSION event above, it'll auto-continue past this. */
+  renderGate();
+} else {
+  /* No login service available this session — there's nothing to gate on,
+     so skip straight to play. */
+  closeGate();
+  startFreshGame();
+}
+</script>
+</body>
+</html>
