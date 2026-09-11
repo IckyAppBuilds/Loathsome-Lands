@@ -18,6 +18,22 @@ const monsters = [
     art: artGiantSewerRat, loot:{name:"a rat-gnawed pipe fitting", desc:"Chewed clean through solid metal. Concerning.", type:"junk", sell:4, icon:iconPipeFitting} },
   { name:"three rats in a trenchcoat, unconvincingly", hp:20, atkMin:3, atkMax:5, xp:8, zone:"sewers",
     art: artRatTrenchcoat, loot:{name:"a comically oversized coat button", desc:"None of the three rats will admit to owning this.", type:"junk", sell:3, icon:iconCoatButton} },
+  { name:"a wind-up quarry drone, badly wound", hp:20, atkMin:3, atkMax:6, xp:10, zone:"quarry",
+    art: artQuarryDrone, loot:{name:"a stripped brass gear", desc:"Still spins if you flick it. Mostly for fun now.", type:"junk", sell:4, icon:iconGear} },
+  { name:"a gnome surveyor squinting at an upside-down map", hp:18, atkMin:3, atkMax:5, xp:9, zone:"quarry",
+    art: artGnomeSurveyor, loot:{name:"a crumpled survey map", desc:"Confidently wrong about where you are.", type:"junk", sell:3, icon:iconSurveyMap} },
+  { name:"a pickaxe golem, held together by spite", hp:26, atkMin:4, atkMax:7, xp:13, zone:"quarry",
+    art: artPickaxeGolem, loot:{name:"a chipped pickaxe head", desc:"Has seen better decades.", type:"junk", sell:5, icon:iconPickaxeHead} },
+  { name:"a rock-crusted quarry rat, huge for some reason", hp:22, atkMin:3, atkMax:6, xp:11, zone:"quarry",
+    art: artQuarryRat, loot:{name:"a fistful of ore-flecked grit", desc:"Somewhere between dirt and treasure. Mostly dirt.", type:"junk", sell:4, icon:iconOreGrit} },
+  { name:"a vault wisp, humming with old magic", hp:28, atkMin:4, atkMax:7, xp:15, zone:"vault",
+    art: artVaultWisp, loot:{name:"a sliver of captured light", desc:"Warm to the touch. Slightly judgmental.", type:"junk", sell:6, icon:iconCapturedLight} },
+  { name:"a stone sentinel, one eye still lit", hp:34, atkMin:5, atkMax:8, xp:18, zone:"vault",
+    art: artStoneSentinel, loot:{name:"a fractured sentinel eye", desc:"Stopped watching. Eventually.", type:"junk", sell:7, icon:iconSentinelEye} },
+  { name:"a hoard-rat, absolutely covered in gold flecks", hp:26, atkMin:4, atkMax:7, xp:14, zone:"vault",
+    art: artHoardRat, loot:{name:"a gold-dusted whisker", desc:"Rich by rat standards.", type:"junk", sell:6, icon:iconGoldWhisker} },
+  { name:"an animated suit of ceremonial armor, empty inside", hp:36, atkMin:5, atkMax:9, xp:20, zone:"vault",
+    art: artCeremonialArmor, loot:{name:"a dented ceremonial gauntlet", desc:"Once belonged to somebody important, probably.", type:"junk", sell:8, icon:iconCeremonialGauntlet} },
 ];
 
 const gnomeCommander = {
@@ -25,6 +41,16 @@ const gnomeCommander = {
   art: artGnomeCommander, loot:null
 };
 const COMMANDER_SPAWN_CHANCE = 0.02;
+
+/* Rare hunt target for the Tinker's quest, "Gears in the Dark" — spawns in
+   the Dank Sewers while state.quest4Accepted is true and the quest isn't
+   complete yet, same mechanic as gnomeCommander above (see
+   diggerBotHunt in goAdventuring()). */
+const diggerBot = {
+  name:"a runaway digger-bot, venting steam", hp:40, atkMin:4, atkMax:8, xp:22, rare:true, zone:"sewers",
+  art: artDiggerBot, loot:null
+};
+const DIGGERBOT_SPAWN_CHANCE = 0.02;
 
 const rareDrops = [
   { name:"a suspiciously ornate gnome figurine", desc:"You could swear it's watching you.", type:"junk", sell:8, icon:iconFigurine },
@@ -56,9 +82,7 @@ const healItems = [
 /* ---------------- Equipment ---------------- */
 /* Starter gear — equipped automatically at the start of the game so the
    Character page's 5 equip slots (head/chest/legs/boots/weapon) aren't
-   just empty on day one. No stat bonuses; purely flavor. Sellable for a
-   token 1 Pop Tab once unequipped, so a player who upgrades everything
-   isn't stuck holding useless gear forever. */
+   just empty on day one. No stat bonuses; purely flavor. */
 const starterGear = {
   weapon: { name:"a bent kitchen fork", desc:"Not built for combat. Works anyway, sort of.", type:"equip", slot:"weapon", bonus:{}, sell:1, icon: iconFork },
   head:   { name:"a floppy adventuring cap", desc:"Keeps the sun out of your eyes, mostly.", type:"equip", slot:"head", bonus:{}, sell:1, icon: iconCap },
@@ -119,6 +143,31 @@ const potionIngredients = [
   { monsterName:"a rat wearing a bottlecap as a helmet",
     item:{ name:"a whisker plucked from a suspiciously large rat", desc:"It practically vibrates with potency.", type:"quest", key:"potionWhisker", icon:iconPotionWhisker } },
 ];
+
+/* ---------------- Vein ingredients (the Tinker's quest, "The Last Vein") ---------------- */
+/* Same pattern as potionIngredients above — while state.quest5Accepted is
+   true and the quest isn't complete, defeating the matching monster
+   force-drops the ingredient instead of its normal loot (see winCombat()).
+   Two ingredients come from the Clockwork Quarry, two from monsters in the
+   Dank Sewers that quest 3 doesn't already use (the enormous sewer rat and
+   the trio in a trenchcoat), so the two gather quests never compete over
+   the same kill. */
+const veinIngredients = [
+  { monsterName:"a wind-up quarry drone, badly wound",
+    item:{ name:"a still-ticking gear core", desc:"Keeps perfect time for a reason nobody can explain.", type:"quest", key:"veinGearCore", icon:iconVeinGearCore } },
+  { monsterName:"a pickaxe golem, held together by spite",
+    item:{ name:"a vein-streaked ore chunk", desc:"Heavier than it looks. Warmer too.", type:"quest", key:"veinOreChunk", icon:iconVeinOreChunk } },
+  { monsterName:"a positively enormous sewer rat",
+    item:{ name:"a fist-sized raw gemstone", desc:"How a sewer rat came by this is a question best not asked.", type:"quest", key:"veinGemstone", icon:iconVeinGemstone } },
+  { monsterName:"three rats in a trenchcoat, unconvincingly",
+    item:{ name:"a tangle of copper wiring", desc:"All three rats insist it was already like that.", type:"quest", key:"veinWiring", icon:iconVeinWiring } },
+];
+
+/* ---------------- Class titles (level-10 Guild capstone, "The Adventurer's Trial") ---------------- */
+/* Awarded by claimClassPath() in game.js based on whichever stat the player
+   has invested the most points in (ties broken in this key order). Purely
+   a title + a small stat nudge — see claimClassPath() for the mechanic. */
+const CLASS_TITLES = { beef:'Brawler', zip:'Rogue', grit:'Bulwark', hoodoo:'Hoodoo Adept' };
 
 /* ---------------- Casino ---------------- */
 const CASINO_WIN_CHANCE = 0.45; /* the house always wins, on average */
