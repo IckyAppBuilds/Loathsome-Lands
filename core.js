@@ -39,16 +39,15 @@ let gateOpen = true;
 const QUEST_TINES_NEEDED = 3;
 
 /* Dev mode: unlimited Biscuits, for testing without the energy economy
-   getting in the way. Auto-enables via ?dev=1 in the URL, or toggle at
-   runtime by clicking the Biscuits box in the header. Not player-facing —
-   purely a development convenience. */
+   getting in the way. Auto-enables via ?dev=1 in the URL, or by signing
+   in as the designated dev account (see isDevAccount() in account.js).
+   Not player-facing — purely a development convenience. There used to
+   also be a click-to-toggle on the header Biscuits box, but that put an
+   unlimited-Biscuits cheat one click away for any player; removed in
+   favor of the dev account's own tools (Account drawer → Biscuits, see
+   account.js) for anyone who actually needs to grant themselves
+   Biscuits while testing. */
 let devMode = new URLSearchParams(location.search).has('dev');
-
-function toggleDevMode(){
-  devMode = !devMode;
-  log(devMode ? "Dev mode ON — Biscuits won't run out." : "Dev mode off — Biscuits behave normally again.");
-  render();
-}
 
 const state = {
   hp: 30, maxHp: 30,
