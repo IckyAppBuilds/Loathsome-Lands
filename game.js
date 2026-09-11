@@ -1,6 +1,7 @@
 /* ---------------- Core loop ---------------- */
+const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault'];
 function goAdventuring(){
-  if(state.inCombat || (state.location !== 'commons' && state.location !== 'sewers')) return;
+  if(state.inCombat || !ADVENTURE_ZONES.includes(state.location)) return;
   regenBiscuits();
   if(!devMode && state.adventures<=0){
     clearLog();
@@ -16,6 +17,13 @@ function goAdventuring(){
   const commanderHunt = state.location==='commons' && state.quest2Accepted && !state.quest2Complete && !state.commanderDefeated;
   if(commanderHunt && Math.random() < COMMANDER_SPAWN_CHANCE){
     startCombat(gnomeCommander);
+    render();
+    return;
+  }
+
+  const diggerBotHunt = state.location==='sewers' && state.quest4Accepted && !state.quest4Complete && !state.quest4RareDefeated;
+  if(diggerBotHunt && Math.random() < DIGGERBOT_SPAWN_CHANCE){
+    startCombat(diggerBot);
     render();
     return;
   }
@@ -49,7 +57,9 @@ function startCombat(forceTemplate){
   state.inCombat = true;
   combatSubView = 'main';
   log(template.rare
-    ? "The gnome commander himself marches out to meet you. This looks serious."
+    ? (template === gnomeCommander
+        ? "The gnome commander himself marches out to meet you. This looks serious."
+        : `${capitalize(state.monster.name)} lurches into view. This looks serious.`)
     : `A wild ${state.monster.name} shuffles into view!`);
 }
 
@@ -160,7 +170,8 @@ function playerFlee(){
 function winCombat(){
   const defeatedName = state.monster.name;
   const xpGain = state.monster.xp;
-  const wasCommander = !!state.monster.rare;
+  const wasCommander = !!state.monster.rare && state.monster.name === gnomeCommander.name;
+  const wasDiggerBot = !!state.monster.rare && state.monster.name === diggerBot.name;
   /* Rake tines are a quest item (key:'rakeTine') and the feral lawn gnome's
      ONLY loot entry — so without this gate they'd drop via the generic 70%
      roll below even before the quest is accepted or after it's turned in,
@@ -172,11 +183,16 @@ function winCombat(){
   const potionIngredient = potionIngredients.find(p => p.monsterName === state.monster.name);
   const needsPotionIngredient = potionIngredient && state.quest3Accepted && !state.quest3Complete
     && !state.inventory.some(it => it.key === potionIngredient.item.key);
+  const veinIngredient = veinIngredients.find(v => v.monsterName === state.monster.name);
+  const needsVeinIngredient = veinIngredient && state.quest5Accepted && !state.quest5Complete
+    && !state.inventory.some(it => it.key === veinIngredient.item.key);
   const lootRoll = needsPotionIngredient
     ? potionIngredient.item
-    : isRakeTineLoot
-      ? (isNeededQuestItem ? state.monster.loot : null) /* never drops outside the quest window */
-      : (state.monster.loot && Math.random()<0.7 ? state.monster.loot : null);
+    : needsVeinIngredient
+      ? veinIngredient.item
+      : isRakeTineLoot
+        ? (isNeededQuestItem ? state.monster.loot : null) /* never drops outside the quest window */
+        : (state.monster.loot && Math.random()<0.7 ? state.monster.loot : null);
   const rareRoll = Math.random()<RARE_DROP_CHANCE ? rareDrops[Math.floor(Math.random()*rareDrops.length)] : null;
 
   state.victoryMonster = { art: state.monster.art, name: state.monster.name };
@@ -186,6 +202,9 @@ function winCombat(){
   if(wasCommander){
     state.commanderDefeated = true;
     log(`You defeat ${defeatedName}! The rest of his gnomes scatter into the hedges. (+${xpGain} XP)`);
+  } else if(wasDiggerBot){
+    state.quest4RareDefeated = true;
+    log(`You defeat ${defeatedName}! It sparks once and goes still. (+${xpGain} XP)`);
   } else {
     log(`You defeat ${defeatedName}! (+${xpGain} XP)`);
   }
@@ -263,6 +282,8 @@ function travelTo(dest){
   if(state.inCombat) return;
   if(dest === state.location){ closeAllDrawers(); return; }
   if(dest === 'sewers' && !state.quest2Complete) return;
+  if(dest === 'quarry' && !state.quest4Complete) return;
+  if(dest === 'vault' && !state.quest5Complete) return;
   if(dest === 'town'){
     const wasGaffer = state.location === 'gaffer';
     state.location = 'town';
@@ -282,6 +303,18 @@ function travelTo(dest){
     state.victoryMonster = null;
     clearLog();
     log("You climb down into the Dank Sewers. The air is thick, the walls are slick, and something skitters just out of sight.");
+  } else if(dest === 'quarry'){
+    state.location = 'quarry';
+    state.showVictory = false;
+    state.victoryMonster = null;
+    clearLog();
+    log("You follow the old service tunnel down into the Clockwork Quarry. Something in the dark is still ticking.");
+  } else if(dest === 'vault'){
+    state.location = 'vault';
+    state.showVictory = false;
+    state.victoryMonster = null;
+    clearLog();
+    log("You pry open the sealed door at the bottom of the Quarry and step into the Sunless Vault. It's colder than it should be.");
   }
   closeAllDrawers();
   render();
@@ -352,6 +385,83 @@ function leaveHoodoo(){
   state.location = 'town';
   clearLog();
   render();
+}
+
+function enterTinker(){
+  if(state.inCombat || state.location !== 'town') return;
+  state.location = 'tinker';
+  clearLog();
+  if(state.quest5Complete){
+    log("You duck into the workshop. The Tinker is elbow-deep in something that used to be a clock, and waves without looking up.");
+  } else if(state.quest5Accepted){
+    log(`You duck into the workshop. The Tinker glances at your hands. (${countVeinIngredientsHeld()}/${veinIngredients.length} gathered)`);
+  } else if(state.quest4Complete){
+    log("You duck into the workshop. The Tinker's goggles are pushed up on their forehead, and they look thrilled to see you.");
+  } else if(state.quest4Accepted){
+    log(state.quest4RareDefeated
+      ? "You duck into the workshop, the digger-bot's fight still fresh in your memory."
+      : "You duck into the workshop. Gears and half-finished contraptions cover every surface.");
+  } else {
+    log("You duck into the workshop. Gears and half-finished contraptions cover every surface. Someone clears their throat behind a pile of scrap.");
+  }
+  render();
+}
+
+function leaveTinker(){
+  if(state.inCombat || state.location !== 'tinker') return;
+  state.location = 'town';
+  clearLog();
+  render();
+}
+
+function acceptQuest4(){
+  if(state.location !== 'tinker' || !state.quest2Complete || state.quest4Accepted || state.quest4Complete) return;
+  state.quest4Accepted = true;
+  clearLog();
+  log("The Tinker accepts your quest: strange clockwork parts keep turning up in the Dank Sewers. Find whatever's shedding them and put a stop to it. It won't be easy to find — you'll have to keep adventuring down there.");
+  render();
+}
+
+function reportDiggerBotKill(){
+  if(state.location !== 'tinker' || !state.quest4Accepted || state.quest4Complete || !state.quest4RareDefeated) return;
+  state.quest4Complete = true;
+  state.popTabs += 30;
+  state.xp += 45;
+  clearLog();
+  log("You describe the sparking, thrashing mess you fought in the sewers. The Tinker's eyes go wide with delight rather than concern. (+30 Pop Tabs, +45 XP)");
+  log("\"That's one of mine,\" they admit. \"Well — was. Come look at this.\" They trace its wiring back to a sealed service tunnel you'd never have noticed. \"The old Clockwork Quarry. Go on, it's yours to poke around in now.\"");
+  checkLevelUp();
+  render();
+  autosave();
+}
+
+function acceptQuest5(){
+  if(state.location !== 'tinker' || !state.quest4Complete || state.quest5Accepted || state.quest5Complete) return;
+  state.quest5Accepted = true;
+  clearLog();
+  log("The Tinker accepts your quest: bring back a couple of intact parts from the Clockwork Quarry, and a couple more from deeper in the Sewers, so they can trace where the vein of old gnome-tech actually leads.");
+  render();
+}
+
+function turnInVein(){
+  if(state.location !== 'tinker' || !state.quest5Accepted || state.quest5Complete) return;
+  if(countVeinIngredientsHeld() < veinIngredients.length) return;
+
+  veinIngredients.forEach(v=>{
+    const idx = state.inventory.findIndex(it => it.key === v.item.key);
+    if(idx !== -1) state.inventory.splice(idx,1);
+  });
+
+  state.quest5Complete = true;
+  state.popTabs += 40;
+  state.xp += 60;
+
+  clearLog();
+  log("The Tinker spreads every piece out on the workbench and goes very quiet for a long moment. (+40 Pop Tabs, +60 XP)");
+  log("\"They all trace back to the same place,\" they finally say, pointing at a hand-drawn map. \"Something sealed under the Quarry floor. I'd want someone capable checking it out. That's you, I suppose.\" The Sunless Vault is now open — check the Map.");
+  checkLevelUp();
+  render();
+  autosave();
 }
 
 function enterCasino(){
@@ -425,6 +535,38 @@ function reportCommanderKill(){
   log("You describe the fight in more detail than the guildmaster asked for. He hands over your reward regardless. (+30 Pop Tabs, +50 XP)");
   log("As you turn to leave, he adds: \"...and since you're clearly not afraid of gnomes, the sewers under the square are yours to deal with too, if you're feeling brave.\"");
   checkLevelUp();
+  render();
+  autosave();
+}
+
+/* ---------------- Level-10 Guild capstone: "The Adventurer's Trial" ---------------- */
+/* Offered by the guildmaster once quest 2 is complete and state.level>=10 —
+   see classQuestState in render(). Deliberately simple: accept, then claim
+   (no separate objective) — reaching level 10 across the earlier quests and
+   zones is the actual gate. claimClassPath() looks at whichever stat has
+   the most points sunk into it (ties broken in STAT_LABELS key order —
+   beef, zip, grit, hoodoo) and hands out a permanent title plus a small
+   +2 bonus to that stat, via CLASS_TITLES in content.js. */
+function acceptClassQuest(){
+  if(state.location !== 'guild' || !state.quest2Complete || state.level<10 || state.classQuestAccepted || state.classQuestComplete) return;
+  state.classQuestAccepted = true;
+  clearLog();
+  log("The guildmaster looks you over — really looks, this time. \"You've come further than most. There's a Trial for adventurers who reach this far: the Guild puts a name to what you've become. Say the word when you're ready to hear it.\"");
+  render();
+}
+
+function claimClassPath(){
+  if(state.location !== 'guild' || !state.classQuestAccepted || state.classQuestComplete) return;
+  const dominant = Object.keys(STAT_LABELS).reduce((best, key) =>
+    state.stats[key] > state.stats[best] ? key : best, Object.keys(STAT_LABELS)[0]);
+  state.stats[dominant] += 2;
+  state.classTitle = CLASS_TITLES[dominant];
+  recomputeMaxStats();
+  state.classQuestComplete = true;
+
+  clearLog();
+  log(`The guildmaster studies your training, your gear, the way you carry yourself. "${STAT_LABELS[dominant]}," he says finally. "That's your path." (+2 ${STAT_LABELS[dominant]})`);
+  log(`You are recognized as a ${CLASS_TITLES[dominant]}. Check your Character page.`);
   render();
   autosave();
 }
@@ -578,6 +720,7 @@ document.getElementById('scene-art').addEventListener('click', function(e){
   else if(action === 'hoodoo') enterHoodoo();
   else if(action === 'guild') enterGuild();
   else if(action === 'casino') enterCasino();
+  else if(action === 'tinker') enterTinker();
 });
 
 /* Seed a brand-new run: starter gear (equipped) and a couple of starter
