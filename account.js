@@ -15,12 +15,17 @@ function renderAuthUI(prefix){
 function renderAuthForms(prefix){
   const view = authView[prefix];
   const busy = authBusy[prefix];
+  /* Enter key submits the form's primary action from any of its fields,
+     same as hitting the button — matches normal browser form behavior even
+     though these aren't real <form> elements (no page reload to guard
+     against, and doRegister/doLogin/doForgotPassword already no-op while
+     authBusy[prefix] is true, so a double-fire from Enter is harmless). */
   if(view === 'register'){
     return `
       <div class="acct-form">
-        <label>Username</label><input type="text" id="${prefix}-reg-username" autocomplete="username">
-        <label>Email</label><input type="email" id="${prefix}-reg-email" autocomplete="email">
-        <label>Password</label><input type="password" id="${prefix}-reg-password" autocomplete="new-password">
+        <label>Username</label><input type="text" id="${prefix}-reg-username" autocomplete="username" onkeydown="if(event.key==='Enter')doRegister('${prefix}')">
+        <label>Email</label><input type="email" id="${prefix}-reg-email" autocomplete="email" onkeydown="if(event.key==='Enter')doRegister('${prefix}')">
+        <label>Password</label><input type="password" id="${prefix}-reg-password" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister('${prefix}')">
         <div class="btn-row">
           <button class="btn-primary" onclick="doRegister('${prefix}')" ${busy?'disabled':''}>Register</button>
         </div>
@@ -30,7 +35,7 @@ function renderAuthForms(prefix){
   } else if(view === 'forgot'){
     return `
       <div class="acct-form">
-        <label>Username</label><input type="text" id="${prefix}-forgot-username" autocomplete="username">
+        <label>Username</label><input type="text" id="${prefix}-forgot-username" autocomplete="username" onkeydown="if(event.key==='Enter')doForgotPassword('${prefix}')">
         <div class="btn-row">
           <button class="btn-primary" onclick="doForgotPassword('${prefix}')" ${busy?'disabled':''}>Send Reset Link</button>
         </div>
@@ -40,8 +45,8 @@ function renderAuthForms(prefix){
   }
   return `
     <div class="acct-form">
-      <label>Username</label><input type="text" id="${prefix}-login-username" autocomplete="username">
-      <label>Password</label><input type="password" id="${prefix}-login-password" autocomplete="current-password">
+      <label>Username</label><input type="text" id="${prefix}-login-username" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin('${prefix}')">
+      <label>Password</label><input type="password" id="${prefix}-login-password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin('${prefix}')">
       <div class="btn-row">
         <button class="btn-primary" onclick="doLogin('${prefix}')" ${busy?'disabled':''}>Log In</button>
       </div>
