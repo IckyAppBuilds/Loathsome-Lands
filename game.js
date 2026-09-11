@@ -184,8 +184,12 @@ function winCombat(){
   const needsPotionIngredient = potionIngredient && state.quest3Accepted && !state.quest3Complete
     && !state.inventory.some(it => it.key === potionIngredient.item.key);
   const veinIngredient = veinIngredients.find(v => v.monsterName === state.monster.name);
+  /* Unlike needsPotionIngredient above (a one-copy-only check), this
+     compares against VEIN_ITEM_COUNT_NEEDED — quest 5 needs multiple
+     copies of each ingredient (see content.js), so the guaranteed drop
+     keeps happening on matching kills until that many are held. */
   const needsVeinIngredient = veinIngredient && state.quest5Accepted && !state.quest5Complete
-    && !state.inventory.some(it => it.key === veinIngredient.item.key);
+    && state.inventory.filter(it => it.key === veinIngredient.item.key).length < VEIN_ITEM_COUNT_NEEDED;
   const lootRoll = needsPotionIngredient
     ? potionIngredient.item
     : needsVeinIngredient
@@ -394,7 +398,7 @@ function enterTinker(){
   if(state.quest5Complete){
     log("You duck into the workshop. The Tinker is elbow-deep in something that used to be a clock, and waves without looking up.");
   } else if(state.quest5Accepted){
-    log(`You duck into the workshop. The Tinker glances at your hands. (${countVeinIngredientsHeld()}/${veinIngredients.length} gathered)`);
+    log(`You duck into the workshop. The Tinker glances at your hands. (${countVeinIngredientsHeld()}/${veinIngredients.length*VEIN_ITEM_COUNT_NEEDED} gathered)`);
   } else if(state.quest4Complete){
     log("You duck into the workshop. The Tinker's goggles are pushed up on their forehead, and they look thrilled to see you.");
   } else if(state.quest4Accepted){
@@ -445,11 +449,13 @@ function acceptQuest5(){
 
 function turnInVein(){
   if(state.location !== 'tinker' || !state.quest5Accepted || state.quest5Complete) return;
-  if(countVeinIngredientsHeld() < veinIngredients.length) return;
+  if(countVeinIngredientsHeld() < veinIngredients.length * VEIN_ITEM_COUNT_NEEDED) return;
 
   veinIngredients.forEach(v=>{
-    const idx = state.inventory.findIndex(it => it.key === v.item.key);
-    if(idx !== -1) state.inventory.splice(idx,1);
+    for(let n=0; n<VEIN_ITEM_COUNT_NEEDED; n++){
+      const idx = state.inventory.findIndex(it => it.key === v.item.key);
+      if(idx !== -1) state.inventory.splice(idx,1);
+    }
   });
 
   state.quest5Complete = true;
