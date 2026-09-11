@@ -562,6 +562,29 @@
     color:var(--black);
   }
   .acct-form .btn-row{ margin:12px 0 0; }
+  .acct-form select{
+    width:100%;
+    font-family:Verdana, Geneva, Arial, sans-serif;
+    font-size:0.85rem;
+    padding:7px 8px;
+    border:2px solid var(--black);
+    background:var(--white);
+    color:var(--black);
+  }
+  .dev-form{ margin-top:10px; }
+  .dev-row{
+    display:flex;
+    gap:6px;
+    align-items:center;
+    margin-bottom:8px;
+  }
+  .dev-row input, .dev-row select{
+    flex:1;
+    min-width:0;
+    margin:0;
+  }
+  .dev-row button{ flex:none; }
+  .dev-row-5 input{ padding-left:4px; padding-right:4px; text-align:center; }
   .acct-msg{
     font-size:0.76rem;
     font-weight:700;
