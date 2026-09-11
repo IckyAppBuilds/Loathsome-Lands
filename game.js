@@ -28,17 +28,24 @@ function goAdventuring(){
     return;
   }
 
+  /* Non-combat share of the encounter roll was cut from 50% (25% hazard +
+     25% flavor) down to 30% (12% + 18%) per user feedback that these were
+     showing up too often — combat now fills the rest. Both event lists are
+     zone-keyed (see content.js) so each area reads distinctly instead of
+     reusing one generic set everywhere. */
   const roll = Math.random();
-  if(roll < 0.5){
+  if(roll < 0.70){
     startCombat();
-  } else if(roll < 0.75){
-    const evt = hazardEvents[Math.floor(Math.random()*hazardEvents.length)];
+  } else if(roll < 0.82){
+    const pool = hazardEvents[state.location] || hazardEvents.commons;
+    const evt = pool[Math.floor(Math.random()*pool.length)];
     const dmg = randInt(evt.dmg[0], evt.dmg[1]);
     state.hp = Math.max(0, state.hp-dmg);
     log(`${evt.text} (-${dmg} HP)`, 'damage');
     checkDefeat();
   } else {
-    const line = noncombatEvents[Math.floor(Math.random()*noncombatEvents.length)];
+    const pool = noncombatEvents[state.location] || noncombatEvents.commons;
+    const line = pool[Math.floor(Math.random()*pool.length)];
     log(line);
   }
   render();
@@ -53,7 +60,16 @@ let combatSubView = 'main';
 function startCombat(forceTemplate){
   const pool = monsters.filter(m => m.zone === state.location);
   const template = forceTemplate || pool[Math.floor(Math.random()*pool.length)];
-  state.monster = { ...template, maxHp: template.hp };
+  /* Scale the template's base hp/atk/xp by its zone's ZONE_DIFFICULTY
+     multiplier (content.js) — this is what actually makes later areas
+     tougher than earlier ones; the template itself is left untouched so
+     the next spawn re-reads the same baseline. */
+  const mult = ZONE_DIFFICULTY[template.zone] || 1;
+  const hp = Math.max(1, Math.round(template.hp * mult));
+  const atkMin = Math.max(1, Math.round(template.atkMin * mult));
+  const atkMax = Math.max(atkMin, Math.round(template.atkMax * mult));
+  const xp = Math.max(1, Math.round(template.xp * mult));
+  state.monster = { ...template, hp, maxHp: hp, atkMin, atkMax, xp };
   state.inCombat = true;
   combatSubView = 'main';
   log(template.rare
