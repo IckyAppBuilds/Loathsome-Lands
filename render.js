@@ -262,7 +262,7 @@ function renderShop(){
 
   const sellSection = document.createElement('div');
   sellSection.innerHTML = '<div class="shop-section-title">Sell Your Junk</div>';
-  const sellable = state.inventory.filter(it => it.type==='junk' && it.sell);
+  const sellable = state.inventory.filter(it => (it.type==='junk' || it.type==='equip') && it.sell);
 
   if(sellable.length===0){
     sellSection.innerHTML += '<div class="shop-empty">Nothing in your pack worth selling. Bring back some gnome junk.</div>';
