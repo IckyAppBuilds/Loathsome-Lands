@@ -5,8 +5,8 @@
    still boots and plays fine; only the Account drawer degrades. */
 const sb = (typeof supabase !== 'undefined')
   ? supabase.createClient(
-      'https://vrjetkysmrsuygsgpotu.supabase.co',
-      'sb_publishable_V_YMQsayD-Q33N-NgXsLxQ_n0xhU-Mv'
+      'https://ttgiwkunzkmzmsswjuzu.supabase.co',
+      'sb_publishable_bsqoNRyjYSoGPaAbGlpLQA_N3RGmabX'
     )
   : null;
 if(!sb) console.warn('Supabase JS failed to load — accounts/save/load are disabled for this session.');
