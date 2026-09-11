@@ -76,7 +76,15 @@ const state = {
   commanderDefeated: false,
   quest2Complete: false,
   quest3Accepted: false,
-  quest3Complete: false
+  quest3Complete: false,
+  quest4Accepted: false,
+  quest4RareDefeated: false,
+  quest4Complete: false,
+  quest5Accepted: false,
+  quest5Complete: false,
+  classQuestAccepted: false,
+  classQuestComplete: false,
+  classTitle: null
 };
 
 /* Fun names for the four core stats. Beef = melee punch, Zip = speed/evasion,
@@ -139,6 +147,34 @@ function iconPipeFitting(){
 }
 function iconCoatButton(){
   return iconWrap(`<circle cx="30" cy="30" r="18" fill="#5f4632"/><circle cx="24" cy="24" r="2" fill="#2b2b28" stroke="none"/><circle cx="36" cy="24" r="2" fill="#2b2b28" stroke="none"/><circle cx="24" cy="36" r="2" fill="#2b2b28" stroke="none"/><circle cx="36" cy="36" r="2" fill="#2b2b28" stroke="none"/>`);
+}
+
+/* ---------------- Clockwork Quarry loot icons ---------------- */
+function iconGear(){
+  return iconWrap(`<circle cx="30" cy="30" r="14" fill="#d1a94e"/><circle cx="30" cy="30" r="6" fill="#f4efe4"/><path d="M30 12 L30 18 M30 42 L30 48 M12 30 L18 30 M42 30 L48 30 M17 17 L21 21 M39 39 L43 43 M17 43 L21 39 M39 21 L43 17" stroke-width="4"/>`);
+}
+function iconSurveyMap(){
+  return iconWrap(`<path d="M12 14 L48 10 L46 46 L10 50 Z" fill="#f4efe4"/><path d="M18 20 Q30 28 40 18" fill="none" stroke-width="2.5"/><path d="M16 36 L28 30 L42 38" fill="none" stroke-width="2.5"/><circle cx="34" cy="26" r="2" fill="#b5453f" stroke="none"/>`);
+}
+function iconPickaxeHead(){
+  return iconWrap(`<path d="M10 22 Q30 10 50 22 Q34 26 30 34 Q26 26 10 22 Z" fill="#8a8477"/><line x1="30" y1="34" x2="30" y2="54" stroke-width="5"/>`);
+}
+function iconOreGrit(){
+  return iconWrap(`<path d="M10 42 Q14 24 30 26 Q46 20 50 36 Q52 46 30 48 Q10 50 10 42 Z" fill="#5f4632"/><circle cx="20" cy="36" r="2.4" fill="#d1a94e" stroke="none"/><circle cx="34" cy="32" r="2.4" fill="#d1a94e" stroke="none"/><circle cx="42" cy="40" r="2.4" fill="#d1a94e" stroke="none"/>`);
+}
+
+/* ---------------- Sunless Vault loot icons ---------------- */
+function iconCapturedLight(){
+  return iconWrap(`<path d="M30 8 L38 26 L30 52 L22 26 Z" fill="#f4efe4"/><path d="M30 8 L34 26 L30 52 L26 26 Z" fill="#d1a94e" stroke="none"/>`);
+}
+function iconSentinelEye(){
+  return iconWrap(`<path d="M10 30 Q30 12 50 30 Q30 48 10 30 Z" fill="#8a8477"/><circle cx="30" cy="30" r="9" fill="#3d5a80"/><circle cx="30" cy="30" r="3" fill="#f4efe4" stroke="none"/>`);
+}
+function iconGoldWhisker(){
+  return iconWrap(`<path d="M10 44 Q30 46 50 30" fill="none" stroke-width="3"/><circle cx="18" cy="42" r="2" fill="#d1a94e" stroke="none"/><circle cx="30" cy="38" r="2" fill="#d1a94e" stroke="none"/><circle cx="42" cy="32" r="2" fill="#d1a94e" stroke="none"/>`);
+}
+function iconCeremonialGauntlet(){
+  return iconWrap(`<path d="M20 50 L20 26 Q20 16 30 16 Q40 16 40 26 L40 50 Z" fill="#b9b3a4"/><line x1="24" y1="30" x2="24" y2="46"/><line x1="30" y1="28" x2="30" y2="46"/><line x1="36" y1="30" x2="36" y2="46"/><circle cx="30" cy="20" r="3" fill="#d1a94e" stroke="none"/>`);
 }
 
 /* ---------------- Equipment icons (starter gear + shop upgrades) ---------------- */
@@ -204,6 +240,20 @@ function iconPotionWhisker(){
   return iconWrap(`<path d="M10 44 Q30 46 50 30" fill="none" stroke-width="3"/><circle cx="10" cy="44" r="3" fill="#8a8477" stroke="none"/>`);
 }
 
+/* ---------------- Vein ingredient icons (the Tinker's quest, "The Last Vein") ---------------- */
+function iconVeinGearCore(){
+  return iconWrap(`<circle cx="30" cy="30" r="16" fill="#8a8477"/><circle cx="30" cy="30" r="7" fill="#b5453f"/><path d="M30 10 L30 16 M30 44 L30 50 M10 30 L16 30 M44 30 L50 30" stroke-width="4"/>`);
+}
+function iconVeinOreChunk(){
+  return iconWrap(`<path d="M14 40 L18 20 L32 12 L48 22 L44 44 L26 50 Z" fill="#5f4632"/><path d="M22 26 L34 22 L40 32 L30 40 Z" fill="#3d5a80" stroke="none"/>`);
+}
+function iconVeinGemstone(){
+  return iconWrap(`<path d="M30 8 L48 24 L38 52 L22 52 L12 24 Z" fill="#b06a97"/><path d="M30 8 L38 24 L22 24 Z" fill="#f4efe4" stroke="none"/>`);
+}
+function iconVeinWiring(){
+  return iconWrap(`<path d="M10 16 Q30 16 20 30 Q10 44 30 44 Q50 44 40 30 Q30 16 50 16" fill="none" stroke="#d1a94e" stroke-width="3"/>`);
+}
+
 /* ---------------- Monster + player scene art ---------------- */
 function sceneWrap(inner, rot){
   return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(${rot||0}deg)">${inner}</svg>`;
@@ -226,7 +276,10 @@ function artCroupier(){
 function artHoodooDoctor(){
   return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M40 20 Q50 8 60 20" fill="none" stroke-width="3"/><path d="M34 36 Q50 28 66 36 L64 78 Q50 84 36 78 Z" fill="#b06a97"/><circle cx="30" cy="50" r="5" fill="#8a8477"/><circle cx="30" cy="50" r="1.8" fill="#2b2b28" stroke="none"/><line x1="30" y1="55" x2="30" y2="62"/><line x1="34" y1="40" x2="18" y2="54"/><line x1="18" y1="54" x2="24" y2="68"/><line x1="66" y1="40" x2="82" y2="50"/><path d="M82 50 Q90 46 88 38" fill="none" stroke-width="2.5"/><line x1="50" y1="84" x2="42" y2="99"/><line x1="50" y1="84" x2="58" y2="99"/>`, 0);
 }
-function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType){
+function artTinker(){
+  return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M36 18 L64 18 L62 24 L38 24 Z" fill="#8a8477"/><rect x="34" y="36" width="32" height="42" fill="#3d5a80"/><circle cx="42" cy="50" r="6" fill="#d1a94e"/><circle cx="42" cy="50" r="2" fill="#2b2b28" stroke="none"/><rect x="54" y="46" width="10" height="10" fill="#b9b3a4"/><line x1="34" y1="40" x2="18" y2="52"/><path d="M18 52 Q10 52 12 44" fill="none" stroke-width="2.5"/><line x1="66" y1="40" x2="80" y2="48"/><line x1="50" y1="78" x2="42" y2="98"/><line x1="50" y1="78" x2="58" y2="98"/>`, 0);
+}
+function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlagType){
   const makeFlag = (flagType) => {
     if(!flagType) return '';
     const bg = flagType==='offer' ? '#b5453f' : '#5c8a5c';
@@ -277,6 +330,18 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType){
       <line x1="24" y1="28" x2="12" y2="28"/>
       <rect x="4" y="22" width="12" height="9" fill="#d1a94e"/>
       ${plate("The Inn", 10)}
+    </g>
+
+    <g transform="translate(0,100)" class="building-hit" data-action="tinker">
+      <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+      <path d="M22 34 L50 22 L78 34 Z" fill="#8a8477"/>
+      <rect x="28" y="34" width="44" height="32" fill="#3d5a80"/>
+      <circle cx="50" cy="50" r="9" fill="#d1a94e"/>
+      <circle cx="50" cy="50" r="3" fill="#2b2b28" stroke="none"/>
+      <rect x="34" y="40" width="8" height="8" fill="#f4efe4"/>
+      <rect x="58" y="40" width="8" height="8" fill="#f4efe4"/>
+      ${makeFlag(tinkerFlagType)}
+      ${plate("Tinker's Workshop", 6)}
     </g>
 
     <g transform="translate(100,200)" class="building-hit" data-action="shop">
@@ -354,6 +419,33 @@ function artGiantSewerRat(){
 }
 function artRatTrenchcoat(){
   return sceneWrap(`<path d="M30 40 L50 40 L58 92 L22 92 Z" fill="#5f4632"/><line x1="40" y1="46" x2="40" y2="88"/><circle cx="34" cy="30" r="9" fill="#8a8477"/><circle cx="50" cy="26" r="9" fill="#8a8477"/><circle cx="66" cy="32" r="9" fill="#8a8477"/><circle cx="30" cy="27" r="2.5" fill="#8a8477"/><circle cx="38" cy="27" r="2.5" fill="#8a8477"/><circle cx="46" cy="23" r="2.5" fill="#8a8477"/><circle cx="54" cy="23" r="2.5" fill="#8a8477"/><circle cx="62" cy="29" r="2.5" fill="#8a8477"/><circle cx="70" cy="29" r="2.5" fill="#8a8477"/><circle cx="33" cy="30" r="1.4" fill="#2b2b28" stroke="none"/><circle cx="50" cy="26" r="1.4" fill="#2b2b28" stroke="none"/><circle cx="66" cy="32" r="1.4" fill="#2b2b28" stroke="none"/><line x1="26" y1="92" x2="24" y2="98"/><line x1="40" y1="92" x2="40" y2="98"/><line x1="54" y1="92" x2="56" y2="98"/>`, 0);
+}
+function artQuarryDrone(){
+  return sceneWrap(`<rect x="28" y="36" width="44" height="38" fill="#8a8477"/><circle cx="50" cy="30" r="14" fill="#b9b3a4"/><circle cx="44" cy="28" r="3" fill="#2b2b28" stroke="none"/><circle cx="56" cy="28" r="3" fill="#2b2b28" stroke="none"/><path d="M28 44 L14 40 M28 54 L14 58" stroke-width="3"/><path d="M72 44 L86 40 M72 54 L86 58" stroke-width="3"/><line x1="38" y1="74" x2="34" y2="92"/><line x1="62" y1="74" x2="66" y2="92"/><path d="M40 20 L38 8 M60 20 L62 8" stroke-width="3"/>`, -2);
+}
+function artGnomeSurveyor(){
+  return sceneWrap(`<path d="M50 12 L32 42 L68 42 Z" fill="#5c8a5c"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><rect x="30" y="60" width="18" height="14" fill="#f4efe4"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="30" y2="66"/><line x1="50" y1="72" x2="70" y2="80"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 4);
+}
+function artPickaxeGolem(){
+  return sceneWrap(`<path d="M26 90 Q22 50 50 44 Q78 50 74 90 Z" fill="#5f4632"/><circle cx="50" cy="30" r="15" fill="#8a8477"/><circle cx="44" cy="28" r="2.4" fill="#2b2b28" stroke="none"/><circle cx="56" cy="28" r="2.4" fill="#2b2b28" stroke="none"/><line x1="26" y1="60" x2="10" y2="48"/><path d="M10 48 Q2 40 10 32" fill="none" stroke-width="3"/><line x1="74" y1="60" x2="90" y2="70"/>`, 0);
+}
+function artQuarryRat(){
+  return sceneWrap(`<ellipse cx="42" cy="66" rx="30" ry="17" fill="#5f4632"/><circle cx="76" cy="52" r="14" fill="#5f4632"/><circle cx="67" cy="41" r="5.5" fill="#5f4632"/><circle cx="83" cy="41" r="5.5" fill="#5f4632"/><circle cx="81" cy="49" r="2" fill="#2b2b28" stroke="none"/><line x1="87" y1="53" x2="98" y2="49"/><path d="M16 66 Q2 76 8 92" fill="none"/><circle cx="30" cy="60" r="2.2" fill="#d1a94e" stroke="none"/><circle cx="46" cy="70" r="2.2" fill="#d1a94e" stroke="none"/>`, -2);
+}
+function artDiggerBot(){
+  return sceneWrap(`<rect x="24" y="34" width="52" height="46" fill="#b5453f"/><circle cx="50" cy="26" r="16" fill="#8a8477"/><circle cx="42" cy="24" r="3.4" fill="#2b2b28" stroke="none"/><circle cx="58" cy="24" r="3.4" fill="#2b2b28" stroke="none"/><path d="M50 10 L46 20 M50 10 L54 20" stroke-width="3"/><line x1="24" y1="46" x2="6" y2="36"/><path d="M6 36 L14 20" stroke-width="4"/><line x1="76" y1="46" x2="94" y2="40"/><line x1="34" y1="80" x2="28" y2="98"/><line x1="66" y1="80" x2="72" y2="98"/><path d="M20 60 L14 54 M20 66 L12 64" stroke-width="2.5"/>`, 0);
+}
+function artVaultWisp(){
+  return sceneWrap(`<circle cx="50" cy="46" r="26" fill="#3d5a80"/><circle cx="50" cy="46" r="14" fill="#f4efe4" stroke="none" opacity="0.5"/><circle cx="42" cy="40" r="2.4" fill="#2b2b28" stroke="none"/><circle cx="58" cy="40" r="2.4" fill="#2b2b28" stroke="none"/><path d="M30 20 Q50 4 70 20" fill="none" stroke-width="2.5"/><path d="M24 66 Q50 84 76 66" fill="none" stroke-width="2.5"/>`, 0);
+}
+function artStoneSentinel(){
+  return sceneWrap(`<path d="M50 8 L26 30 L26 88 L74 88 L74 30 Z" fill="#8a8477"/><circle cx="50" cy="40" r="10" fill="#3d5a80"/><circle cx="50" cy="40" r="3.4" fill="#f4efe4" stroke="none"/><line x1="26" y1="56" x2="10" y2="66"/><line x1="74" y1="56" x2="90" y2="66"/><line x1="40" y1="60" x2="40" y2="80"/><line x1="60" y1="60" x2="60" y2="80"/>`, 0);
+}
+function artHoardRat(){
+  return sceneWrap(`<ellipse cx="42" cy="66" rx="28" ry="16" fill="#b06a97"/><circle cx="74" cy="52" r="13" fill="#b06a97"/><circle cx="66" cy="42" r="5" fill="#b06a97"/><circle cx="80" cy="42" r="5" fill="#b06a97"/><circle cx="79" cy="49" r="1.8" fill="#2b2b28" stroke="none"/><line x1="85" y1="52" x2="96" y2="48"/><circle cx="30" cy="72" r="2.2" fill="#d1a94e" stroke="none"/><circle cx="42" cy="78" r="2.2" fill="#d1a94e" stroke="none"/><circle cx="54" cy="72" r="2.2" fill="#d1a94e" stroke="none"/><path d="M18 66 Q4 74 10 90" fill="none"/>`, -2);
+}
+function artCeremonialArmor(){
+  return sceneWrap(`<path d="M34 34 Q50 26 66 34 L64 78 Q50 86 36 78 Z" fill="#b9b3a4"/><path d="M40 28 Q50 18 60 28 L58 36 Q50 32 42 36 Z" fill="#8a8477"/><rect x="44" y="50" width="12" height="4" fill="#2b2b28" stroke="none"/><line x1="34" y1="40" x2="18" y2="56"/><line x1="18" y1="56" x2="24" y2="72"/><line x1="66" y1="40" x2="82" y2="56"/><line x1="82" y1="56" x2="76" y2="72"/><line x1="50" y1="86" x2="42" y2="99"/><line x1="50" y1="86" x2="58" y2="99"/>`, 0);
 }
 function artDefeated(monsterArtFn){
   const inner = monsterArtFn();
