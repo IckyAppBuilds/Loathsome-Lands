@@ -285,8 +285,14 @@ function allItemDefs(){
   const monsterLoot = monsters.map(m => m.loot).filter(Boolean);
   const commanderLoot = gnomeCommander.loot ? [gnomeCommander.loot] : [];
   const potionIngredientItems = potionIngredients.map(p => p.item);
+  /* veinIngredients (quest 5's gather items, content.js) were missing here
+     — hydrateItem() below would silently drop them from inventory on
+     save/reload since itemByName() couldn't find their def. Fixed as part
+     of tagging quest items in the inventory UI. */
+  const veinIngredientItems = veinIngredients.map(v => v.item);
   return [...healItems, ...shopBuyItems, ...monsterLoot, ...commanderLoot,
-          ...rareDrops, ...Object.values(starterGear), ...potionIngredientItems];
+          ...rareDrops, ...Object.values(starterGear), ...potionIngredientItems,
+          ...veinIngredientItems];
 }
 function itemByName(name){
   return allItemDefs().find(d => d.name === name) || null;
@@ -300,15 +306,26 @@ function hydrateItem(name){
 }
 
 function serializeState(){
+  /* quest4/quest5/class-quest fields (added after this list was first
+     written) were missing here — saveGame() would silently drop that
+     progress on every autosave, so reloading mid-Tinker-quest or after
+     claiming a class title would revert it. Fixed alongside the similar
+     allItemDefs() gap above. */
   const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
           lastRegenAt, level, xp, xpToLevel, stats, statPoints, location,
           spellsKnown, questTinesGiven, questAccepted, questComplete, quest2Accepted,
-          commanderDefeated, quest2Complete, quest3Accepted, quest3Complete } = state;
+          commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
+          quest4Accepted, quest4RareDefeated, quest4Complete,
+          quest5Accepted, quest5Complete,
+          classQuestAccepted, classQuestComplete, classTitle } = state;
   return {
     hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
     lastRegenAt, level, xp, xpToLevel, stats, statPoints, location,
     spellsKnown, questTinesGiven, questAccepted, questComplete, quest2Accepted,
     commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
+    quest4Accepted, quest4RareDefeated, quest4Complete,
+    quest5Accepted, quest5Complete,
+    classQuestAccepted, classQuestComplete, classTitle,
     equipment: Object.fromEntries(
       SLOT_ORDER.map(slot => [slot, serializeItem(state.equipment[slot])])
     ),
