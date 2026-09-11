@@ -398,6 +398,17 @@
     padding:0 5px;
     vertical-align:middle;
   }
+  .quest-badge{
+    display:inline-block;
+    margin-left:6px;
+    font-size:0.7rem;
+    font-weight:700;
+    color:var(--white);
+    background:var(--magenta);
+    border:2px solid var(--black);
+    padding:0 5px;
+    vertical-align:middle;
+  }
   .inv-item .desc{ font-size:0.74rem; margin:3px 0 6px; }
   .inv-item button{ font-size:0.7rem; padding:5px; }
   .inv-empty{ font-size:0.82rem; font-style:italic; padding:6px 2px; }
