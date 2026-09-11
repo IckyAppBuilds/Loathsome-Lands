@@ -104,12 +104,17 @@ function enterGameAfterAuth(loaded){
 }
 
 /* ---------------- Dev account & testing tools ---------------- */
-/* Usernames in this list get devMode auto-enabled on login and extra reset
-   buttons in the Account drawer, for testing content from any game state
-   without having to grind there legitimately. Not a security boundary —
-   just a testing convenience gated behind a specific account, the same
-   spirit as the ?dev=1 URL flag. Compared case-insensitively since
-   Supabase usernames aren't normalized on registration. */
+/* Usernames in this list get the full dev-tools panel in the Account
+   drawer (direct-value setters, quest-stage jumper, reset buttons), for
+   testing content from any game state without having to grind there
+   legitimately. Not a security boundary — just a testing convenience
+   gated behind a specific account. Does NOT auto-enable devMode/unlimited
+   Biscuits on its own anymore (that used to happen on every sign-in —
+   removed since it left the account permanently stuck on infinite
+   Biscuits with no way to turn it off in-game); use the panel's Biscuits
+   setter, or ?dev=1 in the URL, if unlimited Biscuits are wanted for a
+   session. Compared case-insensitively since Supabase usernames aren't
+   normalized on registration. */
 const DEV_USERNAMES = ['ickyadmin'];
 function isDevAccount(){
   return !!acctUsername && DEV_USERNAMES.includes(acctUsername.toLowerCase());
@@ -569,12 +574,14 @@ if(sb){
     }
     acctSession = session || null;
     acctUsername = session ? (session.user.user_metadata && session.user.user_metadata.username) : null;
-    /* Auto-enable devMode for the designated dev account(s) — see
-       isDevAccount() above. Doesn't fight a manual toggle afterward; this
-       just sets the starting state on sign-in so unlimited Biscuits are
-       there from the first click without needing ?dev=1 or the header
-       toggle. */
-    if(isDevAccount()) devMode = true;
+    /* The dev account used to auto-enable devMode (unlimited Biscuits) on
+       every sign-in — removed by request, since it meant the account was
+       permanently stuck on infinite Biscuits with no in-game way to turn
+       it off (only ?dev=1 or the removed header toggle could). The
+       dev-tools panel below (isDevAccount()-gated) still gives this
+       account everything it needs for testing, including a direct
+       Biscuits setter (setBiscuitsDev()) — that's the intended way to
+       grant Biscuits now, on this account or any other via ?dev=1. */
     renderAccountTab();
 
     /* INITIAL_SESSION fires once, shortly after the client is created, with
