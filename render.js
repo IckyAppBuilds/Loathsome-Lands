@@ -16,17 +16,20 @@ function render(){
   const isShop = state.location === 'shop';
   const isHoodoo = state.location === 'hoodoo';
   const isGuild = state.location === 'guild';
+  const isTinker = state.location === 'tinker';
   const isCommons = state.location === 'commons';
   const isSewers = state.location === 'sewers';
+  const isQuarry = state.location === 'quarry';
+  const isVault = state.location === 'vault';
   const isCasino = state.location === 'casino';
-  const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isCasino;
+  const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino;
 
   document.getElementById('poptab-text').textContent = state.popTabs;
 
-  document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer Thistlewick's Cottage" : (isShop ? 'The Shop' : (isHoodoo ? 'The Hoodoo Doctor\'s Shack' : (isGuild ? 'The Adventurers\' Guild' : (isCasino ? 'The Casino' : (isTownSquare ? 'Gladstone Hollow' : (isSewers ? 'Dank Sewers' : 'The Overgrown Commons'))))));
+  document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer Thistlewick's Cottage" : (isShop ? 'The Shop' : (isHoodoo ? 'The Hoodoo Doctor\'s Shack' : (isGuild ? 'The Adventurers\' Guild' : (isTinker ? "Tinker's Workshop" : (isCasino ? 'The Casino' : (isTownSquare ? 'Gladstone Hollow' : (isSewers ? 'Dank Sewers' : (isQuarry ? 'The Clockwork Quarry' : (isVault ? 'The Sunless Vault' : 'The Overgrown Commons')))))))));
   document.getElementById('ztag-town').style.display = inTownArea ? 'block' : 'none';
   document.getElementById('ztag-commons').style.display = isCommons ? 'block' : 'none';
-  document.getElementById('quest-box').style.display = (isGafferHouse || isGuild || isHoodoo) ? 'block' : 'none';
+  document.getElementById('quest-box').style.display = (isGafferHouse || isGuild || isHoodoo || isTinker) ? 'block' : 'none';
   document.getElementById('town-row').style.display = (isTownSquare && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('shop-row').style.display = (isShop && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('shop-list').style.display = isShop ? 'block' : 'none';
@@ -47,6 +50,16 @@ function render(){
   document.getElementById('ztag-sewers').textContent = sewersUnlocked ? 'You are here' : 'Locked';
   document.getElementById('ztag-sewers').style.display = sewersUnlocked ? (isSewers ? 'block' : 'none') : 'block';
 
+  const quarryUnlocked = state.quest4Complete;
+  document.getElementById('zone-card-quarry').classList.toggle('locked', !quarryUnlocked);
+  document.getElementById('ztag-quarry').textContent = quarryUnlocked ? 'You are here' : 'Locked';
+  document.getElementById('ztag-quarry').style.display = quarryUnlocked ? (isQuarry ? 'block' : 'none') : 'block';
+
+  const vaultUnlocked = state.quest5Complete;
+  document.getElementById('zone-card-vault').classList.toggle('locked', !vaultUnlocked);
+  document.getElementById('ztag-vault').textContent = vaultUnlocked ? 'You are here' : 'Locked';
+  document.getElementById('ztag-vault').style.display = vaultUnlocked ? (isVault ? 'block' : 'none') : 'block';
+
   const questState = state.questComplete ? 'complete' : (state.questAccepted ? 'active' : 'offer');
   const tinesHeld = countRakeTines();
   const tinesStillNeeded = QUEST_TINES_NEEDED - state.questTinesGiven;
@@ -58,6 +71,15 @@ function render(){
   const quest3State = state.quest3Complete ? 'complete' : (state.quest3Accepted ? 'active' : (state.quest2Complete ? 'offer' : 'locked'));
   const ingredientsHeld = countPotionIngredientsHeld();
   const canBrew = isHoodoo && quest3State==='active' && ingredientsHeld === potionIngredients.length;
+
+  const quest4State = state.quest4Complete ? 'complete' : (state.quest4Accepted ? 'active' : (state.quest2Complete ? 'offer' : 'locked'));
+  const canReportDigger = isTinker && quest4State==='active' && state.quest4RareDefeated;
+
+  const quest5State = state.quest5Complete ? 'complete' : (state.quest5Accepted ? 'active' : (state.quest4Complete ? 'offer' : 'locked'));
+  const veinHeld = countVeinIngredientsHeld();
+  const canTurnInVein = isTinker && quest5State==='active' && veinHeld === veinIngredients.length;
+
+  const classQuestState = state.classQuestComplete ? 'complete' : (state.classQuestAccepted ? 'active' : ((state.quest2Complete && state.level>=10) ? 'offer' : 'locked'));
 
   document.getElementById('gaffer-row').style.display = (isGafferHouse && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('accept-quest-btn').style.display = questState==='offer' ? '' : 'none';
@@ -75,6 +97,19 @@ function render(){
   document.getElementById('brew-potion-btn').style.display = quest3State==='active' ? '' : 'none';
   document.getElementById('brew-potion-btn').disabled = !canBrew;
   document.getElementById('brew-potion-btn').textContent = canBrew ? 'Brew the Potion' : `Brew the Potion (${ingredientsHeld}/${potionIngredients.length})`;
+
+  document.getElementById('accept-classquest-btn').style.display = classQuestState==='offer' ? '' : 'none';
+  document.getElementById('claim-path-btn').style.display = classQuestState==='active' ? '' : 'none';
+
+  document.getElementById('tinker-row').style.display = (isTinker && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('accept-quest4-btn').style.display = quest4State==='offer' ? '' : 'none';
+  document.getElementById('report-diggerbot-btn').style.display = quest4State==='active' ? '' : 'none';
+  document.getElementById('report-diggerbot-btn').disabled = !canReportDigger;
+  document.getElementById('report-diggerbot-btn').textContent = state.quest4RareDefeated ? 'Report the Digger-Bot' : 'Report the Digger-Bot (not yet)';
+  document.getElementById('accept-quest5-btn').style.display = quest5State==='offer' ? '' : 'none';
+  document.getElementById('turn-in-vein-btn').style.display = quest5State==='active' ? '' : 'none';
+  document.getElementById('turn-in-vein-btn').disabled = !canTurnInVein;
+  document.getElementById('turn-in-vein-btn').textContent = canTurnInVein ? 'Turn In the Parts' : `Turn In the Parts (${veinHeld}/${veinIngredients.length})`;
 
   if(isGafferHouse){
     if(questState==='offer'){
@@ -103,10 +138,22 @@ function render(){
       document.getElementById('quest-name').textContent = 'Quest: The Gnome Commander';
       document.getElementById('quest-desc').textContent = "Hunt down and defeat the gnome commander in the Overgrown Commons. He's rare — keep adventuring until he shows himself.";
       document.getElementById('quest-progress').textContent = state.commanderDefeated ? 'Commander defeated — report back!' : 'Commander not yet encountered.';
-    } else {
+    } else if(classQuestState==='locked'){
       document.getElementById('quest-name').textContent = 'Quest complete: The Gnome Commander';
       document.getElementById('quest-desc').textContent = "The gnome commander has been dealt with. The guildmaster seems genuinely impressed, which seems rare for him. He mentions the sewers under the square have been acting up too — worth a look, if you're not afraid of rats.";
       document.getElementById('quest-progress').textContent = 'Reward claimed. The Dank Sewers are now open — check the Map.';
+    } else if(classQuestState==='offer'){
+      document.getElementById('quest-name').textContent = "Quest available: The Adventurer's Trial";
+      document.getElementById('quest-desc').textContent = "You've reached level 10. The guildmaster looks you over — really looks, this time. There's a Trial for adventurers who come this far: the Guild puts a name to what you've become.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(classQuestState==='active'){
+      document.getElementById('quest-name').textContent = "Quest: The Adventurer's Trial";
+      document.getElementById('quest-desc').textContent = "The guildmaster is ready to name your path. Say the word when you're ready to hear it.";
+      document.getElementById('quest-progress').textContent = 'Ready — claim your path.';
+    } else {
+      document.getElementById('quest-name').textContent = "Quest complete: The Adventurer's Trial";
+      document.getElementById('quest-desc').textContent = `The guildmaster studied your training, your gear, the way you carry yourself, and named your path. You are recognized as a ${state.classTitle}.`;
+      document.getElementById('quest-progress').textContent = 'Reward claimed.';
     }
   } else if(isHoodoo){
     if(quest3State==='locked'){
@@ -126,6 +173,36 @@ function render(){
       document.getElementById('quest-desc').textContent = "The potion is brewed and bottled. The Hoodoo Doctor taught you how to unleash it yourself — Bottled Fury is yours to cast.";
       document.getElementById('quest-progress').textContent = 'Reward claimed.';
     }
+  } else if(isTinker){
+    if(quest4State==='locked'){
+      document.getElementById('quest-name').textContent = 'The Tinker';
+      document.getElementById('quest-desc').textContent = "The Tinker barely looks up from their workbench. \"Not much for you here yet. Come back once you've sorted that gnome commander out.\"";
+      document.getElementById('quest-progress').textContent = 'No quest available yet.';
+    } else if(quest4State==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: What the Sewers Shed';
+      document.getElementById('quest-desc').textContent = "Strange clockwork parts keep turning up in the Dank Sewers. The Tinker wants to know what's shedding them, and would like it stopped.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(quest4State==='active'){
+      document.getElementById('quest-name').textContent = 'Quest: What the Sewers Shed';
+      document.getElementById('quest-desc').textContent = "Find and defeat whatever's loose in the Dank Sewers. It's rare — keep adventuring until it shows itself.";
+      document.getElementById('quest-progress').textContent = state.quest4RareDefeated ? 'Digger-bot defeated — report back!' : 'Digger-bot not yet encountered.';
+    } else if(quest5State==='locked'){
+      document.getElementById('quest-name').textContent = 'Quest complete: What the Sewers Shed';
+      document.getElementById('quest-desc').textContent = "The digger-bot is scrap. The Tinker traced its wiring to a sealed service tunnel — the old Clockwork Quarry, now yours to explore.";
+      document.getElementById('quest-progress').textContent = 'Reward claimed. The Clockwork Quarry is now open — check the Map.';
+    } else if(quest5State==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: The Vein';
+      document.getElementById('quest-desc').textContent = "The Tinker wants intact parts — a couple from the Clockwork Quarry, a couple more from deeper in the Dank Sewers — to trace where the old vein of gnome-tech actually leads.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(quest5State==='active'){
+      document.getElementById('quest-name').textContent = 'Quest: The Vein';
+      document.getElementById('quest-desc').textContent = "Gather parts from monsters in the Clockwork Quarry and the Dank Sewers, then bring them back to the Tinker.";
+      document.getElementById('quest-progress').textContent = `Parts gathered: ${veinHeld}/${veinIngredients.length}`;
+    } else {
+      document.getElementById('quest-name').textContent = 'Quest complete: The Vein';
+      document.getElementById('quest-desc').textContent = "The Tinker traced every part back to something sealed beneath the Quarry floor. The Sunless Vault is yours to check out.";
+      document.getElementById('quest-progress').textContent = 'Reward claimed. The Sunless Vault is now open — check the Map.';
+    }
   }
 
   document.getElementById('combat-row').style.display = (state.inCombat && combatSubView==='main') ? 'flex' : 'none';
@@ -134,7 +211,7 @@ function render(){
   if(state.inCombat){
     document.getElementById('cast-btn').disabled = state.spellsKnown.length===0;
   }
-  document.getElementById('explore-row').style.display = ((isCommons || isSewers) && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault) && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('monster-card').classList.toggle('active', state.inCombat);
 
   if(state.inCombat){
@@ -155,6 +232,9 @@ function render(){
   } else if(isGuild){
     document.getElementById('scene-art').innerHTML = artGuildmaster();
     document.getElementById('victory-banner').style.display = 'none';
+  } else if(isTinker){
+    document.getElementById('scene-art').innerHTML = artTinker();
+    document.getElementById('victory-banner').style.display = 'none';
   } else if(isCasino){
     document.getElementById('scene-art').innerHTML = artCroupier();
     document.getElementById('victory-banner').style.display = 'none';
@@ -162,7 +242,8 @@ function render(){
     const gafferFlag = questState==='offer' ? 'offer' : (questState==='active' && tinesHeld>0 ? 'turnin' : null);
     const guildFlag = quest2State==='offer' ? 'offer' : (quest2State==='active' && state.commanderDefeated ? 'turnin' : null);
     const hoodooFlag = quest3State==='offer' ? 'offer' : (quest3State==='active' && canBrew ? 'turnin' : null);
-    document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag);
+    const tinkerFlag = (quest4State==='offer' || quest5State==='offer') ? 'offer' : ((quest4State==='active' && canReportDigger) || (quest5State==='active' && canTurnInVein) ? 'turnin' : null);
+    document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag, tinkerFlag);
     document.getElementById('victory-banner').style.display = 'none';
   } else {
     document.getElementById('scene-art').innerHTML = artIdle();
@@ -188,6 +269,10 @@ function countRakeTines(){
 
 function countPotionIngredientsHeld(){
   return potionIngredients.filter(p => state.inventory.some(it => it.key === p.item.key)).length;
+}
+
+function countVeinIngredientsHeld(){
+  return veinIngredients.filter(v => state.inventory.some(it => it.key === v.item.key)).length;
 }
 
 function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
@@ -321,7 +406,7 @@ function renderSpellMenu(){
 
 function renderCharacterDrawer(){
   document.getElementById('char-portrait').innerHTML = artIdle();
-  document.getElementById('char-title').textContent = `Level ${state.level} Adventurer`;
+  document.getElementById('char-title').textContent = `Level ${state.level} ${state.classTitle || 'Adventurer'}`;
 
   document.getElementById('char-hp-bar').style.width = (state.hp/state.maxHp*100)+'%';
   document.getElementById('char-hp-value').textContent = state.hp+' / '+state.maxHp;
@@ -446,6 +531,54 @@ function renderQuestLogDrawer(){
         <div class="quest-name">A Proper Potion</div>
         <div class="quest-desc">Gather ingredients from monsters in the Overgrown Commons and the Dank Sewers, then bring them to the Hoodoo Doctor to brew the potion.</div>
         <div class="quest-progress">Ingredients gathered: ${countPotionIngredientsHeld()}/${potionIngredients.length}</div>
+      </div>`);
+  }
+
+  if(state.quest4Complete){
+    completedEntries.push(`
+      <div class="quest-log-entry">
+        <div class="quest-name">What the Sewers Shed</div>
+        <div class="quest-desc">You hunted down and defeated the runaway digger-bot loose in the Dank Sewers, and the Tinker opened up the Clockwork Quarry.</div>
+        <div class="quest-progress">Reward claimed: 30 Pop Tabs, 45 XP</div>
+      </div>`);
+  } else if(state.quest4Accepted){
+    activeEntries.push(`
+      <div class="quest-log-entry">
+        <div class="quest-name">What the Sewers Shed</div>
+        <div class="quest-desc">Find and defeat whatever's shedding clockwork parts in the Dank Sewers. It's rare — keep adventuring until it shows itself.</div>
+        <div class="quest-progress">${state.quest4RareDefeated ? 'Digger-bot defeated — report back at the Tinker\'s Workshop!' : 'Digger-bot not yet encountered.'}</div>
+      </div>`);
+  }
+
+  if(state.quest5Complete){
+    completedEntries.push(`
+      <div class="quest-log-entry">
+        <div class="quest-name">The Vein</div>
+        <div class="quest-desc">You gathered clockwork parts from the Clockwork Quarry and the Dank Sewers so the Tinker could trace the old vein of gnome-tech — straight to the Sunless Vault.</div>
+        <div class="quest-progress">Reward claimed: 40 Pop Tabs, 60 XP</div>
+      </div>`);
+  } else if(state.quest5Accepted){
+    activeEntries.push(`
+      <div class="quest-log-entry">
+        <div class="quest-name">The Vein</div>
+        <div class="quest-desc">Gather parts from monsters in the Clockwork Quarry and the Dank Sewers, then bring them to the Tinker.</div>
+        <div class="quest-progress">Parts gathered: ${countVeinIngredientsHeld()}/${veinIngredients.length}</div>
+      </div>`);
+  }
+
+  if(state.classQuestComplete){
+    completedEntries.push(`
+      <div class="quest-log-entry">
+        <div class="quest-name">The Adventurer's Trial</div>
+        <div class="quest-desc">The guildmaster studied your training, your gear, the way you carry yourself, and named your path.</div>
+        <div class="quest-progress">Reward claimed: recognized as a ${state.classTitle}</div>
+      </div>`);
+  } else if(state.classQuestAccepted){
+    activeEntries.push(`
+      <div class="quest-log-entry">
+        <div class="quest-name">The Adventurer's Trial</div>
+        <div class="quest-desc">The guildmaster is ready to name your path. Say the word when you're ready to hear it.</div>
+        <div class="quest-progress">Ready — claim your path at the Guild.</div>
       </div>`);
   }
 
