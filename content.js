@@ -3,7 +3,7 @@ const monsters = [
   { name:"a disgruntled compost gnome", hp:9, atkMin:1, atkMax:2, xp:3, zone:"commons",
     art: artCompostGnome, loot:{name:"a fistful of righteous soil", desc:"Smells like victory and mulch.", type:"junk", sell:1, icon:iconSoil} },
   { name:"a feral lawn gnome, off its stake", hp:8, atkMin:1, atkMax:3, xp:4, zone:"commons",
-    art: artGnomeFeral, loot:{name:"a bent rake tine", desc:"Still menacing, somehow.", type:"junk", key:"rakeTine", icon:iconRakeTine} },
+    art: artGnomeFeral, loot:{name:"a bent rake tine", desc:"Still menacing, somehow.", type:"quest", key:"rakeTine", icon:iconRakeTine} },
   { name:"a fishing gnome with an empty bucket", hp:11, atkMin:1, atkMax:2, xp:4, zone:"commons",
     art: artGnomeFishing, loot:{name:"a suspiciously confident lure", desc:"Has never once caught anything.", type:"junk", sell:2, icon:iconLure} },
   { name:"a gnome cavalry unit, mounted on a garden snail", hp:13, atkMin:1, atkMax:3, xp:5, zone:"commons",
@@ -54,27 +54,87 @@ const diggerBot = {
 };
 const DIGGERBOT_SPAWN_CHANCE = 0.012;
 
+/* Per-zone difficulty multiplier — makes each successive area meaningfully
+   tougher than the last, on top of the already-different base hp/atk/xp
+   each monster entry above carries. Applied once, in startCombat()
+   (game.js), to hp/atkMin/atkMax/xp for whatever monster spawns (regular
+   pool or a forced rare like gnomeCommander/diggerBot) — the numbers above
+   stay each monster's zone-relative baseline, and retuning how much harder
+   an area feels is just one number here, not a pass through every entry.
+   Tuned per user feedback that later areas weren't feeling more
+   challenging than earlier ones. */
+const ZONE_DIFFICULTY = { commons:1, sewers:1.15, quarry:1.55, vault:1.9 };
+
 const rareDrops = [
   { name:"a suspiciously ornate gnome figurine", desc:"You could swear it's watching you.", type:"junk", sell:8, icon:iconFigurine },
   { name:"a four-leaf clover, clearly stolen from a gnome's hat", desc:"Feels lucky. Restores a bit of HP and MP.", type:"luck", hpValue:6, mpValue:3, icon:iconClover },
 ];
 const RARE_DROP_CHANCE = 0.12;
 
-const noncombatEvents = [
-  "You find a suspiciously comfortable rock and sit on it for a while. Nothing happens, but it was nice.",
-  "A squirrel appraises you, finds you wanting, and leaves.",
-  "You step in something. You choose not to look down.",
-  "An old sign points in three directions at once. You go the fourth way.",
-  "You have a brief, meaningful staring contest with a garden gnome. It wins.",
-  "You count fourteen gnome hats poking out of the hedges. You do not investigate further.",
-  "A gnome-sized wheelbarrow rolls past, unattended. You let it go about its business."
-];
+/* Flavor lines shown on a non-combat "explore" roll, keyed by zone so each
+   area has its own voice instead of one generic list reused everywhere —
+   see goAdventuring() in game.js, which indexes in with state.location
+   and falls back to the commons list for any zone that isn't listed
+   (there shouldn't be one). */
+const noncombatEvents = {
+  commons: [
+    "You find a suspiciously comfortable rock and sit on it for a while. Nothing happens, but it was nice.",
+    "A squirrel appraises you, finds you wanting, and leaves.",
+    "You step in something. You choose not to look down.",
+    "An old sign points in three directions at once. You go the fourth way.",
+    "You have a brief, meaningful staring contest with a garden gnome. It wins.",
+    "You count fourteen gnome hats poking out of the hedges. You do not investigate further.",
+    "A gnome-sized wheelbarrow rolls past, unattended. You let it go about its business."
+  ],
+  sewers: [
+    "Something skitters just out of torchlight. You decide not to find out what.",
+    "A pipe groans overhead like it's considering giving up. It doesn't. This time.",
+    "You find a tiny gnome-sized raft, abandoned and half-sunk. You salute it out of respect.",
+    "Water drips in a rhythm that's almost, but not quite, a song you know.",
+    "Someone has scratched 'the commander was here' into the brick. You don't ask.",
+    "A cluster of rats watches you pass in total, unnerving silence."
+  ],
+  quarry: [
+    "A stalled conveyor belt clicks twice and goes still again, like it's thinking about it.",
+    "You find a gear too big to carry and too interesting not to admire for a minute.",
+    "Dust sifts down from somewhere above. You decide not to look up either.",
+    "An old chalk map on the wall marks an X. Something has already dug there.",
+    "A rhythmic clanking echoes from deeper in, then stops the moment you notice it.",
+    "You find a perfectly good pickaxe wedged into solid stone and leave it exactly where it is."
+  ],
+  vault: [
+    "A wisp of pale light drifts past, studies you, and drifts on, unimpressed.",
+    "The air hums faintly, like the whole room is holding one long note.",
+    "You catch your reflection in polished stone a half-second too late.",
+    "A row of empty pedestals stands in perfect, deliberate silence.",
+    "Something at the edge of your vision resolves into nothing at all when you turn.",
+    "Dust hangs motionless in a shaft of light that has no visible source."
+  ]
+};
 
-const hazardEvents = [
-  { text:"You trip over a root and land face-first in something unpleasant.", dmg:[1,3] },
-  { text:"A branch swings back and smacks you with the fury of a thousand insulted trees.", dmg:[2,4] },
-  { text:"You step on a gnome trap — really just a rake, but effectively deployed.", dmg:[2,4] },
-];
+/* Same per-zone pattern as noncombatEvents above, but these cost HP. */
+const hazardEvents = {
+  commons: [
+    { text:"You trip over a root and land face-first in something unpleasant.", dmg:[1,3] },
+    { text:"A branch swings back and smacks you with the fury of a thousand insulted trees.", dmg:[2,4] },
+    { text:"You step on a gnome trap — really just a rake, but effectively deployed.", dmg:[2,4] },
+  ],
+  sewers: [
+    { text:"You slip on something you'd rather not identify and crack an elbow on the brick.", dmg:[2,4] },
+    { text:"A jet of foul steam catches you square in the face.", dmg:[2,5] },
+    { text:"A low pipe clips your head. You'll feel that one for a while.", dmg:[1,4] },
+  ],
+  quarry: [
+    { text:"A chunk of rock comes loose overhead and clips your shoulder on the way down.", dmg:[3,5] },
+    { text:"A stray gear kicks loose from a machine and catches you in the shin.", dmg:[2,5] },
+    { text:"You misjudge a ledge and land badly on the quarry floor.", dmg:[3,6] },
+  ],
+  vault: [
+    { text:"An old ward flickers awake just long enough to zap you.", dmg:[3,6] },
+    { text:"A shelf of forgotten relics collapses, and you're standing under it.", dmg:[4,7] },
+    { text:"Something cold passes through you and is gone before you can name it.", dmg:[3,6] },
+  ]
+};
 
 const healItems = [
   { name:"a slightly bruised apple", desc:"Restores a modest amount of HP.", type:"hp", value:8, icon:iconApple },
