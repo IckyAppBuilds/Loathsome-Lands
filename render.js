@@ -77,7 +77,8 @@ function render(){
 
   const quest5State = state.quest5Complete ? 'complete' : (state.quest5Accepted ? 'active' : (state.quest4Complete ? 'offer' : 'locked'));
   const veinHeld = countVeinIngredientsHeld();
-  const canTurnInVein = isTinker && quest5State==='active' && veinHeld === veinIngredients.length;
+  const veinNeeded = veinIngredients.length * VEIN_ITEM_COUNT_NEEDED;
+  const canTurnInVein = isTinker && quest5State==='active' && veinHeld === veinNeeded;
 
   const classQuestState = state.classQuestComplete ? 'complete' : (state.classQuestAccepted ? 'active' : ((state.quest2Complete && state.level>=10) ? 'offer' : 'locked'));
 
@@ -109,7 +110,7 @@ function render(){
   document.getElementById('accept-quest5-btn').style.display = quest5State==='offer' ? '' : 'none';
   document.getElementById('turn-in-vein-btn').style.display = quest5State==='active' ? '' : 'none';
   document.getElementById('turn-in-vein-btn').disabled = !canTurnInVein;
-  document.getElementById('turn-in-vein-btn').textContent = canTurnInVein ? 'Turn In the Parts' : `Turn In the Parts (${veinHeld}/${veinIngredients.length})`;
+  document.getElementById('turn-in-vein-btn').textContent = canTurnInVein ? 'Turn In the Parts' : `Turn In the Parts (${veinHeld}/${veinNeeded})`;
 
   if(isGafferHouse){
     if(questState==='offer'){
@@ -197,7 +198,7 @@ function render(){
     } else if(quest5State==='active'){
       document.getElementById('quest-name').textContent = 'Quest: The Vein';
       document.getElementById('quest-desc').textContent = "Gather parts from monsters in the Clockwork Quarry and the Dank Sewers, then bring them back to the Tinker.";
-      document.getElementById('quest-progress').textContent = `Parts gathered: ${veinHeld}/${veinIngredients.length}`;
+      document.getElementById('quest-progress').textContent = `Parts gathered: ${veinHeld}/${veinNeeded}`;
     } else {
       document.getElementById('quest-name').textContent = 'Quest complete: The Vein';
       document.getElementById('quest-desc').textContent = "The Tinker traced every part back to something sealed beneath the Quarry floor. The Sunless Vault is yours to check out.";
@@ -241,8 +242,18 @@ function render(){
   } else if(isTownSquare){
     const gafferFlag = questState==='offer' ? 'offer' : (questState==='active' && tinesHeld>0 ? 'turnin' : null);
     const guildFlag = quest2State==='offer' ? 'offer' : (quest2State==='active' && state.commanderDefeated ? 'turnin' : null);
-    const hoodooFlag = quest3State==='offer' ? 'offer' : (quest3State==='active' && canBrew ? 'turnin' : null);
-    const tinkerFlag = (quest4State==='offer' || quest5State==='offer') ? 'offer' : ((quest4State==='active' && canReportDigger) || (quest5State==='active' && canTurnInVein) ? 'turnin' : null);
+    /* NOTE: the "ready to turn in" branches below must use the raw
+       underlying conditions (ingredientsHeld/state.quest4RareDefeated/
+       veinHeld), NOT canBrew/canReportDigger/canTurnInVein — those three
+       are gated by isHoodoo/isTinker (true only while standing inside
+       that building), which is always false here since this flag is
+       computed for the town-square scene. Using the gated versions was a
+       real bug: it made the green "turn it in" flag on the Hoodoo
+       Doctor's Shack and the Tinker's Workshop permanently unreachable
+       from the town square (only the red "quest offered" flag ever
+       showed). Don't reintroduce the gated variables here. */
+    const hoodooFlag = quest3State==='offer' ? 'offer' : (quest3State==='active' && ingredientsHeld === potionIngredients.length ? 'turnin' : null);
+    const tinkerFlag = (quest4State==='offer' || quest5State==='offer') ? 'offer' : ((quest4State==='active' && state.quest4RareDefeated) || (quest5State==='active' && veinHeld === veinNeeded) ? 'turnin' : null);
     document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag, tinkerFlag);
     document.getElementById('victory-banner').style.display = 'none';
   } else {
@@ -271,8 +282,14 @@ function countPotionIngredientsHeld(){
   return potionIngredients.filter(p => state.inventory.some(it => it.key === p.item.key)).length;
 }
 
+/* Sums held copies of each vein ingredient, capped per-type at
+   VEIN_ITEM_COUNT_NEEDED (holding extra copies of one type — which
+   shouldn't normally happen since winCombat() stops force-dropping once
+   the cap is reached — doesn't let it count toward a different type's
+   requirement). */
 function countVeinIngredientsHeld(){
-  return veinIngredients.filter(v => state.inventory.some(it => it.key === v.item.key)).length;
+  return veinIngredients.reduce((sum, v) =>
+    sum + Math.min(VEIN_ITEM_COUNT_NEEDED, state.inventory.filter(it => it.key === v.item.key).length), 0);
 }
 
 function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
@@ -562,7 +579,7 @@ function renderQuestLogDrawer(){
       <div class="quest-log-entry">
         <div class="quest-name">The Vein</div>
         <div class="quest-desc">Gather parts from monsters in the Clockwork Quarry and the Dank Sewers, then bring them to the Tinker.</div>
-        <div class="quest-progress">Parts gathered: ${countVeinIngredientsHeld()}/${veinIngredients.length}</div>
+        <div class="quest-progress">Parts gathered: ${countVeinIngredientsHeld()}/${veinIngredients.length*VEIN_ITEM_COUNT_NEEDED}</div>
       </div>`);
   }
 
