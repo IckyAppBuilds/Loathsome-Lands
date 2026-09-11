@@ -623,10 +623,23 @@ function brewPotion(){
   autosave();
 }
 
+/* Quest items (potion/vein ingredients, the rake tine) are unsellable while
+   their quest is still open — but once the quest is complete there's no
+   further use for them, so let them be junked like anything else.
+   QUEST_ITEM_COMPLETION_FLAG (content.js) maps each quest item's `key` to
+   the state flag that has to be true first. */
+function isQuestItemSellable(item){
+  if(!item || item.type !== 'quest') return false;
+  const flag = QUEST_ITEM_COMPLETION_FLAG[item.key];
+  return !!flag && !!state[flag];
+}
+
 function sellItemByName(name){
   if(state.location !== 'shop') return;
   const idxList = [];
-  state.inventory.forEach((it,i)=>{ if(it.name===name && (it.type==='junk' || it.type==='equip') && it.sell) idxList.push(i); });
+  state.inventory.forEach((it,i)=>{
+    if(it.name===name && it.sell && ((it.type==='junk' || it.type==='equip') || isQuestItemSellable(it))) idxList.push(i);
+  });
   if(idxList.length===0) return;
   const sellPrice = state.inventory[idxList[0]].sell;
   const count = idxList.length;
