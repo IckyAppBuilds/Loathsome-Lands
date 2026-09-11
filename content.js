@@ -56,13 +56,15 @@ const healItems = [
 /* ---------------- Equipment ---------------- */
 /* Starter gear — equipped automatically at the start of the game so the
    Character page's 5 equip slots (head/chest/legs/boots/weapon) aren't
-   just empty on day one. No stat bonuses; purely flavor. */
+   just empty on day one. No stat bonuses; purely flavor. Sellable for a
+   token 1 Pop Tab once unequipped, so a player who upgrades everything
+   isn't stuck holding useless gear forever. */
 const starterGear = {
-  weapon: { name:"a bent kitchen fork", desc:"Not built for combat. Works anyway, sort of.", type:"equip", slot:"weapon", bonus:{}, icon: iconFork },
-  head:   { name:"a floppy adventuring cap", desc:"Keeps the sun out of your eyes, mostly.", type:"equip", slot:"head", bonus:{}, icon: iconCap },
-  chest:  { name:"a slightly singed tunic", desc:"Smells like campfire. Always has.", type:"equip", slot:"chest", bonus:{}, icon: iconTunic },
-  legs:   { name:"hand-me-down trousers, one size too big", desc:"Held up entirely by hope and a length of twine.", type:"equip", slot:"legs", bonus:{}, icon: iconTrousers },
-  boots:  { name:"one good boot, one bad boot", desc:"You've stopped noticing the limp.", type:"equip", slot:"boots", bonus:{}, icon: iconMismatchedBoots },
+  weapon: { name:"a bent kitchen fork", desc:"Not built for combat. Works anyway, sort of.", type:"equip", slot:"weapon", bonus:{}, sell:1, icon: iconFork },
+  head:   { name:"a floppy adventuring cap", desc:"Keeps the sun out of your eyes, mostly.", type:"equip", slot:"head", bonus:{}, sell:1, icon: iconCap },
+  chest:  { name:"a slightly singed tunic", desc:"Smells like campfire. Always has.", type:"equip", slot:"chest", bonus:{}, sell:1, icon: iconTunic },
+  legs:   { name:"hand-me-down trousers, one size too big", desc:"Held up entirely by hope and a length of twine.", type:"equip", slot:"legs", bonus:{}, sell:1, icon: iconTrousers },
+  boots:  { name:"one good boot, one bad boot", desc:"You've stopped noticing the limp.", type:"equip", slot:"boots", bonus:{}, sell:1, icon: iconMismatchedBoots },
 };
 
 /* Shop-buyable upgrades, one or two per slot, each granting +1 to a stat. */
