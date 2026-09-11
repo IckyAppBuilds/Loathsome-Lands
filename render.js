@@ -177,6 +177,8 @@ function render(){
 
   renderInventory();
   renderAccountTab();
+  renderCharacterDrawer();
+  renderQuestLogDrawer();
   autosave();
 }
 
