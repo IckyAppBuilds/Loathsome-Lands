@@ -3,7 +3,7 @@ const monsters = [
   { name:"a disgruntled compost gnome", hp:9, atkMin:1, atkMax:2, xp:3, zone:"commons",
     art: artCompostGnome, loot:{name:"a fistful of righteous soil", desc:"Smells like victory and mulch.", type:"junk", sell:1, icon:iconSoil} },
   { name:"a feral lawn gnome, off its stake", hp:8, atkMin:1, atkMax:3, xp:4, zone:"commons",
-    art: artGnomeFeral, loot:{name:"a bent rake tine", desc:"Still menacing, somehow.", type:"quest", key:"rakeTine", icon:iconRakeTine} },
+    art: artGnomeFeral, loot:{name:"a bent rake tine", desc:"Still menacing, somehow.", type:"quest", key:"rakeTine", sell:2, icon:iconRakeTine} },
   { name:"a fishing gnome with an empty bucket", hp:11, atkMin:1, atkMax:2, xp:4, zone:"commons",
     art: artGnomeFishing, loot:{name:"a suspiciously confident lure", desc:"Has never once caught anything.", type:"junk", sell:2, icon:iconLure} },
   { name:"a gnome cavalry unit, mounted on a garden snail", hp:13, atkMin:1, atkMax:3, xp:5, zone:"commons",
@@ -197,13 +197,13 @@ const spells = [
    Two ingredients come from the Commons, two from the Dank Sewers. */
 const potionIngredients = [
   { monsterName:"a disgruntled compost gnome",
-    item:{ name:"a knot of fat white grubs", desc:"Wriggling, pale, and apparently essential to the recipe.", type:"quest", key:"potionWorms", icon:iconPotionWorms } },
+    item:{ name:"a knot of fat white grubs", desc:"Wriggling, pale, and apparently essential to the recipe.", type:"quest", key:"potionWorms", sell:2, icon:iconPotionWorms } },
   { monsterName:"a fishing gnome with an empty bucket",
-    item:{ name:"a jar of pond tadpoles", desc:"The fishing gnome never caught anything. You, apparently, just did.", type:"quest", key:"potionTadpole", icon:iconPotionTadpole } },
+    item:{ name:"a jar of pond tadpoles", desc:"The fishing gnome never caught anything. You, apparently, just did.", type:"quest", key:"potionTadpole", sell:2, icon:iconPotionTadpole } },
   { monsterName:"a sewer rat with delusions of grandeur",
-    item:{ name:"a gob of glowing sewer sludge", desc:"It hums faintly. That's probably fine.", type:"quest", key:"potionSludge", icon:iconPotionSludge } },
+    item:{ name:"a gob of glowing sewer sludge", desc:"It hums faintly. That's probably fine.", type:"quest", key:"potionSludge", sell:3, icon:iconPotionSludge } },
   { monsterName:"a rat wearing a bottlecap as a helmet",
-    item:{ name:"a whisker plucked from a suspiciously large rat", desc:"It practically vibrates with potency.", type:"quest", key:"potionWhisker", icon:iconPotionWhisker } },
+    item:{ name:"a whisker plucked from a suspiciously large rat", desc:"It practically vibrates with potency.", type:"quest", key:"potionWhisker", sell:3, icon:iconPotionWhisker } },
 ];
 
 /* ---------------- Vein ingredients (the Tinker's quest, "The Last Vein") ---------------- */
@@ -224,14 +224,25 @@ const potionIngredients = [
 const VEIN_ITEM_COUNT_NEEDED = 2;
 const veinIngredients = [
   { monsterName:"a wind-up quarry drone, badly wound",
-    item:{ name:"a still-ticking gear core", desc:"Keeps perfect time for a reason nobody can explain.", type:"quest", key:"veinGearCore", icon:iconVeinGearCore } },
+    item:{ name:"a still-ticking gear core", desc:"Keeps perfect time for a reason nobody can explain.", type:"quest", key:"veinGearCore", sell:4, icon:iconVeinGearCore } },
   { monsterName:"a pickaxe golem, held together by spite",
-    item:{ name:"a vein-streaked ore chunk", desc:"Heavier than it looks. Warmer too.", type:"quest", key:"veinOreChunk", icon:iconVeinOreChunk } },
+    item:{ name:"a vein-streaked ore chunk", desc:"Heavier than it looks. Warmer too.", type:"quest", key:"veinOreChunk", sell:5, icon:iconVeinOreChunk } },
   { monsterName:"a positively enormous sewer rat",
-    item:{ name:"a fist-sized raw gemstone", desc:"How a sewer rat came by this is a question best not asked.", type:"quest", key:"veinGemstone", icon:iconVeinGemstone } },
+    item:{ name:"a fist-sized raw gemstone", desc:"How a sewer rat came by this is a question best not asked.", type:"quest", key:"veinGemstone", sell:4, icon:iconVeinGemstone } },
   { monsterName:"three rats in a trenchcoat, unconvincingly",
-    item:{ name:"a tangle of copper wiring", desc:"All three rats insist it was already like that.", type:"quest", key:"veinWiring", icon:iconVeinWiring } },
+    item:{ name:"a tangle of copper wiring", desc:"All three rats insist it was already like that.", type:"quest", key:"veinWiring", sell:4, icon:iconVeinWiring } },
 ];
+
+/* Which state flag has to be true before a given quest item (by its `key`)
+   can be sold as junk — see isQuestItemSellable()/sellItemByName() in
+   game.js. Built from the item lists above instead of hand-typed so a
+   future quest item just needs to exist in one of these arrays (or get a
+   new entry here directly) rather than being forgotten in a third place. */
+const QUEST_ITEM_COMPLETION_FLAG = {
+  rakeTine: 'questComplete',
+  ...Object.fromEntries(potionIngredients.map(p => [p.item.key, 'quest3Complete'])),
+  ...Object.fromEntries(veinIngredients.map(v => [v.item.key, 'quest5Complete'])),
+};
 
 /* ---------------- Class titles (level-10 Guild capstone, "The Adventurer's Trial") ---------------- */
 /* Awarded by claimClassPath() in game.js based on whichever stat the player
