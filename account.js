@@ -103,6 +103,67 @@ function enterGameAfterAuth(loaded){
   }
 }
 
+/* ---------------- Dev account & testing tools ---------------- */
+/* Usernames in this list get devMode auto-enabled on login and extra reset
+   buttons in the Account drawer, for testing content from any game state
+   without having to grind there legitimately. Not a security boundary —
+   just a testing convenience gated behind a specific account, the same
+   spirit as the ?dev=1 URL flag. Compared case-insensitively since
+   Supabase usernames aren't normalized on registration. */
+const DEV_USERNAMES = ['ickyadmin'];
+function isDevAccount(){
+  return !!acctUsername && DEV_USERNAMES.includes(acctUsername.toLowerCase());
+}
+
+/* Resets level/stats/HP/MP back to a fresh level 1, independent of quest
+   progress — lets a dev account re-test leveling, stat spending, and the
+   level-10 class quest gate without touching quest flags. Also clears the
+   class quest itself since it's gated on level>=10 and would otherwise be
+   left in a stale "already claimed" state after a level reset. */
+function resetLevelDev(){
+  if(!isDevAccount()) return;
+  if(!confirm('Reset level, XP, stats and the class quest back to a fresh level 1? Quest progress is untouched.')) return;
+  state.level = 1; state.xp = 0; state.xpToLevel = 40;
+  state.stats = { beef:0, zip:0, grit:0, hoodoo:0 };
+  state.statPoints = 0;
+  state.baseMaxHp = 30; state.baseMaxMp = 10;
+  state.classQuestAccepted = false; state.classQuestComplete = false; state.classTitle = null;
+  recomputeMaxStats();
+  state.hp = state.maxHp; state.mp = state.maxMp;
+  clearLog();
+  log('[Dev] Level, stats, and the class quest have been reset.');
+  render();
+  autosave();
+}
+
+/* Resets every quest flag (and the zone unlocks that ride on them) back to
+   never-started, so a dev account can replay quest 1 through the class
+   quest from scratch. Also strips any quest items already held — they'd
+   otherwise be stuck in the Pack, no longer tied to an active quest and
+   not yet sellable (selling a quest item requires its quest to be
+   complete — see isQuestItemSellable() in game.js). Leaves level/stats/
+   Pop Tabs/inventory-otherwise alone; pair with Reset Level for a fully
+   fresh run. */
+function resetQuestsDev(){
+  if(!isDevAccount()) return;
+  if(!confirm('Reset all quest progress (including zone unlocks) back to never-started? Quest items in your Pack will be cleared. Level/stats are untouched.')) return;
+  Object.assign(state, {
+    questTinesGiven: 0, questAccepted: false, questComplete: false,
+    quest2Accepted: false, commanderDefeated: false, quest2Complete: false,
+    quest3Accepted: false, quest3Complete: false,
+    quest4Accepted: false, quest4RareDefeated: false, quest4Complete: false,
+    quest5Accepted: false, quest5Complete: false,
+    classQuestAccepted: false, classQuestComplete: false, classTitle: null,
+  });
+  state.inventory = state.inventory.filter(it => it.type !== 'quest');
+  state.location = 'town';
+  recomputeMaxStats();
+  clearLog();
+  log('[Dev] All quest progress and zone unlocks have been reset.');
+  render();
+  autosave();
+}
+
 /* ---------------- Account drawer (available during play regardless of guest/signed-in status) ---------------- */
 function renderAccountTab(){
   const btn = document.getElementById('account-tab-btn');
@@ -130,6 +191,13 @@ function renderAccountTab(){
   if(!el) return;
 
   if(acctSession){
+    const devPanel = isDevAccount() ? `
+      <div class="acct-status-line" style="margin-top:14px;">⚙ Dev account — testing tools:</div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="resetLevelDev()">Reset Level</button>
+        <button class="btn-secondary" onclick="resetQuestsDev()">Reset Quests</button>
+      </div>
+    ` : '';
     el.innerHTML = `
       <div class="acct-status-line">Signed in as <b>${acctUsername || '...'}</b> — your progress saves automatically as you play.</div>
       <div class="btn-row">
@@ -140,6 +208,7 @@ function renderAccountTab(){
         <button class="btn-secondary" onclick="doLogout()">Log Out</button>
       </div>
       <div class="acct-msg" id="acct-msg"></div>
+      ${devPanel}
     `;
     return;
   }
@@ -260,6 +329,12 @@ if(sb){
     }
     acctSession = session || null;
     acctUsername = session ? (session.user.user_metadata && session.user.user_metadata.username) : null;
+    /* Auto-enable devMode for the designated dev account(s) — see
+       isDevAccount() above. Doesn't fight a manual toggle afterward; this
+       just sets the starting state on sign-in so unlimited Biscuits are
+       there from the first click without needing ?dev=1 or the header
+       toggle. */
+    if(isDevAccount()) devMode = true;
     renderAccountTab();
 
     /* INITIAL_SESSION fires once, shortly after the client is created, with
