@@ -88,7 +88,7 @@
   .fill-mp{ background:var(--blue); }
   .fill-xp{ background:var(--magenta); }
   .stat .value{ font-size:0.68rem; font-weight:700; }
-  .biscuit-stat{ flex:0 0 auto; text-align:center; cursor:pointer; }
+  .biscuit-stat{ flex:0 0 auto; text-align:center; }
   .biscuit-stat.dev-active{ border-color:var(--green); box-shadow:0 0 0 2px var(--green) inset; }
   .poptab-stat{ flex:0 0 auto; text-align:center; margin-left:6px; }
   .biscuit-count{
