@@ -45,12 +45,14 @@ const COMMANDER_SPAWN_CHANCE = 0.02;
 /* Rare hunt target for the Tinker's quest, "Gears in the Dark" — spawns in
    the Dank Sewers while state.quest4Accepted is true and the quest isn't
    complete yet, same mechanic as gnomeCommander above (see
-   diggerBotHunt in goAdventuring()). */
+   diggerBotHunt in goAdventuring()). Tuned tougher than a first pass
+   (spawn chance lower, HP higher than gnomeCommander) per user feedback
+   that quest 4 was completing too fast — see DIGGERBOT_SPAWN_CHANCE. */
 const diggerBot = {
-  name:"a runaway digger-bot, venting steam", hp:40, atkMin:4, atkMax:8, xp:22, rare:true, zone:"sewers",
+  name:"a runaway digger-bot, venting steam", hp:55, atkMin:4, atkMax:8, xp:22, rare:true, zone:"sewers",
   art: artDiggerBot, loot:null
 };
-const DIGGERBOT_SPAWN_CHANCE = 0.02;
+const DIGGERBOT_SPAWN_CHANCE = 0.012;
 
 const rareDrops = [
   { name:"a suspiciously ornate gnome figurine", desc:"You could swear it's watching you.", type:"junk", sell:8, icon:iconFigurine },
@@ -151,7 +153,15 @@ const potionIngredients = [
    Two ingredients come from the Clockwork Quarry, two from monsters in the
    Dank Sewers that quest 3 doesn't already use (the enormous sewer rat and
    the trio in a trenchcoat), so the two gather quests never compete over
-   the same kill. */
+   the same kill.
+
+   VEIN_ITEM_COUNT_NEEDED copies of EACH ingredient are required (not just
+   one) — raised from 1 to 2 per user feedback that quest 5 was completing
+   too fast. winCombat()'s needsVeinIngredient check, countVeinIngredients-
+   Held(), and turnInVein() (all in game.js/render.js) all read this
+   constant rather than hardcoding "1", so bumping it here is the only
+   change needed to retune the whole quest's length. */
+const VEIN_ITEM_COUNT_NEEDED = 2;
 const veinIngredients = [
   { monsterName:"a wind-up quarry drone, badly wound",
     item:{ name:"a still-ticking gear core", desc:"Keeps perfect time for a reason nobody can explain.", type:"quest", key:"veinGearCore", icon:iconVeinGearCore } },
