@@ -161,13 +161,22 @@ function winCombat(){
   const defeatedName = state.monster.name;
   const xpGain = state.monster.xp;
   const wasCommander = !!state.monster.rare;
-  const isNeededQuestItem = state.monster.loot && state.monster.loot.key==='rakeTine' && state.questAccepted && !state.questComplete;
+  /* Rake tines are a quest item (key:'rakeTine') and the feral lawn gnome's
+     ONLY loot entry — so without this gate they'd drop via the generic 70%
+     roll below even before the quest is accepted or after it's turned in,
+     leaving the player holding unsellable junk with nowhere to use it.
+     Quest items should only ever show up while their quest is actually
+     active. */
+  const isRakeTineLoot = state.monster.loot && state.monster.loot.key==='rakeTine';
+  const isNeededQuestItem = isRakeTineLoot && state.questAccepted && !state.questComplete;
   const potionIngredient = potionIngredients.find(p => p.monsterName === state.monster.name);
   const needsPotionIngredient = potionIngredient && state.quest3Accepted && !state.quest3Complete
     && !state.inventory.some(it => it.key === potionIngredient.item.key);
   const lootRoll = needsPotionIngredient
     ? potionIngredient.item
-    : (state.monster.loot && (isNeededQuestItem || Math.random()<0.7) ? state.monster.loot : null);
+    : isRakeTineLoot
+      ? (isNeededQuestItem ? state.monster.loot : null) /* never drops outside the quest window */
+      : (state.monster.loot && Math.random()<0.7 ? state.monster.loot : null);
   const rareRoll = Math.random()<RARE_DROP_CHANCE ? rareDrops[Math.floor(Math.random()*rareDrops.length)] : null;
 
   state.victoryMonster = { art: state.monster.art, name: state.monster.name };
@@ -453,7 +462,7 @@ function brewPotion(){
 function sellItemByName(name){
   if(state.location !== 'shop') return;
   const idxList = [];
-  state.inventory.forEach((it,i)=>{ if(it.name===name && it.type==='junk' && it.sell) idxList.push(i); });
+  state.inventory.forEach((it,i)=>{ if(it.name===name && (it.type==='junk' || it.type==='equip') && it.sell) idxList.push(i); });
   if(idxList.length===0) return;
   const sellPrice = state.inventory[idxList[0]].sell;
   const count = idxList.length;
