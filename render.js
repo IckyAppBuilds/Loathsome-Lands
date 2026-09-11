@@ -334,10 +334,14 @@ function renderInventory(){
     const iconSvg = item.icon ? item.icon() : '';
     const qtyBadge = count>1 ? `<span class="qty-badge">×${count}</span>` : '';
     const slotBadge = item.type==='equip' ? ` <span class="qty-badge">${SLOT_LABELS[item.slot]}</span>` : '';
+    /* Quest-turn-in items (potion/vein ingredients, rake tines) all carry
+       type:"quest" (see content.js) — flag them here so they read as
+       distinct from ordinary junk/loot at a glance, per user feedback. */
+    const questBadge = item.type==='quest' ? ` <span class="quest-badge">Quest Item</span>` : '';
     const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
       ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
       : '';
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name}${qtyBadge}${slotBadge}</div><div class="desc">${item.desc}${bonusText}</div>${btn}</div>`;
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name}${qtyBadge}${slotBadge}${questBadge}</div><div class="desc">${item.desc}${bonusText}</div>${btn}</div>`;
     list.appendChild(div);
   });
 }
