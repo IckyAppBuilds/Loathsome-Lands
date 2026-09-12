@@ -22,6 +22,24 @@
     </div>
   </div>
 
+  <div id="tutorial-screen">
+    <div class="tutorial-inner">
+      <div class="drawer-header">
+        <span>How to Play</span>
+        <span class="close" onclick="closeTutorial()">✕</span>
+      </div>
+      <div class="tutorial-body" id="tutorial-body"></div>
+      <div class="tutorial-dots" id="tutorial-dots"></div>
+      <div class="btn-row tutorial-nav-row">
+        <button class="btn-secondary" id="tutorial-back-btn" onclick="tutorialBack()">Back</button>
+        <button class="btn-primary" id="tutorial-next-btn" onclick="tutorialNext()">Next</button>
+      </div>
+      <div class="tutorial-skip-row">
+        <span class="acct-link" onclick="tutorialSkip()">Skip tutorial</span>
+      </div>
+    </div>
+  </div>
+
   <header>
     <h1>The Loathsome Lands</h1>
     <div class="stats-row">
