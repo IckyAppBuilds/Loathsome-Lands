@@ -761,7 +761,11 @@ document.getElementById('scene-art').addEventListener('click', function(e){
 /* Seed a brand-new run: starter gear (equipped) and a couple of starter
    items, then the opening log line. Called for a guest, for a freshly
    registered/logged-in account with no save yet, and (in degraded mode,
-   no Supabase) unconditionally at boot. */
+   no Supabase) unconditionally at boot. Being the single choke point for
+   all three of those cases is also exactly why the tutorial overlay
+   (account.js) opens itself here, at the very end — it's shown once per
+   brand-new run and never for a returning player whose save was found
+   (that path is enterGameAfterAuth(true), which never calls this). */
 function startFreshGame(){
   Object.keys(starterGear).forEach(slot => { state.equipment[slot] = {...starterGear[slot]}; });
   recomputeMaxStats();
@@ -770,6 +774,7 @@ function startFreshGame(){
   log("You arrive in Gladstone Hollow. A cottage on the square has a rather urgent-looking flag over it.");
   if(devMode) log("Dev mode ON (via ?dev=1) — Biscuits won't run out.");
   render();
+  openTutorial();
 }
 
 /* ---------------- Boot ---------------- */
