@@ -664,3 +664,64 @@
     text-align:center;
     margin-top:6px;
   }
+
+  /* ---- Tutorial overlay ---- */
+  /* Same full-screen-card pattern as #gate-screen above, but shown *over*
+     the running game (after the gate has already closed) rather than in
+     place of it — so it sits one z-index higher, and is a flex COLUMN
+     (header / scrollable body / dots / nav) rather than a centered card,
+     since its content needs to fit and scroll on a short phone screen. */
+  #tutorial-screen{
+    position:absolute; inset:0; z-index:21;
+    background:var(--white);
+    background-image: radial-gradient(circle, #2b2b2809 1px, transparent 1px);
+    background-size: 14px 14px;
+    display:none;
+    flex-direction:column;
+  }
+  .tutorial-inner{
+    display:flex;
+    flex-direction:column;
+    height:100%;
+  }
+  .tutorial-body{
+    flex:1;
+    overflow-y:auto;
+    padding:16px 18px;
+  }
+  .tutorial-step-title{
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--blue);
+    margin:0 0 12px;
+  }
+  .tutorial-list{
+    margin:0;
+    padding-left:18px;
+    font-size:0.84rem;
+    line-height:1.55;
+  }
+  .tutorial-list li{ margin-bottom:9px; }
+  .tutorial-list li:last-child{ margin-bottom:0; }
+  .tutorial-dots{
+    display:flex;
+    justify-content:center;
+    gap:6px;
+    padding:2px 0 12px;
+    flex-shrink:0;
+  }
+  .tutorial-dot{
+    width:9px; height:9px;
+    border:2px solid var(--black);
+    background:var(--white);
+  }
+  .tutorial-dot.active{ background:var(--yellow); }
+  .tutorial-nav-row{
+    padding:0 18px;
+    flex-shrink:0;
+  }
+  .tutorial-skip-row{
+    text-align:center;
+    padding:0 18px 16px;
+    flex-shrink:0;
+  }
