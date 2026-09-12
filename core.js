@@ -68,6 +68,7 @@ const state = {
   showVictory: false,
   victoryMonster: null,
   location: 'town',
+  homeTown: 'town', /* last town square visited — see TOWN_HUBS in game.js. What a returning player logs back into, regardless of state.location. */
   questTinesGiven: 0,
   questAccepted: false,
   questComplete: false,
