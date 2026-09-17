@@ -306,6 +306,17 @@ function clearLog(){
   document.getElementById('log').innerHTML = '';
 }
 
+/* Section order + heading for renderInventory() below. Every item type in
+   content.js falls into exactly one of these buckets (see the type-string
+   audit in the surrounding history) — consumables first since they're what
+   you reach for mid-run, then Equipment, then Quest Items, then plain Loot. */
+const INVENTORY_SECTIONS = [
+  { types:['hp','mp','luck'], title:'Potions & Consumables' },
+  { types:['equip'], title:'Equipment' },
+  { types:['quest'], title:'Quest Items' },
+  { types:['junk'], title:'Loot' },
+];
+
 function renderInventory(){
   const list = document.getElementById('inv-list');
   if(state.inventory.length===0){
@@ -322,27 +333,47 @@ function renderInventory(){
     groups.get(item.name).count++;
   });
 
-  groups.forEach(({item, count, firstIdx})=>{
-    const div = document.createElement('div');
-    div.className='inv-item';
-    let btn = '';
-    if(item.type==='hp' || item.type==='mp' || item.type==='luck'){
-      btn = `<button class="btn-secondary" onclick="useItem(${firstIdx})">Use</button>`;
-    } else if(item.type==='equip'){
-      btn = `<button class="btn-secondary" onclick="equipItem(${firstIdx})">Equip</button>`;
-    }
-    const iconSvg = item.icon ? item.icon() : '';
-    const qtyBadge = count>1 ? `<span class="qty-badge">×${count}</span>` : '';
-    const slotBadge = item.type==='equip' ? ` <span class="qty-badge">${SLOT_LABELS[item.slot]}</span>` : '';
-    /* Quest-turn-in items (potion/vein ingredients, rake tines) all carry
-       type:"quest" (see content.js) — flag them here so they read as
-       distinct from ordinary junk/loot at a glance, per user feedback. */
-    const questBadge = item.type==='quest' ? ` <span class="quest-badge">Quest Item</span>` : '';
-    const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
-      ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
-      : '';
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name}${qtyBadge}${slotBadge}${questBadge}</div><div class="desc">${item.desc}${bonusText}</div>${btn}</div>`;
-    list.appendChild(div);
+  /* Display order is (fixed type bucket, then name) rather than raw
+     state.inventory position. Array position isn't stable: using one
+     potion out of a stack splices that exact slot out, and equipping a
+     new item pushes the piece it replaces onto the end of the array — so
+     grouping straight off array order used to make the whole list
+     visually reshuffle every time you used or equipped something. Sorting
+     by what the item IS instead of where it currently sits means a given
+     item always lands in the same spot. firstIdx is still whatever index
+     that stack currently occupies, for the Use/Equip button below — that
+     part is unaffected, only the ordering of the groups is. */
+  const sorted = [...groups.values()].sort((a,b)=>a.item.name.localeCompare(b.item.name));
+
+  INVENTORY_SECTIONS.forEach(section=>{
+    const entries = sorted.filter(g => section.types.includes(g.item.type));
+    if(entries.length===0) return;
+    const header = document.createElement('div');
+    header.className = 'shop-section-title';
+    header.textContent = section.title;
+    list.appendChild(header);
+    entries.forEach(({item, count, firstIdx})=>{
+      const div = document.createElement('div');
+      div.className='inv-item';
+      let btn = '';
+      if(item.type==='hp' || item.type==='mp' || item.type==='luck'){
+        btn = `<button class="btn-secondary" onclick="useItem(${firstIdx})">Use</button>`;
+      } else if(item.type==='equip'){
+        btn = `<button class="btn-secondary" onclick="equipItem(${firstIdx})">Equip</button>`;
+      }
+      const iconSvg = item.icon ? item.icon() : '';
+      const qtyBadge = count>1 ? `<span class="qty-badge">×${count}</span>` : '';
+      const slotBadge = item.type==='equip' ? ` <span class="qty-badge">${SLOT_LABELS[item.slot]}</span>` : '';
+      /* Quest-turn-in items (potion/vein ingredients, rake tines) all carry
+         type:"quest" (see content.js) — flag them here so they read as
+         distinct from ordinary junk/loot at a glance, per user feedback. */
+      const questBadge = item.type==='quest' ? ` <span class="quest-badge">Quest Item</span>` : '';
+      const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
+        ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
+        : '';
+      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name}${qtyBadge}${slotBadge}${questBadge}</div><div class="desc">${item.desc}${bonusText}</div>${btn}</div>`;
+      list.appendChild(div);
+    });
   });
 }
 
@@ -378,7 +409,11 @@ function renderShop(){
       if(!groups.has(item.name)) groups.set(item.name, { item, count:0 });
       groups.get(item.name).count++;
     });
-    groups.forEach(({item, count})=>{
+    /* Sort by name rather than trusting state.inventory's current order —
+       same reasoning as renderInventory() above: that order shifts under
+       this list's feet whenever items are used/equipped elsewhere, which
+       made entries here reshuffle too even though nothing was sold. */
+    [...groups.values()].sort((a,b)=>a.item.name.localeCompare(b.item.name)).forEach(({item, count})=>{
       const div = document.createElement('div');
       div.className = 'shop-item';
       const iconSvg = item.icon ? item.icon() : '';
