@@ -616,6 +616,11 @@ if(sb){
 function allItemDefs(){
   const monsterLoot = monsters.map(m => m.loot).filter(Boolean);
   const commanderLoot = gnomeCommander.loot ? [gnomeCommander.loot] : [];
+  /* Rare drops are per-monster (state.monster.rareDrop, content.js) rather
+     than one shared rareDrops[] array — collect every monster's own rare
+     item here so hydrateItem() can still look each one up by name after a
+     save/reload, same as monsterLoot above. */
+  const monsterRareDrops = monsters.map(m => m.rareDrop).filter(Boolean);
   const potionIngredientItems = potionIngredients.map(p => p.item);
   /* veinIngredients (quest 5's gather items, content.js) were missing here
      — hydrateItem() below would silently drop them from inventory on
@@ -623,7 +628,7 @@ function allItemDefs(){
      of tagging quest items in the inventory UI. */
   const veinIngredientItems = veinIngredients.map(v => v.item);
   return [...healItems, ...shopBuyItems, ...monsterLoot, ...commanderLoot,
-          ...rareDrops, ...Object.values(starterGear), ...potionIngredientItems,
+          ...monsterRareDrops, ...Object.values(starterGear), ...potionIngredientItems,
           ...veinIngredientItems];
 }
 function itemByName(name){
@@ -644,7 +649,7 @@ function serializeState(){
      claiming a class title would revert it. Fixed alongside the similar
      allItemDefs() gap above. */
   const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
-          lastRegenAt, level, xp, xpToLevel, stats, statPoints, location,
+          lastRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
           spellsKnown, questTinesGiven, questAccepted, questComplete, quest2Accepted,
           commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
           quest4Accepted, quest4RareDefeated, quest4Complete,
@@ -652,7 +657,7 @@ function serializeState(){
           classQuestAccepted, classQuestComplete, classTitle } = state;
   return {
     hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
-    lastRegenAt, level, xp, xpToLevel, stats, statPoints, location,
+    lastRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
     spellsKnown, questTinesGiven, questAccepted, questComplete, quest2Accepted,
     commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
     quest4Accepted, quest4RareDefeated, quest4Complete,
@@ -674,6 +679,14 @@ function hydrateState(saved){
   state.inCombat = false; state.monster = null;
   state.showVictory = false; state.victoryMonster = null;
   combatSubView = 'main';
+  /* Never resume inside a shop interior, an adventure zone, or mid-combat —
+     always land back in a town square. Older saves (or a corrupted/unknown
+     value) have no valid homeTown, so fall back to Gladstone Hollow ('town').
+     Once a second town exists (added to TOWN_HUBS in game.js), this already
+     sends a returning player back to whichever town they were actually in,
+     not always the original one. */
+  state.homeTown = TOWN_HUBS.includes(saved.homeTown) ? saved.homeTown : 'town';
+  state.location = state.homeTown;
   recomputeMaxStats();
 }
 
