@@ -1,5 +1,12 @@
 /* ---------------- Core loop ---------------- */
 const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault'];
+/* Every location id that counts as a town square (as opposed to a shop
+   interior inside one, or an adventure zone reached from one). Right now
+   there's only Gladstone Hollow ('town'), but this is the list a future
+   second/third town gets added to — see state.homeTown below and
+   hydrateState() in account.js, which use this list to decide where a
+   returning player lands on login rather than hardcoding 'town'. */
+const TOWN_HUBS = ['town'];
 function goAdventuring(){
   if(state.inCombat || !ADVENTURE_ZONES.includes(state.location)) return;
   regenBiscuits();
@@ -213,7 +220,11 @@ function winCombat(){
       : isRakeTineLoot
         ? (isNeededQuestItem ? state.monster.loot : null) /* never drops outside the quest window */
         : (state.monster.loot && Math.random()<0.7 ? state.monster.loot : null);
-  const rareRoll = Math.random()<RARE_DROP_CHANCE ? rareDrops[Math.floor(Math.random()*rareDrops.length)] : null;
+  /* Rare drops are per-monster now (state.monster.rareDrop, set in
+     monsters[] in content.js) rather than a random pick from one shared
+     pool — gnomeCommander/diggerBot don't carry one, so this simply never
+     fires for them. */
+  const rareRoll = state.monster.rareDrop && Math.random()<RARE_DROP_CHANCE ? state.monster.rareDrop : null;
 
   state.victoryMonster = { art: state.monster.art, name: state.monster.name };
   state.showVictory = true;
@@ -336,6 +347,13 @@ function travelTo(dest){
     clearLog();
     log("You pry open the sealed door at the bottom of the Quarry and step into the Sunless Vault. It's colder than it should be.");
   }
+  /* Track the last town square the player actually stood in, separately
+     from state.location — shop interiors and adventure zones pass through
+     here too, but only a TOWN_HUBS arrival should update it. This is what
+     login snaps back to (see hydrateState() in account.js), so a future
+     second town doesn't need any new login logic, just an entry here and
+     an addition to TOWN_HUBS. */
+  if(TOWN_HUBS.includes(state.location)) state.homeTown = state.location;
   closeAllDrawers();
   render();
 }
@@ -694,7 +712,7 @@ function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
 /* ---------------- Biscuit regeneration ---------------- */
 const BISCUIT_MAX = 200;
-const BISCUIT_REGEN_MS = 60 * 1000; /* one new Biscuit every minute */
+const BISCUIT_REGEN_MS = 3 * 60 * 1000; /* one new Biscuit every 3 minutes */
 
 function regenBiscuits(){
   if(state.adventures >= BISCUIT_MAX){
