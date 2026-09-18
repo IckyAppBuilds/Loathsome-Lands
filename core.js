@@ -56,6 +56,7 @@ const state = {
      baseMaxMp: 10, /* level-derived MP ceiling, before Hoodoo bonuses */
      adventures: 100, /* "Biscuits" */
      popTabs: 0,
+  bountyTokens: 0, /* earned only from the Bounty Board (see BOUNTY_TEMPLATES/claimBounty) — a separate currency from Pop Tabs, meant for a future gear exchange. Not spendable anywhere yet. */
      lastRegenAt: Date.now(),
      level: 1, xp: 0, xpToLevel: 40,
      stats: { beef: 0, zip: 0, grit: 0, hoodoo: 0 },
