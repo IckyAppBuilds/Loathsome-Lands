@@ -57,6 +57,8 @@ const state = {
      adventures: 100, /* "Biscuits" */
      popTabs: 0,
   bountyTokens: 0, /* earned only from the Bounty Board (see BOUNTY_TEMPLATES/claimBounty) — a separate currency from Pop Tabs, meant for a future gear exchange. Not spendable anywhere yet. */
+     lotTier: 0, /* the town-square Town Lot (translate(200,100) in artTownSquare()) — 0 = unpurchased "Empty Lot". See LOT_TIER_NAMES/LOT_TIER_COST (content.js) and buyTownLot()/upgradeTownLot() (game.js). Buying tier 1 is what unlocks buildingUpgrades below. */
+     buildingUpgrades: {}, /* key = a BUILDING_UPGRADES entry's key (content.js) -> upgrade level, 0..BUILDING_UPGRADE_MAX. Missing keys read as level 0 — see upgradeBuilding()/buildingUpgradeLevel() in game.js. Levels are tracked only for now; they don't change anything about the buildings yet (see content.js comment above BUILDING_UPGRADES). */
      lastRegenAt: Date.now(),
      level: 1, xp: 0, xpToLevel: 40,
      stats: { beef: 0, zip: 0, grit: 0, hoodoo: 0 },
@@ -325,7 +327,7 @@ function artTinker(){
      return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M36 18 L64 18 L62 24 L38 24 Z" fill="#8a8477"/><rect x="34" y="36" width="32" height="42" fill="#3d5a80"/><circle cx="42" cy="50" r="6" fill="#d1a94e"/><circle cx="42" cy="50" r="2" fill="#2b2b28" stroke="none"/><rect x="54" y="46" width="10" height="10" fill="#b9b3a4"/><line x1="34" y1="40" x2="18" y2="52"/><path d="M18 52 Q10 52 12 44" fill="none" stroke-width="2.5"/><line x1="66" y1="40" x2="80" y2="48"/><line x1="50" y1="78" x2="42" y2="98"/><line x1="50" y1="78" x2="58" y2="98"/>`, 0);
 }
 
-function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlagType){
+function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlagType, lotTier){
    const makeFlag = (flagType) => {
       if(!flagType) return '';
       const bg = flagType==='offer' ? '#b5453f' : '#5c8a5c';
@@ -388,6 +390,31 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <rect x="58" y="40" width="8" height="8" fill="#f4efe4"/>
    ${makeFlag(tinkerFlagType)}
    ${plate("Tinker's Workshop", 6)}
+   </g>
+
+   <g transform="translate(200,100)" class="building-hit" data-action="townlot">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   ${lotTier===0 ? `
+   <rect x="16" y="40" width="68" height="34" fill="#5c8a5c" stroke-dasharray="5,4"/>
+   ` : lotTier===1 ? `
+   <rect x="16" y="40" width="68" height="34" fill="#5c8a5c"/>
+   <line x1="16" y1="52" x2="30" y2="46"/><line x1="30" y1="46" x2="30" y2="72"/>
+   <line x1="40" y1="44" x2="40" y2="72"/><line x1="60" y1="44" x2="60" y2="72"/>
+   <line x1="70" y1="46" x2="84" y2="52"/>
+   ` : lotTier===2 ? `
+   <rect x="16" y="40" width="68" height="34" fill="#5c8a5c"/>
+   <path d="M32 46 L50 32 L68 46 Z" fill="#8a8477"/>
+   <rect x="38" y="46" width="24" height="22" fill="#a97c53"/>
+   <rect x="46" y="56" width="8" height="12" fill="#5f4632"/>
+   ` : `
+   <rect x="16" y="40" width="68" height="34" fill="#5c8a5c"/>
+   <path d="M18 40 L50 16 L82 40 Z" fill="#3d5a80"/>
+   <rect x="26" y="40" width="48" height="34" fill="#b9b3a4"/>
+   <rect x="43" y="52" width="14" height="22" fill="#5f4632"/>
+   <rect x="30" y="46" width="8" height="8" fill="#f4efe4"/>
+   <rect x="62" y="46" width="8" height="8" fill="#f4efe4"/>
+   `}
+   ${plate(lotTier===0 ? 'Empty Lot' : (lotTier>=3 ? 'Town Hall' : 'Town Lot'), 9)}
    </g>
 
    <g transform="translate(100,200)" class="building-hit" data-action="shop">
