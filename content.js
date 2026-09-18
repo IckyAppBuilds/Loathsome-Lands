@@ -356,13 +356,14 @@ than looked up from the monster) both for display and so winCombat() can
 check the player actually killed it in the right zone, since names alone
 aren't guaranteed unique across zones. Rewards scale with ZONE_DIFFICULTY —
 a Commons bounty pays out less than a Gnometropolis one. */
+/* Reward is paid in Bounty Tokens (state.bountyTokens), not Pop Tabs — a separate currency meant for a future gear exchange. See claimBounty() in game.js. */
 const BOUNTY_TEMPLATES = [
-   { id:'bounty_commons_compost', type:'kill', monsterName:"a disgruntled compost gnome", zone:'commons', count:6, reward:{popTabs:10} },
-   { id:'bounty_commons_sergeant', type:'kill', monsterName:"the self-appointed gnome sergeant", zone:'commons', count:4, reward:{popTabs:13} },
-   { id:'bounty_sewers_rat', type:'kill', monsterName:"a sewer rat with delusions of grandeur", zone:'sewers', count:6, reward:{popTabs:16} },
-   { id:'bounty_sewers_giant', type:'kill', monsterName:"a positively enormous sewer rat", zone:'sewers', count:5, reward:{popTabs:19} },
-   { id:'bounty_quarry_drone', type:'kill', monsterName:"a wind-up quarry drone, badly wound", zone:'quarry', count:5, reward:{popTabs:23} },
-   { id:'bounty_vault_wisp', type:'kill', monsterName:"a vault wisp, humming with old magic", zone:'vault', count:5, reward:{popTabs:28} },
-   { id:'bounty_gnometropolis_vizier', type:'kill', monsterName:"a gnome vizier, draped in stolen finery", zone:'gnometropolis', count:4, reward:{popTabs:34} },
-   { id:'bounty_gnometropolis_automaton', type:'kill', monsterName:"a rogue clockwork automaton, sparking wildly", zone:'gnometropolis', count:4, reward:{popTabs:40} },
+   { id:'bounty_commons_compost', type:'kill', monsterName:"a disgruntled compost gnome", zone:'commons', count:6, reward:{bountyTokens:1} },
+   { id:'bounty_commons_sergeant', type:'kill', monsterName:"the self-appointed gnome sergeant", zone:'commons', count:4, reward:{bountyTokens:1} },
+   { id:'bounty_sewers_rat', type:'kill', monsterName:"a sewer rat with delusions of grandeur", zone:'sewers', count:6, reward:{bountyTokens:2} },
+   { id:'bounty_sewers_giant', type:'kill', monsterName:"a positively enormous sewer rat", zone:'sewers', count:5, reward:{bountyTokens:2} },
+   { id:'bounty_quarry_drone', type:'kill', monsterName:"a wind-up quarry drone, badly wound", zone:'quarry', count:5, reward:{bountyTokens:2} },
+   { id:'bounty_vault_wisp', type:'kill', monsterName:"a vault wisp, humming with old magic", zone:'vault', count:5, reward:{bountyTokens:3} },
+   { id:'bounty_gnometropolis_vizier', type:'kill', monsterName:"a gnome vizier, draped in stolen finery", zone:'gnometropolis', count:4, reward:{bountyTokens:3} },
+   { id:'bounty_gnometropolis_automaton', type:'kill', monsterName:"a rogue clockwork automaton, sparking wildly", zone:'gnometropolis', count:4, reward:{bountyTokens:4} },
    ];
