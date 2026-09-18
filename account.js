@@ -245,6 +245,25 @@ function setBountyTokensDev(){
    autosave();
 }
 
+function setLotTierDev(){
+   if(!isDevAccount()) return;
+   const val = Math.max(0, Math.min(LOT_TIER_MAX, readDevInt('dev-lottier-input', 0)));
+   state.lotTier = val;
+   clearLog();
+   log(`[Dev] Lot Tier set to ${val} (${LOT_TIER_NAMES[val]}).`);
+   render();
+   autosave();
+}
+
+function maxBuildingUpgradesDev(){
+   if(!isDevAccount()) return;
+   BUILDING_UPGRADES.forEach(b => { state.buildingUpgrades[b.key] = BUILDING_UPGRADE_MAX; });
+   clearLog();
+   log('[Dev] All building upgrade levels maxed.');
+   render();
+   autosave();
+}
+
 function setStatsDev(){
    if(!isDevAccount()) return;
    state.stats = {
@@ -444,6 +463,13 @@ if(acctSession){
    <input type="number" id="dev-bountytokens-input" min="0" value="${state.bountyTokens}">
    <button class="btn-secondary" onclick="setBountyTokensDev()">Set</button>
    </div>
+
+   <label>Lot Tier (0-${LOT_TIER_MAX})</label>
+   <div class="dev-row">
+   <input type="number" id="dev-lottier-input" min="0" max="${LOT_TIER_MAX}" value="${state.lotTier}">
+   <button class="btn-secondary" onclick="setLotTierDev()">Set</button>
+   </div>
+   <div class="btn-row"><button class="btn-secondary" onclick="maxBuildingUpgradesDev()">Max Building Upgrades</button></div>
 
    <label>Stats — Beef / Zip / Grit / Hoodoo / unspent points</label>
    <div class="dev-row dev-row-5">
@@ -687,7 +713,8 @@ const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyT
        quest5Accepted, quest5Complete,
        quest6Accepted, quest6RareDefeated, quest6Complete,
        classQuestAccepted, classQuestComplete, classTitle,
-       activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed } = state;
+       activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed,
+       lotTier, buildingUpgrades } = state;
    return {
       hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
       lastRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
@@ -698,6 +725,7 @@ const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyT
       quest6Accepted, quest6RareDefeated, quest6Complete,
       classQuestAccepted, classQuestComplete, classTitle,
       activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed,
+      lotTier, buildingUpgrades,
       equipment: Object.fromEntries(
          SLOT_ORDER.map(slot => [slot, serializeItem(state.equipment[slot])])
          ),
@@ -730,6 +758,11 @@ state.activeBounty = saved.activeBounty || null;
    state.bountyTokens = typeof saved.bountyTokens === 'number' ? saved.bountyTokens : 0;
    state.rareDropsSeen = Array.isArray(saved.rareDropsSeen) ? saved.rareDropsSeen : [];
    state.allRaresBonusClaimed = !!saved.allRaresBonusClaimed;
+   /* Town Lot — added after this function was first written, same reasoning
+   as the bounty board/rare-drop fallbacks just above: give older saves that
+   predate these fields sane defaults rather than leaving them undefined. */
+   state.lotTier = (typeof saved.lotTier === 'number' && saved.lotTier >= 0) ? saved.lotTier : 0;
+   state.buildingUpgrades = (saved.buildingUpgrades && typeof saved.buildingUpgrades === 'object') ? saved.buildingUpgrades : {};
    recomputeMaxStats();
 }
 
