@@ -493,6 +493,75 @@ function leaveTinker(){
    render();
 }
 
+/* ---------------- Town Lot ---------------- */
+/* The previously-empty town-square cell — see LOT_TIER_NAMES/LOT_TIER_COST/
+BUILDING_UPGRADES (content.js), state.lotTier/state.buildingUpgrades
+(core.js), and the Town Lot screen (renderTownLot(), render.js). Follows
+the same enterX()/leaveX() convention as every other building above. */
+function enterTownLot(){
+   if(state.inCombat || state.location !== 'town') return;
+   state.location = 'townlot';
+   clearLog();
+   if(state.lotTier === 0){
+      log("An overgrown lot sits empty between the Inn and the Casino. It wouldn't take much to clear it out and put it to use.");
+   } else {
+      log("You step onto your lot. There's always something more to build.");
+   }
+   render();
+}
+
+function leaveTownLot(){
+   if(state.inCombat || state.location !== 'townlot') return;
+   state.location = 'town';
+   clearLog();
+   render();
+}
+
+function buyTownLot(){
+   if(state.location !== 'townlot' || state.lotTier !== 0) return;
+   const cost = LOT_TIER_COST[1];
+   if(state.popTabs < cost) return;
+   state.popTabs -= cost;
+   state.lotTier = 1;
+   clearLog();
+   log(`You buy the empty lot for ${cost} Pop Tabs and start clearing it out.`);
+   render();
+   autosave();
+}
+
+function upgradeTownLot(){
+   if(state.location !== 'townlot' || state.lotTier < 1 || state.lotTier >= LOT_TIER_MAX) return;
+   const next = state.lotTier + 1;
+   const cost = LOT_TIER_COST[next];
+   if(state.popTabs < cost) return;
+   state.popTabs -= cost;
+   state.lotTier = next;
+   clearLog();
+   log(`You upgrade the lot to ${LOT_TIER_NAMES[next]} for ${cost} Pop Tabs.`);
+   render();
+   autosave();
+}
+
+/* Raises state.buildingUpgrades[key] by one level, gated on owning the lot
+(lotTier>=1) — the mechanism the lot's purchase is meant to unlock. Levels
+are tracked only; see the comment above BUILDING_UPGRADES (content.js) for
+why there's deliberately no gameplay effect wired up yet. */
+function upgradeBuilding(key){
+   if(state.location !== 'townlot' || state.lotTier < 1) return;
+   const info = BUILDING_UPGRADES.find(b => b.key === key);
+   if(!info) return;
+   const level = state.buildingUpgrades[key] || 0;
+   if(level >= BUILDING_UPGRADE_MAX) return;
+   const cost = buildingUpgradeCost(level);
+   if(state.popTabs < cost) return;
+   state.popTabs -= cost;
+   state.buildingUpgrades[key] = level + 1;
+   clearLog();
+   log(`You invest ${cost} Pop Tabs into ${info.name}, raising it to level ${level+1}.`);
+   render();
+   autosave();
+}
+
 function acceptQuest4(){
    if(state.location !== 'tinker' || !state.quest2Complete || state.quest4Accepted || state.quest4Complete) return;
    state.quest4Accepted = true;
@@ -904,6 +973,7 @@ document.getElementById('scene-art').addEventListener('click', function(e){
    else if(action === 'guild') enterGuild();
    else if(action === 'casino') enterCasino();
    else if(action === 'tinker') enterTinker();
+   else if(action === 'townlot') enterTownLot();
 });
 
 /* Seed a brand-new run: starter gear (equipped) and a couple of starter
