@@ -17,17 +17,18 @@ const isTownSquare = state.location === 'town';
   const isHoodoo = state.location === 'hoodoo';
   const isGuild = state.location === 'guild';
   const isTinker = state.location === 'tinker';
+  const isTownLot = state.location === 'townlot';
   const isCommons = state.location === 'commons';
   const isSewers = state.location === 'sewers';
   const isQuarry = state.location === 'quarry';
   const isVault = state.location === 'vault';
   const isGnometropolis = state.location === 'gnometropolis';
   const isCasino = state.location === 'casino';
-  const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino;
+  const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot;
 
 document.getElementById('poptab-text').textContent = state.popTabs;
 
-document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer Thistlewick's Cottage" : (isShop ? 'The Shop' : (isHoodoo ? 'The Hoodoo Doctor\'s Shack' : (isGuild ? 'The Adventurers\' Guild' : (isTinker ? "Tinker's Workshop" : (isCasino ? 'The Casino' : (isTownSquare ? 'Gladstone Hollow' : (isSewers ? 'Dank Sewers' : (isQuarry ? 'The Clockwork Quarry' : (isVault ? 'The Sunless Vault' : (isGnometropolis ? 'Gnometropolis' : 'The Overgrown Commons'))))))))));
+document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer Thistlewick's Cottage" : (isShop ? 'The Shop' : (isHoodoo ? 'The Hoodoo Doctor\'s Shack' : (isGuild ? 'The Adventurers\' Guild' : (isTinker ? "Tinker's Workshop" : (isTownLot ? LOT_TIER_NAMES[state.lotTier] : (isCasino ? 'The Casino' : (isTownSquare ? 'Gladstone Hollow' : (isSewers ? 'Dank Sewers' : (isQuarry ? 'The Clockwork Quarry' : (isVault ? 'The Sunless Vault' : (isGnometropolis ? 'Gnometropolis' : 'The Overgrown Commons')))))))))));
   document.getElementById('ztag-town').style.display = inTownArea ? 'block' : 'none';
   document.getElementById('ztag-commons').style.display = isCommons ? 'block' : 'none';
   document.getElementById('quest-box').style.display = (isGafferHouse || isGuild || isHoodoo || isTinker) ? 'block' : 'none';
@@ -41,6 +42,10 @@ document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer This
 document.getElementById('hoodoo-row').style.display = (isHoodoo && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('hoodoo-list').style.display = isHoodoo ? 'block' : 'none';
   if(isHoodoo) renderHoodooShop();
+
+document.getElementById('townlot-row').style.display = (isTownLot && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('townlot-list').style.display = isTownLot ? 'block' : 'none';
+  if(isTownLot) renderTownLot();
 
 document.getElementById('casino-bet-row').style.display = (isCasino && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('casino-row').style.display = (isCasino && !state.inCombat) ? 'flex' : 'none';
@@ -288,7 +293,7 @@ if(state.inCombat){
   showed). Don't reintroduce the gated variables here. */
   const hoodooFlag = quest3State==='offer' ? 'offer' : (quest3State==='active' && ingredientsHeld === potionIngredients.length ? 'turnin' : null);
   const tinkerFlag = (quest4State==='offer' || quest5State==='offer') ? 'offer' : ((quest4State==='active' && state.quest4RareDefeated) || (quest5State==='active' && veinHeld === veinNeeded) ? 'turnin' : null);
-  document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag, tinkerFlag);
+  document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag, tinkerFlag, state.lotTier);
   document.getElementById('victory-banner').style.display = 'none';
 } else {
   document.getElementById('scene-art').innerHTML = artIdle();
@@ -504,6 +509,49 @@ function renderHoodooShop(){
     div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP to cast)</div>${btn}</div>`;
     el.appendChild(div);
   });
+}
+
+/* The Town Lot — the previously-empty town-square cell (translate(200,100)
+in artTownSquare(), core.js). Unpurchased (state.lotTier===0) it's just a
+buy prompt; once owned it shows cosmetic lot-tier upgrades plus a level
+for each of the other 7 town buildings (state.buildingUpgrades, core.js —
+see LOT_TIER_NAMES/LOT_TIER_COST/BUILDING_UPGRADES in content.js and
+buyTownLot()/upgradeTownLot()/upgradeBuilding() in game.js). */
+function renderTownLot(){
+  const el = document.getElementById('townlot-list');
+  if(state.lotTier === 0){
+    const cost = LOT_TIER_COST[1];
+    const canAfford = state.popTabs >= cost;
+    el.innerHTML = `
+    <div class="shop-section-title">Empty Lot</div>
+    <div class="shop-item"><div style="flex:1;"><div class="name">Buy the Lot</div><div class="desc">Clear it out and claim it for the town. Owning it is what lets you start investing in the rest of Gladstone Hollow.</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyTownLot()">Buy — ${cost} Pop Tabs</button></div></div>
+    `;
+    return;
+  }
+
+let html = '<div class="shop-section-title">Your Town Lot</div>';
+  if(state.lotTier < LOT_TIER_MAX){
+    const next = state.lotTier + 1;
+    const cost = LOT_TIER_COST[next];
+    const canAfford = state.popTabs >= cost;
+    html += `<div class="shop-item"><div style="flex:1;"><div class="name">${LOT_TIER_NAMES[state.lotTier]} <span class="qty-badge">→ ${LOT_TIER_NAMES[next]}</span></div><div class="desc">Upgrade the lot itself — cosmetic for now.</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="upgradeTownLot()">Upgrade — ${cost} Pop Tabs</button></div></div>`;
+  } else {
+    html += `<div class="shop-empty">${LOT_TIER_NAMES[state.lotTier]} — fully built up.</div>`;
+  }
+
+html += '<div class="shop-section-title" style="margin-top:10px;">Upgrade Town Buildings</div>';
+  html += '<div class="quest-desc" style="margin:0 0 8px;">Spend Pop Tabs to raise a building\'s level. Doesn\'t change anything about the building yet — bonuses are coming in a future update.</div>';
+  BUILDING_UPGRADES.forEach(b=>{
+    const level = state.buildingUpgrades[b.key] || 0;
+    if(level >= BUILDING_UPGRADE_MAX){
+      html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Fully upgraded.</div></div></div>`;
+      return;
+    }
+    const cost = buildingUpgradeCost(level);
+    const canAfford = state.popTabs >= cost;
+    html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Raise to level ${level+1}.</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="upgradeBuilding('${b.key}')">Upgrade — ${cost} Pop Tabs</button></div></div>`;
+  });
+  el.innerHTML = html;
 }
 
 function renderSpellMenu(){
