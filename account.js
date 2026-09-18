@@ -235,6 +235,16 @@ function setPopTabsDev(){
    autosave();
 }
 
+function setBountyTokensDev(){
+   if(!isDevAccount()) return;
+   const val = readDevInt('dev-bountytokens-input', 0);
+   state.bountyTokens = val;
+   clearLog();
+   log(`[Dev] Bounty Tokens set to ${val}.`);
+   render();
+   autosave();
+}
+
 function setStatsDev(){
    if(!isDevAccount()) return;
    state.stats = {
@@ -427,6 +437,12 @@ if(acctSession){
    <div class="dev-row">
    <input type="number" id="dev-poptabs-input" min="0" value="${state.popTabs}">
    <button class="btn-secondary" onclick="setPopTabsDev()">Set</button>
+   </div>
+
+   <label>Bounty Tokens</label>
+   <div class="dev-row">
+   <input type="number" id="dev-bountytokens-input" min="0" value="${state.bountyTokens}">
+   <button class="btn-secondary" onclick="setBountyTokensDev()">Set</button>
    </div>
 
    <label>Stats — Beef / Zip / Grit / Hoodoo / unspent points</label>
@@ -663,7 +679,7 @@ function serializeState(){
    progress on every autosave, so reloading mid-Tinker-quest or after
    claiming a class title would revert it. Fixed alongside the similar
    allItemDefs() gap above. */
-const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
+const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
        lastRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
        spellsKnown, questTinesGiven, questAccepted, questComplete, quest2Accepted,
        commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
@@ -673,7 +689,7 @@ const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        classQuestAccepted, classQuestComplete, classTitle,
        activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed } = state;
    return {
-      hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
+      hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
       lastRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
       spellsKnown, questTinesGiven, questAccepted, questComplete, quest2Accepted,
       commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
@@ -711,6 +727,7 @@ state.homeTown = TOWN_HUBS.includes(saved.homeTown) ? saved.homeTown : 'town';
    fallbacks rather than leaving them undefined. */
 state.activeBounty = saved.activeBounty || null;
    state.bountiesCompleted = typeof saved.bountiesCompleted === 'number' ? saved.bountiesCompleted : 0;
+   state.bountyTokens = typeof saved.bountyTokens === 'number' ? saved.bountyTokens : 0;
    state.rareDropsSeen = Array.isArray(saved.rareDropsSeen) ? saved.rareDropsSeen : [];
    state.allRaresBonusClaimed = !!saved.allRaresBonusClaimed;
    recomputeMaxStats();
