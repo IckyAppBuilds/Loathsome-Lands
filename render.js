@@ -476,7 +476,7 @@ function renderBountyBoard(){
   <div class="block-title">Bounty Board</div>
   <div class="quest-desc">Bounty: slay ${bt.count} × ${bt.monsterName} in ${zoneLabel}.</div>
   <div class="quest-progress">${progress}/${bt.count}${done ? ' — ready to claim!' : ''}</div>
-  <div class="quest-progress" style="color:var(--tan);">Reward: ${bt.reward.popTabs} Pop Tabs. Bounties completed: ${state.bountiesCompleted}.</div>
+  <div class="quest-progress" style="color:var(--tan);">Reward: ${bt.reward.bountyTokens} Bounty Token${bt.reward.bountyTokens===1?'':'s'}. You have ${state.bountyTokens} Bounty Token${state.bountyTokens===1?'':'s'} (${state.bountiesCompleted} bounties completed). Tokens can be spent at a future gear exchange — nothing to redeem them for yet.</div>
   <div class="btn-row" style="margin:8px 0 0;">
   <button class="btn-primary" ${done ? '' : 'disabled'} onclick="claimBounty()">Claim Bounty</button>
   </div>
