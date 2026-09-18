@@ -367,3 +367,38 @@ const BOUNTY_TEMPLATES = [
    { id:'bounty_gnometropolis_vizier', type:'kill', monsterName:"a gnome vizier, draped in stolen finery", zone:'gnometropolis', count:4, reward:{bountyTokens:3} },
    { id:'bounty_gnometropolis_automaton', type:'kill', monsterName:"a rogue clockwork automaton, sparking wildly", zone:'gnometropolis', count:4, reward:{bountyTokens:4} },
    ];
+
+/* ---------------- Town Lot (Gladstone Hollow) ---------------- */
+/* The one previously-empty cell in the town square (translate(200,100) in
+artTownSquare(), core.js) — purchasable, then upgradeable through cosmetic
+tiers, and once owned it's what unlocks spending Pop Tabs to raise a level
+on each of the other 7 town buildings (state.buildingUpgrades, core.js).
+See buyTownLot()/upgradeTownLot()/upgradeBuilding() in game.js. */
+/* Index = state.lotTier. Index 0 is the unpurchased "Empty Lot" and has no
+cost of its own — LOT_TIER_COST[1] is the purchase price. Tier art lives in
+artTownSquare() (core.js); these names/costs are what the Town Lot screen
+(renderTownLot(), render.js) shows the player. */
+const LOT_TIER_NAMES = ['Empty Lot', 'Town Lot', 'Town Lot (Toolshed)', 'Town Hall'];
+const LOT_TIER_COST = [0, 150, 250, 400];
+const LOT_TIER_MAX = LOT_TIER_COST.length - 1;
+
+/* The 7 other town buildings a purchased lot lets the player invest in.
+`key` must match the building's data-action in artTownSquare() (core.js)
+and the corresponding property under state.buildingUpgrades — except 'rest'
+(the Inn), which is keyed 'inn' here for a readable label since 'rest' is
+just the click action's verb, not a name. Levels are tracked only for now;
+per an explicit product decision, upgrading a building's level doesn't
+change anything about that building yet (no bonuses wired up) — that's
+deferred to a future pass once each building's effects are designed. */
+const BUILDING_UPGRADES = [
+   { key:'gaffer', name:"Gaffer's Cottage" },
+   { key:'hoodoo', name:"Hoodoo Doctor's Shack" },
+   { key:'inn', name:'The Inn' },
+   { key:'tinker', name:"Tinker's Workshop" },
+   { key:'shop', name:'The Shop' },
+   { key:'guild', name:'The Guild' },
+   { key:'casino', name:'The Casino' },
+   ];
+const BUILDING_UPGRADE_MAX = 3;
+/* Cost to go from `level` to `level+1` — 100/200/300 Pop Tabs per building. */
+function buildingUpgradeCost(level){ return 100 * (level+1); }
