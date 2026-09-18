@@ -674,10 +674,10 @@ function claimBounty(){
    if(state.location !== 'guild' || !state.questComplete || !state.activeBounty) return;
    const bt = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
    if(!bt || state.activeBounty.progress < bt.count) return;
-   state.popTabs += bt.reward.popTabs;
+   state.bountyTokens += bt.reward.bountyTokens;
    state.bountiesCompleted++;
    clearLog();
-   log(`Bounty complete! You collect ${bt.reward.popTabs} Pop Tabs for clearing out ${bt.count} × ${bt.monsterName}.`);
+   log(`Bounty complete! You collect ${bt.reward.bountyTokens} Bounty Token${bt.reward.bountyTokens===1?'':'s'} for clearing out ${bt.count} × ${bt.monsterName}.`);
    rollNewBounty();
    render();
    autosave();
