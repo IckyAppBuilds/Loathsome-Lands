@@ -465,6 +465,12 @@ and rollNewBounty()/claimBounty() (game.js). Seeds a bounty on the
 player's very first visit here, then just reflects whatever's active. */
 function renderBountyBoard(){
   if(!state.activeBounty) rollNewBounty();
+  /* Re-roll if the active bounty's zone somehow isn't unlocked — normally
+     can't happen (rollNewBounty() only picks from unlocked zones, and
+     zones never re-lock), but covers a save that picked up a bounty
+     before zone-gating existed. */
+  const currentTemplate = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
+  if(!currentTemplate || !isBountyZoneUnlocked(currentTemplate.zone)) rollNewBounty();
   const el = document.getElementById('bounty-box');
   if(!el) return;
   const bt = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
