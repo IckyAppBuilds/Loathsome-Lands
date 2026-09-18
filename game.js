@@ -660,11 +660,27 @@ at a time (state.activeBounty), auto-refreshed the moment the current one
 is claimed so there's never any downtime waiting on a timer. See
 BOUNTY_TEMPLATES (content.js) and the progress-tracking hook in
 winCombat() above. */
+/* Mirrors the exact same per-zone unlock flags the Map's zone cards use
+   (render.js's sewersUnlocked/quarryUnlocked/vaultUnlocked/
+   gnometropolisUnlocked, and ADVENTURE_ZONES above) — a bounty should
+   never send the player to hunt in a zone they can't actually reach yet.
+   Commons has no gate, same as everywhere else it's treated as the
+   always-available baseline zone. */
+function isBountyZoneUnlocked(zone){
+   if(zone === 'commons') return true;
+   if(zone === 'sewers') return state.quest2Complete;
+   if(zone === 'quarry') return state.quest4Complete;
+   if(zone === 'vault') return state.quest5Complete;
+   if(zone === 'gnometropolis') return state.quest6Complete;
+   return false;
+}
 function rollNewBounty(){
    const prevId = state.activeBounty ? state.activeBounty.templateId : null;
-   let pool = BOUNTY_TEMPLATES;
+   /* Only ever roll from zones the player has actually unlocked. Commons
+      bounties are always eligible, so this pool is never empty. */
+   let pool = BOUNTY_TEMPLATES.filter(b => isBountyZoneUnlocked(b.zone));
    if(prevId){
-      const filtered = BOUNTY_TEMPLATES.filter(b => b.id !== prevId);
+      const filtered = pool.filter(b => b.id !== prevId);
       if(filtered.length > 0) pool = filtered;
    }
    const template = pool[Math.floor(Math.random()*pool.length)];
