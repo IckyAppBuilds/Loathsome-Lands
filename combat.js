@@ -47,8 +47,10 @@ const roll = Math.random();
       const pool = hazardEvents[state.location] || hazardEvents.commons;
       const evt = pool[Math.floor(Math.random()*pool.length)];
       const dmg = randInt(evt.dmg[0], evt.dmg[1]);
-      state.hp = Math.max(0, state.hp-dmg);
-      log(`${evt.text} (-${dmg} HP)`, 'damage');
+      const { absorbed, remaining } = applyDamageToPlayer(dmg);
+      log(absorbed > 0
+          ? `${evt.text} (-${dmg} HP — your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'})`
+          : `${evt.text} (-${dmg} HP)`, 'damage');
       checkDefeat();
    } else {
       const pool = noncombatEvents[state.location] || noncombatEvents.commons;
@@ -86,21 +88,35 @@ const mult = ZONE_DIFFICULTY[template.zone] || 1;
        : `A wild ${state.monster.name} shuffles into view!`);
 }
 
+/* Shared "player takes damage" resolution — state.shield (granted by the
+Hoodoo Doctor's Warding Charm or the Meathead's Shout, see castSpell()/
+shout() below) absorbs first, hp only takes what's left over. Every place
+the player loses HP to an attack or hazard routes through this so a
+shield protects reliably regardless of source. */
+function applyDamageToPlayer(dmg){
+   const absorbed = Math.min(state.shield, dmg);
+   state.shield -= absorbed;
+   const remaining = dmg - absorbed;
+   state.hp = Math.max(0, state.hp - remaining);
+   return { absorbed, remaining };
+}
+
 /* Shared "monster gets a turn" resolution, used after every combat action
-(Attack, a damage/heal spell, or a ward spell with a reduced multiplier).
-Zip's dodge chance applies the same way regardless of what the player
-just did — casting a spell isn't stealthier than swinging a fork. */
-function monsterRetaliate(dmgMultiplier){
+(Attack, a damage/heal spell, Warding Charm, or Shout). Zip's dodge
+chance applies the same way regardless of what the player just did —
+casting a spell isn't stealthier than swinging a fork. */
+function monsterRetaliate(){
    const eff = getEffectiveStats();
    const dodgeChance = Math.min(0.5, statBonus(eff.zip)*0.03);
    if(Math.random() < dodgeChance){
       log(`You dodge ${state.monster.name}'s counterattack completely.`);
       return;
    }
-   let mdmg = randInt(state.monster.atkMin, state.monster.atkMax);
-   if(dmgMultiplier !== undefined) mdmg = Math.max(0, Math.round(mdmg*dmgMultiplier));
-   state.hp = Math.max(0, state.hp-mdmg);
-   log(`${capitalize(state.monster.name)} retaliates for ${mdmg} damage.`, 'damage');
+   const mdmg = randInt(state.monster.atkMin, state.monster.atkMax);
+   const { absorbed, remaining } = applyDamageToPlayer(mdmg);
+   log(absorbed > 0
+       ? `${capitalize(state.monster.name)} retaliates for ${mdmg} damage — your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'}.`
+       : `${capitalize(state.monster.name)} retaliates for ${mdmg} damage.`, 'damage');
 }
 
 function playerAttack(){
@@ -151,6 +167,25 @@ if(!sneakAttackLands) monsterRetaliate();
    render();
 }
 
+/* Meathead-exclusive combat action — a battle cry that braces for impact
+instead of attacking, granting a Beef-scaled shield (see
+applyDamageToPlayer() above) boosted further by classSkillLevel, the same
+lever that boosts a Meathead's passive damage bonus (MEATHEAD_DAMAGE_BONUS,
+content.js) — one class-skill purchase strengthens both. No MP cost, since
+a Beef-focused build rarely invests in Hoodoo; the real cost is spending
+the turn on this instead of Attack, same trade-off as casting Warding
+Charm. */
+function shout(){
+   if(!state.inCombat || state.classTitle !== 'Meathead') return;
+   const eff = getEffectiveStats();
+   const shieldAmount = 8 + statBonus(eff.beef)*2 + state.classSkillLevel*10;
+   state.shield += shieldAmount;
+   log(`You let out a bone-rattling shout, bracing for whatever's coming. (+${shieldAmount} Shield)`);
+   monsterRetaliate();
+   checkDefeat();
+   render();
+}
+
 /* ---------------- Spells ---------------- */
 function openSpellMenu(){
    if(!state.inCombat || state.spellsKnown.length===0) return;
@@ -193,8 +228,15 @@ if(spell.type==='damage'){
    log(`You cast ${spell.name} and patch yourself up. (+${state.hp-before} HP)`);
    monsterRetaliate();
 } else if(spell.type==='ward'){
-   log(`You cast ${spell.name}, bracing yourself for whatever's coming.`);
-   monsterRetaliate(0.5);
+   /* Grants a persistent shield (applyDamageToPlayer(), above) instead of
+   just softening this one retaliation — Hoodoo-scaled, boosted further
+   by classSkillLevel for a Hexpert (same lever that boosts their spell-
+   damage bonus). Stacks on repeat casts; only spent when something
+   actually hits. */
+   const shieldAmount = 8 + statBonus(eff.hoodoo)*2 + (state.classTitle==='Hexpert' ? state.classSkillLevel*10 : 0);
+   state.shield += shieldAmount;
+   log(`You cast ${spell.name} — a shimmering barrier settles over you. (+${shieldAmount} Shield)`);
+   monsterRetaliate();
 }
 
 checkDefeat();
@@ -225,8 +267,10 @@ function playerFlee(){
       endCombat();
    } else {
       const mdmg = randInt(state.monster.atkMin, state.monster.atkMax);
-      state.hp = Math.max(0, state.hp-mdmg);
-      log(`You fail to escape. ${capitalize(state.monster.name)} gets a free hit for ${mdmg}.`, 'damage');
+      const { absorbed, remaining } = applyDamageToPlayer(mdmg);
+      log(absorbed > 0
+          ? `You fail to escape. ${capitalize(state.monster.name)} gets a free hit for ${mdmg} — your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'}.`
+          : `You fail to escape. ${capitalize(state.monster.name)} gets a free hit for ${mdmg}.`, 'damage');
       checkDefeat();
    }
    render();

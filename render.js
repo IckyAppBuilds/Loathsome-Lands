@@ -1,7 +1,7 @@
 /* ---------------- Rendering ---------------- */
 function render(){
   document.getElementById('hp-bar').style.width = (state.hp/state.maxHp*100)+'%';
-  document.getElementById('hp-text').textContent = state.hp+' / '+state.maxHp;
+  document.getElementById('hp-text').textContent = state.hp+' / '+state.maxHp + (state.shield>0 ? ` (+${state.shield} 🛡)` : '');
   document.getElementById('mp-bar').style.width = (state.mp/state.maxMp*100)+'%';
   document.getElementById('mp-text').textContent = state.mp+' / '+state.maxMp;
   document.getElementById('inv-count').textContent = state.inventory.length;
@@ -277,6 +277,7 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
   if(state.inCombat && combatSubView==='spells') renderSpellMenu();
   if(state.inCombat){
     document.getElementById('cast-btn').disabled = state.spellsKnown.length===0;
+    document.getElementById('shout-btn').style.display = state.classTitle==='Meathead' ? '' : 'none';
   }
   document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || isGnometropolis) && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('monster-card').classList.toggle('active', state.inCombat);

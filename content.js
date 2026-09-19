@@ -354,7 +354,7 @@ turn via monsterRetaliate(0.5). The "defensive" option in the trio. */
 const spells = [
    { id:'hexbolt', name:'Hex Bolt', desc:'A jagged little curse that stings more than it should.', type:'damage', mpCost:3, price:15, dmgMin:4, dmgMax:9, icon: iconHexBolt },
    { id:'mendcharm', name:'Mending Charm', desc:'Patches you up with muttered nonsense and surprising effectiveness.', type:'heal', healValue:10, mpCost:4, price:15, icon: iconMendCharm },
-   { id:'wardcharm', name:'Warding Charm', desc:"Throws up a shimmer that takes the edge off whatever's coming next.", type:'ward', mpCost:3, price:12, icon: iconWardCharm },
+   { id:'wardcharm', name:'Warding Charm', desc:"Throws up a shimmering barrier that soaks up damage before it reaches you. Stacks if you're already shielded.", type:'ward', mpCost:3, price:12, icon: iconWardCharm },
    { id:'bottledfury', name:'Bottled Fury', desc:'Everything the potion ingredients were trying to tell you, unleashed at once.', type:'damage', mpCost:6, dmgMin:9, dmgMax:16, questReward:true, icon: iconBottledFury },
    ];
 

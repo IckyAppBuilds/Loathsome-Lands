@@ -22,7 +22,7 @@ function renderCharacterDrawer(){
   document.getElementById('char-title').textContent = `Level ${state.level} ${state.classTitle || 'Adventurer'}`;
 
 document.getElementById('char-hp-bar').style.width = (state.hp/state.maxHp*100)+'%';
-  document.getElementById('char-hp-value').textContent = state.hp+' / '+state.maxHp;
+  document.getElementById('char-hp-value').textContent = state.hp+' / '+state.maxHp + (state.shield>0 ? ` (+${state.shield} 🛡)` : '');
   document.getElementById('char-mp-bar').style.width = (state.mp/state.maxMp*100)+'%';
   document.getElementById('char-mp-value').textContent = state.mp+' / '+state.maxMp;
   document.getElementById('char-xp-bar').style.width = (state.xp/state.xpToLevel*100)+'%';

@@ -69,7 +69,7 @@ function serializeState(){
    progress on every autosave, so reloading mid-Tinker-quest or after
    claiming a class title would revert it. Fixed alongside the similar
    allItemDefs() gap above. */
-const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
+const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
        lastRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
        spellsKnown, questTinesGiven, questAccepted, questComplete, quest2Accepted,
        commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
@@ -81,7 +81,7 @@ const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyT
        activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed,
        lotTier, buildingUpgrades, statResetsBrewed } = state;
    return {
-      hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
+      hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
       lastRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
       spellsKnown, questTinesGiven, questAccepted, questComplete, quest2Accepted,
       commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,

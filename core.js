@@ -58,6 +58,10 @@ let devMode = new URLSearchParams(location.search).has('dev');
 function createDefaultState(){
    return {
      hp: 30, maxHp: 30,
+     shield: 0, /* Temporary damage-absorption pool, depleted before hp on any
+       hit (see applyDamageToPlayer() in combat.js) — granted by the Hoodoo
+       Doctor's Warding Charm spell (Hoodoo-scaled) or the Meathead's Shout
+       (Beef-scaled, combat.js). Not tied to combat — persists until spent. */
      mp: 10, maxMp: 10,
      baseMaxHp: 30, /* level-derived HP ceiling, before Grit bonuses */
      baseMaxMp: 10, /* level-derived MP ceiling, before Hoodoo bonuses */
