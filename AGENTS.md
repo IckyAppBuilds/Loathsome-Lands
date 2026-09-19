@@ -10,9 +10,15 @@ supabase (CDN)
 -> core.js -> icons.js -> art.js -> content.js
 -> render.js -> render-shop.js -> render-character.js
 -> dev-tools.js -> auth.js -> save.js -> player-actions.js -> tutorial.js
--> combat.js -> town.js -> guild.js -> economy.js
+-> combat.js -> town.js -> guild.js -> gnometropolis.js -> economy.js
 -> boot.js
 ```
+
+This project has already broken its own rule #1 twice in practice (a
+monster/boss referencing an `art*()` function that didn't exist yet
+aborted the whole game both times) — when adding a new named boss or
+monster, double-check its `art:`/`icon:` function actually exists in
+`art.js`/`icons.js` *before* wiring it into `content.js`, not after.
 
 Only **two rules are actually load-bearing** (everything else here is
 ordered for human readability, not correctness — almost every cross-file
@@ -212,20 +218,44 @@ Touch this file when: changing a quest's logic (except quest2/quest6/
 the class Trial — see guild.js), travel/unlock rules, or a building's
 upgrade gating.
 
-## guild.js — Casino, Guild, Bounty Board, class Trial
+## guild.js — Casino, Guild, Bounty Board, class Trial, Act 1 finale
 Casino (`enterCasino`/`leaveCasino`/`gambleCasino`), Guild
 (`enterGuild`/`leaveGuild`, `acceptQuest2`/`reportCommanderKill`,
 `acceptQuest6`/`reportGnomeKingKill`), the Bounty Board
-(`isBountyZoneUnlocked`/`rollNewBounty`/`claimBounty`), and the entire
+(`isBountyZoneUnlocked`/`rollNewBounty`/`claimBounty`), the entire
 class-capstone Trial system: `acceptClassQuest`/`startClassTrialGuild`/
-`claimClassPath(chosenStat)`/`levelUpClassSkill`. The Trial is 3
-independent trainer tests (Guild fight, Casino wager, Hoodoo
-killing-blow spell — see `classTrialGuildPassed`/`classTrialCasinoPassed`/
-`classTrialHoodooPassed`, core.js) that must ALL pass before
-`claimClassPath` lets the player choose Meathead/Card Shark/Hexpert.
+`claimClassPath(chosenStat)`/`levelUpClassSkill`, and quest 7's Guild-side
+half: `acceptQuest7`/`reportGnomeKingDefeat`/`approachPalaceGate` (the
+Gnometropolis-side half — the district guardian fights — lives in
+gnometropolis.js instead). The Trial is 3 independent trainer tests
+(Guild fight, Casino wager, Hoodoo killing-blow spell — see
+`classTrialGuildPassed`/`classTrialCasinoPassed`/`classTrialHoodooPassed`,
+core.js) that must ALL pass before `claimClassPath` lets the player
+choose Meathead/Card Shark/Hexpert.
 
-Touch this file when: changing Casino/Guild/bounty logic or the class
-Trial/skill system.
+Quest 6 ("The Gnome King's Throne") is now a retcon setup for quest 7:
+you fight `gnomeKingsCaptain` in the Vault, not the real King — he's
+already fled to Gnometropolis by the time you get there. The real
+`gnomeKing` (content.js, buffed past `trialChampion`) is only reachable
+via `approachPalaceGate()` once a class-specific `PALACE_GATE_GEAR` item
+is actually equipped, which is earned by defeating that class's district
+guardian (see gnometropolis.js) — not bought.
+
+Touch this file when: changing Casino/Guild/bounty logic, the class
+Trial/skill system, or quest 6/7's Guild-side accept/report flow.
+
+## gnometropolis.js — Act 1 finale, district side
+`challengeDistrictGuardian(districtKey)` — the three Gnometropolis
+districts gating quest 7's gear (The Garrison/Meathead, The Rogues'
+Den/Card Shark, The Arcane Sanctum/Hexpert). Only the district matching
+`state.classTitle` actually starts a fight; the other two respond with
+an explanation rather than a silent no-op. The guardians themselves
+(`garrisonGuardian`/`roguesDenEnforcer`/`arcaneSanctumGuardian`) and
+their guaranteed-loot handling live in content.js/combat.js — this file
+is just the player-facing trigger + the "is this your path" gate.
+
+Touch this file when: changing which district maps to which class, or
+adding a new district.
 
 ## economy.js — shop sell/buy + Biscuit regen
 `isQuestItemSellable`/`sellItemByName`/`getAvailableShopItems`/
