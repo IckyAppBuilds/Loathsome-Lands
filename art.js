@@ -37,7 +37,7 @@ function artTinker(){
      return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M36 18 L64 18 L62 24 L38 24 Z" fill="#8a8477"/><rect x="34" y="36" width="32" height="42" fill="#3d5a80"/><circle cx="42" cy="50" r="6" fill="#d1a94e"/><circle cx="42" cy="50" r="2" fill="#2b2b28" stroke="none"/><rect x="54" y="46" width="10" height="10" fill="#b9b3a4"/><line x1="34" y1="40" x2="18" y2="52"/><path d="M18 52 Q10 52 12 44" fill="none" stroke-width="2.5"/><line x1="66" y1="40" x2="80" y2="48"/><line x1="50" y1="78" x2="42" y2="98"/><line x1="50" y1="78" x2="58" y2="98"/>`, 0);
 }
 
-function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlagType, lotTier){
+function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlagType, lotTier, guildBountyReady){
    const makeFlag = (flagType) => {
       if(!flagType) return '';
       const bg = flagType==='offer' ? '#b5453f' : '#5c8a5c';
@@ -48,6 +48,18 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
       <text x="50" y="21" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-size="12" font-weight="700" fill="#f4efe4" stroke="none">${symbol}</text>
       </g>`;
    };
+   /* Separate from makeFlag()'s quest-! / turn-in-? — a bounty being ready
+   isn't a quest state (see isBountyReady(), guild.js), and needs to be
+   visible alongside a genuine Guild quest flag without overlapping it, so
+   it sits in the opposite corner. Glow via a soft pulsing halo circle
+   behind a solid shield shape, rather than quest-flag's bob, so the two
+   read as distinct kinds of "something's ready here." */
+   const bountyShield = !guildBountyReady ? '' : `
+   <g class="bounty-ready-shield">
+   <circle cx="82" cy="16" r="12" fill="#d1a94e" opacity="0.45"/>
+   <path d="M82 7 L91 10.5 L91 17 Q91 25 82 29 Q73 25 73 17 L73 10.5 Z" fill="#3d5a80" stroke="#2b2b28" stroke-width="2.5"/>
+   <path d="M78 17.5 L81 20.5 L87 13" fill="none" stroke="#f4efe4" stroke-width="2.5"/>
+   </g>`;
    const plate = (label, fontSize) => `
    <rect x="6" y="76" width="88" height="18" fill="#f4efe4" stroke="#2b2b28" stroke-width="2"/>
    <text x="50" y="89" text-anchor="middle" class="building-label" font-size="${fontSize}" fill="#2b2b28" stroke="none">${label}</text>`;
@@ -147,6 +159,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <line x1="50" y1="34" x2="50" y2="12"/>
    <path d="M50 12 L68 18 L50 24 Z" fill="#3d5a80"/>
    ${makeFlag(guildFlagType)}
+   ${bountyShield}
    ${plate("The Guild", 9)}
    </g>
 

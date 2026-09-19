@@ -121,6 +121,38 @@ function renderQuestLogDrawer(){
   const activeEntries = [];
   const completedEntries = [];
 
+/* The Bounty Board is repeatable, not a one-and-done quest, so it always
+lives in activeEntries (never completedEntries) once unlocked (same gate
+claimBounty() uses: state.questComplete). ensureActiveBounty() (guild.js)
+re-rolls first if the current one expired since the last render — so
+opening this drawer alone is enough to keep it fresh even if the player
+never visits the Bounty Board itself. The countdown span gets a stable
+id so updateBountyTimerDisplay() (guild.js) can tick it down live without
+a full re-render every second. */
+if(state.questComplete){
+  ensureActiveBounty();
+  if(!state.activeBounty){
+    activeEntries.push(`
+    <div class="quest-log-entry">
+    <div class="quest-name">Bounty Board (The Guild)</div>
+    <div class="quest-desc">You've claimed ${BOUNTY_DAILY_CAP} bounties today — the board's empty until tomorrow.</div>
+    </div>`);
+  }
+  const bt = state.activeBounty && BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
+  if(bt){
+    const progress = Math.min(bt.count, state.activeBounty.progress);
+    const done = isBountyReady();
+    const zoneLabel = ZONE_LABELS[bt.zone] || bt.zone;
+    activeEntries.push(`
+    <div class="quest-log-entry">
+    <div class="quest-name">Bounty Board (The Guild)</div>
+    <div class="quest-desc">Slay ${bt.count} × ${bt.monsterName} in ${zoneLabel}. Reward: ${bt.reward.bountyTokens} Bounty Token${bt.reward.bountyTokens===1?'':'s'}.</div>
+    <div class="quest-progress">${progress}/${bt.count}${done ? ' — ready to claim at the Guild!' : ''}</div>
+    <div class="quest-progress" style="color:var(--tan);">${done ? 'Claim it before it resets.' : `Resets in <span id="quest-bounty-timer">${formatBountyTimeLeft(BOUNTY_RESET_MS - (Date.now() - state.activeBounty.startedAt))}</span> if not completed.`}</div>
+    </div>`);
+  }
+}
+
 if(state.questComplete){
   completedEntries.push(`
   <div class="quest-log-entry">

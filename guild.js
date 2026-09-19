@@ -147,18 +147,66 @@ function rollNewBounty(){
       if(filtered.length > 0) pool = filtered;
    }
    const template = pool[Math.floor(Math.random()*pool.length)];
-   state.activeBounty = { templateId: template.id, progress: 0 };
+   state.activeBounty = { templateId: template.id, progress: 0, startedAt: Date.now() };
+}
+/* Resets state.bountiesClaimedToday the first time this is called after
+local midnight (toDateString() changes), so BOUNTY_DAILY_CAP (content.js)
+is a per-calendar-day cap, not a rolling 24h window like BOUNTY_RESET_MS. */
+function checkBountyDayReset(){
+   const todayKey = new Date().toDateString();
+   if(state.bountyDayKey !== todayKey){
+      state.bountyDayKey = todayKey;
+      state.bountiesClaimedToday = 0;
+   }
+}
+/* Call before reading state.activeBounty anywhere (Bounty Board, Quest
+Log, the town-square glow indicator) — rolls a fresh one if there isn't
+one yet, or if the current one has been active for BOUNTY_RESET_MS
+(content.js) without being claimed. Progress on an expired bounty is
+lost, same as the zone-mismatch reroll below. Once BOUNTY_DAILY_CAP
+claims have happened today, no new bounty is offered at all — leaves
+state.activeBounty null until tomorrow's reset. */
+function ensureActiveBounty(){
+   checkBountyDayReset();
+   if(state.bountiesClaimedToday >= BOUNTY_DAILY_CAP){ state.activeBounty = null; return; }
+   if(!state.activeBounty){ rollNewBounty(); return; }
+   const currentTemplate = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
+   if(!currentTemplate || !isBountyZoneUnlocked(currentTemplate.zone)){ rollNewBounty(); return; }
+   if(Date.now() - state.activeBounty.startedAt >= BOUNTY_RESET_MS) rollNewBounty();
+}
+/* Shared by claimBounty()'s gate and the town-square glow indicator
+(render.js) so "ready to claim" can never drift between the two. */
+function isBountyReady(){
+   if(!state.activeBounty) return false;
+   const bt = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
+   return !!bt && state.activeBounty.progress >= bt.count;
+}
+/* "11h 42m" style, for a bounty's multi-hour reset window — formatMs()
+(economy.js) is tuned for the Biscuit regen's minutes-scale countdown and
+reads awkwardly stretched out to hours. */
+function formatBountyTimeLeft(ms){
+   const totalMin = Math.max(0, Math.ceil(ms/60000));
+   const h = Math.floor(totalMin/60), m = totalMin % 60;
+   return h > 0 ? `${h}h ${m}m` : `${m}m`;
 }
 function claimBounty(){
    if(state.location !== 'guild' || !state.questComplete || !state.activeBounty) return;
+   checkBountyDayReset();
+   if(state.bountiesClaimedToday >= BOUNTY_DAILY_CAP) return;
    const bt = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
-   if(!bt || state.activeBounty.progress < bt.count) return;
+   if(!bt || !isBountyReady()) return;
    const bountyPayout = Math.round(bt.reward.bountyTokens * (1 + GUILD_BOUNTY_BONUS[state.buildingUpgrades.guild || 0]));
    state.bountyTokens += bountyPayout;
    state.bountiesCompleted++;
+   state.bountiesClaimedToday++;
    clearLog();
    log(`Bounty complete! You collect ${bountyPayout} Bounty Token${bountyPayout===1?'':'s'} for clearing out ${bt.count} × ${bt.monsterName}.`);
-   rollNewBounty();
+   if(state.bountiesClaimedToday < BOUNTY_DAILY_CAP){
+      rollNewBounty();
+   } else {
+      state.activeBounty = null;
+      log(`That's ${BOUNTY_DAILY_CAP} bounties claimed today — the board's empty until tomorrow.`);
+   }
    render();
    autosave();
 }
@@ -236,3 +284,22 @@ function levelUpClassSkill(){
    render();
    autosave();
 }
+
+/* Ticks the Quest Log's bounty countdown (#quest-bounty-timer, render-
+character.js) live, same pattern as economy.js's Biscuit-display
+interval. Guarded on the element actually existing — it's only in the
+DOM while the Quest Log drawer is both open AND showing an unclaimed
+bounty, so this is a harmless no-op the rest of the time. Also catches
+an expiry (or the daily cap resetting overnight) even if the player
+just sits on the drawer without taking any action that would otherwise
+trigger a render(). */
+function updateBountyTimerDisplay(){
+   const el = document.getElementById('quest-bounty-timer');
+   if(!el) return;
+   const before = state.activeBounty;
+   ensureActiveBounty();
+   if(state.activeBounty !== before){ renderQuestLogDrawer(); return; }
+   if(!state.activeBounty) return;
+   el.textContent = formatBountyTimeLeft(BOUNTY_RESET_MS - (Date.now() - state.activeBounty.startedAt));
+}
+setInterval(updateBountyTimerDisplay, 1000);

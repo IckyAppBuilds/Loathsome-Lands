@@ -121,10 +121,15 @@ function createDefaultState(){
      classTrialHoodooPassed: false,
      classSkillLevel: 0,
      /* Bounty board (The Guild) — one active bounty at a time, auto-refreshed
-        on claim (see rollNewBounty()/claimBounty() in game.js). null until the
-        player's first visit to the bounty section rolls one. */
+        on claim or expiry (see ensureActiveBounty()/claimBounty() in
+        guild.js). null until the player's first visit rolls one, or once
+        bountiesClaimedToday hits BOUNTY_DAILY_CAP (content.js) for the day.
+        activeBounty itself carries its own startedAt (Date.now() at roll
+        time) for the BOUNTY_RESET_MS expiry check. */
      activeBounty: null,
      bountiesCompleted: 0,
+     bountiesClaimedToday: 0,
+     bountyDayKey: null, /* toDateString() of the last claim-day boundary check — see checkBountyDayReset() (guild.js) */
      /* Stat-reset (respec) potion purchase count, ever — not tiered by
         building level like everything else. Each brew's price climbs
         steeply off this counter (STAT_RESET_BASE_PRICE/_PRICE_MULT,

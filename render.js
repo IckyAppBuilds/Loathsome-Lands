@@ -324,7 +324,14 @@ if(state.inCombat){
   showed). Don't reintroduce the gated variables here. */
   const hoodooFlag = quest3State==='offer' ? 'offer' : (quest3State==='active' && ingredientsHeld === potionIngredients.length ? 'turnin' : null);
   const tinkerFlag = (quest4State==='offer' || quest5State==='offer') ? 'offer' : ((quest4State==='active' && state.quest4RareDefeated) || (quest5State==='active' && veinHeld === veinNeeded) ? 'turnin' : null);
-  document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag, tinkerFlag, state.lotTier);
+  /* Not gated on ensureActiveBounty() here -- that's only called where a
+  bounty is actually read/displayed (Bounty Board, Quest Log). Reading
+  state.activeBounty directly for this glow is fine: isBountyReady()
+  already returns false for a null/expired-but-not-yet-rerolled bounty,
+  and the indicator only needs to reflect known-ready progress, not
+  force a reroll just by walking past the square. */
+  const guildBountyReady = isBountyReady();
+  document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag, tinkerFlag, state.lotTier, guildBountyReady);
   document.getElementById('victory-banner').style.display = 'none';
 } else {
   document.getElementById('scene-art').innerHTML = artIdle();

@@ -155,24 +155,28 @@ quest-offer box (never replacing it) — see BOUNTY_TEMPLATES (content.js)
 and rollNewBounty()/claimBounty() (game.js). Seeds a bounty on the
 player's very first visit here, then just reflects whatever's active. */
 function renderBountyBoard(){
-  if(!state.activeBounty) rollNewBounty();
-  /* Re-roll if the active bounty's zone somehow isn't unlocked — normally
-     can't happen (rollNewBounty() only picks from unlocked zones, and
-     zones never re-lock), but covers a save that picked up a bounty
-     before zone-gating existed. */
-  const currentTemplate = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
-  if(!currentTemplate || !isBountyZoneUnlocked(currentTemplate.zone)) rollNewBounty();
+  ensureActiveBounty();
   const el = document.getElementById('bounty-box');
   if(!el) return;
+  if(!state.activeBounty){
+    el.innerHTML = `
+    <div class="block-title">Bounty Board</div>
+    <div class="quest-desc">You've claimed ${BOUNTY_DAILY_CAP} bounties today — the board's empty until tomorrow.</div>
+    <div class="quest-progress" style="color:var(--tan);">${state.bountiesCompleted} bounties completed lifetime. You have ${state.bountyTokens} Bounty Token${state.bountyTokens===1?'':'s'}.</div>
+    `;
+    return;
+  }
   const bt = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
   if(!bt){ el.innerHTML = ''; return; }
   const progress = Math.min(bt.count, state.activeBounty.progress);
-  const done = progress >= bt.count;
+  const done = isBountyReady();
   const zoneLabel = ZONE_LABELS[bt.zone] || bt.zone;
+  const timeLeft = formatBountyTimeLeft(BOUNTY_RESET_MS - (Date.now() - state.activeBounty.startedAt));
   el.innerHTML = `
   <div class="block-title">Bounty Board</div>
   <div class="quest-desc">Bounty: slay ${bt.count} × ${bt.monsterName} in ${zoneLabel}.</div>
   <div class="quest-progress">${progress}/${bt.count}${done ? ' — ready to claim!' : ''}</div>
+  <div class="quest-progress" style="color:var(--tan);">${done ? "Claim it before it resets." : `Resets in ${timeLeft} if not completed.`}</div>
   <div class="quest-progress" style="color:var(--tan);">Reward: ${bt.reward.bountyTokens} Bounty Token${bt.reward.bountyTokens===1?'':'s'}. You have ${state.bountyTokens} Bounty Token${state.bountyTokens===1?'':'s'} (${state.bountiesCompleted} bounties completed). Tokens can be spent at a future gear exchange — nothing to redeem them for yet.</div>
   <div class="btn-row" style="margin:8px 0 0;">
   <button class="btn-primary" ${done ? '' : 'disabled'} onclick="claimBounty()">Claim Bounty</button>

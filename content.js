@@ -458,6 +458,16 @@ check the player actually killed it in the right zone, since names alone
 aren't guaranteed unique across zones. Rewards scale with ZONE_DIFFICULTY —
 a Commons bounty pays out less than a Gnometropolis one. */
 /* Reward is paid in Bounty Tokens (state.bountyTokens), not Pop Tabs — a separate currency meant for a future gear exchange. See claimBounty() in game.js. */
+/* How long a bounty stays active before ensureActiveBounty() (guild.js)
+auto-rerolls it, progress and all, even if it was never claimed — keeps
+the board from going stale on a bounty the player isn't pursuing. */
+const BOUNTY_RESET_MS = 12 * 60 * 60 * 1000;
+/* Calendar-day cap on CLAIMS (not attempts) — checkBountyDayReset()
+(guild.js) tracks the boundary via state.bountyDayKey (a toDateString(),
+so it resets at local midnight, not on a rolling 24h window like
+BOUNTY_RESET_MS above). Once hit, ensureActiveBounty() stops offering a
+new bounty until the day rolls over. */
+const BOUNTY_DAILY_CAP = 2;
 const BOUNTY_TEMPLATES = [
    { id:'bounty_commons_compost', type:'kill', monsterName:"a disgruntled compost gnome", zone:'commons', count:6, reward:{bountyTokens:1} },
    { id:'bounty_commons_sergeant', type:'kill', monsterName:"the self-appointed gnome sergeant", zone:'commons', count:4, reward:{bountyTokens:1} },

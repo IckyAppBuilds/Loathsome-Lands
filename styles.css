@@ -166,6 +166,13 @@ header h1{
   0%,100%{ transform:translateY(0); }
   50%{ transform:translateY(-3px); }
 }
+.bounty-ready-shield{
+  animation: bountyGlow 1.4s ease-in-out infinite;
+}
+@keyframes bountyGlow{
+  0%,100%{ opacity:0.6; }
+  50%{ opacity:1; }
+}
 .building-hit{ cursor:pointer; }
 .building-label{ font-family:Verdana, Geneva, Arial, sans-serif; }
 

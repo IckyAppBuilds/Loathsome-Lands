@@ -78,7 +78,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        quest6Accepted, quest6RareDefeated, quest6Complete,
        classQuestAccepted, classQuestComplete, classTitle,
        classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
-       activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed,
+       activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
        lotTier, buildingUpgrades, statResetsBrewed } = state;
    return {
       hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
@@ -90,7 +90,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
       quest6Accepted, quest6RareDefeated, quest6Complete,
       classQuestAccepted, classQuestComplete, classTitle,
       classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
-      activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed,
+      activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
       lotTier, buildingUpgrades, statResetsBrewed,
       equipment: Object.fromEntries(
          SLOT_ORDER.map(slot => [slot, serializeItem(state.equipment[slot])])
@@ -121,6 +121,8 @@ state.homeTown = TOWN_HUBS.includes(saved.homeTown) ? saved.homeTown : 'town';
    fallbacks rather than leaving them undefined. */
 state.activeBounty = saved.activeBounty || null;
    state.bountiesCompleted = typeof saved.bountiesCompleted === 'number' ? saved.bountiesCompleted : 0;
+   state.bountiesClaimedToday = typeof saved.bountiesClaimedToday === 'number' ? saved.bountiesClaimedToday : 0;
+   state.bountyDayKey = typeof saved.bountyDayKey === 'string' ? saved.bountyDayKey : null;
    state.bountyTokens = typeof saved.bountyTokens === 'number' ? saved.bountyTokens : 0;
    state.rareDropsSeen = Array.isArray(saved.rareDropsSeen) ? saved.rareDropsSeen : [];
    state.allRaresBonusClaimed = !!saved.allRaresBonusClaimed;
