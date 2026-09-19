@@ -154,6 +154,7 @@ header h1{
   margin-bottom:10px;
 }
 .scene-art svg{ width:120px; height:120px; }
+.scene-art.boss-encounter svg{ width:150px; height:150px; }
 .scene-art svg.town-scene-svg{ width:100%; max-width:400px; height:auto; }
 
 .quest-flag{

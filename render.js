@@ -291,6 +291,7 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
   }
   document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || isGnometropolis) && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('monster-card').classList.toggle('active', state.inCombat);
+  document.getElementById('scene-art').classList.toggle('boss-encounter', !!(state.inCombat && state.monster && state.monster.rare));
 
 if(state.inCombat){
   document.getElementById('scene-art').innerHTML = state.monster.art();

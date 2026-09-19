@@ -236,8 +236,13 @@ function artGnomeSnail(){
 function artGnomeSergeant(){
    return sceneWrap(`<path d="M50 10 L30 46 L70 46 Z" fill="#d1a94e"/><circle cx="50" cy="58" r="13" fill="#e0c49a"/><circle cx="42" cy="58" r="2" fill="#2b2b28" stroke="none"/><circle cx="58" cy="58" r="2" fill="#2b2b28" stroke="none"/><line x1="50" y1="71" x2="50" y2="90"/><line x1="50" y1="78" x2="32" y2="86"/><line x1="50" y1="78" x2="68" y2="86"/><path d="M42 74 L58 74 L54 82 L46 82 Z" fill="#b5453f"/><line x1="50" y1="90" x2="38" y2="99"/><line x1="50" y1="90" x2="62" y2="99"/>`, 0);
 }
+/* Boss pass (rare:true, content.js) — bigger and more menacing than the
+regular Commons roster, not just a recolor: a low-opacity red aura disc
+drawn first (behind everything, same halo technique as
+bounty-ready-shield/artHexpert's charm glow below), and a cape/shoulder
+span that crowds the viewBox edges instead of sitting well inside it. */
 function artGnomeCommander(){
-   return sceneWrap(`<path d="M28 78 Q50 68 72 78 L66 40 Q50 34 34 40 Z" fill="#b5453f"/><path d="M50 6 L28 44 L72 44 Z" fill="#d1a94e"/><rect x="42" y="8" width="16" height="6" fill="#b06a97"/><circle cx="50" cy="56" r="14" fill="#e0c49a"/><circle cx="41" cy="56" r="2.4" fill="#2b2b28" stroke="none"/><circle cx="59" cy="56" r="2.4" fill="#2b2b28" stroke="none"/><line x1="50" y1="70" x2="50" y2="90"/><line x1="50" y1="76" x2="24" y2="70"/><line x1="24" y1="70" x2="16" y2="82"/><line x1="50" y1="76" x2="72" y2="84"/><path d="M42 82 L58 82 L54 92 L46 92 Z" fill="#3d5a80"/><line x1="50" y1="90" x2="38" y2="99"/><line x1="50" y1="90" x2="62" y2="99"/>`, 0);
+   return sceneWrap(`<circle cx="50" cy="54" r="46" fill="#b5453f" opacity="0.3"/><path d="M8 88 Q50 72 92 88 L80 34 Q50 26 20 34 Z" fill="#b5453f"/><path d="M50 2 L18 46 L82 46 Z" fill="#d1a94e"/><rect x="38" y="6" width="24" height="7" fill="#b06a97"/><circle cx="50" cy="58" r="16" fill="#e0c49a"/><circle cx="40" cy="58" r="2.8" fill="#2b2b28" stroke="none"/><circle cx="60" cy="58" r="2.8" fill="#2b2b28" stroke="none"/><line x1="50" y1="74" x2="50" y2="92"/><line x1="50" y1="80" x2="14" y2="72"/><line x1="14" y1="72" x2="4" y2="88"/><line x1="50" y1="80" x2="86" y2="90"/><path d="M40 86 L60 86 L55 98 L45 98 Z" fill="#3d5a80"/><line x1="50" y1="92" x2="36" y2="99"/><line x1="50" y1="92" x2="64" y2="99"/>`, 0);
 }
 function artSewerRat(){
    return sceneWrap(`<ellipse cx="42" cy="64" rx="26" ry="15" fill="#8a8477"/><circle cx="74" cy="52" r="13" fill="#8a8477"/><circle cx="66" cy="42" r="5" fill="#8a8477"/><circle cx="80" cy="42" r="5" fill="#8a8477"/><circle cx="79" cy="49" r="1.8" fill="#2b2b28" stroke="none"/><line x1="85" y1="52" x2="96" y2="48"/><line x1="85" y1="56" x2="97" y2="58"/><path d="M18 66 Q4 74 10 90" fill="none"/><line x1="30" y1="76" x2="26" y2="88"/><line x1="42" y1="78" x2="42" y2="90"/><line x1="54" y1="76" x2="58" y2="88"/>`, -2);
@@ -263,8 +268,11 @@ function artPickaxeGolem(){
 function artQuarryRat(){
    return sceneWrap(`<ellipse cx="42" cy="66" rx="30" ry="17" fill="#5f4632"/><circle cx="76" cy="52" r="14" fill="#5f4632"/><circle cx="67" cy="41" r="5.5" fill="#5f4632"/><circle cx="83" cy="41" r="5.5" fill="#5f4632"/><circle cx="81" cy="49" r="2" fill="#2b2b28" stroke="none"/><line x1="87" y1="53" x2="98" y2="49"/><path d="M16 66 Q2 76 8 92" fill="none"/><circle cx="30" cy="60" r="2.2" fill="#d1a94e" stroke="none"/><circle cx="46" cy="70" r="2.2" fill="#d1a94e" stroke="none"/>`, -2);
 }
+/* Boss pass (rare:true, content.js) — an amber hazard-glow aura drawn
+first (behind everything), plus a hull/head/reach that crowds the
+viewBox edges instead of the regular Quarry drones' comfortable margin. */
 function artDiggerBot(){
-   return sceneWrap(`<rect x="24" y="34" width="52" height="46" fill="#b5453f"/><circle cx="50" cy="26" r="16" fill="#8a8477"/><circle cx="42" cy="24" r="3.4" fill="#2b2b28" stroke="none"/><circle cx="58" cy="24" r="3.4" fill="#2b2b28" stroke="none"/><path d="M50 10 L46 20 M50 10 L54 20" stroke-width="3"/><line x1="24" y1="46" x2="6" y2="36"/><path d="M6 36 L14 20" stroke-width="4"/><line x1="76" y1="46" x2="94" y2="40"/><line x1="34" y1="80" x2="28" y2="98"/><line x1="66" y1="80" x2="72" y2="98"/><path d="M20 60 L14 54 M20 66 L12 64" stroke-width="2.5"/>`, 0);
+   return sceneWrap(`<circle cx="50" cy="54" r="47" fill="#d1a94e" opacity="0.3"/><rect x="12" y="30" width="76" height="52" fill="#b5453f"/><circle cx="50" cy="24" r="18" fill="#8a8477"/><circle cx="41" cy="22" r="3.6" fill="#2b2b28" stroke="none"/><circle cx="59" cy="22" r="3.6" fill="#2b2b28" stroke="none"/><path d="M50 6 L45 18 M50 6 L55 18" stroke-width="3"/><line x1="12" y1="42" x2="0" y2="30"/><path d="M0 30 L8 12" stroke-width="4"/><line x1="88" y1="42" x2="100" y2="34"/><path d="M100 34 L96 16" stroke-width="4"/><line x1="30" y1="82" x2="22" y2="99"/><line x1="70" y1="82" x2="78" y2="99"/><path d="M18 58 L10 50 M18 66 L6 64" stroke-width="2.5"/>`, 0);
 }
 function artVaultWisp(){
    return sceneWrap(`<circle cx="50" cy="46" r="26" fill="#3d5a80"/><circle cx="50" cy="46" r="14" fill="#f4efe4" stroke="none" opacity="0.5"/><circle cx="42" cy="40" r="2.4" fill="#2b2b28" stroke="none"/><circle cx="58" cy="40" r="2.4" fill="#2b2b28" stroke="none"/><path d="M30 20 Q50 4 70 20" fill="none" stroke-width="2.5"/><path d="M24 66 Q50 84 76 66" fill="none" stroke-width="2.5"/>`, 0);
@@ -290,8 +298,11 @@ function artBurrowWorm(){
 function artFeralAutomaton(){
    return sceneWrap(`<rect x="26" y="30" width="48" height="44" fill="#3d5a80"/><circle cx="50" cy="22" r="14" fill="#b9b3a4"/><circle cx="44" cy="20" r="3" fill="#b5453f" stroke="none"/><circle cx="56" cy="20" r="3" fill="#b5453f" stroke="none"/><path d="M26 40 L10 34 M74 40 L90 34" stroke-width="3"/><line x1="38" y1="74" x2="34" y2="94"/><line x1="62" y1="74" x2="66" y2="94"/><path d="M50 8 L47 2 M50 8 L53 2" stroke-width="3"/>`, 0);
 }
+/* Boss pass (rare:true, content.js) — biggest of the two gnome bosses:
+a wider red aura disc than artGnomeCommander's, and a cape/robe/crown
+that pushes almost to the viewBox edges. */
 function artGnomeKing(){
-   return sceneWrap(`<path d="M26 84 Q50 72 74 84 L68 38 Q50 30 32 38 Z" fill="#d1a94e"/><path d="M50 4 L30 40 L70 40 Z" fill="#b5453f"/><rect x="40" y="6" width="20" height="8" fill="#f4efe4"/><circle cx="45" cy="10" r="2" fill="#3d5a80" stroke="none"/><circle cx="55" cy="10" r="2" fill="#3d5a80" stroke="none"/><circle cx="50" cy="54" r="15" fill="#e0c49a"/><circle cx="41" cy="54" r="2.6" fill="#2b2b28" stroke="none"/><circle cx="59" cy="54" r="2.6" fill="#2b2b28" stroke="none"/><line x1="50" y1="69" x2="50" y2="90"/><line x1="50" y1="76" x2="20" y2="68"/><line x1="20" y1="68" x2="10" y2="82"/><line x1="50" y1="76" x2="80" y2="82"/><path d="M40 84 L60 84 L56 94 L44 94 Z" fill="#3d5a80"/><line x1="50" y1="90" x2="38" y2="99"/><line x1="50" y1="90" x2="62" y2="99"/>`, 0);
+   return sceneWrap(`<circle cx="50" cy="52" r="48" fill="#b5453f" opacity="0.32"/><path d="M10 90 Q50 74 90 90 L82 34 Q50 24 18 34 Z" fill="#d1a94e"/><path d="M50 0 L16 40 L84 40 Z" fill="#b5453f"/><rect x="34" y="2" width="32" height="9" fill="#f4efe4"/><circle cx="41" cy="6" r="2.4" fill="#3d5a80" stroke="none"/><circle cx="59" cy="6" r="2.4" fill="#3d5a80" stroke="none"/><circle cx="50" cy="58" r="17" fill="#e0c49a"/><circle cx="39" cy="58" r="3" fill="#2b2b28" stroke="none"/><circle cx="61" cy="58" r="3" fill="#2b2b28" stroke="none"/><line x1="50" y1="75" x2="50" y2="94"/><line x1="50" y1="82" x2="10" y2="72"/><line x1="10" y1="72" x2="0" y2="88"/><line x1="50" y1="82" x2="94" y2="88"/><path d="M36 88 L64 88 L58 99 L42 99 Z" fill="#3d5a80"/><line x1="50" y1="94" x2="34" y2="99"/><line x1="50" y1="94" x2="66" y2="99"/>`, 0);
 }
 /* Real pass on trialChampion (content.js) — the toughest fight in the
 game (hp:95, the Guild's Trial Examiner), so it needs to read as bigger
@@ -300,7 +311,7 @@ guards that push past the usual body silhouette, a full closed helm
 instead of a face, and a two-handed greatsword planted in front of it
 in place of the usual single raised arm. */
 function artTrialChampion(){
-   return sceneWrap(`<path d="M16 92 Q50 70 84 92 L74 30 Q50 20 26 30 Z" fill="#5f4632"/><path d="M26 30 L10 40 L14 62 L28 54 Z" fill="#8a8477"/><path d="M74 30 L90 40 L86 62 L72 54 Z" fill="#8a8477"/><rect x="34" y="26" width="32" height="9" fill="#b9b3a4"/><path d="M36 20 Q50 6 64 20 L60 40 Q50 46 40 40 Z" fill="#b9b3a4"/><line x1="44" y1="28" x2="44" y2="36"/><line x1="56" y1="28" x2="56" y2="36"/><line x1="50" y1="46" x2="50" y2="96"/><line x1="50" y1="56" x2="18" y2="48"/><line x1="18" y1="48" x2="8" y2="26"/><line x1="50" y1="56" x2="82" y2="48"/><line x1="82" y1="48" x2="92" y2="26"/><path d="M50 12 L46 60 L54 60 Z" fill="#8a8477"/><line x1="34" y1="18" x2="66" y2="18"/><path d="M38 88 L62 88 L58 100 L42 100 Z" fill="#3d5a80"/><line x1="50" y1="96" x2="34" y2="100"/><line x1="50" y1="96" x2="66" y2="100"/>`, 0);
+   return sceneWrap(`<circle cx="50" cy="55" r="48" fill="#3d5a80" opacity="0.3"/><path d="M6 96 Q50 72 94 96 L82 26 Q50 15 18 26 Z" fill="#5f4632"/><path d="M18 26 L0 38 L4 64 L20 56 Z" fill="#8a8477"/><path d="M82 26 L100 38 L96 64 L80 56 Z" fill="#8a8477"/><rect x="32" y="22" width="36" height="10" fill="#b9b3a4"/><path d="M34 16 Q50 0 66 16 L62 38 Q50 45 38 38 Z" fill="#b9b3a4"/><line x1="42" y1="25" x2="42" y2="35"/><line x1="58" y1="25" x2="58" y2="35"/><line x1="50" y1="45" x2="50" y2="98"/><line x1="50" y1="56" x2="12" y2="47"/><line x1="12" y1="47" x2="0" y2="20"/><line x1="50" y1="56" x2="88" y2="47"/><line x1="88" y1="47" x2="100" y2="20"/><path d="M50 8 L45 62 L55 62 Z" fill="#8a8477"/><line x1="30" y1="15" x2="70" y2="15"/><path d="M34 92 L66 92 L60 100 L40 100 Z" fill="#3d5a80"/><line x1="50" y1="98" x2="32" y2="100"/><line x1="50" y1="98" x2="68" y2="100"/>`, 0);
 }
 /* ---------------- Zone backdrop art ---------------- */
 /* One scene per adventure zone (ZONE_DIFFICULTY, content.js), shown
