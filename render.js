@@ -24,11 +24,12 @@ const isTownSquare = state.location === 'town';
   const isVault = state.location === 'vault';
   const isGnometropolis = state.location === 'gnometropolis';
   const isCasino = state.location === 'casino';
-  const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot;
+  const isNoticeBoard = state.location === 'noticeboard';
+  const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot || isNoticeBoard;
 
 document.getElementById('poptab-text').textContent = state.popTabs;
 
-document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer Thistlewick's Cottage" : (isShop ? 'The Shop' : (isHoodoo ? 'The Hoodoo Doctor\'s Shack' : (isGuild ? 'The Adventurers\' Guild' : (isTinker ? "Tinker's Workshop" : (isTownLot ? LOT_TIER_NAMES[state.lotTier] : (isCasino ? 'The Casino' : (isTownSquare ? 'Gladstone Hollow' : (isSewers ? 'Dank Sewers' : (isQuarry ? 'The Clockwork Quarry' : (isVault ? 'The Sunless Vault' : (isGnometropolis ? 'Gnometropolis' : 'The Overgrown Commons')))))))))));
+document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer Thistlewick's Cottage" : (isShop ? 'The Shop' : (isHoodoo ? 'The Hoodoo Doctor\'s Shack' : (isGuild ? 'The Adventurers\' Guild' : (isTinker ? "Tinker's Workshop" : (isTownLot ? LOT_TIER_NAMES[state.lotTier] : (isCasino ? 'The Casino' : (isNoticeBoard ? 'The Notice Board' : (isTownSquare ? 'Gladstone Hollow' : (isSewers ? 'Dank Sewers' : (isQuarry ? 'The Clockwork Quarry' : (isVault ? 'The Sunless Vault' : (isGnometropolis ? 'Gnometropolis' : 'The Overgrown Commons'))))))))))));
   document.getElementById('ztag-town').style.display = inTownArea ? 'block' : 'none';
   document.getElementById('ztag-commons').style.display = isCommons ? 'block' : 'none';
   document.getElementById('quest-box').style.display = (isGafferHouse || isGuild || isHoodoo || isTinker) ? 'block' : 'none';
@@ -52,6 +53,14 @@ document.getElementById('casino-bet-row').style.display = (isCasino && !state.in
   document.getElementById('bet-5-btn').disabled = state.popTabs < 5;
   document.getElementById('bet-10-btn').disabled = state.popTabs < 10;
   document.getElementById('bet-25-btn').disabled = state.popTabs < 25;
+
+document.getElementById('noticeboard-row').style.display = (isNoticeBoard && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('noticeboard-list').style.display = isNoticeBoard ? 'block' : 'none';
+  if(isNoticeBoard) renderNoticeBoard();
+  else {
+    document.getElementById('noticeboard-post').style.display = 'none';
+    document.getElementById('noticeboard-guest-hint').style.display = 'none';
+  }
 
 const sewersUnlocked = state.quest2Complete;
   document.getElementById('zone-card-sewers').classList.toggle('locked', !sewersUnlocked);
@@ -305,6 +314,9 @@ if(state.inCombat){
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isCasino){
   document.getElementById('scene-art').innerHTML = artCroupier();
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isNoticeBoard){
+  document.getElementById('scene-art').innerHTML = artNoticeBoard();
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isTownSquare){
   const gafferFlag = questState==='offer' ? 'offer' : (questState==='active' && tinesHeld>0 ? 'turnin' : null);

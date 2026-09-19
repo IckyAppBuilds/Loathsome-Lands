@@ -22,6 +22,7 @@ document.getElementById('scene-art').addEventListener('click', function(e){
    else if(action === 'casino') enterCasino();
    else if(action === 'tinker') enterTinker();
    else if(action === 'townlot') enterTownLot();
+   else if(action === 'fountain') enterNoticeBoard();
 });
 
 /* Seed a brand-new run: starter gear (equipped) and a couple of starter

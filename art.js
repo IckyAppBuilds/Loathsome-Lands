@@ -30,6 +30,12 @@ function artGuildmaster(){
 function artCroupier(){
      return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M36 20 Q50 14 64 20 L62 24 Q50 18 38 24 Z" fill="#2b2b28"/><path d="M34 36 Q50 30 66 36 L64 76 Q50 82 36 76 Z" fill="#b06a97"/><rect x="40" y="50" width="20" height="14" fill="#f4efe4"/><line x1="45" y1="57" x2="55" y2="57"/><line x1="34" y1="40" x2="20" y2="56"/><line x1="20" y1="56" x2="26" y2="70"/><line x1="66" y1="40" x2="80" y2="52"/><path d="M74 46 L86 40 M78 50 L90 46" stroke-width="3"/><line x1="50" y1="82" x2="42" y2="98"/><line x1="50" y1="82" x2="58" y2="98"/>`, 1);
 }
+/* No NPC here, unlike the other building-interior art above — the
+Fountain's Notice Board is just a corkboard with pinned notes, so the
+close-up scene is the board itself. */
+function artNoticeBoard(){
+     return sceneWrap(`<rect x="16" y="14" width="68" height="72" fill="#8a8477"/><rect x="22" y="20" width="56" height="60" fill="#a97c53"/><rect x="30" y="26" width="22" height="14" fill="#f4efe4" transform="rotate(-4 41 33)"/><rect x="54" y="30" width="20" height="13" fill="#f4efe4" transform="rotate(3 64 36)"/><rect x="28" y="46" width="20" height="13" fill="#f4efe4" transform="rotate(2 38 52)"/><rect x="52" y="50" width="22" height="14" fill="#f4efe4" transform="rotate(-3 63 57)"/><rect x="34" y="66" width="18" height="12" fill="#f4efe4" transform="rotate(4 43 72)"/><circle cx="41" cy="30" r="1.8" fill="#b5453f" stroke="none"/><circle cx="64" cy="33" r="1.8" fill="#b5453f" stroke="none"/><circle cx="38" cy="49" r="1.8" fill="#b5453f" stroke="none"/><circle cx="63" cy="53" r="1.8" fill="#b5453f" stroke="none"/><circle cx="43" cy="69" r="1.8" fill="#b5453f" stroke="none"/>`, 0);
+}
 function artHoodooDoctor(){
      return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M40 20 Q50 8 60 20" fill="none" stroke-width="3"/><path d="M34 36 Q50 28 66 36 L64 78 Q50 84 36 78 Z" fill="#b06a97"/><circle cx="30" cy="50" r="5" fill="#8a8477"/><circle cx="30" cy="50" r="1.8" fill="#2b2b28" stroke="none"/><line x1="30" y1="55" x2="30" y2="62"/><line x1="34" y1="40" x2="18" y2="54"/><line x1="18" y1="54" x2="24" y2="68"/><line x1="66" y1="40" x2="82" y2="50"/><path d="M82 50 Q90 46 88 38" fill="none" stroke-width="2.5"/><line x1="50" y1="84" x2="42" y2="99"/><line x1="50" y1="84" x2="58" y2="99"/>`, 0);
 }
@@ -186,7 +192,8 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    ${plate("The Guild")}
    </g>
 
-   <g transform="translate(100,100)">
+   <g transform="translate(100,100)" class="building-hit" data-action="fountain">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
    <ellipse cx="50" cy="62" rx="28" ry="10" fill="#3d5a80"/>
    <ellipse cx="50" cy="56" rx="30" ry="8" fill="none" stroke="#2b2b28" stroke-width="4"/>
    <rect x="44" y="44" width="12" height="20" fill="#b9b3a4"/>

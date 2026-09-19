@@ -106,6 +106,18 @@
 
 <div id="bounty-box" style="display:none;"></div>
 
+<div id="noticeboard-list" style="display:none;"></div>
+<div class="acct-form" id="noticeboard-post" style="display:none;">
+<label>Pin a Notice (140 characters)</label>
+<textarea id="noticeboard-input" maxlength="140" oninput="updateNoticeBoardCharCount()"></textarea>
+<span class="noticeboard-charcount" id="noticeboard-charcount">0/140</span>
+<div class="btn-row">
+<button class="btn-primary" id="noticeboard-post-btn" onclick="postNotice()">Pin It</button>
+</div>
+<div class="quest-progress" id="noticeboard-status"></div>
+</div>
+<div class="quest-desc" id="noticeboard-guest-hint" style="display:none;">Playing as a guest — register a free account from the Account tab to pin your own notice. Anyone can still read the board.</div>
+
 <div id="shop-list"></div>
 <div id="hoodoo-list"></div>
 <div id="townlot-list"></div>
@@ -163,6 +175,9 @@
 </div>
 <div class="btn-row" id="casino-row" style="display:none;">
 <button class="btn-secondary" onclick="leaveCasino()">Leave</button>
+</div>
+<div class="btn-row" id="noticeboard-row" style="display:none;">
+<button class="btn-secondary" onclick="leaveNoticeBoard()">Leave</button>
 </div>
 <div class="btn-row" id="explore-row" style="display:none;">
 <button class="btn-primary" id="adv-btn" onclick="goAdventuring()">Adventure!</button>
@@ -343,6 +358,7 @@ after every script has loaded):
 <script src="town.js"></script>
 <script src="guild.js"></script>
 <script src="economy.js"></script>
+<script src="noticeboard.js"></script>
 <script src="boot.js"></script>
 </body>
 </html>

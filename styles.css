@@ -568,7 +568,7 @@ button:disabled{ opacity:0.45; cursor:default; }
   margin:8px 0 3px;
 }
 .acct-form label:first-child{ margin-top:0; }
-.acct-form input{
+.acct-form input, .acct-form textarea{
   width:100%;
   font-family:Verdana, Geneva, Arial, sans-serif;
   font-size:0.85rem;
@@ -577,6 +577,8 @@ button:disabled{ opacity:0.45; cursor:default; }
   background:var(--white);
   color:var(--black);
 }
+.acct-form textarea{ resize:vertical; min-height:52px; }
+.noticeboard-charcount{ font-size:0.68rem; color:var(--grey-dark); text-align:right; display:block; margin-top:2px; }
 .acct-form .btn-row{ margin:12px 0 0; }
 .acct-form select{
   width:100%;
