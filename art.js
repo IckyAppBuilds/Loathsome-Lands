@@ -202,6 +202,11 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <line x1="50" y1="23" x2="50" y2="16"/>
    <circle cx="46" cy="19" r="1.8" fill="#3d5a80" stroke="none"/>
    <circle cx="54" cy="17" r="1.8" fill="#3d5a80" stroke="none"/>
+   <rect x="70" y="46" width="20" height="24" fill="#8a8477"/>
+   <rect x="73" y="49" width="14" height="9" fill="#f4efe4" transform="rotate(-3 80 53.5)"/>
+   <rect x="74" y="60" width="13" height="8" fill="#f4efe4" transform="rotate(2 80.5 64)"/>
+   <circle cx="80" cy="53.5" r="1.3" fill="#b5453f" stroke="none"/>
+   <circle cx="80.5" cy="64" r="1.3" fill="#b5453f" stroke="none"/>
    ${plate("Fountain")}
    </g>
 

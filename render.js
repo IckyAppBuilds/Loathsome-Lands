@@ -55,6 +55,7 @@ document.getElementById('casino-bet-row').style.display = (isCasino && !state.in
   document.getElementById('bet-25-btn').disabled = state.popTabs < 25;
 
 document.getElementById('noticeboard-row').style.display = (isNoticeBoard && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('noticeboard-hint').style.display = isNoticeBoard ? 'block' : 'none';
   document.getElementById('noticeboard-list').style.display = isNoticeBoard ? 'block' : 'none';
   if(isNoticeBoard) renderNoticeBoard();
   else {

@@ -63,3 +63,20 @@ drop trigger if exists notices_rate_limit on public.notices;
 create trigger notices_rate_limit
    before insert on public.notices
    for each row execute function public.enforce_notice_rate_limit();
+
+-- Daily wipe, 4am server (database) time -- "a janitor comes and cleans
+-- it." pg_cron schedules run against the database's own TimeZone setting,
+-- which is UTC by default on Supabase and not something most projects
+-- change, so in practice this is 4am UTC. Requires the pg_cron extension
+-- (Database -> Extensions -> enable "pg_cron" in the dashboard, or the
+-- `create extension` line below if your role has permission to run it
+-- directly -- on hosted Supabase this usually needs the dashboard toggle
+-- instead, since pg_cron enablement is one of the few things not always
+-- exposed to the SQL editor's default role).
+create extension if not exists pg_cron;
+
+select cron.schedule(
+   'wipe-notice-board-daily',
+   '0 4 * * *',
+   $$ delete from public.notices; $$
+);
