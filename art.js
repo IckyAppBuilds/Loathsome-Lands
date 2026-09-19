@@ -302,6 +302,30 @@ in place of the usual single raised arm. */
 function artTrialChampion(){
    return sceneWrap(`<path d="M16 92 Q50 70 84 92 L74 30 Q50 20 26 30 Z" fill="#5f4632"/><path d="M26 30 L10 40 L14 62 L28 54 Z" fill="#8a8477"/><path d="M74 30 L90 40 L86 62 L72 54 Z" fill="#8a8477"/><rect x="34" y="26" width="32" height="9" fill="#b9b3a4"/><path d="M36 20 Q50 6 64 20 L60 40 Q50 46 40 40 Z" fill="#b9b3a4"/><line x1="44" y1="28" x2="44" y2="36"/><line x1="56" y1="28" x2="56" y2="36"/><line x1="50" y1="46" x2="50" y2="96"/><line x1="50" y1="56" x2="18" y2="48"/><line x1="18" y1="48" x2="8" y2="26"/><line x1="50" y1="56" x2="82" y2="48"/><line x1="82" y1="48" x2="92" y2="26"/><path d="M50 12 L46 60 L54 60 Z" fill="#8a8477"/><line x1="34" y1="18" x2="66" y2="18"/><path d="M38 88 L62 88 L58 100 L42 100 Z" fill="#3d5a80"/><line x1="50" y1="96" x2="34" y2="100"/><line x1="50" y1="96" x2="66" y2="100"/>`, 0);
 }
+/* ---------------- Zone backdrop art ---------------- */
+/* One scene per adventure zone (ZONE_DIFFICULTY, content.js), shown
+between fights in place of artIdle() (see render.js) so each zone has
+its own visual identity rather than reusing the generic player
+stick-figure. Escalates in mood/elaborateness with zone danger:
+Commons (bright, open, harmless) -> Sewers (dark, enclosed) -> Quarry
+(rocky, industrial) -> Vault (ornate, torchlit dark) -> Gnometropolis
+(a real skyline glimpse, the grandest). Same shape vocabulary/palette
+as every other art*() function above -- no text, no gradients. */
+function artZoneCommons(){
+   return sceneWrap(`<rect x="0" y="58" width="100" height="42" fill="#5c8a5c"/><path d="M6 58 Q16 48 26 58 Q36 50 46 58 Q56 49 66 58 Q78 50 90 58 Q96 54 100 58 L100 100 L0 100 Z" fill="#5c8a5c"/><path d="M18 58 Q14 44 22 40 Q26 44 22 58 Z" fill="#5c8a5c"/><path d="M76 60 Q71 46 80 42 Q85 47 80 60 Z" fill="#5c8a5c"/><line x1="34" y1="60" x2="30" y2="34"/><line x1="30" y1="34" x2="24" y2="42"/><line x1="30" y1="34" x2="37" y2="40"/><line x1="64" y1="62" x2="70" y2="82"/><path d="M8 24 Q30 12 52 24" fill="none" stroke-width="2.5"/>`, 0);
+}
+function artZoneSewers(){
+   return sceneWrap(`<rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.12"/><path d="M0 6 L100 6" stroke="#8a8477" stroke-width="10"/><path d="M0 94 L100 94" stroke="#8a8477" stroke-width="10"/><rect x="0" y="14" width="18" height="66" fill="#5f4632"/><rect x="82" y="14" width="18" height="66" fill="#5f4632"/><path d="M32 16 Q50 6 68 16 L64 44 Q50 52 36 44 Z" fill="#2b2b28"/><ellipse cx="50" cy="88" rx="42" ry="9" fill="#3d5a80"/><ellipse cx="50" cy="86" rx="20" ry="4" fill="#3d5a80"/><line x1="26" y1="14" x2="26" y2="30"/><circle cx="26" cy="32" r="2.4" fill="#3d5a80" stroke="none"/>`, 0);
+}
+function artZoneQuarry(){
+   return sceneWrap(`<path d="M0 70 L14 30 L30 62 L46 24 L60 58 L76 32 L92 66 L100 56 L100 100 L0 100 Z" fill="#8a8477"/><path d="M20 100 L34 58 Q42 52 48 58 L58 100 Z" fill="#d1a94e"/><rect x="66" y="52" width="6" height="40" fill="#5f4632"/><rect x="24" y="46" width="6" height="46" fill="#5f4632"/><circle cx="66" cy="42" r="11" fill="none" stroke-width="3.5"/><line x1="66" y1="31" x2="66" y2="24"/><line x1="66" y1="53" x2="66" y2="60"/><line x1="55" y1="42" x2="48" y2="42"/><line x1="77" y1="42" x2="84" y2="42"/>`, 0);
+}
+function artZoneVault(){
+   return sceneWrap(`<rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.2"/><path d="M20 96 L20 30 Q50 6 80 30 L80 96" fill="none" stroke="#8a8477" stroke-width="7"/><line x1="48" y1="16" x2="52" y2="34"/><rect x="10" y="24" width="10" height="72" fill="#8a8477"/><rect x="80" y="24" width="10" height="72" fill="#8a8477"/><path d="M15 24 Q9 18 15 10 Q21 18 15 24 Z" fill="#d1a94e"/><circle cx="15" cy="8" r="3" fill="#d1a94e" stroke="none"/><circle cx="38" cy="88" r="4" fill="#d1a94e" stroke="none"/><circle cx="58" cy="92" r="3" fill="#d1a94e" stroke="none"/><circle cx="68" cy="86" r="4" fill="#b06a97" stroke="none"/><circle cx="48" cy="90" r="2.4" fill="#d1a94e" stroke="none"/>`, 0);
+}
+function artZoneGnometropolis(){
+   return sceneWrap(`<rect x="0" y="70" width="100" height="30" fill="#2b2b28" opacity="0.12"/><rect x="4" y="46" width="20" height="52" fill="#8a8477"/><rect x="28" y="24" width="24" height="74" fill="#a97c53"/><rect x="56" y="52" width="18" height="46" fill="#8a8477"/><rect x="78" y="36" width="18" height="62" fill="#b06a97"/><path d="M28 24 L40 8 L52 24 Z" fill="#d1a94e"/><line x1="40" y1="8" x2="40" y2="0"/><path d="M40 0 L48 3 L40 6 Z" fill="#b5453f"/><rect x="34" y="34" width="8" height="10" fill="#f4efe4"/><rect x="60" y="60" width="7" height="9" fill="#f4efe4"/><rect x="83" y="44" width="7" height="9" fill="#f4efe4"/><rect x="9" y="56" width="7" height="9" fill="#f4efe4"/>`, 0);
+}
 function artDefeated(monsterArtFn){
    const inner = monsterArtFn();
    return `<div style="position:relative; display:flex; justify-content:center; align-items:center;">

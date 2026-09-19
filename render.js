@@ -353,6 +353,21 @@ if(state.inCombat){
   const innCooldownText = innCooldownLeft > 0 ? formatMs(innCooldownLeft) : null;
   document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag, tinkerFlag, state.lotTier, guildBountyReady, innCooldownText);
   document.getElementById('victory-banner').style.display = 'none';
+} else if(isCommons){
+  document.getElementById('scene-art').innerHTML = artZoneCommons();
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isSewers){
+  document.getElementById('scene-art').innerHTML = artZoneSewers();
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isQuarry){
+  document.getElementById('scene-art').innerHTML = artZoneQuarry();
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isVault){
+  document.getElementById('scene-art').innerHTML = artZoneVault();
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isGnometropolis){
+  document.getElementById('scene-art').innerHTML = artZoneGnometropolis();
+  document.getElementById('victory-banner').style.display = 'none';
 } else {
   document.getElementById('scene-art').innerHTML = artIdle();
   document.getElementById('victory-banner').style.display = 'none';
