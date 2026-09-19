@@ -50,7 +50,7 @@ const veinIngredientItems = veinIngredients.map(v => v.item);
 return [...healItems, ...shopBuyItems, ...shopGearItemsTier2, ...shopFoodItemsTier2,
         ...shopFoodItemsTier3, ...shopGearItemsTier3, ...monsterLoot, ...commanderLoot,
         ...monsterRareDrops, ...Object.values(starterGear), ...potionIngredientItems,
-        ...veinIngredientItems];
+        ...veinIngredientItems, ...PALACE_GATE_GEAR];
 }
 function itemByName(name){
    return allItemDefs().find(d => d.name === name) || null;

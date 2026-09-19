@@ -28,9 +28,9 @@ const diggerBotHunt = state.location==='sewers' && state.quest4Accepted && !stat
       return;
    }
 
-const gnomeKingHunt = state.location==='vault' && state.quest6Accepted && !state.quest6Complete && !state.quest6RareDefeated;
-   if(gnomeKingHunt && Math.random() < GNOME_KING_SPAWN_CHANCE){
-      startCombat(gnomeKing);
+const vaultCaptainHunt = state.location==='vault' && state.quest6Accepted && !state.quest6Complete && !state.quest6RareDefeated;
+   if(vaultCaptainHunt && Math.random() < VAULT_CAPTAIN_SPAWN_CHANCE){
+      startCombat(gnomeKingsCaptain);
       render();
       return;
    }
@@ -283,7 +283,8 @@ function winCombat(){
    const xpGain = state.monster.xp;
    const wasCommander = !!state.monster.rare && state.monster.name === gnomeCommander.name;
    const wasDiggerBot = !!state.monster.rare && state.monster.name === diggerBot.name;
-   const wasGnomeKing = !!state.monster.rare && state.monster.name === gnomeKing.name;
+   const wasVaultCaptain = !!state.monster.rare && state.monster.name === gnomeKingsCaptain.name;
+   const wasRealGnomeKing = !!state.monster.rare && state.monster.name === gnomeKing.name;
    const wasTrialChampion = !!state.monster.rare && state.monster.name === trialChampion.name;
    /* Rake tines are a quest item (key:'rakeTine') and the feral lawn gnome's
    ONLY loot entry — so without this gate they'd drop via the generic 70%
@@ -326,9 +327,12 @@ clearLog();
    } else if(wasDiggerBot){
       state.quest4RareDefeated = true;
       log(`You defeat ${defeatedName}! It sparks once and goes still. (+${xpGain} XP)`);
-   } else if(wasGnomeKing){
+   } else if(wasVaultCaptain){
       state.quest6RareDefeated = true;
-      log(`You defeat ${defeatedName}! His scavenged crown rolls off into the dark. (+${xpGain} XP)`);
+      log(`You defeat ${defeatedName}! The captain falls, and the throne behind him sits empty. (+${xpGain} XP)`);
+   } else if(wasRealGnomeKing){
+      state.quest7RareDefeated = true;
+      log(`You defeat ${defeatedName}! The self-declared king of Gnometropolis falls at last, his scavenged crown rolling into the dark. (+${xpGain} XP)`);
    } else if(wasTrialChampion){
       state.classTrialGuildPassed = true;
       log(`You defeat ${defeatedName}! The Guild's toughest test, passed. (+${xpGain} XP)`);

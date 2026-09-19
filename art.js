@@ -375,6 +375,15 @@ function artBurrowWorm(){
 function artFeralAutomaton(){
    return sceneWrap(`<rect x="26" y="30" width="48" height="44" fill="#3d5a80"/><circle cx="50" cy="22" r="14" fill="#b9b3a4"/><circle cx="44" cy="20" r="3" fill="#b5453f" stroke="none"/><circle cx="56" cy="20" r="3" fill="#b5453f" stroke="none"/><path d="M26 40 L10 34 M74 40 L90 34" stroke-width="3"/><line x1="38" y1="74" x2="34" y2="94"/><line x1="62" y1="74" x2="66" y2="94"/><path d="M50 8 L47 2 M50 8 L53 2" stroke-width="3"/>`, 0);
 }
+/* gnomeKingsCaptain's art (content.js) — referenced by value at that
+file's parse time, so it must exist before content.js loads (see
+AGENTS.md rule #1) or the whole game fails to boot. Functional
+placeholder: a guard-uniform recolor of artGnomeGuard's silhouette with
+a smaller red aura than artGnomeKing's below, since he's a step down
+from the real King in both stats and menace. */
+function artGnomeKingsCaptain(){
+   return sceneWrap(`<circle cx="50" cy="54" r="40" fill="#b5453f" opacity="0.22"/><path d="M50 8 L30 42 L70 42 Z" fill="#8a8477"/><circle cx="50" cy="54" r="13" fill="#e0c49a"/><rect x="32" y="66" width="36" height="26" fill="#b9b3a4"/><ellipse cx="20" cy="80" rx="10" ry="14" fill="#5f4632"/><line x1="68" y1="70" x2="82" y2="78"/><line x1="50" y1="92" x2="40" y2="99"/><line x1="50" y1="92" x2="60" y2="99"/>`, 0);
+}
 /* Boss pass (rare:true, content.js) — biggest of the two gnome bosses:
 a wider red aura disc than artGnomeCommander's, and a cape/robe/crown
 that pushes almost to the viewBox edges. */

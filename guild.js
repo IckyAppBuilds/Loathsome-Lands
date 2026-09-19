@@ -94,13 +94,17 @@ function reportCommanderKill(){
 /* Offered by the guildmaster once state.quest5Complete is true — same
 "offered once a flag is true" shape as quest2/quest3/quest4/quest5.
 Objective hunts the Vault (not Gnometropolis — that zone is the reward,
-unlocked only once this quest is turned in) for the rare gnomeKing
-spawn (content.js), same mechanic as gnomeCommander/diggerBot. */
+unlocked only once this quest is turned in) for the rare gnomeKingsCaptain
+spawn (content.js), same mechanic as gnomeCommander/diggerBot. Retconned:
+the target is the King's rear-guard captain, not the King himself — see
+gnomeKingsCaptain's comment in content.js. Gnometropolis still unlocks on
+turn-in exactly as before; only the flavor text changed, to set up quest 7
+(the real gnomeKing, fled deeper into Gnometropolis). */
 function acceptQuest6(){
    if(state.location !== 'guild' || !state.quest5Complete || state.quest6Accepted || state.quest6Complete) return;
    state.quest6Accepted = true;
    clearLog();
-   log("You accept the guild's quest: track down and defeat the Gnome King holding court somewhere in the Sunless Vault. He's rare — you'll have to keep adventuring and hope he shows himself.");
+   log("You accept the guild's quest: track down and defeat the King's rear-guard captain, holding the line somewhere in the Sunless Vault. He's rare — you'll have to keep adventuring and hope he shows himself.");
    render();
 }
 
@@ -110,9 +114,87 @@ function reportGnomeKingKill(){
    state.popTabs += 50;
    state.xp += 70;
    clearLog();
-   log("You describe the Gnome King's throne room in more detail than the guildmaster expected. He's practically speechless. (+50 Pop Tabs, +70 XP)");
-   log("\"Gnometropolis,\" he finally says. \"The whole hidden gnome capital, right under the Vault. It's yours to explore now, if you're brave enough.\" Gnometropolis is now open — check the Map.");
+   log("You describe the fight in the throne room in more detail than the guildmaster expected. He's practically speechless. (+50 Pop Tabs, +70 XP)");
+   log("\"Gnometropolis,\" he finally says. \"The whole hidden gnome capital, right under the Vault. It's yours to explore now, if you're brave enough.\" A beat, then his face falls — the throne was already empty. \"The King got away, deeper in. There's clearly more to this than a captain guarding an empty chair.\" Gnometropolis is now open — check the Map.");
    checkLevelUp();
+   render();
+   autosave();
+}
+
+/* ---------------- Quest 7: "The Palace Gate" (Act 1 finale) ---------------- */
+/* Offered by the guildmaster once quest 6 is complete AND the player has
+already claimed a class via the Adventurer's Trial (state.classTitle) —
+the palace-gate approach is class-specific (PALACE_GATE_GEAR, content.js),
+so there's no way to even describe the quest to someone who hasn't chosen
+a path yet. Same "silently no-op on an unmet gate" convention as every
+other quest here — a later UI task surfaces a hint explaining the
+classTitle requirement specifically. */
+function acceptQuest7(){
+   if(state.location !== 'guild' || !state.quest6Complete || !state.classTitle || state.quest7Accepted || state.quest7Complete) return;
+   state.quest7Accepted = true;
+   clearLog();
+   log("\"The King fled into Gnometropolis proper — behind a palace gate that isn't just going to open for anyone,\" the guildmaster says. \"But the way in is shaped by who you've become. Talk to the right people about gearing up for it.\"");
+   render();
+}
+
+/* Turn-in for quest 7 — gated on approachPalaceGate() (below) having
+already set state.quest7RareDefeated via winCombat()'s wasRealGnomeKing
+branch (combat.js), same "fight happens elsewhere, report happens at the
+NPC" split as reportGnomeKingKill()/reportCommanderKill() above. This is
+Act 1's finale, so the payout is the biggest one-time quest reward in the
+game so far (quest6's +50 Pop Tabs/+70 XP was the previous ceiling). */
+function reportGnomeKingDefeat(){
+   if(state.location !== 'guild' || !state.quest7Accepted || !state.quest7RareDefeated || state.quest7Complete) return;
+   state.quest7Complete = true;
+   state.popTabs += 150;
+   state.xp += 200;
+   state.bountyTokens += 20;
+   clearLog();
+   log("You lay it out for the guildmaster, plainly: the King is dead, and Gnometropolis is yours in every way that matters now. He's got no jokes for this one. (+150 Pop Tabs, +200 XP, +20 Bounty Tokens)");
+   log("\"That's Act One, done,\" he says, like he's still working out what that means. \"The capital's yours. What comes next... honestly, nobody's sure yet. But the door's open.\"");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
+/* The palace gate itself — triggered from Gnometropolis (state.location),
+not the Guild, even though it lives in this file with the rest of quest 7
+(a later UI task wires its button/visibility there). Requires the exact
+PALACE_GATE_GEAR item matching state.classTitle to be equipped in its
+slot before the real gnomeKing (content.js) will fight — otherwise it's a
+guaranteed-refusal no-op, same shape as every other hard-gated action in
+this codebase. */
+function approachPalaceGate(){
+   if(state.inCombat !== false || state.location !== 'gnometropolis' || !state.quest7Accepted || state.quest7RareDefeated) return;
+   const gearNeeded = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
+   if(!gearNeeded || state.equipment[gearNeeded.slot]?.name !== gearNeeded.name){
+      clearLog();
+      log(gearNeeded
+          ? `You can't just walk up to the palace gate like this. You need ${gearNeeded.name} equipped in your ${SLOT_LABELS[gearNeeded.slot] || gearNeeded.slot} slot first.`
+          : "Something's wrong — there's no known approach for your class. (Report this.)");
+      render();
+      return;
+   }
+   startCombat(gnomeKing);
+   render();
+}
+
+/* Purchase for the class-specific PALACE_GATE_GEAR (content.js) — one item
+per class, each sold at a different building (Meathead/guild, Card
+Shark/casino, Hexpert/hoodoo), same mirrored-per-building pattern as
+levelUpClassSkill() above. Priced in Bounty Tokens, not Pop Tabs, unlike
+buyItemByName() (economy.js). Double-gated on building AND classTitle so
+a Meathead standing in the Hoodoo Doctor's still can't buy the Hexpert
+piece just by being in the right place. */
+function buyPalaceGateGear(itemName){
+   if(!state.quest7Accepted || state.quest7Complete) return;
+   const item = PALACE_GATE_GEAR.find(g => g.name === itemName);
+   if(!item) return;
+   if(state.location !== item.building || state.classTitle !== item.class || state.bountyTokens < item.price) return;
+   state.bountyTokens -= item.price;
+   state.inventory.push({...item});
+   clearLog();
+   log(`You buy ${item.name} for ${item.price} Bounty Tokens.`);
    render();
    autosave();
 }
