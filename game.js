@@ -352,7 +352,7 @@ function restAtInn(){
    state.showVictory = false;
    state.victoryMonster = null;
    if(freeRest){
-      log("You duck into the Inn and rest up. You feel merely acceptable again. (free rest — the innkeeper waves off the Biscuit)");
+      log("You duck into the Inn and rest up. You feel merely acceptable again. (free rest — the innkeeper couldn't be bothered to charge you)");
    } else {
       log("You duck into the Inn and rest up. You feel merely acceptable again. (-1 Biscuit)");
    }
@@ -873,7 +873,7 @@ function brewStatResetPotion(){
    recomputeMaxStats();
 
    clearLog();
-   log(`The Hoodoo Doctor brews you something bitter. Your training unravels — ${refunded} stat points are yours to spend again. (-${price} Pop Tabs)`);
+   log(`The Hoodoo Doctor brews you something bitter, no questions asked. Your training unravels — ${refunded} stat points are yours to spend again. (-${price} Pop Tabs)`);
    render();
    autosave();
 }

@@ -551,8 +551,7 @@ function renderHoodooShop(){
   el.appendChild(resetTitle);
   const resetDiv = document.createElement('div');
   resetDiv.className = 'shop-item';
-  // TODO(creative-director): placeholder flavor text, functional description only.
-  resetDiv.innerHTML = `<div style="flex:1;"><div class="name">Stat Reset Potion</div><div class="desc">Refunds every stat point you've ever spent on Beef/Zip/Grit/Hoodoo so you can redistribute them. Gets pricier each time you brew one.</div><button class="btn-secondary" ${resetCanAfford?'':'disabled'} onclick="brewStatResetPotion()">Brew — ${resetPrice} Pop Tabs</button></div>`;
+  resetDiv.innerHTML = `<div style="flex:1;"><div class="name">Unravelling Draught</div><div class="desc">Untangles every stat point you've ever sunk into Beef, Zip, Grit, or Hoodoo, so you can lay them down again — hopefully better this time. Gets pricier with practice.</div><button class="btn-secondary" ${resetCanAfford?'':'disabled'} onclick="brewStatResetPotion()">Brew — ${resetPrice} Pop Tabs</button></div>`;
   el.appendChild(resetDiv);
 }
 
