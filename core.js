@@ -100,6 +100,7 @@ function createDefaultState(){
      quest6RareDefeated: false,
      quest6Complete: false,
      quest7Accepted: false,
+     quest7RareDefeated: false, /* the REAL gnomeKing (content.js) beaten via approachPalaceGate() -- separate from quest6RareDefeated, which is the decoy gnomeKingsCaptain in the Vault */
      quest7Complete: false,
      classQuestAccepted: false,
      classQuestComplete: false,
