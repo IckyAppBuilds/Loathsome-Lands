@@ -120,6 +120,14 @@ const STAT_HINTS = {
 const SLOT_LABELS = { head:'Head', chest:'Chest', legs:'Legs', boots:'Boots', weapon:'Weapon' };
 const SLOT_ORDER = ['head','chest','legs','boots','weapon'];
 
+/* Turns a raw stat value (state.stats.beef/zip/grit/hoodoo, via getEffectiveStats()
+   in account.js) into the superlinearly-scaled number combat math actually reads,
+   so late points are worth meaningfully more than early ones. STAT_SCALING_DIVISOR
+   lives in content.js with the other balance constants. Shared by game.js (combat
+   rolls) and account.js (recomputeMaxStats) — lives here since core.js loads before
+   both. */
+function statBonus(value){ return value + Math.floor(value*value/STAT_SCALING_DIVISOR); }
+
 /* ---------------- Item icons (crude MS-Paint-style doodles) ---------------- */
 function iconWrap(inner, fill){
      return `<svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" fill="none">${inner}</svg>`;

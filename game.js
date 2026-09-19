@@ -99,7 +99,7 @@ Zip's dodge chance applies the same way regardless of what the player
 just did — casting a spell isn't stealthier than swinging a fork. */
 function monsterRetaliate(dmgMultiplier){
    const eff = getEffectiveStats();
-   const dodgeChance = Math.min(0.5, eff.zip*0.03);
+   const dodgeChance = Math.min(0.5, statBonus(eff.zip)*0.03);
    if(Math.random() < dodgeChance){
       log(`You dodge ${state.monster.name}'s counterattack completely.`);
       return;
@@ -113,7 +113,7 @@ function monsterRetaliate(dmgMultiplier){
 function playerAttack(){
    if(!state.inCombat) return;
    const eff = getEffectiveStats();
-   const dmg = randInt(3,7) + (state.level-1) + eff.beef;
+   const dmg = randInt(3,7) + (state.level-1) + statBonus(eff.beef);
    state.monster.hp = Math.max(0, state.monster.hp-dmg);
    log(`You strike ${state.monster.name} for ${dmg} damage.`);
 
@@ -148,7 +148,7 @@ state.mp -= spell.mpCost;
    combatSubView = 'main';
 
 if(spell.type==='damage'){
-   const dmg = randInt(spell.dmgMin, spell.dmgMax) + (state.level-1) + eff.hoodoo;
+   const dmg = randInt(spell.dmgMin, spell.dmgMax) + (state.level-1) + statBonus(eff.hoodoo);
    state.monster.hp = Math.max(0, state.monster.hp-dmg);
    log(`You cast ${spell.name} — ${capitalize(state.monster.name)} takes ${dmg} damage.`);
    if(state.monster.hp<=0){
@@ -188,7 +188,7 @@ function learnSpell(id){
 function playerFlee(){
    if(!state.inCombat) return;
    const eff = getEffectiveStats();
-   const fleeChance = Math.min(0.9, 0.65 + eff.zip*0.02);
+   const fleeChance = Math.min(0.9, 0.65 + statBonus(eff.zip)*0.02);
    if(Math.random() < fleeChance){
       log(`You flee from ${state.monster.name}, dignity mostly intact.`);
       endCombat();
@@ -849,6 +849,31 @@ clearLog();
    log("The Hoodoo Doctor tips every ingredient into the pot at once. It hisses, glows, and settles into a single humming bottle. (+20 Pop Tabs, +35 XP)");
    log("\"There,\" she says, pressing it into your hands. \"Bottled Fury. You'll know when to use it.\" You've learned the spell.");
    checkLevelUp();
+   render();
+   autosave();
+}
+
+/* Stat-reset (respec) potion — also brewed by the Hoodoo Doctor, but unlike
+brewPotion() above it's not quest-gated: it's a repeatable purchase whose price
+climbs exponentially every time (STAT_RESET_BASE_PRICE/_PRICE_MULT, content.js),
+tracked by state.statResetsBrewed. Refunds every point ever put into the four
+core stats so the player can redistribute them, then re-derives max HP/MP since
+grit/hoodoo changed. No UI wired to this yet — callable via
+onclick="brewStatResetPotion()" once a Hoodoo screen button exists. */
+function brewStatResetPotion(){
+   if(state.location !== 'hoodoo') return;
+   const price = STAT_RESET_BASE_PRICE * Math.pow(STAT_RESET_PRICE_MULT, state.statResetsBrewed);
+   if(state.popTabs < price) return;
+
+   state.popTabs -= price;
+   const refunded = state.stats.beef + state.stats.zip + state.stats.grit + state.stats.hoodoo;
+   state.statPoints += refunded;
+   state.stats.beef = state.stats.zip = state.stats.grit = state.stats.hoodoo = 0;
+   state.statResetsBrewed++;
+   recomputeMaxStats();
+
+   clearLog();
+   log(`The Hoodoo Doctor brews you something bitter. Your training unravels — ${refunded} stat points are yours to spend again. (-${price} Pop Tabs)`);
    render();
    autosave();
 }

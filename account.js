@@ -881,8 +881,8 @@ function getEffectiveStats(){
 floor. Call this after anything that changes stats or equipment. */
 function recomputeMaxStats(){
    const eff = getEffectiveStats();
-   state.maxHp = state.baseMaxHp + eff.grit*3;
-   state.maxMp = state.baseMaxMp + eff.hoodoo*2;
+   state.maxHp = state.baseMaxHp + statBonus(eff.grit)*3;
+   state.maxMp = state.baseMaxMp + statBonus(eff.hoodoo)*2;
    state.hp = Math.min(state.hp, state.maxHp);
    state.mp = Math.min(state.mp, state.maxMp);
 }

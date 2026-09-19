@@ -504,6 +504,14 @@ separate change); this is data/state plumbing only. */
 const STAT_RESET_BASE_PRICE = 150;
 const STAT_RESET_PRICE_MULT = 4;
 
+/* Divisor for statBonus() (core.js), which turns a raw stat value into the
+superlinearly-scaled number combat math actually reads: value + floor(value^2 /
+STAT_SCALING_DIVISOR). At value 10 this adds +6 on top of the raw 10, at value
+20 it adds +26, at value 30 it adds +60 — so late points (bought at a much
+higher, quadratically-scaled Town Lot cost) are worth meaningfully more than
+early ones, not just more of the same flat +1. */
+const STAT_SCALING_DIVISOR = 15;
+
 /* The Inn — chance restAtInn() (game.js) restores the player without
 consuming a Biscuit. 1.0 at max level = rest is always free. */
 const INN_FREE_REST_CHANCE = [0, 0.25, 0.5, 1.0];
