@@ -49,7 +49,14 @@ const QUEST_TINES_NEEDED = 3;
    Biscuits while testing. */
 let devMode = new URLSearchParams(location.search).has('dev');
 
-const state = {
+/* A factory (not a bare literal) so a dev tool can call it again later to
+   produce a brand-new default state for resetToNewGameDev() (account.js)
+   — Object.assign(state, createDefaultState()) fully wipes an existing
+   save's fields back to these defaults, including fresh nested objects
+   (stats/equipment/etc.), without needing to reassign the `const state`
+   binding itself. */
+function createDefaultState(){
+   return {
      hp: 30, maxHp: 30,
      mp: 10, maxMp: 10,
      baseMaxHp: 30, /* level-derived HP ceiling, before Grit bonuses */
@@ -124,7 +131,9 @@ const state = {
         Character drawer's Rare Finds block in render.js). */
      rareDropsSeen: [],
      allRaresBonusClaimed: false
-};
+   };
+}
+const state = createDefaultState();
 
 /* Fun names for the four core stats. Beef = melee punch, Zip = speed/evasion,
    Grit = toughness (raises max HP), Hoodoo = odd mystical aptitude (raises max MP). */

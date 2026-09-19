@@ -146,6 +146,23 @@ function resetLevelDev(){
    autosave();
 }
 
+/* The nuclear option, for testing the new-player experience without
+logging into a separate account: wipes every field back to
+createDefaultState()'s defaults (core.js) — level, stats, quests, Town
+Lot/building upgrades, class, inventory/equipment, currencies, all of it
+— then replays startFreshGame() (game.js) exactly as a real brand-new
+character would get it (starter gear, one heal item, the arrival log
+line, and the tutorial). Stays signed into the same dev account; only
+the character's save data resets. */
+function resetToNewGameDev(){
+   if(!isDevAccount()) return;
+   if(!confirm('Full reset — level, stats, quests, inventory, equipment, currencies, Town Lot, class, everything — back to a brand new character? This cannot be undone.')) return;
+   Object.assign(state, createDefaultState());
+   startFreshGame();
+   log('[Dev] Full reset — starting over as a brand new character.');
+   autosave();
+}
+
 /* Resets every quest flag (and the zone unlocks that ride on them) back to
 never-started, so a dev account can replay quest 1 through the class
 quest from scratch. Also strips any quest items already held — they'd
@@ -458,6 +475,7 @@ if(acctSession){
    <div class="btn-row">
    <button class="btn-secondary" onclick="resetLevelDev()">Reset Level</button>
    <button class="btn-secondary" onclick="resetQuestsDev()">Reset Quests</button>
+   <button class="btn-attack" onclick="resetToNewGameDev()">Full Reset (New Game)</button>
    </div>
 
    <div class="acct-form dev-form">
