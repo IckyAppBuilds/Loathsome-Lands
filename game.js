@@ -113,7 +113,8 @@ function monsterRetaliate(dmgMultiplier){
 function playerAttack(){
    if(!state.inCombat) return;
    const eff = getEffectiveStats();
-   const dmg = randInt(3,7) + (state.level-1) + statBonus(eff.beef);
+   let dmg = randInt(3,7) + (state.level-1) + statBonus(eff.beef);
+   if(state.classTitle === 'Meathead') dmg = Math.round(dmg * (1 + MEATHEAD_DAMAGE_BONUS[state.classSkillLevel]));
    state.monster.hp = Math.max(0, state.monster.hp-dmg);
    log(`You strike ${state.monster.name} for ${dmg} damage.`);
 
@@ -148,11 +149,18 @@ state.mp -= spell.mpCost;
    combatSubView = 'main';
 
 if(spell.type==='damage'){
-   const dmg = randInt(spell.dmgMin, spell.dmgMax) + (state.level-1) + statBonus(eff.hoodoo);
+   let dmg = randInt(spell.dmgMin, spell.dmgMax) + (state.level-1) + statBonus(eff.hoodoo);
+   if(state.classTitle === 'Hexpert') dmg += HEXPERT_SPELL_DMG_BONUS[state.classSkillLevel];
    state.monster.hp = Math.max(0, state.monster.hp-dmg);
    log(`You cast ${spell.name} — ${capitalize(state.monster.name)} takes ${dmg} damage.`);
    if(state.monster.hp<=0){
+      /* Checked before winCombat() (so !state.classQuestComplete still reads
+      pre-victory state) but logged after — winCombat() calls clearLog()
+      internally, so a log() here would just get wiped by that. */
+      const passesHoodooTrial = state.classQuestAccepted && !state.classTrialHoodooPassed && !state.classQuestComplete;
+      if(passesHoodooTrial) state.classTrialHoodooPassed = true;
       winCombat();
+      if(passesHoodooTrial) log("A killing blow with a spell — the Hoodoo Doctor's test, passed.");
       return;
    }
    monsterRetaliate();
@@ -207,6 +215,7 @@ function winCombat(){
    const wasCommander = !!state.monster.rare && state.monster.name === gnomeCommander.name;
    const wasDiggerBot = !!state.monster.rare && state.monster.name === diggerBot.name;
    const wasGnomeKing = !!state.monster.rare && state.monster.name === gnomeKing.name;
+   const wasTrialChampion = !!state.monster.rare && state.monster.name === trialChampion.name;
    /* Rake tines are a quest item (key:'rakeTine') and the feral lawn gnome's
    ONLY loot entry — so without this gate they'd drop via the generic 70%
    roll below even before the quest is accepted or after it's turned in,
@@ -251,6 +260,9 @@ clearLog();
    } else if(wasGnomeKing){
       state.quest6RareDefeated = true;
       log(`You defeat ${defeatedName}! His scavenged crown rolls off into the dark. (+${xpGain} XP)`);
+   } else if(wasTrialChampion){
+      state.classTrialGuildPassed = true;
+      log(`You defeat ${defeatedName}! The Guild's toughest test, passed. (+${xpGain} XP)`);
    } else {
       log(`You defeat ${defeatedName}! (+${xpGain} XP)`);
    }
@@ -655,9 +667,18 @@ function gambleCasino(amount){
    state.popTabs -= amount;
    clearLog();
    if(Math.random() < CASINO_WIN_CHANCE + CASINO_WIN_BONUS[state.buildingUpgrades.casino || 0]){
-      const winnings = amount * 2;
+      /* Flat 2x payout multiplier, same as before the Card Shark skill
+      existed — the skill's bonus stacks on TOP of it rather than replacing
+      it, so a level-0 Card Shark (or anyone else) still gets exactly 2x. */
+      let payoutMult = 2;
+      if(state.classTitle === 'Card Shark') payoutMult += CARD_SHARK_PAYOUT_BONUS[state.classSkillLevel];
+      const winnings = Math.round(amount * payoutMult);
       state.popTabs += winnings;
       log(`${casinoWinLines[Math.floor(Math.random()*casinoWinLines.length)]} (+${winnings} Pop Tabs)`);
+      if(state.classQuestAccepted && !state.classTrialCasinoPassed && !state.classQuestComplete && amount >= CLASS_TRIAL_CASINO_STAKE){
+         state.classTrialCasinoPassed = true;
+         log("A big enough bet, won — the Casino's test, passed.");
+      }
    } else {
       log(`${casinoLoseLines[Math.floor(Math.random()*casinoLoseLines.length)]} (-${amount} Pop Tabs)`);
    }
@@ -793,12 +814,22 @@ function claimBounty(){
 
 /* ---------------- Level-10 Guild capstone: "The Adventurer's Trial" ---------------- */
 /* Offered by the guildmaster once quest 2 is complete and state.level>=10 —
-see classQuestState in render(). Deliberately simple: accept, then claim
-(no separate objective) — reaching level 10 across the earlier quests and
-zones is the actual gate. claimClassPath() looks at whichever stat has
-the most points sunk into it (ties broken in STAT_LABELS key order —
-beef, zip, grit, hoodoo) and hands out a permanent title plus a small
-+2 bonus to that stat, via CLASS_TITLES in content.js. */
+see classQuestState in render(). No longer a single auto-picked-stat capstone:
+once accepted, three independent trainers each administer their own test, and
+only after all three pass does the player CHOOSE which class to become
+(claimClassPath(chosenStat) below no longer computes a "dominant" stat itself).
+The three tiers, and where each one lives:
+- Guild/Meathead: startClassTrialGuild() below forces a fight against
+  trialChampion (content.js); winCombat()'s wasTrialChampion branch sets
+  state.classTrialGuildPassed = true on the win.
+- Casino/Card Shark: gambleCasino() (this file) checks CLASS_TRIAL_CASINO_STAKE
+  on a win and sets state.classTrialCasinoPassed = true.
+- Hoodoo/Hexpert: castSpell()'s damage branch (this file) sets
+  state.classTrialHoodooPassed = true on a killing blow with a damage spell.
+claimClassPath(chosenStat) then gates on all three flags plus chosenStat being
+one of 'beef'/'zip'/'hoodoo' (Bulwark/grit has no trial tier and isn't a valid
+choice), and hands out a permanent title plus a small +2 bonus to chosenStat,
+via CLASS_TITLES in content.js. */
 function acceptClassQuest(){
    if(state.location !== 'guild' || !state.quest2Complete || state.level<10 || state.classQuestAccepted || state.classQuestComplete) return;
    state.classQuestAccepted = true;
@@ -807,18 +838,50 @@ function acceptClassQuest(){
    render();
 }
 
-function claimClassPath(){
-   if(state.location !== 'guild' || !state.classQuestAccepted || state.classQuestComplete) return;
-   const dominant = Object.keys(STAT_LABELS).reduce((best, key) =>
-      state.stats[key] > state.stats[best] ? key : best, Object.keys(STAT_LABELS)[0]);
-   state.stats[dominant] += 2;
-   state.classTitle = CLASS_TITLES[dominant];
+/* Guild tier of the Trial — forces a fight against trialChampion (content.js)
+rather than a wild zone spawn. startCombat() already accepts a forced
+template as its one argument (see gnomeCommander/diggerBot/gnomeKing
+call sites), so this just gates on the Trial being active and not yet
+passed before handing it that template. */
+function startClassTrialGuild(){
+   if(state.location !== 'guild' || !state.classQuestAccepted || state.classTrialGuildPassed || state.classQuestComplete) return;
+   startCombat(trialChampion);
+}
+
+function claimClassPath(chosenStat){
+   if(state.location !== 'guild' || !state.classQuestAccepted || !state.classTrialGuildPassed || !state.classTrialCasinoPassed || !state.classTrialHoodooPassed || state.classQuestComplete || !['beef','zip','hoodoo'].includes(chosenStat)) return;
+   state.stats[chosenStat] += 2;
+   state.classTitle = CLASS_TITLES[chosenStat];
    recomputeMaxStats();
    state.classQuestComplete = true;
 
 clearLog();
-   log(`The guildmaster studies your training, your gear, the way you carry yourself. "${STAT_LABELS[dominant]}," he says finally. "That's your path." (+2 ${STAT_LABELS[dominant]})`);
-   log(`You are recognized as a ${CLASS_TITLES[dominant]}. Check your Character page.`);
+   log(`The guildmaster studies your training, your gear, the way you carry yourself. "${STAT_LABELS[chosenStat]}," he says finally. "That's your path." (+2 ${STAT_LABELS[chosenStat]})`);
+   log(`You are recognized as a ${CLASS_TITLES[chosenStat]}. Check your Character page.`);
+   render();
+   autosave();
+}
+
+/* Levels the shared class-skill counter (state.classSkillLevel, core.js) that
+backs whichever combat bonus the player's chosen class unlocks
+(MEATHEAD_DAMAGE_BONUS/CARD_SHARK_PAYOUT_BONUS/HEXPERT_SPELL_DMG_BONUS,
+content.js) — see those bonuses applied in playerAttack()/gambleCasino()/
+castSpell() respectively. Purchasable only at the building matching the
+player's class, same 0..3 index range as the bonus arrays (mirrors
+BUILDING_UPGRADE_MAX's capping style), and only one copy of the counter
+exists since a player only ever has one active class at a time. */
+function levelUpClassSkill(){
+   const atRightBuilding =
+      (state.classTitle==='Meathead' && state.location==='guild') ||
+      (state.classTitle==='Card Shark' && state.location==='casino') ||
+      (state.classTitle==='Hexpert' && state.location==='hoodoo');
+   if(!atRightBuilding || state.classSkillLevel>=3) return;
+   const cost = classSkillCost(state.classSkillLevel);
+   if(state.popTabs < cost) return;
+   state.popTabs -= cost;
+   state.classSkillLevel++;
+   clearLog();
+   log(`Your ${state.classTitle} training deepens. (-${cost} Pop Tabs, class skill level ${state.classSkillLevel})`);
    render();
    autosave();
 }
