@@ -1,0 +1,238 @@
+function enterCasino(){
+   if(state.inCombat || state.location !== 'town') return;
+   state.location = 'casino';
+   clearLog();
+   log("You step into the Casino. The Croupier straightens a stack of chips and gives you a knowing look.");
+   render();
+}
+
+function leaveCasino(){
+   if(state.inCombat || state.location !== 'casino') return;
+   state.location = 'town';
+   clearLog();
+   render();
+}
+
+function gambleCasino(amount){
+   if(state.location !== 'casino' || state.popTabs < amount) return;
+   state.popTabs -= amount;
+   clearLog();
+   if(Math.random() < CASINO_WIN_CHANCE + CASINO_WIN_BONUS[state.buildingUpgrades.casino || 0]){
+      /* Flat 2x payout multiplier, same as before the Card Shark skill
+      existed — the skill's bonus stacks on TOP of it rather than replacing
+      it, so a level-0 Card Shark (or anyone else) still gets exactly 2x. */
+      let payoutMult = 2;
+      if(state.classTitle === 'Card Shark') payoutMult += CARD_SHARK_PAYOUT_BONUS[state.classSkillLevel];
+      const winnings = Math.round(amount * payoutMult);
+      state.popTabs += winnings;
+      log(`${casinoWinLines[Math.floor(Math.random()*casinoWinLines.length)]} (+${winnings} Pop Tabs)`);
+      if(state.classQuestAccepted && !state.classTrialCasinoPassed && !state.classQuestComplete && amount >= CLASS_TRIAL_CASINO_STAKE){
+         state.classTrialCasinoPassed = true;
+         log("A big enough bet, won — the Casino's test, passed.");
+      }
+   } else {
+      log(`${casinoLoseLines[Math.floor(Math.random()*casinoLoseLines.length)]} (-${amount} Pop Tabs)`);
+   }
+   render();
+}
+
+function enterGuild(){
+   if(state.inCombat || state.location !== 'town') return;
+   state.location = 'guild';
+   clearLog();
+   if(state.quest6Complete){
+      log("You step into the guild hall. The guildmaster raises a glass in your direction — Gnometropolis, toppled, more or less, thanks to you.");
+   } else if(state.quest6Accepted){
+      log(state.quest6RareDefeated
+          ? "You step into the guild hall, the Gnome King's throne room still vivid in your memory."
+          : "You step into the guild hall. The guildmaster asks if you've found the Gnome King yet.");
+   } else if(state.quest5Complete){
+      log("You step into the guild hall. The guildmaster's eyes light up at the mention of the Vault.");
+   } else if(state.quest2Complete){
+      log("You step into the guild hall. The guildmaster nods at you approvingly.");
+   } else if(state.quest2Accepted){
+      log(state.commanderDefeated
+          ? "You step into the guild hall, commander's defeat fresh in your memory."
+          : "You step into the guild hall. The guildmaster asks if you've found him yet.");
+   } else if(state.questComplete){
+      log("You step into the guild hall. The guildmaster looks up with sudden interest.");
+   } else {
+      log("You step into the guild hall. The guildmaster barely glances up.");
+   }
+   render();
+}
+
+function leaveGuild(){
+   if(state.inCombat || state.location !== 'guild') return;
+   state.location = 'town';
+   clearLog();
+   render();
+}
+
+function acceptQuest2(){
+   if(state.location !== 'guild' || !state.questComplete || state.quest2Accepted || state.quest2Complete) return;
+   state.quest2Accepted = true;
+   clearLog();
+   log("You accept the guild's quest: track down and defeat the gnome commander in the Overgrown Commons. He's rare — you'll have to keep adventuring and hope he shows himself.");
+   render();
+}
+
+function reportCommanderKill(){
+   if(state.location !== 'guild' || !state.quest2Accepted || state.quest2Complete || !state.commanderDefeated) return;
+   state.quest2Complete = true;
+   state.popTabs += 30;
+   state.xp += 50;
+   clearLog();
+   log("You describe the fight in more detail than the guildmaster asked for. He hands over your reward regardless. (+30 Pop Tabs, +50 XP)");
+   log("As you turn to leave, he adds: \"...and since you're clearly not afraid of gnomes, the sewers under the square are yours to deal with too, if you're feeling brave.\"");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
+/* ---------------- Quest 6: "The Gnome King's Throne" ---------------- */
+/* Offered by the guildmaster once state.quest5Complete is true — same
+"offered once a flag is true" shape as quest2/quest3/quest4/quest5.
+Objective hunts the Vault (not Gnometropolis — that zone is the reward,
+unlocked only once this quest is turned in) for the rare gnomeKing
+spawn (content.js), same mechanic as gnomeCommander/diggerBot. */
+function acceptQuest6(){
+   if(state.location !== 'guild' || !state.quest5Complete || state.quest6Accepted || state.quest6Complete) return;
+   state.quest6Accepted = true;
+   clearLog();
+   log("You accept the guild's quest: track down and defeat the Gnome King holding court somewhere in the Sunless Vault. He's rare — you'll have to keep adventuring and hope he shows himself.");
+   render();
+}
+
+function reportGnomeKingKill(){
+   if(state.location !== 'guild' || !state.quest6Accepted || state.quest6Complete || !state.quest6RareDefeated) return;
+   state.quest6Complete = true;
+   state.popTabs += 50;
+   state.xp += 70;
+   clearLog();
+   log("You describe the Gnome King's throne room in more detail than the guildmaster expected. He's practically speechless. (+50 Pop Tabs, +70 XP)");
+   log("\"Gnometropolis,\" he finally says. \"The whole hidden gnome capital, right under the Vault. It's yours to explore now, if you're brave enough.\" Gnometropolis is now open — check the Map.");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
+/* ---------------- Bounty Board (The Guild) ---------------- */
+/* Repeatable content, unlike the one-time quests above — one active bounty
+at a time (state.activeBounty), auto-refreshed the moment the current one
+is claimed so there's never any downtime waiting on a timer. See
+BOUNTY_TEMPLATES (content.js) and the progress-tracking hook in
+winCombat() above. */
+/* Mirrors the exact same per-zone unlock flags the Map's zone cards use
+   (render.js's sewersUnlocked/quarryUnlocked/vaultUnlocked/
+   gnometropolisUnlocked, and ADVENTURE_ZONES above) — a bounty should
+   never send the player to hunt in a zone they can't actually reach yet.
+   Commons has no gate, same as everywhere else it's treated as the
+   always-available baseline zone. */
+function isBountyZoneUnlocked(zone){
+   if(zone === 'commons') return true;
+   if(zone === 'sewers') return state.quest2Complete;
+   if(zone === 'quarry') return state.quest4Complete;
+   if(zone === 'vault') return state.quest5Complete;
+   if(zone === 'gnometropolis') return state.quest6Complete;
+   return false;
+}
+function rollNewBounty(){
+   const prevId = state.activeBounty ? state.activeBounty.templateId : null;
+   /* Only ever roll from zones the player has actually unlocked. Commons
+      bounties are always eligible, so this pool is never empty. */
+   let pool = BOUNTY_TEMPLATES.filter(b => isBountyZoneUnlocked(b.zone));
+   if(prevId){
+      const filtered = pool.filter(b => b.id !== prevId);
+      if(filtered.length > 0) pool = filtered;
+   }
+   const template = pool[Math.floor(Math.random()*pool.length)];
+   state.activeBounty = { templateId: template.id, progress: 0 };
+}
+function claimBounty(){
+   if(state.location !== 'guild' || !state.questComplete || !state.activeBounty) return;
+   const bt = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
+   if(!bt || state.activeBounty.progress < bt.count) return;
+   const bountyPayout = Math.round(bt.reward.bountyTokens * (1 + GUILD_BOUNTY_BONUS[state.buildingUpgrades.guild || 0]));
+   state.bountyTokens += bountyPayout;
+   state.bountiesCompleted++;
+   clearLog();
+   log(`Bounty complete! You collect ${bountyPayout} Bounty Token${bountyPayout===1?'':'s'} for clearing out ${bt.count} × ${bt.monsterName}.`);
+   rollNewBounty();
+   render();
+   autosave();
+}
+
+/* ---------------- Level-10 Guild capstone: "The Adventurer's Trial" ---------------- */
+/* Offered by the guildmaster once quest 2 is complete and state.level>=10 —
+see classQuestState in render(). No longer a single auto-picked-stat capstone:
+once accepted, three independent trainers each administer their own test, and
+only after all three pass does the player CHOOSE which class to become
+(claimClassPath(chosenStat) below no longer computes a "dominant" stat itself).
+The three tiers, and where each one lives:
+- Guild/Meathead: startClassTrialGuild() below forces a fight against
+  trialChampion (content.js); winCombat()'s wasTrialChampion branch sets
+  state.classTrialGuildPassed = true on the win.
+- Casino/Card Shark: gambleCasino() (this file) checks CLASS_TRIAL_CASINO_STAKE
+  on a win and sets state.classTrialCasinoPassed = true.
+- Hoodoo/Hexpert: castSpell()'s damage branch (this file) sets
+  state.classTrialHoodooPassed = true on a killing blow with a damage spell.
+claimClassPath(chosenStat) then gates on all three flags plus chosenStat being
+one of 'beef'/'zip'/'hoodoo' (Bulwark/grit has no trial tier and isn't a valid
+choice), and hands out a permanent title plus a small +2 bonus to chosenStat,
+via CLASS_TITLES in content.js. */
+function acceptClassQuest(){
+   if(state.location !== 'guild' || !state.quest2Complete || state.level<10 || state.classQuestAccepted || state.classQuestComplete) return;
+   state.classQuestAccepted = true;
+   clearLog();
+   log("The guildmaster looks you over — really looks, this time. \"You've come further than most. There's a Trial for adventurers who reach this far — not from me alone. The Guild, the Casino, and the Hoodoo Doctor each want their own proof before anyone puts a name to what you've become.\"");
+   render();
+}
+
+/* Guild tier of the Trial — forces a fight against trialChampion (content.js)
+rather than a wild zone spawn. startCombat() already accepts a forced
+template as its one argument (see gnomeCommander/diggerBot/gnomeKing
+call sites), so this just gates on the Trial being active and not yet
+passed before handing it that template. */
+function startClassTrialGuild(){
+   if(state.location !== 'guild' || !state.classQuestAccepted || state.classTrialGuildPassed || state.classQuestComplete) return;
+   startCombat(trialChampion);
+}
+
+function claimClassPath(chosenStat){
+   if(state.location !== 'guild' || !state.classQuestAccepted || !state.classTrialGuildPassed || !state.classTrialCasinoPassed || !state.classTrialHoodooPassed || state.classQuestComplete || !['beef','zip','hoodoo'].includes(chosenStat)) return;
+   state.stats[chosenStat] += 2;
+   state.classTitle = CLASS_TITLES[chosenStat];
+   recomputeMaxStats();
+   state.classQuestComplete = true;
+
+clearLog();
+   log(`The guildmaster studies your training, your gear, the way you carry yourself. "${STAT_LABELS[chosenStat]}," he says finally. "That's your path." (+2 ${STAT_LABELS[chosenStat]})`);
+   log(`You are recognized as a ${CLASS_TITLES[chosenStat]}. Check your Character page.`);
+   render();
+   autosave();
+}
+
+/* Levels the shared class-skill counter (state.classSkillLevel, core.js) that
+backs whichever combat bonus the player's chosen class unlocks
+(MEATHEAD_DAMAGE_BONUS/CARD_SHARK_PAYOUT_BONUS/HEXPERT_SPELL_DMG_BONUS,
+content.js) — see those bonuses applied in playerAttack()/gambleCasino()/
+castSpell() respectively. Purchasable only at the building matching the
+player's class, same 0..3 index range as the bonus arrays (mirrors
+BUILDING_UPGRADE_MAX's capping style), and only one copy of the counter
+exists since a player only ever has one active class at a time. */
+function levelUpClassSkill(){
+   const atRightBuilding =
+      (state.classTitle==='Meathead' && state.location==='guild') ||
+      (state.classTitle==='Card Shark' && state.location==='casino') ||
+      (state.classTitle==='Hexpert' && state.location==='hoodoo');
+   if(!atRightBuilding || state.classSkillLevel>=3) return;
+   const cost = classSkillCost(state.classSkillLevel);
+   if(state.popTabs < cost) return;
+   state.popTabs -= cost;
+   state.classSkillLevel++;
+   clearLog();
+   log(`Your ${state.classTitle} training deepens. (-${cost} Pop Tabs, class skill level ${state.classSkillLevel})`);
+   render();
+   autosave();
+}
