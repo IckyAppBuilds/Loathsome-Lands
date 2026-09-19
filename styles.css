@@ -174,7 +174,7 @@ header h1{
   50%{ opacity:1; }
 }
 .building-hit{ cursor:pointer; }
-.building-label{ font-family:Verdana, Geneva, Arial, sans-serif; }
+.building-label{ font-family:Verdana, Geneva, Arial, sans-serif; font-size:7px; font-weight:700; }
 
 #quest-box{
   background:var(--white);

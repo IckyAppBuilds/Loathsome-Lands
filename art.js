@@ -74,9 +74,17 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <line x1="50" y1="46" x2="57" y2="46" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
    <text x="50" y="76" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-size="12" font-weight="700" fill="#f4efe4" stroke="none" id="inn-cooldown-text">${innCooldownText}</text>
    </g>`;
-   const plate = (label, fontSize) => `
+   /* One uniform font-size for every building label — was 6-10 depending
+   on the building, purely to dodge overflow on longer names ("Tinker's
+   Workshop" vs "Casino"), which made otherwise-identical labels read as
+   inconsistent from one building to the next. 7 is the largest size that
+   still comfortably fits the longest label ("Tinker's Workshop", ~75px
+   measured) inside this plate's fixed 88px width — verified across every
+   label, not just that one. No `fontSize` parameter anymore; every call
+   site below was updated to drop it. */
+   const plate = (label) => `
    <rect x="6" y="76" width="88" height="18" fill="#f4efe4" stroke="#2b2b28" stroke-width="2"/>
-   <text x="50" y="89" text-anchor="middle" class="building-label" font-size="${fontSize}" fill="#2b2b28" stroke="none">${label}</text>`;
+   <text x="50" y="89" text-anchor="middle" class="building-label" fill="#2b2b28" stroke="none">${label}</text>`;
    return `<svg class="town-scene-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
    <rect x="4" y="4" width="292" height="292" fill="none" stroke="#2b2b28" stroke-width="9" stroke-dasharray="17,4" stroke-linecap="butt" stroke-linejoin="miter"/>
 
@@ -88,7 +96,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <rect x="32" y="40" width="9" height="9" fill="#f4efe4"/>
    <line x1="36" y1="40" x2="36" y2="49"/><line x1="32" y1="44" x2="41" y2="44"/>
    ${makeFlag(gafferFlagType)}
-   ${plate("Gaffer's Cottage", 8)}
+   ${plate("Gaffer's Cottage")}
    </g>
 
    <g transform="translate(100,0)" class="building-hit" data-action="hoodoo">
@@ -101,7 +109,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <path d="M62 30 Q66 24 62 18" fill="none" stroke-width="2.5"/>
    <path d="M66 32 Q72 24 66 16" fill="none" stroke-width="2.5"/>
    ${makeFlag(hoodooFlagType)}
-   ${plate("Hoodoo Doctor", 7)}
+   ${plate("Hoodoo Doctor")}
    </g>
 
    <g transform="translate(200,0)" class="building-hit" data-action="rest">
@@ -113,7 +121,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <rect x="60" y="42" width="8" height="8" fill="#f4efe4"/>
    <line x1="24" y1="28" x2="12" y2="28"/>
    <rect x="4" y="22" width="12" height="9" fill="#d1a94e"/>
-   ${plate("The Inn", 10)}
+   ${plate("The Inn")}
    ${innCooldown}
    </g>
 
@@ -126,7 +134,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <rect x="34" y="40" width="8" height="8" fill="#f4efe4"/>
    <rect x="58" y="40" width="8" height="8" fill="#f4efe4"/>
    ${makeFlag(tinkerFlagType)}
-   ${plate("Tinker's Workshop", 6)}
+   ${plate("Tinker's Workshop")}
    </g>
 
    <g transform="translate(200,100)" class="building-hit" data-action="townlot">
@@ -151,7 +159,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <rect x="30" y="46" width="8" height="8" fill="#f4efe4"/>
    <rect x="62" y="46" width="8" height="8" fill="#f4efe4"/>
    `}
-   ${plate(lotTier===0 ? 'Empty Lot' : (lotTier>=3 ? 'Town Hall' : 'Town Lot'), 9)}
+   ${plate(lotTier===0 ? 'Empty Lot' : (lotTier>=3 ? 'Town Hall' : 'Town Lot'))}
    </g>
 
    <g transform="translate(100,200)" class="building-hit" data-action="shop">
@@ -163,7 +171,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <circle cx="38" cy="59" r="2.5" fill="#5c8a5c"/>
    <circle cx="50" cy="59" r="2.5" fill="#b06a97"/>
    <circle cx="62" cy="59" r="2.5" fill="#3d5a80"/>
-   ${plate("The Shop", 10)}
+   ${plate("The Shop")}
    </g>
 
    <g transform="translate(0,200)" class="building-hit" data-action="guild">
@@ -175,7 +183,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <path d="M50 12 L68 18 L50 24 Z" fill="#3d5a80"/>
    ${makeFlag(guildFlagType)}
    ${bountyShield}
-   ${plate("The Guild", 9)}
+   ${plate("The Guild")}
    </g>
 
    <g transform="translate(100,100)">
@@ -187,7 +195,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <line x1="50" y1="23" x2="50" y2="16"/>
    <circle cx="46" cy="19" r="1.8" fill="#3d5a80" stroke="none"/>
    <circle cx="54" cy="17" r="1.8" fill="#3d5a80" stroke="none"/>
-   ${plate("Fountain", 10)}
+   ${plate("Fountain")}
    </g>
 
    <g transform="translate(200,200)" class="building-hit" data-action="casino">
@@ -197,7 +205,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <circle cx="50" cy="53" r="10" fill="#f4efe4" stroke="#2b2b28" stroke-width="3"/>
    <circle cx="50" cy="53" r="3" fill="#d1a94e" stroke="none"/>
    <line x1="50" y1="43" x2="50" y2="46"/><line x1="50" y1="60" x2="50" y2="63"/><line x1="40" y1="53" x2="43" y2="53"/><line x1="57" y1="53" x2="60" y2="53"/>
-   ${plate("Casino", 10)}
+   ${plate("Casino")}
    </g>
    </svg>`;
 }
