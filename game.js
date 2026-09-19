@@ -834,7 +834,7 @@ function acceptClassQuest(){
    if(state.location !== 'guild' || !state.quest2Complete || state.level<10 || state.classQuestAccepted || state.classQuestComplete) return;
    state.classQuestAccepted = true;
    clearLog();
-   log("The guildmaster looks you over — really looks, this time. \"You've come further than most. There's a Trial for adventurers who reach this far: the Guild puts a name to what you've become. Say the word when you're ready to hear it.\"");
+   log("The guildmaster looks you over — really looks, this time. \"You've come further than most. There's a Trial for adventurers who reach this far — not from me alone. The Guild, the Casino, and the Hoodoo Doctor each want their own proof before anyone puts a name to what you've become.\"");
    render();
 }
 
