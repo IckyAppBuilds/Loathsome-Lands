@@ -451,13 +451,9 @@ const casinoLoseLines = [
 
 /* ---------------- Bounty Board (The Guild) ---------------- */
 /* Repeatable content — one at a time, see state.activeBounty in core.js and
-rollNewBounty()/claimBounty() in game.js. Each entry's monsterName must be
-an EXACT name from monsters[] above; zone is carried alongside it (rather
-than looked up from the monster) both for display and so winCombat() can
-check the player actually killed it in the right zone, since names alone
-aren't guaranteed unique across zones. Rewards scale with ZONE_DIFFICULTY —
-a Commons bounty pays out less than a Gnometropolis one. */
-/* Reward is paid in Bounty Tokens (state.bountyTokens), not Pop Tabs — a separate currency meant for a future gear exchange. See claimBounty() in game.js. */
+rollNewBounty()/claimBounty() in game.js. Reward is paid in Bounty Tokens
+(state.bountyTokens), not Pop Tabs — a separate currency meant for a
+future gear exchange. */
 /* How long a bounty stays active before ensureActiveBounty() (guild.js)
 auto-rerolls it, progress and all, even if it was never claimed — keeps
 the board from going stale on a bounty the player isn't pursuing. */
@@ -468,16 +464,32 @@ so it resets at local midnight, not on a rolling 24h window like
 BOUNTY_RESET_MS above). Once hit, ensureActiveBounty() stops offering a
 new bounty until the day rolls over. */
 const BOUNTY_DAILY_CAP = 2;
-const BOUNTY_TEMPLATES = [
-   { id:'bounty_commons_compost', type:'kill', monsterName:"a disgruntled compost gnome", zone:'commons', count:6, reward:{bountyTokens:1} },
-   { id:'bounty_commons_sergeant', type:'kill', monsterName:"the self-appointed gnome sergeant", zone:'commons', count:4, reward:{bountyTokens:1} },
-   { id:'bounty_sewers_rat', type:'kill', monsterName:"a sewer rat with delusions of grandeur", zone:'sewers', count:6, reward:{bountyTokens:2} },
-   { id:'bounty_sewers_giant', type:'kill', monsterName:"a positively enormous sewer rat", zone:'sewers', count:5, reward:{bountyTokens:2} },
-   { id:'bounty_quarry_drone', type:'kill', monsterName:"a wind-up quarry drone, badly wound", zone:'quarry', count:5, reward:{bountyTokens:2} },
-   { id:'bounty_vault_wisp', type:'kill', monsterName:"a vault wisp, humming with old magic", zone:'vault', count:5, reward:{bountyTokens:3} },
-   { id:'bounty_gnometropolis_vizier', type:'kill', monsterName:"a gnome vizier, draped in stolen finery", zone:'gnometropolis', count:4, reward:{bountyTokens:3} },
-   { id:'bounty_gnometropolis_automaton', type:'kill', monsterName:"a rogue clockwork automaton, sparking wildly", zone:'gnometropolis', count:4, reward:{bountyTokens:4} },
-   ];
+/* One bounty per REGULAR monster in monsters[] above — every zone's whole
+roster is eligible, not a hand-picked couple of targets — with `count`
+set by how often that monster actually shows up, not a flat number.
+startCombat() picks uniformly from monsters[] filtered to the current
+zone, so a monster's odds per fight are 1/(that zone's monster count):
+a zone with more distinct monsters means each one is individually rarer
+to run into, so its bounty asks for fewer kills; a zone with fewer types
+asks for more — aiming for roughly the same expected number of fights to
+clear any bounty, regardless of zone. Clamped to a sane range either way.
+Reward still scales with ZONE_DIFFICULTY like everything else here — a
+Commons bounty pays less than a Gnometropolis one — independent of that
+monster's own individual count. */
+const BOUNTY_BASE_ENCOUNTERS = 24;
+const BOUNTY_MIN_COUNT = 3;
+const BOUNTY_MAX_COUNT = 8;
+const BOUNTY_TEMPLATES = monsters.map((m, i) => {
+   const zoneRoster = monsters.filter(z => z.zone === m.zone);
+   const count = Math.min(BOUNTY_MAX_COUNT, Math.max(BOUNTY_MIN_COUNT,
+      Math.round(BOUNTY_BASE_ENCOUNTERS / zoneRoster.length)));
+   const bountyTokens = Math.max(1, Math.round((ZONE_DIFFICULTY[m.zone] || 1) * 1.5));
+   return {
+      id: `bounty_${m.zone}_${zoneRoster.indexOf(m)}`,
+      type: 'kill', monsterName: m.name, zone: m.zone, count,
+      reward: { bountyTokens },
+      };
+   });
 
 /* ---------------- Town Lot (Gladstone Hollow) ---------------- */
 /* The one previously-empty cell in the town square (translate(200,100) in
