@@ -1,0 +1,98 @@
+/* ---------------- Drawers (Inventory / Map / Character / Quests / Account) ---------------- */
+const DRAWER_IDS = { inv:'inv-drawer', map:'map-drawer', character:'character-drawer', quests:'quest-log-drawer', account:'account-drawer' };
+
+function toggleDrawer(which){
+   const targetId = DRAWER_IDS[which];
+   const wasOpen = document.getElementById(targetId).classList.contains('open');
+   closeAllDrawers();
+   if(!wasOpen){
+      openDrawer(targetId);
+      if(which==='character') renderCharacterDrawer();
+      if(which==='quests') renderQuestLogDrawer();
+      if(which==='account') renderAccountTab();
+   }
+}
+function openDrawer(id){
+   document.getElementById(id).classList.add('open');
+   document.getElementById('backdrop').classList.add('show');
+}
+function closeAllDrawers(){
+   Object.values(DRAWER_IDS).forEach(id => document.getElementById(id).classList.remove('open'));
+   document.getElementById('backdrop').classList.remove('show');
+}
+
+function useItem(idx){
+   const item = state.inventory[idx];
+   if(item.type==='hp'){
+      state.hp = Math.min(state.maxHp, state.hp+item.value);
+      log(`You eat ${item.name}. Solid choice. (+${item.value} HP)`);
+   } else if(item.type==='mp'){
+      state.mp = Math.min(state.maxMp, state.mp+item.value);
+      log(`You puzzle through ${item.name}. (+${item.value} MP)`);
+   } else if(item.type==='luck'){
+      state.hp = Math.min(state.maxHp, state.hp+item.hpValue);
+      state.mp = Math.min(state.maxMp, state.mp+item.mpValue);
+      log(`You tuck ${item.name} behind your ear for luck. (+${item.hpValue} HP, +${item.mpValue} MP)`);
+   }
+   state.inventory.splice(idx,1);
+   render();
+}
+
+/* ---------------- Equipment & stats ---------------- */
+/* Effective stats = base stats (raised by spending level-up points) plus
+whatever bonuses are on currently-equipped gear. Nothing here mutates
+state.stats itself — equipment bonuses are only ever additive on top. */
+function getEffectiveStats(){
+   const eff = { beef: state.stats.beef, zip: state.stats.zip, grit: state.stats.grit, hoodoo: state.stats.hoodoo };
+   Object.values(state.equipment).forEach(item=>{
+      if(item && item.bonus){
+         Object.keys(item.bonus).forEach(k=>{ eff[k] = (eff[k]||0) + item.bonus[k]; });
+      }
+   });
+   return eff;
+}
+
+/* Grit/Hoodoo (base + equipment) push max HP/MP above the level-derived
+floor. Call this after anything that changes stats or equipment. */
+function recomputeMaxStats(){
+   const eff = getEffectiveStats();
+   state.maxHp = state.baseMaxHp + statBonus(eff.grit)*3;
+   state.maxMp = state.baseMaxMp + statBonus(eff.hoodoo)*2;
+   state.hp = Math.min(state.hp, state.maxHp);
+   state.mp = Math.min(state.mp, state.maxMp);
+}
+
+function spendStatPoint(stat){
+   if(state.statPoints<=0 || !STAT_LABELS[stat]) return;
+   state.stats[stat]++;
+   state.statPoints--;
+   recomputeMaxStats();
+   clearLog();
+   log(`You put your training to use. ${STAT_LABELS[stat]} increases!`);
+   render();
+}
+
+function equipItem(idx){
+   const item = state.inventory[idx];
+   if(!item || item.type!=='equip') return;
+   const slot = item.slot;
+   const prev = state.equipment[slot];
+   state.equipment[slot] = item;
+   state.inventory.splice(idx,1);
+   if(prev) state.inventory.push(prev);
+   recomputeMaxStats();
+   clearLog();
+   log(`You equip ${item.name}.`);
+   render();
+}
+
+function unequipItem(slot){
+   const item = state.equipment[slot];
+   if(!item) return;
+   state.equipment[slot] = null;
+   state.inventory.push(item);
+   recomputeMaxStats();
+   clearLog();
+   log(`You unequip ${item.name}.`);
+   render();
+}
