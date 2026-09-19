@@ -106,6 +106,24 @@ const quest5State = state.quest5Complete ? 'complete' : (state.quest5Accepted ? 
 const quest6State = state.quest6Complete ? 'complete' : (state.quest6Accepted ? 'active' : (state.quest5Complete ? 'offer' : 'locked'));
   const canReportGnomeKing = isGuild && quest6State==='active' && state.quest6RareDefeated;
 
+/* Quest 7 ("The Palace Gate", Act 1 finale) can only ever be relevant
+after a class is claimed — the palace approach is class-specific
+(PALACE_GATE_GEAR, content.js) — so its states extend past
+classQuestState's own 'complete'. See guild.js's acceptQuest7()/
+reportGnomeKingDefeat()/approachPalaceGate() for the mechanics this
+mirrors. */
+const quest7State = state.quest7Complete ? 'complete'
+  : state.quest7RareDefeated ? 'ready'
+  : state.quest7Accepted ? 'active'
+  : (state.quest6Complete && state.classTitle) ? 'offer'
+  : 'locked';
+  /* Gear-purchase buttons at the Guild/Casino/Hoodoo Doctor's stay visible
+  for the whole quest7Accepted window (active AND ready), not just while
+  the King is still unbeaten — see step 4 of the UI task this came from. */
+  const quest7GearWindowOpen = state.quest7Accepted && !state.quest7Complete;
+  const palaceGateGearItem = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
+  const canApproachPalaceGate = isGnometropolis && !state.inCombat && state.quest7Accepted && !state.quest7RareDefeated;
+
 /* 'trials': accepted, but not all three trainers' tests are passed yet.
 'ready': all three passed, waiting on claimClassPath(chosenStat) — see the
 three claim-path-*-btn buttons below and their isGuild=='ready' branch. */
@@ -147,6 +165,23 @@ document.getElementById('accept-quest6-btn').style.display = quest6State==='offe
   document.getElementById('report-gnomeking-btn').style.display = quest6State==='active' ? '' : 'none';
   document.getElementById('report-gnomeking-btn').disabled = !canReportGnomeKing;
   document.getElementById('report-gnomeking-btn').textContent = state.quest6RareDefeated ? 'Report the Gnome King' : 'Report the Gnome King (not yet)';
+
+document.getElementById('accept-quest7-btn').style.display = quest7State==='offer' ? '' : 'none';
+  document.getElementById('report-gnomeking-defeat-btn').style.display = quest7State==='ready' ? '' : 'none';
+
+/* PALACE_GATE_GEAR (content.js) purchase blocks — one per building, each
+only ever showing the single item that matches the player's OWN class
+(palaceGateGearItem is already filtered to state.classTitle above), so
+checking .building here is just "and is this that item's building." */
+const showGuildGear = isGuild && quest7GearWindowOpen && !!palaceGateGearItem && palaceGateGearItem.building==='guild';
+  const showCasinoGear = isCasino && quest7GearWindowOpen && !!palaceGateGearItem && palaceGateGearItem.building==='casino';
+  const showHoodooGear = isHoodoo && quest7GearWindowOpen && !!palaceGateGearItem && palaceGateGearItem.building==='hoodoo';
+  document.getElementById('guild-gear-block').style.display = showGuildGear ? 'block' : 'none';
+  document.getElementById('casino-gear-block').style.display = showCasinoGear ? 'block' : 'none';
+  document.getElementById('hoodoo-gear-block').style.display = showHoodooGear ? 'block' : 'none';
+  if(showGuildGear) renderPalaceGateGearBlock('guild-gear-block', palaceGateGearItem);
+  if(showCasinoGear) renderPalaceGateGearBlock('casino-gear-block', palaceGateGearItem);
+  if(showHoodooGear) renderPalaceGateGearBlock('hoodoo-gear-block', palaceGateGearItem);
 
 document.getElementById('accept-quest3-btn').style.display = quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = quest3State==='active' ? '' : 'none';
@@ -198,12 +233,29 @@ if(isGafferHouse){
     document.getElementById('quest-progress').textContent = state.commanderDefeated ? 'Commander defeated — report back!' : 'Commander not yet encountered.';
   } else if(quest6State==='active'){
     document.getElementById('quest-name').textContent = "Quest: The Gnome King's Throne";
-    document.getElementById('quest-desc').textContent = "Hunt down and defeat the Gnome King in the Sunless Vault. He's rare — keep adventuring until he shows himself.";
-    document.getElementById('quest-progress').textContent = state.quest6RareDefeated ? 'Gnome King defeated — report back!' : 'Gnome King not yet encountered.';
+    document.getElementById('quest-desc').textContent = "Hunt down and defeat the Gnome King's captain, left to guard his retreat in the Sunless Vault. He's rare — keep adventuring until he shows himself.";
+    document.getElementById('quest-progress').textContent = state.quest6RareDefeated ? "Captain defeated — report back!" : "Captain not yet encountered.";
   } else if(quest6State==='offer'){
     document.getElementById('quest-name').textContent = "Quest available: The Gnome King's Throne";
-    document.getElementById('quest-desc').textContent = "Rumor has it the Gnome King himself holds court somewhere deep in the Sunless Vault. The guildmaster would very much like that arrangement ended.";
+    document.getElementById('quest-desc').textContent = "Rumor has it the Gnome King's rear-guard captain is holding the line somewhere deep in the Sunless Vault, buying the King time to run. The guildmaster would very much like that arrangement ended.";
     document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+  } else if(quest7State==='offer'){
+    document.getElementById('quest-name').textContent = "Quest available: The Gnome King's Court";
+    document.getElementById('quest-desc').textContent = `The King slipped deeper into Gnometropolis, behind a palace gate that isn't opening for just anyone. The guildmaster reckons the way in is shaped by who you've become as a ${state.classTitle} — talk to the right people about gearing up for it.`;
+    document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+  } else if(quest7State==='active'){
+    const quest7GearName = palaceGateGearItem ? palaceGateGearItem.name : 'the right gear';
+    document.getElementById('quest-name').textContent = "Quest: The Gnome King's Court";
+    document.getElementById('quest-desc').textContent = `Gear up with ${quest7GearName} and equip it, then use the palace gate in Gnometropolis to face the real Gnome King.`;
+    document.getElementById('quest-progress').textContent = 'Not yet confronted the King.';
+  } else if(quest7State==='ready'){
+    document.getElementById('quest-name').textContent = "Quest: The Gnome King's Court";
+    document.getElementById('quest-desc').textContent = "The King has fallen — report back to the guildmaster.";
+    document.getElementById('quest-progress').textContent = 'Ready to report.';
+  } else if(quest7State==='complete'){
+    document.getElementById('quest-name').textContent = "Quest complete: The Gnome King's Court";
+    document.getElementById('quest-desc').textContent = "Act One is done. The King is dead, Gnometropolis is yours, and nobody's quite sure what comes next.";
+    document.getElementById('quest-progress').textContent = 'Reward claimed.';
   } else if(classQuestState==='locked'){
     if(state.quest6Complete){
       document.getElementById('quest-name').textContent = "Quest complete: The Gnome King's Throne";
@@ -226,7 +278,12 @@ if(isGafferHouse){
     document.getElementById('quest-name').textContent = "Quest: The Adventurer's Trial";
     document.getElementById('quest-desc').textContent = "All three trainers agree: you're ready. The guildmaster will name your path — choose it below.";
     document.getElementById('quest-progress').textContent = 'All three trials passed — claim your path.';
-  } else {
+  } else if(quest7State==='locked'){
+    /* True fallback for "class claimed but quest7 itself isn't offerable
+    yet" — shouldn't actually be reachable given quest7's own gate
+    already requires quest6Complete (same requirement classQuestState's
+    'complete' implies once a class is claimed), but kept as the safe
+    default rather than assuming that invariant always holds. */
     document.getElementById('quest-name').textContent = "Quest complete: The Adventurer's Trial";
     document.getElementById('quest-desc').textContent = `The guildmaster studied your training, your gear, the way you carry yourself, and named your path. You are recognized as a ${state.classTitle}.`;
     document.getElementById('quest-progress').textContent = 'Reward claimed.';
@@ -290,6 +347,7 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
     document.getElementById('shout-btn').style.display = state.classTitle==='Meathead' ? '' : 'none';
   }
   document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || isGnometropolis) && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('palace-gate-row').style.display = canApproachPalaceGate ? 'flex' : 'none';
   document.getElementById('monster-card').classList.toggle('active', state.inCombat);
   document.getElementById('scene-art').classList.toggle('boss-encounter', !!(state.inCombat && state.monster && state.monster.rare));
 
@@ -385,6 +443,28 @@ renderInventory();
   renderCharacterDrawer();
   renderQuestLogDrawer();
   autosave();
+}
+
+/* Renders a single PALACE_GATE_GEAR (content.js) purchase row into one of
+the three per-building blocks (guild/casino/hoodoo-gear-block, index.html)
+— see render()'s showGuildGear/showCasinoGear/showHoodooGear above for
+when each is actually shown. Mirrors renderShopItemRow()'s shop-item
+markup (render-shop.js) so it reads as part of the same shop-row family,
+but priced in Bounty Tokens via buyPalaceGateGear() (guild.js), not Pop
+Tabs via buyItemByName(). Once a copy is owned (equipped or just sitting
+in the Pack) the button locks to "Owned" rather than letting the player
+buy duplicates — buyPalaceGateGear() itself doesn't block repeat
+purchases, so this is purely a UI nicety. */
+function renderPalaceGateGearBlock(elId, item){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  const iconSvg = item.icon ? item.icon() : '';
+  const owned = (state.equipment[item.slot] && state.equipment[item.slot].name === item.name) || state.inventory.some(it => it.name === item.name);
+  const canAfford = state.bountyTokens >= item.price;
+  const btn = owned
+  ? `<button class="btn-secondary" disabled>Owned</button>`
+    : `<button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyPalaceGateGear('${item.name.replace(/'/g,"\\'")}')">Buy — ${item.price} Bounty Tokens</button>`;
+  el.innerHTML = `<div class="shop-section-title">Palace Gate Gear</div><div class="shop-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name} <span class="qty-badge">${SLOT_LABELS[item.slot]}</span></div><div class="desc">${item.desc} Needed to approach the palace gate in Gnometropolis.</div>${btn}</div></div>`;
 }
 
 function countRakeTines(){

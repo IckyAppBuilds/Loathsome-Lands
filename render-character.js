@@ -237,15 +237,43 @@ if(state.quest6Complete){
   completedEntries.push(`
   <div class="quest-log-entry">
   <div class="quest-name">The Gnome King's Throne</div>
-  <div class="quest-desc">You hunted down and defeated the Gnome King himself, deep in the Sunless Vault, and uncovered Gnometropolis beneath it.</div>
+  <div class="quest-desc">You hunted down and defeated the Gnome King's rear-guard captain, deep in the Sunless Vault, and uncovered Gnometropolis beneath it — though the King himself had already fled deeper in.</div>
   <div class="quest-progress">Reward claimed: 50 Pop Tabs, 70 XP</div>
   </div>`);
 } else if(state.quest6Accepted){
   activeEntries.push(`
   <div class="quest-log-entry">
   <div class="quest-name">The Gnome King's Throne</div>
-  <div class="quest-desc">Hunt down and defeat the Gnome King in the Sunless Vault. He's rare — keep adventuring until he shows himself.</div>
-  <div class="quest-progress">${state.quest6RareDefeated ? 'Gnome King defeated — report back at the Guild!' : 'Gnome King not yet encountered.'}</div>
+  <div class="quest-desc">Hunt down and defeat the Gnome King's captain, left to guard his retreat in the Sunless Vault. He's rare — keep adventuring until he shows himself.</div>
+  <div class="quest-progress">${state.quest6RareDefeated ? 'Captain defeated — report back at the Guild!' : 'Captain not yet encountered.'}</div>
+  </div>`);
+}
+
+/* Quest 7 ("The Gnome King's Court", Act 1 finale) — same quest7State
+logic as render.js's isGuild display chain (see quest7State there),
+reproduced here since the Quest Log's copy is its own separate string,
+not shared markup. */
+if(state.quest7Complete){
+  completedEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">The Gnome King's Court</div>
+  <div class="quest-desc">You forced the palace gate in Gnometropolis and struck down the real Gnome King. Act One is done — Gnometropolis is yours.</div>
+  <div class="quest-progress">Reward claimed: 150 Pop Tabs, 200 XP, 20 Bounty Tokens</div>
+  </div>`);
+} else if(state.quest7RareDefeated){
+  activeEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">The Gnome King's Court</div>
+  <div class="quest-desc">The King has fallen behind the palace gate — report back to the guildmaster.</div>
+  <div class="quest-progress">Ready to report.</div>
+  </div>`);
+} else if(state.quest7Accepted){
+  const quest7GearItem = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
+  activeEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">The Gnome King's Court</div>
+  <div class="quest-desc">Gear up with ${quest7GearItem ? quest7GearItem.name : 'the right gear'} and equip it, then use the palace gate in Gnometropolis to face the real Gnome King.</div>
+  <div class="quest-progress">Not yet confronted the King.</div>
   </div>`);
 }
 
