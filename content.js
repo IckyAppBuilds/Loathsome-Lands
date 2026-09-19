@@ -80,33 +80,34 @@ const gnomeCommander = {
    name:"the gnome commander", hp:45, atkMin:4, atkMax:8, xp:20, rare:true, zone:"commons",
    art: artGnomeCommander, loot:null
 };
-const COMMANDER_SPAWN_CHANCE = 0.02;
+const COMMANDER_SPAWN_CHANCE = 0.05;
 
 /* Rare hunt target for the Tinker's quest, "Gears in the Dark" — spawns in
 the Dank Sewers while state.quest4Accepted is true and the quest isn't
 complete yet, same mechanic as gnomeCommander above (see
-diggerBotHunt in goAdventuring()). Tuned tougher than a first pass
-(spawn chance lower, HP higher than gnomeCommander) per user feedback
-that quest 4 was completing too fast — see DIGGERBOT_SPAWN_CHANCE. */
+diggerBotHunt in goAdventuring()). Tuned tougher (higher HP) than
+gnomeCommander to keep it a step up in difficulty even though all
+three named hunts now share the same DIGGERBOT_SPAWN_CHANCE. */
 const diggerBot = {
    name:"a runaway digger-bot, venting steam", hp:55, atkMin:4, atkMax:8, xp:22, rare:true, zone:"sewers",
    art: artDiggerBot, loot:null
 };
-const DIGGERBOT_SPAWN_CHANCE = 0.012;
+const DIGGERBOT_SPAWN_CHANCE = 0.05;
 
 /* Rare hunt target for the Guild's quest 6, "The Gnome King's Throne" —
 spawns in the Sunless Vault while state.quest6Accepted is true and the
 quest isn't complete yet, same mechanic as gnomeCommander/diggerBot above
 (see gnomeKingHunt in goAdventuring()). Tuned as the toughest rare boss
-yet — highest HP, lowest spawn chance — since it's the capstone-adjacent
-quest that unlocks Gnometropolis. No rareDrop of its own, same reasoning
+yet — highest HP of the three, even though all three now share the same
+GNOME_KING_SPAWN_CHANCE — since it's the capstone-adjacent quest that
+unlocks Gnometropolis. No rareDrop of its own, same reasoning
 as gnomeCommander/diggerBot: it's already a dedicated quest reward on top
 of a much bigger XP/Pop Tab payout. */
 const gnomeKing = {
    name:"the gnome king, throned in scavenged gold", hp:70, atkMin:7, atkMax:12, xp:35, rare:true, zone:"vault",
    art: artGnomeKing, loot:null
 };
-const GNOME_KING_SPAWN_CHANCE = 0.01;
+const GNOME_KING_SPAWN_CHANCE = 0.05;
 
 /* Boss for the GUILD TIER of the level-10 class capstone, "The
 Adventurer's Trial" (acceptClassQuest/claimClassPath in game.js). The
