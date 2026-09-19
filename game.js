@@ -173,11 +173,16 @@ checkDefeat();
 function learnSpell(id){
    if(state.location !== 'hoodoo') return;
    const spell = spells.find(s=>s.id===id);
-   if(!spell || state.spellsKnown.includes(id) || state.popTabs < spell.price) return;
-   state.popTabs -= spell.price;
+   if(!spell || state.spellsKnown.includes(id)) return;
+   /* Computed once so the affordability gate and the deduction below can't
+   drift apart (e.g. gate checks the discounted price but full price gets
+   deducted, or vice versa). */
+   const price = Math.round(spell.price * (1 - HOODOO_SPELL_DISCOUNT[state.buildingUpgrades.hoodoo || 0]));
+   if(state.popTabs < price) return;
+   state.popTabs -= price;
    state.spellsKnown.push(id);
    clearLog();
-   log(`The Hoodoo Doctor teaches you ${spell.name}. (-${spell.price} Pop Tabs)`);
+   log(`The Hoodoo Doctor teaches you ${spell.name}. (-${price} Pop Tabs)`);
    render();
 }
 function playerFlee(){
@@ -335,12 +340,22 @@ function restAtInn(){
       render();
       return;
    }
-   if(!devMode) state.adventures--;
+   /* Roll before the decrement (not after) so a hit skips the decrement
+   entirely rather than refunding it. */
+   let freeRest = false;
+   if(!devMode){
+      freeRest = Math.random() < INN_FREE_REST_CHANCE[state.buildingUpgrades.inn || 0];
+      if(!freeRest) state.adventures--;
+   }
    state.hp = state.maxHp;
    state.mp = state.maxMp;
    state.showVictory = false;
    state.victoryMonster = null;
-   log("You duck into the Inn and rest up. You feel merely acceptable again. (-1 Biscuit)");
+   if(freeRest){
+      log("You duck into the Inn and rest up. You feel merely acceptable again. (free rest — the innkeeper waves off the Biscuit)");
+   } else {
+      log("You duck into the Inn and rest up. You feel merely acceptable again. (-1 Biscuit)");
+   }
    render();
 }
 function travelTo(dest){
@@ -639,7 +654,7 @@ function gambleCasino(amount){
    if(state.location !== 'casino' || state.popTabs < amount) return;
    state.popTabs -= amount;
    clearLog();
-   if(Math.random() < CASINO_WIN_CHANCE){
+   if(Math.random() < CASINO_WIN_CHANCE + CASINO_WIN_BONUS[state.buildingUpgrades.casino || 0]){
       const winnings = amount * 2;
       state.popTabs += winnings;
       log(`${casinoWinLines[Math.floor(Math.random()*casinoWinLines.length)]} (+${winnings} Pop Tabs)`);
@@ -766,10 +781,11 @@ function claimBounty(){
    if(state.location !== 'guild' || !state.questComplete || !state.activeBounty) return;
    const bt = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
    if(!bt || state.activeBounty.progress < bt.count) return;
-   state.bountyTokens += bt.reward.bountyTokens;
+   const bountyPayout = Math.round(bt.reward.bountyTokens * (1 + GUILD_BOUNTY_BONUS[state.buildingUpgrades.guild || 0]));
+   state.bountyTokens += bountyPayout;
    state.bountiesCompleted++;
    clearLog();
-   log(`Bounty complete! You collect ${bt.reward.bountyTokens} Bounty Token${bt.reward.bountyTokens===1?'':'s'} for clearing out ${bt.count} × ${bt.monsterName}.`);
+   log(`Bounty complete! You collect ${bountyPayout} Bounty Token${bountyPayout===1?'':'s'} for clearing out ${bt.count} × ${bt.monsterName}.`);
    rollNewBounty();
    render();
    autosave();
@@ -857,7 +873,9 @@ function sellItemByName(name){
    if(idxList.length===0) return;
    const sellPrice = state.inventory[idxList[0]].sell;
    const count = idxList.length;
-   const earned = sellPrice * count;
+   /* Tinker bonus applied to the total, then rounded once, so per-unit
+   rounding can't shave off Pop Tabs across a multi-item sale. */
+   const earned = Math.round(sellPrice * count * (1 + TINKER_SELL_BONUS[state.buildingUpgrades.tinker || 0]));
    for(let n=idxList.length-1; n>=0; n--){ state.inventory.splice(idxList[n],1); }
    state.popTabs += earned;
    clearLog();
@@ -934,21 +952,29 @@ function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 const BISCUIT_MAX = 200;
 const BISCUIT_REGEN_MS = 3 * 60 * 1000; /* one new Biscuit every 3 minutes */
 
+/* The player's live cap — BISCUIT_MAX plus whatever the Gaffer's Cottage
+adds. Everything that treats BISCUIT_MAX as the actual ceiling on
+state.adventures should call this instead, so a single lookup covers every
+call site rather than re-deriving the bonus at each one. */
+function effectiveBiscuitMax(){
+   return BISCUIT_MAX + GAFFER_BISCUIT_MAX_BONUS[state.buildingUpgrades.gaffer || 0];
+}
+
 function regenBiscuits(){
-   if(state.adventures >= BISCUIT_MAX){
+   if(state.adventures >= effectiveBiscuitMax()){
       state.lastRegenAt = Date.now();
       return;
    }
    const elapsed = Date.now() - state.lastRegenAt;
    const gained = Math.floor(elapsed / BISCUIT_REGEN_MS);
    if(gained > 0){
-      state.adventures = Math.min(BISCUIT_MAX, state.adventures + gained);
+      state.adventures = Math.min(effectiveBiscuitMax(), state.adventures + gained);
       state.lastRegenAt += gained * BISCUIT_REGEN_MS;
    }
 }
 
 function msUntilNextBiscuit(){
-   if(state.adventures >= BISCUIT_MAX) return 0;
+   if(state.adventures >= effectiveBiscuitMax()) return 0;
    return Math.max(0, BISCUIT_REGEN_MS - (Date.now() - state.lastRegenAt));
 }
 
@@ -962,7 +988,7 @@ function formatMs(ms){
 function updateBiscuitDisplay(){
    document.getElementById('biscuit-stat').classList.toggle('dev-active', devMode);
    if(devMode){
-      state.adventures = BISCUIT_MAX;
+      state.adventures = effectiveBiscuitMax();
       state.lastRegenAt = Date.now();
       document.getElementById('adv-text').textContent = '∞';
       document.getElementById('adv-btn').disabled = state.inCombat;
@@ -973,7 +999,7 @@ function updateBiscuitDisplay(){
    document.getElementById('adv-text').textContent = state.adventures;
    document.getElementById('adv-btn').disabled = state.inCombat;
    const bar = document.getElementById('biscuit-bar');
-   if(state.adventures >= BISCUIT_MAX){
+   if(state.adventures >= effectiveBiscuitMax()){
       bar.style.width = '100%';
    } else {
       const progress = 1 - (msUntilNextBiscuit() / BISCUIT_REGEN_MS);

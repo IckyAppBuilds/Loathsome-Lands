@@ -544,6 +544,67 @@ function renderHoodooShop(){
   });
 }
 
+/* Per-building level-effect formatters for the Town Lot listing below.
+Keyed the same as BUILDING_UPGRADES (content.js); each entry's `values`
+is the matching LEVEL-indexed constant from content.js (index 0 is the
+no-bonus baseline) and `format(v)` turns one entry into the one-line
+text shown for "Currently"/"Next level". Percent-based effects are
+fractions in content.js (e.g. 0.30), so format() multiplies by 100 and
+rounds rather than hardcoding a number here — 'shop' isn't a fraction/
+flat-bonus array like the rest, so it's handled separately below by
+buildingEffectDesc(). */
+const BUILDING_EFFECT_INFO = {
+   gaffer: { values: GAFFER_BISCUIT_MAX_BONUS, format: v => `+${v} max Biscuits` },
+   hoodoo: { values: HOODOO_SPELL_DISCOUNT, format: v => `${Math.round(v*100)}% off spells` },
+   inn: { values: INN_FREE_REST_CHANCE, format: v => `${Math.round(v*100)}% chance of a free rest` },
+   tinker: { values: TINKER_SELL_BONUS, format: v => `+${Math.round(v*100)}% on junk sale prices` },
+   guild: { values: GUILD_BOUNTY_BONUS, format: v => `+${Math.round(v*100)}% Bounty Token rewards` },
+   casino: { values: CASINO_WIN_BONUS, format: v => `+${Math.round(v*100)}% casino win odds` },
+   };
+
+/* The Shop's tiers aren't a single cumulative number like the other 6
+buildings — each level unlocks a specific stock tier (see the
+SHOP_LEVEL_FOOD_TIER2/TIER3/GEAR_TIER3 comment in content.js), so its
+"currently"/"next level" text lists unlock names instead of formatting
+a value. Pulls the level numbers from those constants rather than
+hardcoding 1/2/3 so this stays correct if the tiers are ever reordered. */
+function shopTierUnlockNames(){
+  const names = {};
+  names[SHOP_LEVEL_FOOD_TIER2] = 'Tier 2 food stock';
+  names[SHOP_LEVEL_FOOD_TIER3] = 'Tier 3 food stock';
+  names[SHOP_LEVEL_GEAR_TIER3] = 'Tier 3 gear stock';
+  return names;
+}
+
+/* Builds the "Currently: ___." / "Next level: ___." lines shown under a
+Town Lot building's name, using the actual content.js constants so the
+text can't drift out of sync with the numbers driving the mechanic. */
+function buildingEffectDesc(key, level){
+  if(key === 'shop'){
+    const names = shopTierUnlockNames();
+    let lines = '';
+    if(level > 0){
+      const unlocked = [];
+      for(let l=1; l<=level; l++){ if(names[l]) unlocked.push(names[l]); }
+      if(unlocked.length) lines += `<div class="quest-desc">Currently: ${unlocked.join(', ')} unlocked.</div>`;
+    }
+    if(level < BUILDING_UPGRADE_MAX && names[level+1]){
+      lines += `<div class="quest-desc">Next level: ${names[level+1]} unlocked.</div>`;
+    }
+    return lines;
+  }
+  const info = BUILDING_EFFECT_INFO[key];
+  if(!info) return '';
+  let lines = '';
+  if(level > 0){
+    lines += `<div class="quest-desc">Currently: ${info.format(info.values[level])}.</div>`;
+  }
+  if(level < BUILDING_UPGRADE_MAX){
+    lines += `<div class="quest-desc">Next level: ${info.format(info.values[level+1])}.</div>`;
+  }
+  return lines;
+}
+
 /* The Town Lot — the previously-empty town-square cell (translate(200,100)
 in artTownSquare(), core.js). Unpurchased (state.lotTier===0) it's just a
 buy prompt; once owned it shows cosmetic lot-tier upgrades plus a level
@@ -576,17 +637,18 @@ html += '<div class="shop-section-title" style="margin-top:10px;">Upgrade Town B
   html += '<div class="quest-desc" style="margin:0 0 8px;">Spend Pop Tabs to raise a building\'s level — a building can never out-level the lot itself, so upgrading the lot is what unlocks each building\'s next tier. Most buildings are cosmetic for now; the Shop\'s levels unlock better stock (see the Shop).</div>';
   BUILDING_UPGRADES.forEach(b=>{
     const level = state.buildingUpgrades[b.key] || 0;
+    const effectDesc = buildingEffectDesc(b.key, level);
     if(level >= BUILDING_UPGRADE_MAX){
-      html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Fully upgraded.</div></div></div>`;
+      html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Fully upgraded.</div>${effectDesc}</div></div>`;
       return;
     }
     if(level >= state.lotTier){
-      html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Requires the lot itself at ${LOT_TIER_NAMES[level+1]} first.</div><button class="btn-secondary" disabled>Locked</button></div></div>`;
+      html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Requires the lot itself at ${LOT_TIER_NAMES[level+1]} first.</div>${effectDesc}<button class="btn-secondary" disabled>Locked</button></div></div>`;
       return;
     }
     const cost = buildingUpgradeCost(level);
     const canAfford = state.popTabs >= cost;
-    html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Raise to level ${level+1}.</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="upgradeBuilding('${b.key}')">Upgrade — ${cost} Pop Tabs</button></div></div>`;
+    html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Raise to level ${level+1}.</div>${effectDesc}<button class="btn-secondary" ${canAfford?'':'disabled'} onclick="upgradeBuilding('${b.key}')">Upgrade — ${cost} Pop Tabs</button></div></div>`;
   });
   el.innerHTML = html;
 }
@@ -621,7 +683,7 @@ document.getElementById('char-hp-bar').style.width = (state.hp/state.maxHp*100)+
   document.getElementById('char-xp-value').textContent = state.xp+' / '+state.xpToLevel;
 
 document.getElementById('char-facts').innerHTML = `
-<div><span class="fact-label">Biscuits:</span> ${devMode ? '∞ (dev mode)' : state.adventures + ' / ' + BISCUIT_MAX}</div>
+<div><span class="fact-label">Biscuits:</span> ${devMode ? '∞ (dev mode)' : state.adventures + ' / ' + effectiveBiscuitMax()}</div>
 <div><span class="fact-label">Pop Tabs:</span> ${state.popTabs}</div>
 <div><span class="fact-label">Items carried:</span> ${state.inventory.length}</div>
 `;

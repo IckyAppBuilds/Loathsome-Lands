@@ -421,12 +421,27 @@ const LOT_TIER_MAX = LOT_TIER_COST.length - 1;
 `key` must match the building's data-action in artTownSquare() (core.js)
 and the corresponding property under state.buildingUpgrades — except 'rest'
 (the Inn), which is keyed 'inn' here for a readable label since 'rest' is
-just the click action's verb, not a name. Levels are tracked for all 7, but
-per an explicit product decision only one has an effect wired up so far:
-'shop' — see SHOP_LEVEL_FOOD_TIER2/SHOP_LEVEL_FOOD_TIER3/
-SHOP_LEVEL_GEAR_TIER3 above and getAvailableShopItems() in game.js. The
-other 6 remain cosmetic-only, deferred to a future pass once each
-building's effects are designed. */
+just the click action's verb, not a name. Levels are tracked for all 7, and
+as of this pass all 7 have a real effect wired to their level — each
+building's bonus lives in its own LEVEL-indexed array right below (index 0
+is always the no-bonus baseline; 1..BUILDING_UPGRADE_MAX are the tiers), so
+a future reader can find the mechanism without re-deriving it:
+- 'shop'   — SHOP_LEVEL_FOOD_TIER2/SHOP_LEVEL_FOOD_TIER3/
+             SHOP_LEVEL_GEAR_TIER3 above (unlock gates, not a per-level
+             array) + getAvailableShopItems() in game.js.
+- 'gaffer' — GAFFER_BISCUIT_MAX_BONUS, added to BISCUIT_MAX in game.js.
+- 'hoodoo' — HOODOO_SPELL_DISCOUNT, applied to spell price in
+             learnSpell() (game.js).
+- 'inn'    — INN_FREE_REST_CHANCE, chance restAtInn() (game.js) skips
+             consuming a Biscuit.
+- 'tinker' — TINKER_SELL_BONUS, applied to junk sell prices in
+             sellItemByName() (game.js).
+- 'guild'  — GUILD_BOUNTY_BONUS, applied to Bounty Token rewards in
+             claimBounty() (game.js).
+- 'casino' — CASINO_WIN_BONUS, added to CASINO_WIN_CHANCE above when
+             gambling.
+None of these mechanics are wired up in game.js yet as of this data-layer
+pass — that's the next task; this file only defines the numbers. */
 const BUILDING_UPGRADES = [
    { key:'gaffer', name:"Gaffer's Cottage" },
    { key:'hoodoo', name:"Hoodoo Doctor's Shack" },
@@ -439,3 +454,37 @@ const BUILDING_UPGRADES = [
 const BUILDING_UPGRADE_MAX = 3;
 /* Cost to go from `level` to `level+1` — 100/200/300 Pop Tabs per building. */
 function buildingUpgradeCost(level){ return 100 * (level+1); }
+
+/* Per-building level effects, one array per building keyed the same as
+BUILDING_UPGRADES above, each indexed by state.buildingUpgrades[key]
+(0..BUILDING_UPGRADE_MAX). Index 0 is always 0/no-op so a level-0 building
+is a guaranteed no-bonus baseline; indices 1-3 are additive tiers — same
+convention as the SHOP_LEVEL_* constants near the top of this file. Nothing
+is ever removed as a building levels up, only added on top. */
+
+/* Gaffer's Cottage — flat extra Biscuit (energy) capacity on top of
+BISCUIT_MAX (game.js), so a maxed cottage lets the player stockpile more
+energy between regen ticks before it caps out. */
+const GAFFER_BISCUIT_MAX_BONUS = [0, 20, 40, 60];
+
+/* Hoodoo Doctor's Shack — fractional discount off a spell's Pop Tabs price
+in learnSpell() (game.js). 0.30 at max level = 30% off. */
+const HOODOO_SPELL_DISCOUNT = [0, 0.10, 0.20, 0.30];
+
+/* The Inn — chance restAtInn() (game.js) restores the player without
+consuming a Biscuit. 1.0 at max level = rest is always free. */
+const INN_FREE_REST_CHANCE = [0, 0.25, 0.5, 1.0];
+
+/* Tinker's Workshop — fractional bonus added to junk sell prices in
+sellItemByName() (game.js). 0.30 at max level = junk sells for 30% more. */
+const TINKER_SELL_BONUS = [0, 0.10, 0.20, 0.30];
+
+/* The Guild — fractional bonus added to Bounty Token rewards in
+claimBounty() (game.js). 0.30 at max level = bounties pay out 30% more
+Bounty Tokens. */
+const GUILD_BOUNTY_BONUS = [0, 0.10, 0.20, 0.30];
+
+/* The Casino — added directly to CASINO_WIN_CHANCE above when gambling, so
+a maxed casino narrows (but per product intent never eliminates) the
+house's edge. 0.10 at max level = 45% base win chance becomes 55%. */
+const CASINO_WIN_BONUS = [0, 0.03, 0.06, 0.10];
