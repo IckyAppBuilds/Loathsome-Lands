@@ -719,7 +719,7 @@ const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyT
        quest6Accepted, quest6RareDefeated, quest6Complete,
        classQuestAccepted, classQuestComplete, classTitle,
        activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed,
-       lotTier, buildingUpgrades } = state;
+       lotTier, buildingUpgrades, statResetsBrewed } = state;
    return {
       hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
       lastRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
@@ -730,7 +730,7 @@ const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyT
       quest6Accepted, quest6RareDefeated, quest6Complete,
       classQuestAccepted, classQuestComplete, classTitle,
       activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed,
-      lotTier, buildingUpgrades,
+      lotTier, buildingUpgrades, statResetsBrewed,
       equipment: Object.fromEntries(
          SLOT_ORDER.map(slot => [slot, serializeItem(state.equipment[slot])])
          ),
@@ -768,6 +768,9 @@ state.activeBounty = saved.activeBounty || null;
    predate these fields sane defaults rather than leaving them undefined. */
    state.lotTier = (typeof saved.lotTier === 'number' && saved.lotTier >= 0) ? saved.lotTier : 0;
    state.buildingUpgrades = (saved.buildingUpgrades && typeof saved.buildingUpgrades === 'object') ? saved.buildingUpgrades : {};
+   /* Stat-reset potion purchase counter — added after this function was
+   first written, same fallback reasoning as lotTier/buildingUpgrades. */
+   state.statResetsBrewed = typeof saved.statResetsBrewed === 'number' ? saved.statResetsBrewed : 0;
    recomputeMaxStats();
 }
 

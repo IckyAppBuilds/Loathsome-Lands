@@ -244,13 +244,21 @@ getAvailableShopItems() in game.js and renderShop() in render.js) — one
 item per equipment slot, each granting +2 to a stat (double shopGearItems'
 +1), priced a little steeper. Kept as its own array rather than folded
 into shopGearItems/shopBuyItems so tier-1 pricing/availability is
-untouched and the unlock gate lives in exactly one place. */
+untouched and the unlock gate lives in exactly one place.
+
+Gear tier pricing is quadratic against a shared GEAR_BASE_UNIT (10, chosen
+to sit right where shopGearItems' own tier-1 prices already cluster):
+tier 2 averages ~4x GEAR_BASE_UNIT (~40), tier 3 (below) ~9x (~90). Each
+tier's prices are scaled by a single constant factor off its pre-quadratic
+numbers, so the relative spread between a tier's own items (cheapest vs
+priciest) is unchanged — only the tier's overall level moved. */
+const GEAR_BASE_UNIT = 10;
 const shopGearItemsTier2 = [
-   { name:"a scepter looted from the vizier's chambers", desc:"Still radiates a faint, smug authority.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, price:20, icon: iconVizierScepter },
-   { name:"a guard-captain's dented helm", desc:"Reinforced. Dented anyway.", type:"equip", slot:"head", bonus:{grit:2}, price:19, icon: iconGuardHelm },
-   { name:"a clockwork-plated chestpiece", desc:"Ticks faintly whenever your heart rate spikes.", type:"equip", slot:"chest", bonus:{grit:2}, price:21, icon: iconClockworkPlate },
-   { name:"burrow-worm hide greaves", desc:"Flexible enough to squeeze through a tunnel-worm's old digs.", type:"equip", slot:"legs", bonus:{zip:2}, price:18, icon: iconBurrowGreaves },
-   { name:"spring-loaded gnome-tech boots", desc:"Every step has a little more bounce than it should.", type:"equip", slot:"boots", bonus:{zip:2}, price:22, icon: iconSpringBoots },
+   { name:"a scepter looted from the vizier's chambers", desc:"Still radiates a faint, smug authority.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, price:40, icon: iconVizierScepter },
+   { name:"a guard-captain's dented helm", desc:"Reinforced. Dented anyway.", type:"equip", slot:"head", bonus:{grit:2}, price:38, icon: iconGuardHelm },
+   { name:"a clockwork-plated chestpiece", desc:"Ticks faintly whenever your heart rate spikes.", type:"equip", slot:"chest", bonus:{grit:2}, price:42, icon: iconClockworkPlate },
+   { name:"burrow-worm hide greaves", desc:"Flexible enough to squeeze through a tunnel-worm's old digs.", type:"equip", slot:"legs", bonus:{zip:2}, price:36, icon: iconBurrowGreaves },
+   { name:"spring-loaded gnome-tech boots", desc:"Every step has a little more bounce than it should.", type:"equip", slot:"boots", bonus:{zip:2}, price:44, icon: iconSpringBoots },
    ];
 
 /* ---------------- Shop upgrade tiers ---------------- */
@@ -268,24 +276,30 @@ const SHOP_LEVEL_FOOD_TIER2 = 1;
 const SHOP_LEVEL_FOOD_TIER3 = 2;
 const SHOP_LEVEL_GEAR_TIER3 = 3;
 
+/* Food tier pricing is quadratic against a shared FOOD_BASE_UNIT (5, the
+apple's existing tier-1 price in shopBuyItems): tier 2 (jerky) ~4x that
+(~20), tier 3 (biscuit tin) ~9x (~45). */
+const FOOD_BASE_UNIT = 5;
 const shopFoodItemsTier2 = [
-   { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:12, price:9, icon:iconJerky },
+   { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:12, price:20, icon:iconJerky },
    ];
 
 const shopFoodItemsTier3 = [
-   { name:"a tin of hoarded biscuit crumbs", desc:"Denser than a whole biscuit, somehow. Restores a large amount of HP.", type:"hp", value:22, price:18, icon:iconBiscuitTin },
+   { name:"a tin of hoarded biscuit crumbs", desc:"Denser than a whole biscuit, somehow. Restores a large amount of HP.", type:"hp", value:22, price:45, icon:iconBiscuitTin },
    ];
 
 /* Top gear tier — one item per slot like shopGearItemsTier2, each granting
 +3 to a stat (triple shopGearItems' +1), priced steeper still. Flavored as
 the Shop's own premium stock (bought, not looted), unlike Tier 2's
-Gnometropolis-loot theming. */
+Gnometropolis-loot theming. Priced per the GEAR_BASE_UNIT quadratic scheme
+above shopGearItemsTier2 — ~9x GEAR_BASE_UNIT, same per-tier scale factor
+applied to every item so the tier's internal price spread is unchanged. */
 const shopGearItemsTier3 = [
-   { name:"an heirloom hoodoo rod, mostly legitimate", desc:"The provenance is fuzzy. The results aren't.", type:"equip", slot:"weapon", bonus:{hoodoo:3}, price:40, icon: iconHeirloomRod },
-   { name:"a champion's dented crown, repurposed", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{grit:3}, price:34, icon: iconChampionCrown },
-   { name:"a reinforced adventurer's cuirass", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{grit:3}, price:38, icon: iconAdventurerCuirass },
-   { name:"a tailored pair of quick-step trousers", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{zip:3}, price:32, icon: iconQuickstepTrousers },
-   { name:"boots blessed by a mildly competent hoodoo doctor", desc:"\"Mildly\" is doing some work in that sentence.", type:"equip", slot:"boots", bonus:{zip:3}, price:36, icon: iconBlessedBoots },
+   { name:"an heirloom hoodoo rod, mostly legitimate", desc:"The provenance is fuzzy. The results aren't.", type:"equip", slot:"weapon", bonus:{hoodoo:3}, price:100, icon: iconHeirloomRod },
+   { name:"a champion's dented crown, repurposed", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{grit:3}, price:85, icon: iconChampionCrown },
+   { name:"a reinforced adventurer's cuirass", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{grit:3}, price:95, icon: iconAdventurerCuirass },
+   { name:"a tailored pair of quick-step trousers", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{zip:3}, price:80, icon: iconQuickstepTrousers },
+   { name:"boots blessed by a mildly competent hoodoo doctor", desc:"\"Mildly\" is doing some work in that sentence.", type:"equip", slot:"boots", bonus:{zip:3}, price:90, icon: iconBlessedBoots },
    ];
 
 /* ---------------- Spells (Hoodoo magic) ---------------- */
@@ -414,7 +428,11 @@ cost of its own — LOT_TIER_COST[1] is the purchase price. Tier art lives in
 artTownSquare() (core.js); these names/costs are what the Town Lot screen
 (renderTownLot(), render.js) shows the player. */
 const LOT_TIER_NAMES = ['Empty Lot', 'Town Lot', 'Town Lot (Toolshed)', 'Town Hall'];
-const LOT_TIER_COST = [0, 150, 250, 400];
+/* Quadratic: 150 * N * N for tier N (N = 1..3) — 150, 600, 1350. Keeps each
+step a real Pop Tabs sink instead of a flat/linear climb. Left as a literal
+array (rather than a formula call) since other code indexes this directly
+by state.lotTier. */
+const LOT_TIER_COST = [0, 150, 600, 1350];
 const LOT_TIER_MAX = LOT_TIER_COST.length - 1;
 
 /* The 7 other town buildings a purchased lot lets the player invest in.
@@ -452,8 +470,9 @@ const BUILDING_UPGRADES = [
    { key:'casino', name:'The Casino' },
    ];
 const BUILDING_UPGRADE_MAX = 3;
-/* Cost to go from `level` to `level+1` — 100/200/300 Pop Tabs per building. */
-function buildingUpgradeCost(level){ return 100 * (level+1); }
+/* Cost to go from `level` to `level+1` — quadratic: 100 * (level+1)^2, i.e.
+100/400/900 Pop Tabs per building. */
+function buildingUpgradeCost(level){ return 100 * (level+1) * (level+1); }
 
 /* Per-building level effects, one array per building keyed the same as
 BUILDING_UPGRADES above, each indexed by state.buildingUpgrades[key]
@@ -470,6 +489,20 @@ const GAFFER_BISCUIT_MAX_BONUS = [0, 20, 40, 60];
 /* Hoodoo Doctor's Shack — fractional discount off a spell's Pop Tabs price
 in learnSpell() (game.js). 0.30 at max level = 30% off. */
 const HOODOO_SPELL_DISCOUNT = [0, 0.10, 0.20, 0.30];
+
+/* Stat-reset potion (respec), also sold by the Hoodoo Doctor — refunds all
+spent stat points so the player can redistribute them. Unlike every other
+priced item in this file, its price isn't tiered by building level: it
+climbs steeply on every single purchase, ever, tracked by
+state.statResetsBrewed (core.js/account.js). Price for the Nth potion
+(0-indexed by state.statResetsBrewed) is
+STAT_RESET_BASE_PRICE * STAT_RESET_PRICE_MULT^N — 150, 600, 2400, 9600,
+38400, ... — intentionally exponential, not gentle, per design intent:
+a respec should be a rare, deliberate, increasingly expensive choice, not
+a routine one. The brew function that reads these lives in game.js (a
+separate change); this is data/state plumbing only. */
+const STAT_RESET_BASE_PRICE = 150;
+const STAT_RESET_PRICE_MULT = 4;
 
 /* The Inn — chance restAtInn() (game.js) restores the player without
 consuming a Biscuit. 1.0 at max level = rest is always free. */

@@ -96,6 +96,11 @@ const state = {
         player's first visit to the bounty section rolls one. */
      activeBounty: null,
      bountiesCompleted: 0,
+     /* Stat-reset (respec) potion purchase count, ever — not tiered by
+        building level like everything else. Each brew's price climbs
+        steeply off this counter (STAT_RESET_BASE_PRICE/_PRICE_MULT,
+        content.js). See the brew function in game.js (separate change). */
+     statResetsBrewed: 0,
      /* Rare-drop collection log — every rareDrop item name ever obtained,
         kept even if later sold/lost (see winCombat() in game.js and the
         Character drawer's Rare Finds block in render.js). */
