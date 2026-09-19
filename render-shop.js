@@ -1,0 +1,318 @@
+/* Section order + heading for renderInventory() below. Every item type in
+content.js falls into exactly one of these buckets (see the type-string
+audit in the surrounding history) — consumables first since they're what
+you reach for mid-run, then Equipment, then Quest Items, then plain Loot. */
+const INVENTORY_SECTIONS = [
+  { types:['hp','mp','luck'], title:'Potions & Consumables' },
+  { types:['equip'], title:'Equipment' },
+  { types:['quest'], title:'Quest Items' },
+  { types:['junk'], title:'Loot' },
+  ];
+
+function renderInventory(){
+  const list = document.getElementById('inv-list');
+  if(state.inventory.length===0){
+    list.innerHTML = '<div class="inv-empty">Empty. Bring me things.</div>';
+    return;
+  }
+  list.innerHTML = '';
+
+const groups = new Map();
+  state.inventory.forEach((item, idx)=>{
+    if(!groups.has(item.name)){
+      groups.set(item.name, { item, count:0, firstIdx:idx });
+    }
+    groups.get(item.name).count++;
+  });
+
+/* Display order is (fixed type bucket, then name) rather than raw
+  state.inventory position. Array position isn't stable: using one
+  potion out of a stack splices that exact slot out, and equipping a
+  new item pushes the piece it replaces onto the end of the array — so
+  grouping straight off array order used to make the whole list
+  visually reshuffle every time you used or equipped something. Sorting
+  by what the item IS instead of where it currently sits means a given
+  item always lands in the same spot. firstIdx is still whatever index
+  that stack currently occupies, for the Use/Equip button below — that
+  part is unaffected, only the ordering of the groups is. */
+const sorted = [...groups.values()].sort((a,b)=>a.item.name.localeCompare(b.item.name));
+
+INVENTORY_SECTIONS.forEach(section=>{
+  const entries = sorted.filter(g => section.types.includes(g.item.type));
+  if(entries.length===0) return;
+  const header = document.createElement('div');
+  header.className = 'shop-section-title';
+  header.textContent = section.title;
+  list.appendChild(header);
+  entries.forEach(({item, count, firstIdx})=>{
+    const div = document.createElement('div');
+    div.className='inv-item';
+    let btn = '';
+    if(item.type==='hp' || item.type==='mp' || item.type==='luck'){
+      btn = `<button class="btn-secondary" onclick="useItem(${firstIdx})">Use</button>`;
+    } else if(item.type==='equip'){
+      btn = `<button class="btn-secondary" onclick="equipItem(${firstIdx})">Equip</button>`;
+    }
+    const iconSvg = item.icon ? item.icon() : '';
+    const qtyBadge = count>1 ? `<span class="qty-badge">×${count}</span>` : '';
+    const slotBadge = item.type==='equip' ? ` <span class="qty-badge">${SLOT_LABELS[item.slot]}</span>` : '';
+    /* Quest-turn-in items (potion/vein ingredients, rake tines) all carry
+    type:"quest" (see content.js) — flag them here so they read as
+    distinct from ordinary junk/loot at a glance, per user feedback. */
+                  const questBadge = item.type==='quest' ? ` <span class="quest-badge">Quest Item</span>` : '';
+    const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
+    ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
+      : '';
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name}${qtyBadge}${slotBadge}${questBadge}</div><div class="desc">${item.desc}${bonusText}</div>${btn}</div>`;
+    list.appendChild(div);
+  });
+});
+}
+
+/* Which pane of the Shop is showing: 'food' | 'gear' | 'sell'. UI-only —
+not part of `state`, not saved — reset to 'food' on every enterShop()
+(game.js) so the drawer doesn't reopen wherever it was left last time. */
+let shopTab = 'food';
+
+function setShopTab(tab){
+  shopTab = tab;
+  renderShop();
+}
+
+function renderShopItemRow(def){
+  const div = document.createElement('div');
+  div.className = 'shop-item';
+  const iconSvg = def.icon ? def.icon() : '';
+  const canAfford = state.popTabs >= def.price;
+  const slotTag = def.slot ? ` <span class="qty-badge">${SLOT_LABELS[def.slot]}</span>` : '';
+  const bonusTag = def.bonus && Object.keys(def.bonus).length
+  ? ` (${Object.entries(def.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
+    : '';
+  div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${def.name}${slotTag}</div><div class="desc">${def.desc}${bonusTag} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyItemByName('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
+  return div;
+}
+
+function renderShop(){
+  const shopList = document.getElementById('shop-list');
+  shopList.innerHTML = '';
+
+const tabRow = document.createElement('div');
+  tabRow.className = 'btn-row';
+  [['food','Food'], ['gear','Gear'], ['sell','Sell']].forEach(([id, label])=>{
+    const btn = document.createElement('button');
+    btn.className = shopTab === id ? 'btn-primary' : 'btn-secondary';
+    btn.textContent = label;
+    btn.onclick = () => setShopTab(id);
+    tabRow.appendChild(btn);
+  });
+  shopList.appendChild(tabRow);
+
+const allItems = getAvailableShopItems();
+
+if(shopTab === 'food' || shopTab === 'gear'){
+  const items = allItems.filter(def => def.type === (shopTab === 'food' ? 'hp' : 'equip'));
+  const section = document.createElement('div');
+  section.innerHTML = `<div class="shop-section-title">${shopTab === 'food' ? 'Food For Sale' : 'Gear For Sale'}</div>`;
+  if(items.length === 0){
+    section.innerHTML += '<div class="shop-empty">Nothing here yet. Upgrading the Shop (Town Lot) brings in better stock.</div>';
+  } else {
+    items.forEach(def => section.appendChild(renderShopItemRow(def)));
+  }
+  shopList.appendChild(section);
+  return;
+}
+
+const sellSection = document.createElement('div');
+  sellSection.innerHTML = '<div class="shop-section-title">Sell Your Junk</div>';
+  const sellable = state.inventory.filter(it => it.sell && ((it.type==='junk' || it.type==='equip') || isQuestItemSellable(it)));
+
+if(sellable.length===0){
+  sellSection.innerHTML += '<div class="shop-empty">Nothing in your pack worth selling. Bring back some gnome junk.</div>';
+} else {
+  const groups = new Map();
+  sellable.forEach(item=>{
+    if(!groups.has(item.name)) groups.set(item.name, { item, count:0 });
+    groups.get(item.name).count++;
+  });
+  /* Sort by name rather than trusting state.inventory's current order —
+  same reasoning as renderInventory() above: that order shifts under
+  this list's feet whenever items are used/equipped elsewhere, which
+  made entries here reshuffle too even though nothing was sold. */
+  [...groups.values()].sort((a,b)=>a.item.name.localeCompare(b.item.name)).forEach(({item, count})=>{
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+    const iconSvg = item.icon ? item.icon() : '';
+    const total = item.sell * count;
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name} <span class="qty-badge">×${count}</span></div><div class="desc">${item.desc} (${item.sell} Pop Tab${item.sell>1?'s':''} each)</div><button class="btn-secondary" onclick="sellItemByName('${item.name.replace(/'/g,"\\'")}')">Sell All — ${total} Pop Tabs</button></div>`;
+    sellSection.appendChild(div);
+  });
+}
+  shopList.appendChild(sellSection);
+}
+
+/* Repeatable content, rendered as its own section below the Guild's
+quest-offer box (never replacing it) — see BOUNTY_TEMPLATES (content.js)
+and rollNewBounty()/claimBounty() (game.js). Seeds a bounty on the
+player's very first visit here, then just reflects whatever's active. */
+function renderBountyBoard(){
+  if(!state.activeBounty) rollNewBounty();
+  /* Re-roll if the active bounty's zone somehow isn't unlocked — normally
+     can't happen (rollNewBounty() only picks from unlocked zones, and
+     zones never re-lock), but covers a save that picked up a bounty
+     before zone-gating existed. */
+  const currentTemplate = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
+  if(!currentTemplate || !isBountyZoneUnlocked(currentTemplate.zone)) rollNewBounty();
+  const el = document.getElementById('bounty-box');
+  if(!el) return;
+  const bt = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
+  if(!bt){ el.innerHTML = ''; return; }
+  const progress = Math.min(bt.count, state.activeBounty.progress);
+  const done = progress >= bt.count;
+  const zoneLabel = ZONE_LABELS[bt.zone] || bt.zone;
+  el.innerHTML = `
+  <div class="block-title">Bounty Board</div>
+  <div class="quest-desc">Bounty: slay ${bt.count} × ${bt.monsterName} in ${zoneLabel}.</div>
+  <div class="quest-progress">${progress}/${bt.count}${done ? ' — ready to claim!' : ''}</div>
+  <div class="quest-progress" style="color:var(--tan);">Reward: ${bt.reward.bountyTokens} Bounty Token${bt.reward.bountyTokens===1?'':'s'}. You have ${state.bountyTokens} Bounty Token${state.bountyTokens===1?'':'s'} (${state.bountiesCompleted} bounties completed). Tokens can be spent at a future gear exchange — nothing to redeem them for yet.</div>
+  <div class="btn-row" style="margin:8px 0 0;">
+  <button class="btn-primary" ${done ? '' : 'disabled'} onclick="claimBounty()">Claim Bounty</button>
+  </div>
+  `;
+}
+
+function renderHoodooShop(){
+  const el = document.getElementById('hoodoo-list');
+  el.innerHTML = '<div class="shop-section-title">Spells to Learn</div>';
+  spells.filter(s => !s.questReward).forEach(spell=>{
+    const known = state.spellsKnown.includes(spell.id);
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+    const iconSvg = spell.icon ? spell.icon() : '';
+    const canAfford = state.popTabs >= spell.price;
+    const btn = known
+    ? `<button class="btn-secondary" disabled>Known</button>`
+      : `<button class="btn-secondary" ${canAfford?'':'disabled'} onclick="learnSpell('${spell.id}')">Learn — ${spell.price} Pop Tabs</button>`;
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP to cast)</div>${btn}</div>`;
+    el.appendChild(div);
+  });
+
+  const resetPrice = STAT_RESET_BASE_PRICE * Math.pow(STAT_RESET_PRICE_MULT, state.statResetsBrewed);
+  const resetCanAfford = state.popTabs >= resetPrice;
+  const resetTitle = document.createElement('div');
+  resetTitle.className = 'shop-section-title';
+  resetTitle.textContent = 'Stat Reset';
+  el.appendChild(resetTitle);
+  const resetDiv = document.createElement('div');
+  resetDiv.className = 'shop-item';
+  resetDiv.innerHTML = `<div style="flex:1;"><div class="name">Unravelling Draught</div><div class="desc">Untangles every stat point you've ever sunk into Beef, Zip, Grit, or Hoodoo, so you can lay them down again — hopefully better this time. Gets pricier with practice.</div><button class="btn-secondary" ${resetCanAfford?'':'disabled'} onclick="brewStatResetPotion()">Brew — ${resetPrice} Pop Tabs</button></div>`;
+  el.appendChild(resetDiv);
+}
+
+/* Per-building level-effect formatters for the Town Lot listing below.
+Keyed the same as BUILDING_UPGRADES (content.js); each entry's `values`
+is the matching LEVEL-indexed constant from content.js (index 0 is the
+no-bonus baseline) and `format(v)` turns one entry into the one-line
+text shown for "Currently"/"Next level". Percent-based effects are
+fractions in content.js (e.g. 0.30), so format() multiplies by 100 and
+rounds rather than hardcoding a number here — 'shop' isn't a fraction/
+flat-bonus array like the rest, so it's handled separately below by
+buildingEffectDesc(). */
+const BUILDING_EFFECT_INFO = {
+   gaffer: { values: GAFFER_BISCUIT_MAX_BONUS, format: v => `+${v} max Biscuits` },
+   hoodoo: { values: HOODOO_SPELL_DISCOUNT, format: v => `${Math.round(v*100)}% off spells` },
+   inn: { values: INN_FREE_REST_CHANCE, format: v => `${Math.round(v*100)}% chance of a free rest` },
+   tinker: { values: TINKER_SELL_BONUS, format: v => `+${Math.round(v*100)}% on junk sale prices` },
+   guild: { values: GUILD_BOUNTY_BONUS, format: v => `+${Math.round(v*100)}% Bounty Token rewards` },
+   casino: { values: CASINO_WIN_BONUS, format: v => `+${Math.round(v*100)}% casino win odds` },
+   };
+
+/* The Shop's tiers aren't a single cumulative number like the other 6
+buildings — each level unlocks a specific stock tier (see the
+SHOP_LEVEL_FOOD_TIER2/TIER3/GEAR_TIER3 comment in content.js), so its
+"currently"/"next level" text lists unlock names instead of formatting
+a value. Pulls the level numbers from those constants rather than
+hardcoding 1/2/3 so this stays correct if the tiers are ever reordered. */
+function shopTierUnlockNames(){
+  const names = {};
+  names[SHOP_LEVEL_FOOD_TIER2] = 'Tier 2 food stock';
+  names[SHOP_LEVEL_FOOD_TIER3] = 'Tier 3 food stock';
+  names[SHOP_LEVEL_GEAR_TIER3] = 'Tier 3 gear stock';
+  return names;
+}
+
+/* Builds the "Currently: ___." / "Next level: ___." lines shown under a
+Town Lot building's name, using the actual content.js constants so the
+text can't drift out of sync with the numbers driving the mechanic. */
+function buildingEffectDesc(key, level){
+  if(key === 'shop'){
+    const names = shopTierUnlockNames();
+    let lines = '';
+    if(level > 0){
+      const unlocked = [];
+      for(let l=1; l<=level; l++){ if(names[l]) unlocked.push(names[l]); }
+      if(unlocked.length) lines += `<div class="quest-desc">Currently: ${unlocked.join(', ')} unlocked.</div>`;
+    }
+    if(level < BUILDING_UPGRADE_MAX && names[level+1]){
+      lines += `<div class="quest-desc">Next level: ${names[level+1]} unlocked.</div>`;
+    }
+    return lines;
+  }
+  const info = BUILDING_EFFECT_INFO[key];
+  if(!info) return '';
+  let lines = '';
+  if(level > 0){
+    lines += `<div class="quest-desc">Currently: ${info.format(info.values[level])}.</div>`;
+  }
+  if(level < BUILDING_UPGRADE_MAX){
+    lines += `<div class="quest-desc">Next level: ${info.format(info.values[level+1])}.</div>`;
+  }
+  return lines;
+}
+
+/* The Town Lot — the previously-empty town-square cell (translate(200,100)
+in artTownSquare(), core.js). Unpurchased (state.lotTier===0) it's just a
+buy prompt; once owned it shows cosmetic lot-tier upgrades plus a level
+for each of the other 7 town buildings (state.buildingUpgrades, core.js —
+see LOT_TIER_NAMES/LOT_TIER_COST/BUILDING_UPGRADES in content.js and
+buyTownLot()/upgradeTownLot()/upgradeBuilding() in game.js). */
+function renderTownLot(){
+  const el = document.getElementById('townlot-list');
+  if(state.lotTier === 0){
+    const cost = LOT_TIER_COST[1];
+    const canAfford = state.popTabs >= cost;
+    el.innerHTML = `
+    <div class="shop-section-title">Empty Lot</div>
+    <div class="shop-item"><div style="flex:1;"><div class="name">Buy the Lot</div><div class="desc">Clear it out and claim it for the town. Owning it is what lets you start investing in the rest of Gladstone Hollow.</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyTownLot()">Buy — ${cost} Pop Tabs</button></div></div>
+    `;
+    return;
+  }
+
+let html = '<div class="shop-section-title">Your Town Lot</div>';
+  if(state.lotTier < LOT_TIER_MAX){
+    const next = state.lotTier + 1;
+    const cost = LOT_TIER_COST[next];
+    const canAfford = state.popTabs >= cost;
+    html += `<div class="shop-item"><div style="flex:1;"><div class="name">${LOT_TIER_NAMES[state.lotTier]} <span class="qty-badge">→ ${LOT_TIER_NAMES[next]}</span></div><div class="desc">Upgrade the lot itself — cosmetic for now.</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="upgradeTownLot()">Upgrade — ${cost} Pop Tabs</button></div></div>`;
+  } else {
+    html += `<div class="shop-empty">${LOT_TIER_NAMES[state.lotTier]} — fully built up.</div>`;
+  }
+
+html += '<div class="shop-section-title" style="margin-top:10px;">Upgrade Town Buildings</div>';
+  html += '<div class="quest-desc" style="margin:0 0 8px;">Spend Pop Tabs to raise a building\'s level — a building can never out-level the lot itself, so upgrading the lot is what unlocks each building\'s next tier. Most buildings are cosmetic for now; the Shop\'s levels unlock better stock (see the Shop).</div>';
+  BUILDING_UPGRADES.forEach(b=>{
+    const level = state.buildingUpgrades[b.key] || 0;
+    const effectDesc = buildingEffectDesc(b.key, level);
+    if(level >= BUILDING_UPGRADE_MAX){
+      html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Fully upgraded.</div>${effectDesc}</div></div>`;
+      return;
+    }
+    if(level >= state.lotTier){
+      html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Requires the lot itself at ${LOT_TIER_NAMES[level+1]} first.</div>${effectDesc}<button class="btn-secondary" disabled>Locked</button></div></div>`;
+      return;
+    }
+    const cost = buildingUpgradeCost(level);
+    const canAfford = state.popTabs >= cost;
+    html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Raise to level ${level+1}.</div>${effectDesc}<button class="btn-secondary" ${canAfford?'':'disabled'} onclick="upgradeBuilding('${b.key}')">Upgrade — ${cost} Pop Tabs</button></div></div>`;
+  });
+  el.innerHTML = html;
+}
