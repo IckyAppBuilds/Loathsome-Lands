@@ -371,18 +371,39 @@ const QUEST_DEV_STAGES = [
       ], detect(){ if(state.quest6Complete) return 3; if(state.quest6Accepted && state.quest6RareDefeated) return 2; if(state.quest6Accepted) return 1; return 0; } },
 
    { id:'classquest', label:"Guild: The Adventurer's Trial (class)", stages: [
-      { label:'Not accepted', apply(){ Object.assign(state, { classQuestAccepted:false, classQuestComplete:false, classTitle:null }); } },
-      { label:'Accepted (requires level 10+ in real play)', apply(){ Object.assign(state, { classQuestAccepted:true, classQuestComplete:false, classTitle:null }); } },
-      { label:'Complete (title + bonus from current dominant stat)', apply(){
-         state.classQuestAccepted = true;
-         if(!state.classQuestComplete){
-            const dominant = Object.keys(STAT_LABELS).reduce((best, key) => state.stats[key] > state.stats[best] ? key : best, Object.keys(STAT_LABELS)[0]);
-            state.stats[dominant] += 2;
-            state.classTitle = CLASS_TITLES[dominant];
-         }
+      { label:'Not accepted', apply(){ Object.assign(state, { classQuestAccepted:false, classQuestComplete:false, classTitle:null,
+         classTrialGuildPassed:false, classTrialCasinoPassed:false, classTrialHoodooPassed:false }); } },
+      { label:'Accepted (no trainers passed yet)', apply(){ Object.assign(state, { classQuestAccepted:true, classQuestComplete:false, classTitle:null,
+         classTrialGuildPassed:false, classTrialCasinoPassed:false, classTrialHoodooPassed:false }); } },
+      { label:'Guild trial passed (Trial Champion beaten)', apply(){ Object.assign(state, { classQuestAccepted:true, classQuestComplete:false,
+         classTrialGuildPassed:true, classTrialCasinoPassed:false, classTrialHoodooPassed:false }); } },
+      { label:'All 3 trainers passed (ready to choose)', apply(){ Object.assign(state, { classQuestAccepted:true, classQuestComplete:false,
+         classTrialGuildPassed:true, classTrialCasinoPassed:true, classTrialHoodooPassed:true }); } },
+      { label:'Complete as Meathead', apply(){
+         Object.assign(state, { classQuestAccepted:true, classTrialGuildPassed:true, classTrialCasinoPassed:true, classTrialHoodooPassed:true });
+         if(!state.classQuestComplete) state.stats.beef += 2;
+         state.classTitle = CLASS_TITLES.beef;
          state.classQuestComplete = true;
       } },
-      ], detect(){ if(state.classQuestComplete) return 2; if(state.classQuestAccepted) return 1; return 0; } },
+      { label:'Complete as Card Shark', apply(){
+         Object.assign(state, { classQuestAccepted:true, classTrialGuildPassed:true, classTrialCasinoPassed:true, classTrialHoodooPassed:true });
+         if(!state.classQuestComplete) state.stats.zip += 2;
+         state.classTitle = CLASS_TITLES.zip;
+         state.classQuestComplete = true;
+      } },
+      { label:'Complete as Hexpert', apply(){
+         Object.assign(state, { classQuestAccepted:true, classTrialGuildPassed:true, classTrialCasinoPassed:true, classTrialHoodooPassed:true });
+         if(!state.classQuestComplete) state.stats.hoodoo += 2;
+         state.classTitle = CLASS_TITLES.hoodoo;
+         state.classQuestComplete = true;
+      } },
+      ], detect(){
+         if(state.classQuestComplete) return 4;
+         if(state.classTrialGuildPassed && state.classTrialCasinoPassed && state.classTrialHoodooPassed) return 3;
+         if(state.classTrialGuildPassed) return 2;
+         if(state.classQuestAccepted) return 1;
+         return 0;
+      } },
    ];
 
 function setQuestStageDev(id){
@@ -718,6 +739,7 @@ const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyT
        quest5Accepted, quest5Complete,
        quest6Accepted, quest6RareDefeated, quest6Complete,
        classQuestAccepted, classQuestComplete, classTitle,
+       classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
        activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed,
        lotTier, buildingUpgrades, statResetsBrewed } = state;
    return {
@@ -729,6 +751,7 @@ const { hp, maxHp, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyT
       quest5Accepted, quest5Complete,
       quest6Accepted, quest6RareDefeated, quest6Complete,
       classQuestAccepted, classQuestComplete, classTitle,
+      classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
       activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed,
       lotTier, buildingUpgrades, statResetsBrewed,
       equipment: Object.fromEntries(

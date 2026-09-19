@@ -108,6 +108,40 @@ const gnomeKing = {
 };
 const GNOME_KING_SPAWN_CHANCE = 0.01;
 
+/* Boss for the GUILD TIER of the level-10 class capstone, "The
+Adventurer's Trial" (acceptClassQuest/claimClassPath in game.js). The
+Trial is now three independent trainer tests — this is only the Guild's
+(the Meathead test); the Casino's (Card Shark, CLASS_TRIAL_CASINO_STAKE
+below) and the Hoodoo Doctor's (Hexpert, a killing blow with a damage
+spell) use their own mechanics, not a boss fight. All three must pass
+(state.classTrialGuildPassed/classTrialCasinoPassed/classTrialHoodooPassed,
+core.js) before claimClassPath() lets the player choose. Unlike
+gnomeCommander/diggerBot/gnomeKing above, this one is NOT a wild zone
+spawn — it's fought directly at the Guild via a dedicated button once a
+player hits level 10, so it carries no `zone` and needs no SPAWN_CHANCE
+constant of its own (a separate task wires the Guild-side fight).
+`rare:true` is still set so the existing winCombat() victory-detection
+pattern (state.monster.rare && state.monster.name === X.name) works for
+it unchanged — a separate task adds the actual check, gated on
+state.classQuestAccepted/!state.classTrialGuildPassed, and sets
+state.classTrialGuildPassed = true on the win. Tuned as the toughest
+fight in the game — tougher than gnomeKing (hp:70/atk:7-12/xp:35).
+loot:null for the same reason as the other three named bosses: the
+reward here is trial progress, not an item drop. art points at a
+not-yet-written artTrialChampion() (core.js, separate task) — referenced
+by name now so that task knows what to add. */
+const trialChampion = {
+   name:"the Guild's Trial Examiner, unbeaten and unimpressed", hp:95, atkMin:9, atkMax:14, xp:50, rare:true,
+   art: artTrialChampion, loot:null
+};
+
+/* Casino tier of the same Trial (see trialChampion comment above) — the
+Card Shark test. No boss fight: gambleCasino() (game.js) checks this
+threshold and, if the player wins a bet at or above it while the trial
+is active and this tier isn't passed yet, sets
+state.classTrialCasinoPassed = true. */
+const CLASS_TRIAL_CASINO_STAKE = 50;
+
 /* Per-zone difficulty multiplier — makes each successive area meaningfully
 tougher than the last, on top of the already-different base hp/atk/xp
 each monster entry above carries. Applied once, in startCombat()
@@ -382,7 +416,24 @@ const QUEST_ITEM_COMPLETION_FLAG = {
 /* Awarded by claimClassPath() in game.js based on whichever stat the player
 has invested the most points in (ties broken in this key order). Purely
 a title + a small stat nudge — see claimClassPath() for the mechanic. */
-const CLASS_TITLES = { beef:'Brawler', zip:'Rogue', grit:'Bulwark', hoodoo:'Hoodoo Adept' };
+const CLASS_TITLES = { beef:'Meathead', zip:'Card Shark', grit:'Bulwark', hoodoo:'Hexpert' };
+
+/* Class-capstone combat skill — each renamed class (Meathead/Card Shark/
+Hexpert; Bulwark/grit is unchanged and out of scope) unlocks its own
+purchasable/levelable combat bonus once state.classTitle matches, bought
+at a specific building: Meathead at the Guild, Card Shark at the Casino,
+Hexpert at the Hoodoo Doctor's Shack (a separate mechanics task wires the
+purchase UI/flow). A player only ever has one active class at a time, so
+all three share ONE level counter, state.classSkillLevel (core.js), rather
+than three separate counters. Same [0, tier1, tier2, tier3] convention as
+the rest of this file (index = level, 0 = no bonus). */
+const MEATHEAD_DAMAGE_BONUS = [0, 0.15, 0.30, 0.45]; /* fractional bonus to combat damage */
+const CARD_SHARK_PAYOUT_BONUS = [0, 0.5, 1.0, 1.5]; /* added directly to the Casino's win payout multiplier (flat 2x in gambleCasino(), game.js) */
+const HEXPERT_SPELL_DMG_BONUS = [0, 3, 6, 9]; /* flat bonus added to spell damage */
+/* Cost to go from `level` to `level+1` for the shared class-skill counter
+above — quadratic, same style as buildingUpgradeCost() below: 150/600/1350
+Pop Tabs. One cost curve shared across all 3 classes' single skill level. */
+function classSkillCost(level){ return 150 * (level+1) * (level+1); }
 
 /* ---------------- Casino ---------------- */
 const CASINO_WIN_CHANCE = 0.45; /* the house always wins, on average */

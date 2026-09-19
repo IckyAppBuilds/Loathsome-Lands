@@ -91,6 +91,24 @@ const state = {
      classQuestAccepted: false,
      classQuestComplete: false,
      classTitle: null,
+     /* "The Adventurer's Trial" capstone, cont'd — three independent trainers
+        each administer their own test once classQuestAccepted; all three
+        must be true before claimClassPath() (game.js) can be called. Not a
+        single boss fight anymore — one tier per prospective class:
+        - classTrialGuildPassed: beat the Trial Champion boss at the Guild
+          (trialChampion, content.js) — the Meathead test.
+        - classTrialCasinoPassed: win a wager at/above CLASS_TRIAL_CASINO_STAKE
+          (content.js) at the Casino — the Card Shark test.
+        - classTrialHoodooPassed: land a killing blow with a damage spell —
+          the Hexpert test.
+        classSkillLevel is the single shared level counter for whichever
+        class-skill the chosen classTitle unlocks (MEATHEAD_DAMAGE_BONUS/
+        CARD_SHARK_PAYOUT_BONUS/HEXPERT_SPELL_DMG_BONUS, content.js) — see
+        classSkillCost() there. */
+     classTrialGuildPassed: false,
+     classTrialCasinoPassed: false,
+     classTrialHoodooPassed: false,
+     classSkillLevel: 0,
      /* Bounty board (The Guild) — one active bounty at a time, auto-refreshed
         on claim (see rollNewBounty()/claimBounty() in game.js). null until the
         player's first visit to the bounty section rolls one. */
