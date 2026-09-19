@@ -35,13 +35,15 @@ const gnomeKingHunt = state.location==='vault' && state.quest6Accepted && !state
       return;
    }
 
-/* Non-combat share of the encounter roll was cut from 50% (25% hazard +
-   25% flavor) down to 30% (12% + 18%) per user feedback that these were
-   showing up too often — combat now fills the rest. Both event lists are
-   zone-keyed (see content.js) so each area reads distinctly instead of
-   reusing one generic set everywhere. */
+/* Non-combat share of the encounter roll: hazard was cut from 12% down
+   to 5% per user feedback that unscripted damage events specifically
+   were showing up too often — the freed-up 7 points went to combat
+   (77%, up from 70%) per explicit instruction, not to flavor. Flavor
+   stays at 18%. Both event lists are zone-keyed (see content.js) so
+   each area reads distinctly instead of reusing one generic set
+   everywhere. */
 const roll = Math.random();
-   if(roll < 0.70){
+   if(roll < 0.77){
       startCombat();
    } else if(roll < 0.82){
       const pool = hazardEvents[state.location] || hazardEvents.commons;
