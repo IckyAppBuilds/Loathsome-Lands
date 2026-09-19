@@ -713,7 +713,8 @@ function renderSpellMenu(){
 }
 
 function renderCharacterDrawer(){
-  document.getElementById('char-portrait').innerHTML = artIdle();
+  const classPortraitArt = { 'Meathead':artMeathead, 'Card Shark':artCardShark, 'Hexpert':artHexpert }[state.classTitle] || artIdle;
+  document.getElementById('char-portrait').innerHTML = classPortraitArt();
   document.getElementById('char-title').textContent = `Level ${state.level} ${state.classTitle || 'Adventurer'}`;
 
 document.getElementById('char-hp-bar').style.width = (state.hp/state.maxHp*100)+'%';

@@ -359,6 +359,19 @@ function sceneWrap(inner, rot){
 function artIdle(){
      return sceneWrap(`<circle cx="50" cy="26" r="13" fill="#d1a94e"/><line x1="50" y1="39" x2="50" y2="68"/><line x1="50" y1="48" x2="32" y2="58"/><line x1="50" y1="48" x2="68" y2="58"/><line x1="50" y1="68" x2="36" y2="92"/><line x1="50" y1="68" x2="64" y2="92"/>`, 0);
 }
+/* Player-portrait art for the three renamed classes (CLASS_TITLES,
+content.js) — same #char-portrait slot as artIdle, so same head-and-limb
+scale; each just exaggerates one silly detail instead of redesigning
+the whole silhouette. Bulwark keeps artIdle (out of scope). */
+function artMeathead(){
+     return sceneWrap(`<path d="M12 44 Q50 26 88 44 L72 78 Q50 84 28 78 Z" fill="#d1a94e"/><circle cx="14" cy="48" r="13" fill="#e0c49a"/><circle cx="86" cy="48" r="13" fill="#e0c49a"/><circle cx="50" cy="20" r="8" fill="#e0c49a"/><line x1="14" y1="61" x2="8" y2="78"/><line x1="86" y1="61" x2="92" y2="78"/><line x1="50" y1="80" x2="38" y2="98"/><line x1="50" y1="80" x2="62" y2="98"/>`, 0);
+}
+function artCardShark(){
+     return sceneWrap(`<circle cx="50" cy="26" r="12" fill="#e0c49a"/><rect x="39" y="22" width="9" height="5" rx="1" fill="#2b2b28" stroke="none"/><rect x="52" y="22" width="9" height="5" rx="1" fill="#2b2b28" stroke="none"/><line x1="48" y1="24" x2="52" y2="24"/><path d="M36 40 Q50 34 64 40 L62 78 Q50 84 38 78 Z" fill="#2b2b28"/><path d="M46 40 L54 40 L52 54 L48 54 Z" fill="#b5453f"/><line x1="36" y1="44" x2="20" y2="56"/><line x1="20" y1="56" x2="26" y2="70"/><line x1="64" y1="44" x2="78" y2="52"/><rect x="72" y="46" width="11" height="16" fill="#f4efe4" stroke-width="2" transform="rotate(-18 77 54)"/><rect x="76" y="44" width="11" height="16" fill="#f4efe4" stroke-width="2" transform="rotate(2 81 52)"/><rect x="80" y="47" width="11" height="16" fill="#f4efe4" stroke-width="2" transform="rotate(20 85 55)"/><line x1="50" y1="84" x2="42" y2="99"/><line x1="50" y1="84" x2="58" y2="99"/>`, 0);
+}
+function artHexpert(){
+     return sceneWrap(`<path d="M36 20 L50 2 L64 20 Z" fill="#b06a97"/><line x1="32" y1="20" x2="68" y2="20"/><circle cx="50" cy="28" r="11" fill="#e0c49a"/><path d="M34 38 Q50 32 66 38 L64 80 Q50 86 36 80 Z" fill="#b06a97"/><line x1="34" y1="42" x2="20" y2="54"/><line x1="66" y1="42" x2="76" y2="54"/><circle cx="76" cy="60" r="8" fill="none" stroke-width="2" opacity="0.55"/><circle cx="76" cy="60" r="4" fill="#d1a94e" stroke="none"/><line x1="50" y1="86" x2="42" y2="99"/><line x1="50" y1="86" x2="58" y2="99"/>`, 0);
+}
 function artVillager(){
      return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M38 20 Q50 6 62 20 L60 22 Q50 12 40 22 Z" fill="#5f4632"/><path d="M34 36 Q50 30 66 36 L64 76 Q50 82 36 76 Z" fill="#3d5a80"/><line x1="34" y1="40" x2="18" y2="58"/><line x1="18" y1="58" x2="10" y2="42"/><line x1="66" y1="40" x2="76" y2="52"/><line x1="50" y1="82" x2="42" y2="98"/><line x1="50" y1="82" x2="58" y2="98"/>`, -1);
 }
@@ -586,17 +599,14 @@ function artFeralAutomaton(){
 function artGnomeKing(){
    return sceneWrap(`<path d="M26 84 Q50 72 74 84 L68 38 Q50 30 32 38 Z" fill="#d1a94e"/><path d="M50 4 L30 40 L70 40 Z" fill="#b5453f"/><rect x="40" y="6" width="20" height="8" fill="#f4efe4"/><circle cx="45" cy="10" r="2" fill="#3d5a80" stroke="none"/><circle cx="55" cy="10" r="2" fill="#3d5a80" stroke="none"/><circle cx="50" cy="54" r="15" fill="#e0c49a"/><circle cx="41" cy="54" r="2.6" fill="#2b2b28" stroke="none"/><circle cx="59" cy="54" r="2.6" fill="#2b2b28" stroke="none"/><line x1="50" y1="69" x2="50" y2="90"/><line x1="50" y1="76" x2="20" y2="68"/><line x1="20" y1="68" x2="10" y2="82"/><line x1="50" y1="76" x2="80" y2="82"/><path d="M40 84 L60 84 L56 94 L44 94 Z" fill="#3d5a80"/><line x1="50" y1="90" x2="38" y2="99"/><line x1="50" y1="90" x2="62" y2="99"/>`, 0);
 }
-/* Minimal placeholder art for trialChampion (content.js) — that file's
-comment above trialChampion explicitly left this function unwritten
-("a separate task", core.js) as the last piece before the game would
-actually load; without it content.js throws at that const's definition
-and every later const in content.js/render.js silently never gets
-defined either. Added here only to unblock the Guild-fight quest wiring
-and live verification — a tougher-looking armored humanoid in the same
-style as artGnomeCommander/artGnomeKing above. Flagged for a visual
-pass, not meant as final art. */
+/* Real pass on trialChampion (content.js) — the toughest fight in the
+game (hp:95, the Guild's Trial Examiner), so it needs to read as bigger
+and more armored than artGnomeKing rather than a recolor: wider shoulder
+guards that push past the usual body silhouette, a full closed helm
+instead of a face, and a two-handed greatsword planted in front of it
+in place of the usual single raised arm. */
 function artTrialChampion(){
-   return sceneWrap(`<path d="M22 88 Q50 66 78 88 L70 36 Q50 28 30 36 Z" fill="#5f4632"/><rect x="36" y="32" width="28" height="7" fill="#8a8477"/><circle cx="50" cy="48" r="15" fill="#e0c49a"/><circle cx="43" cy="48" r="2.8" fill="#2b2b28" stroke="none"/><circle cx="57" cy="48" r="2.8" fill="#2b2b28" stroke="none"/><line x1="50" y1="63" x2="50" y2="94"/><line x1="50" y1="70" x2="20" y2="60"/><line x1="20" y1="60" x2="12" y2="38"/><path d="M6 10 L18 10 L15 38 L9 38 Z" fill="#b9b3a4"/><line x1="50" y1="70" x2="80" y2="78"/><path d="M40 84 L60 84 L56 96 L44 96 Z" fill="#3d5a80"/><line x1="50" y1="94" x2="36" y2="100"/><line x1="50" y1="94" x2="64" y2="100"/>`, 0);
+   return sceneWrap(`<path d="M16 92 Q50 70 84 92 L74 30 Q50 20 26 30 Z" fill="#5f4632"/><path d="M26 30 L10 40 L14 62 L28 54 Z" fill="#8a8477"/><path d="M74 30 L90 40 L86 62 L72 54 Z" fill="#8a8477"/><rect x="34" y="26" width="32" height="9" fill="#b9b3a4"/><path d="M36 20 Q50 6 64 20 L60 40 Q50 46 40 40 Z" fill="#b9b3a4"/><line x1="44" y1="28" x2="44" y2="36"/><line x1="56" y1="28" x2="56" y2="36"/><line x1="50" y1="46" x2="50" y2="96"/><line x1="50" y1="56" x2="18" y2="48"/><line x1="18" y1="48" x2="8" y2="26"/><line x1="50" y1="56" x2="82" y2="48"/><line x1="82" y1="48" x2="92" y2="26"/><path d="M50 12 L46 60 L54 60 Z" fill="#8a8477"/><line x1="34" y1="18" x2="66" y2="18"/><path d="M38 88 L62 88 L58 100 L42 100 Z" fill="#3d5a80"/><line x1="50" y1="96" x2="34" y2="100"/><line x1="50" y1="96" x2="66" y2="100"/>`, 0);
 }
 function artDefeated(monsterArtFn){
    const inner = monsterArtFn();
