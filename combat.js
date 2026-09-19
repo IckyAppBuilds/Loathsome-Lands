@@ -108,15 +108,29 @@ function playerAttack(){
    const eff = getEffectiveStats();
    let dmg = randInt(3,7) + (state.level-1) + statBonus(eff.beef);
    if(state.classTitle === 'Meathead') dmg = Math.round(dmg * (1 + MEATHEAD_DAMAGE_BONUS[state.classSkillLevel]));
+
+   /* Zip's sneak attack: only on the opening swing of a fresh fight (monster
+   still at full HP, the simplest reliable "first turn" check without a
+   separate combat-turn counter) — a chance to catch them off guard for a
+   critical hit AND deny their retaliation this turn entirely, rather than
+   just extra damage. Capped below dodge's 0.5 ceiling since landing this
+   is worth more (crit + a free turn, not just damage mitigation). */
+   const isOpeningAttack = state.monster.hp === state.monster.maxHp;
+   const sneakAttackChance = isOpeningAttack ? Math.min(0.4, statBonus(eff.zip)*0.025) : 0;
+   const sneakAttackLands = sneakAttackChance > 0 && Math.random() < sneakAttackChance;
+   if(sneakAttackLands) dmg = Math.round(dmg * 2);
+
    state.monster.hp = Math.max(0, state.monster.hp-dmg);
-   log(`You strike ${state.monster.name} for ${dmg} damage.`);
+   log(sneakAttackLands
+       ? `You catch ${state.monster.name} completely off guard — a critical opening strike for ${dmg} damage!`
+       : `You strike ${state.monster.name} for ${dmg} damage.`);
 
 if(state.monster.hp<=0){
    winCombat();
    return;
 }
 
-monsterRetaliate();
+if(!sneakAttackLands) monsterRetaliate();
    checkDefeat();
    render();
 }
