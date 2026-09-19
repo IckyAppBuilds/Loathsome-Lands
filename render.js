@@ -96,7 +96,30 @@ const quest5State = state.quest5Complete ? 'complete' : (state.quest5Accepted ? 
 const quest6State = state.quest6Complete ? 'complete' : (state.quest6Accepted ? 'active' : (state.quest5Complete ? 'offer' : 'locked'));
   const canReportGnomeKing = isGuild && quest6State==='active' && state.quest6RareDefeated;
 
-const classQuestState = state.classQuestComplete ? 'complete' : (state.classQuestAccepted ? 'active' : ((state.quest2Complete && state.level>=10) ? 'offer' : 'locked'));
+/* 'trials': accepted, but not all three trainers' tests are passed yet.
+'ready': all three passed, waiting on claimClassPath(chosenStat) — see the
+three claim-path-*-btn buttons below and their isGuild=='ready' branch. */
+const classQuestState = state.classQuestComplete ? 'complete'
+  : !state.classQuestAccepted ? ((state.quest2Complete && state.level>=10) ? 'offer' : 'locked')
+  : (state.classTrialGuildPassed && state.classTrialCasinoPassed && state.classTrialHoodooPassed) ? 'ready'
+  : 'trials';
+
+/* Small one-line trial hints on the Casino/Hoodoo screens — the Guild's
+own per-tier status line lives in the isGuild 'trials' branch below, this
+is just a nudge on the other two trainers' screens while their tier is
+still unpassed. */
+document.getElementById('casino-trial-hint').style.display = (isCasino && classQuestState==='trials') ? 'block' : 'none';
+  if(isCasino && classQuestState==='trials'){
+    document.getElementById('casino-trial-hint').textContent = state.classTrialCasinoPassed
+      ? "You've already proven your nerve here — the Casino's trial is passed."
+      : `Word is the Guild's trial-takers prove their nerve here — win a bet of at least ${CLASS_TRIAL_CASINO_STAKE} Pop Tabs.`;
+  }
+  document.getElementById('hoodoo-trial-hint').style.display = (isHoodoo && classQuestState==='trials') ? 'block' : 'none';
+  if(isHoodoo && classQuestState==='trials'){
+    document.getElementById('hoodoo-trial-hint').textContent = state.classTrialHoodooPassed
+      ? "You've already proven your hoodoo — the killing-blow trial is passed."
+      : "The Hoodoo Doctor's heard talk of trial-takers proving their hoodoo with a killing spell.";
+  }
 
 document.getElementById('gaffer-row').style.display = (isGafferHouse && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('accept-quest-btn').style.display = questState==='offer' ? '' : 'none';
@@ -121,7 +144,10 @@ document.getElementById('accept-quest3-btn').style.display = quest3State==='offe
   document.getElementById('brew-potion-btn').textContent = canBrew ? 'Brew the Potion' : `Brew the Potion (${ingredientsHeld}/${potionIngredients.length})`;
 
 document.getElementById('accept-classquest-btn').style.display = classQuestState==='offer' ? '' : 'none';
-  document.getElementById('claim-path-btn').style.display = classQuestState==='active' ? '' : 'none';
+  document.getElementById('start-trial-fight-btn').style.display = (classQuestState==='trials' && !state.classTrialGuildPassed) ? '' : 'none';
+  document.getElementById('claim-path-beef-btn').style.display = classQuestState==='ready' ? '' : 'none';
+  document.getElementById('claim-path-zip-btn').style.display = classQuestState==='ready' ? '' : 'none';
+  document.getElementById('claim-path-hoodoo-btn').style.display = classQuestState==='ready' ? '' : 'none';
 
 document.getElementById('tinker-row').style.display = (isTinker && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('accept-quest4-btn').style.display = quest4State==='offer' ? '' : 'none';
@@ -180,12 +206,16 @@ if(isGafferHouse){
     }
   } else if(classQuestState==='offer'){
     document.getElementById('quest-name').textContent = "Quest available: The Adventurer's Trial";
-    document.getElementById('quest-desc').textContent = "You've reached level 10. The guildmaster looks you over — really looks, this time. There's a Trial for adventurers who come this far: the Guild puts a name to what you've become.";
+    document.getElementById('quest-desc').textContent = "You've reached level 10. The guildmaster looks you over — really looks, this time. There's a Trial for adventurers who come this far, and it isn't the Guild's alone to give: the guildmaster, the Casino's croupier, and the Hoodoo Doctor each test something different before a name gets put to what you've become.";
     document.getElementById('quest-progress').textContent = 'Not yet accepted.';
-  } else if(classQuestState==='active'){
+  } else if(classQuestState==='trials'){
     document.getElementById('quest-name').textContent = "Quest: The Adventurer's Trial";
-    document.getElementById('quest-desc').textContent = "The guildmaster is ready to name your path. Say the word when you're ready to hear it.";
-    document.getElementById('quest-progress').textContent = 'Ready — claim your path.';
+    document.getElementById('quest-desc').textContent = "Three trainers, three tests. Beat the Guild's Trial Champion in a fight, win a big enough bet at the Casino, and land a killing blow with a damage spell at the Hoodoo Doctor's. Pass all three, then come back here to claim your path.";
+    document.getElementById('quest-progress').textContent = `Guild: ${state.classTrialGuildPassed ? '✓ passed' : 'not yet'} — Casino: ${state.classTrialCasinoPassed ? '✓ passed' : 'not yet'} — Hoodoo: ${state.classTrialHoodooPassed ? '✓ passed' : 'not yet'}`;
+  } else if(classQuestState==='ready'){
+    document.getElementById('quest-name').textContent = "Quest: The Adventurer's Trial";
+    document.getElementById('quest-desc').textContent = "All three trainers agree: you're ready. The guildmaster will name your path — choose it below.";
+    document.getElementById('quest-progress').textContent = 'All three trials passed — claim your path.';
   } else {
     document.getElementById('quest-name').textContent = "Quest complete: The Adventurer's Trial";
     document.getElementById('quest-desc').textContent = `The guildmaster studied your training, your gear, the way you carry yourself, and named your path. You are recognized as a ${state.classTitle}.`;
@@ -890,11 +920,12 @@ if(state.classQuestComplete){
   <div class="quest-progress">Reward claimed: recognized as a ${state.classTitle}</div>
   </div>`);
 } else if(state.classQuestAccepted){
+  const allClassTrialsPassedLog = state.classTrialGuildPassed && state.classTrialCasinoPassed && state.classTrialHoodooPassed;
   activeEntries.push(`
   <div class="quest-log-entry">
   <div class="quest-name">The Adventurer's Trial</div>
-  <div class="quest-desc">The guildmaster is ready to name your path. Say the word when you're ready to hear it.</div>
-  <div class="quest-progress">Ready — claim your path at the Guild.</div>
+  <div class="quest-desc">${allClassTrialsPassedLog ? "All three trainers agree: you're ready. Return to the guildmaster to claim your path." : "Three trainers, three tests: beat the Guild's Trial Champion, win a big enough bet at the Casino, and land a killing blow with a damage spell at the Hoodoo Doctor's."}</div>
+  <div class="quest-progress">${allClassTrialsPassedLog ? 'Ready — claim your path at the Guild.' : `Guild: ${state.classTrialGuildPassed ? '✓' : 'not yet'} — Casino: ${state.classTrialCasinoPassed ? '✓' : 'not yet'} — Hoodoo: ${state.classTrialHoodooPassed ? '✓' : 'not yet'}`}</div>
   </div>`);
 }
 

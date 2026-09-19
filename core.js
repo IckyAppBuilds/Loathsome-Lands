@@ -586,6 +586,18 @@ function artFeralAutomaton(){
 function artGnomeKing(){
    return sceneWrap(`<path d="M26 84 Q50 72 74 84 L68 38 Q50 30 32 38 Z" fill="#d1a94e"/><path d="M50 4 L30 40 L70 40 Z" fill="#b5453f"/><rect x="40" y="6" width="20" height="8" fill="#f4efe4"/><circle cx="45" cy="10" r="2" fill="#3d5a80" stroke="none"/><circle cx="55" cy="10" r="2" fill="#3d5a80" stroke="none"/><circle cx="50" cy="54" r="15" fill="#e0c49a"/><circle cx="41" cy="54" r="2.6" fill="#2b2b28" stroke="none"/><circle cx="59" cy="54" r="2.6" fill="#2b2b28" stroke="none"/><line x1="50" y1="69" x2="50" y2="90"/><line x1="50" y1="76" x2="20" y2="68"/><line x1="20" y1="68" x2="10" y2="82"/><line x1="50" y1="76" x2="80" y2="82"/><path d="M40 84 L60 84 L56 94 L44 94 Z" fill="#3d5a80"/><line x1="50" y1="90" x2="38" y2="99"/><line x1="50" y1="90" x2="62" y2="99"/>`, 0);
 }
+/* Minimal placeholder art for trialChampion (content.js) — that file's
+comment above trialChampion explicitly left this function unwritten
+("a separate task", core.js) as the last piece before the game would
+actually load; without it content.js throws at that const's definition
+and every later const in content.js/render.js silently never gets
+defined either. Added here only to unblock the Guild-fight quest wiring
+and live verification — a tougher-looking armored humanoid in the same
+style as artGnomeCommander/artGnomeKing above. Flagged for a visual
+pass, not meant as final art. */
+function artTrialChampion(){
+   return sceneWrap(`<path d="M22 88 Q50 66 78 88 L70 36 Q50 28 30 36 Z" fill="#5f4632"/><rect x="36" y="32" width="28" height="7" fill="#8a8477"/><circle cx="50" cy="48" r="15" fill="#e0c49a"/><circle cx="43" cy="48" r="2.8" fill="#2b2b28" stroke="none"/><circle cx="57" cy="48" r="2.8" fill="#2b2b28" stroke="none"/><line x1="50" y1="63" x2="50" y2="94"/><line x1="50" y1="70" x2="20" y2="60"/><line x1="20" y1="60" x2="12" y2="38"/><path d="M6 10 L18 10 L15 38 L9 38 Z" fill="#b9b3a4"/><line x1="50" y1="70" x2="80" y2="78"/><path d="M40 84 L60 84 L56 96 L44 96 Z" fill="#3d5a80"/><line x1="50" y1="94" x2="36" y2="100"/><line x1="50" y1="94" x2="64" y2="100"/>`, 0);
+}
 function artDefeated(monsterArtFn){
    const inner = monsterArtFn();
    return `<div style="position:relative; display:flex; justify-content:center; align-items:center;">
