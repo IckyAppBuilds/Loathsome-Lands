@@ -542,6 +542,18 @@ function renderHoodooShop(){
     div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP to cast)</div>${btn}</div>`;
     el.appendChild(div);
   });
+
+  const resetPrice = STAT_RESET_BASE_PRICE * Math.pow(STAT_RESET_PRICE_MULT, state.statResetsBrewed);
+  const resetCanAfford = state.popTabs >= resetPrice;
+  const resetTitle = document.createElement('div');
+  resetTitle.className = 'shop-section-title';
+  resetTitle.textContent = 'Stat Reset';
+  el.appendChild(resetTitle);
+  const resetDiv = document.createElement('div');
+  resetDiv.className = 'shop-item';
+  // TODO(creative-director): placeholder flavor text, functional description only.
+  resetDiv.innerHTML = `<div style="flex:1;"><div class="name">Stat Reset Potion</div><div class="desc">Refunds every stat point you've ever spent on Beef/Zip/Grit/Hoodoo so you can redistribute them. Gets pricier each time you brew one.</div><button class="btn-secondary" ${resetCanAfford?'':'disabled'} onclick="brewStatResetPotion()">Brew — ${resetPrice} Pop Tabs</button></div>`;
+  el.appendChild(resetDiv);
 }
 
 /* Per-building level-effect formatters for the Town Lot listing below.
