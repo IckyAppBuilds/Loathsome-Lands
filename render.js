@@ -352,7 +352,7 @@ if(state.inCombat){
   needing a click. */
   const innCooldownLeft = INN_COOLDOWN_MS - (Date.now() - state.lastInnRestAt);
   const innCooldownText = innCooldownLeft > 0 ? formatMs(innCooldownLeft) : null;
-  document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag, tinkerFlag, state.lotTier, guildBountyReady, innCooldownText);
+  document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag, tinkerFlag, state.lotTier, guildBountyReady, innCooldownText, state.buildingUpgrades);
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isCommons){
   document.getElementById('scene-art').innerHTML = artZoneCommons();

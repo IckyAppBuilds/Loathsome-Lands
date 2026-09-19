@@ -43,7 +43,77 @@ function artTinker(){
      return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M36 18 L64 18 L62 24 L38 24 Z" fill="#8a8477"/><rect x="34" y="36" width="32" height="42" fill="#3d5a80"/><circle cx="42" cy="50" r="6" fill="#d1a94e"/><circle cx="42" cy="50" r="2" fill="#2b2b28" stroke="none"/><rect x="54" y="46" width="10" height="10" fill="#b9b3a4"/><line x1="34" y1="40" x2="18" y2="52"/><path d="M18 52 Q10 52 12 44" fill="none" stroke-width="2.5"/><line x1="66" y1="40" x2="80" y2="48"/><line x1="50" y1="78" x2="42" y2="98"/><line x1="50" y1="78" x2="58" y2="98"/>`, 0);
 }
 
-function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlagType, lotTier, guildBountyReady, innCooldownText){
+function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlagType, lotTier, guildBountyReady, innCooldownText, buildingUpgrades){
+   /* Building-upgrade decoration -- layers progressively more small
+   detail shapes onto a building's FIXED base art as its real
+   state.buildingUpgrades[key] level (0..BUILDING_UPGRADE_MAX, content.js)
+   rises 0->3, same additive-overlay principle as makeFlag()/bountyShield/
+   innCooldown below (never redraws or removes the base art, only adds on
+   top). `layers` is one small SVG-string block per level (index 0 = level
+   1's addition, index 1 = level 2's, index 2 = level 3's); concatenating
+   the first N gives level N's cumulative decoration. */
+   const bu = buildingUpgrades || {};
+   const decorLayers = (level, layers) => {
+      let out = '';
+      for(let i = 0; i < Math.min(level, layers.length); i++) out += layers[i];
+      return out;
+   };
+   const gafferDecor = decorLayers(bu.gaffer || 0, [
+      /* lvl1: planter box under the window */
+      `<rect x="29" y="67" width="16" height="6" fill="#5f4632"/><circle cx="32" cy="66" r="2" fill="#b5453f" stroke="none"/><circle cx="37" cy="65" r="2" fill="#d1a94e" stroke="none"/><circle cx="42" cy="66" r="2" fill="#b06a97" stroke="none"/>`,
+      /* lvl2: second planter by the door + a tidied roofline highlight */
+      `<rect x="55" y="67" width="16" height="6" fill="#5f4632"/><circle cx="58" cy="66" r="2" fill="#b5453f" stroke="none"/><circle cx="63" cy="65" r="2" fill="#d1a94e" stroke="none"/><circle cx="68" cy="66" r="2" fill="#b06a97" stroke="none"/><line x1="18" y1="34" x2="82" y2="34" stroke="#f4efe4" stroke-width="1.5"/>`,
+      /* lvl3: a little garden fence around the base */
+      `<path d="M20 75 L20 72 M30 75 L30 72 M50 75 L50 72 M70 75 L70 72 M80 75 L80 72" stroke="#a97c53" stroke-width="2"/><line x1="18" y1="75" x2="82" y2="75" stroke="#a97c53" stroke-width="2"/>`
+   ]);
+   const hoodooDecor = decorLayers(bu.hoodoo || 0, [
+      /* lvl1: a hanging charm/talisman left of the door */
+      `<line x1="40" y1="38" x2="40" y2="48"/><path d="M40 46 L44 51 L40 56 L36 51 Z" fill="#d1a94e"/>`,
+      /* lvl2: a second charm right of the door + a faint magic-glow wisp */
+      `<line x1="60" y1="38" x2="60" y2="48"/><path d="M60 46 L64 51 L60 56 L56 51 Z" fill="#d1a94e"/><circle cx="50" cy="26" r="9" fill="#b06a97" opacity="0.25"/>`,
+      /* lvl3: the glow gets bigger/brighter + a third charm above the door */
+      `<circle cx="50" cy="26" r="14" fill="#d1a94e" opacity="0.3"/><line x1="50" y1="40" x2="50" y2="49"/><path d="M50 47 L54 52 L50 57 L46 52 Z" fill="#d1a94e"/>`
+   ]);
+   const innDecor = decorLayers(bu.inn || 0, [
+      /* lvl1: a lit window (warm glow over the left window) */
+      `<rect x="32" y="42" width="8" height="8" fill="#d1a94e" opacity="0.7"/><circle cx="36" cy="46" r="7" fill="#d1a94e" opacity="0.25"/>`,
+      /* lvl2: a second lit window + a hanging placard under the sign */
+      `<rect x="60" y="42" width="8" height="8" fill="#d1a94e" opacity="0.7"/><circle cx="64" cy="46" r="7" fill="#d1a94e" opacity="0.25"/><rect x="4" y="33" width="12" height="7" fill="#f4efe4"/>`,
+      /* lvl3: a small chimney with smoke wisps */
+      `<rect x="64" y="18" width="8" height="12" fill="#5f4632"/><path d="M68 16 Q72 10 68 5" stroke-width="2" opacity="0.6"/><path d="M70 12 Q74 7 71 2" stroke-width="1.5" opacity="0.4"/>`
+   ]);
+   const tinkerDecor = decorLayers(bu.tinker || 0, [
+      /* lvl1: a small gear hanging on the exterior, left of the big gear-window */
+      `<circle cx="31" cy="58" r="5" fill="#d1a94e" stroke="#2b2b28" stroke-width="2"/><circle cx="31" cy="58" r="1.6" fill="#2b2b28" stroke="none"/><line x1="31" y1="52" x2="31" y2="55"/><line x1="31" y1="61" x2="31" y2="64"/>`,
+      /* lvl2: a second gear on the right + a smokestack on the roof */
+      `<circle cx="69" cy="58" r="5" fill="#d1a94e" stroke="#2b2b28" stroke-width="2"/><circle cx="69" cy="58" r="1.6" fill="#2b2b28" stroke="none"/><line x1="69" y1="52" x2="69" y2="55"/><line x1="69" y1="61" x2="69" y2="64"/><rect x="68" y="14" width="7" height="20" fill="#5f4632"/>`,
+      /* lvl3: steam puffs from the smokestack */
+      `<circle cx="71" cy="12" r="3" fill="#b9b3a4" opacity="0.5"/><circle cx="74" cy="7" r="4" fill="#b9b3a4" opacity="0.4"/><circle cx="69" cy="6" r="2.5" fill="#b9b3a4" opacity="0.35"/>`
+   ]);
+   const shopDecor = decorLayers(bu.shop || 0, [
+      /* lvl1: a striped awning over the display window */
+      `<rect x="26" y="49" width="48" height="6" fill="#b5453f"/><rect x="34" y="49" width="8" height="6" fill="#f4efe4"/><rect x="58" y="49" width="8" height="6" fill="#f4efe4"/>`,
+      /* lvl2: more goods on display in the window */
+      `<rect x="33" y="61" width="4" height="4" fill="#d1a94e"/><rect x="48" y="61" width="4" height="4" fill="#b5453f"/><rect x="63" y="61" width="4" height="4" fill="#5c8a5c"/>`,
+      /* lvl3: a gold trim on the awning + an "OPEN" sign */
+      `<rect x="26" y="47" width="48" height="2" fill="#d1a94e"/><rect x="43" y="68" width="14" height="6" fill="#f4efe4"/><text x="50" y="73" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-size="5" font-weight="700" fill="#5c8a5c" stroke="none">OPEN</text>`
+   ]);
+   const guildDecor = decorLayers(bu.guild || 0, [
+      /* lvl1: a second banner/pennant */
+      `<line x1="30" y1="34" x2="30" y2="16"/><path d="M30 16 L16 21 L30 26 Z" fill="#b5453f"/>`,
+      /* lvl2: a third banner + a torch/lantern by the door */
+      `<line x1="18" y1="34" x2="18" y2="20"/><path d="M18 20 L6 24 L18 28 Z" fill="#5c8a5c"/><line x1="62" y1="56" x2="62" y2="66"/><path d="M62 50 Q66 53 62 56 Q58 53 62 50 Z" fill="#d1a94e"/>`,
+      /* lvl3: gold trim/crest upgrade on the original banner */
+      `<line x1="50" y1="12" x2="50" y2="24" stroke="#d1a94e" stroke-width="1.5"/><circle cx="58" cy="18" r="3" fill="#d1a94e" stroke="#2b2b28" stroke-width="1.5"/>`
+   ]);
+   const casinoDecor = decorLayers(bu.casino || 0, [
+      /* lvl1: string lights along the marquee */
+      `<circle cx="24" cy="40" r="1.8" fill="#d1a94e" stroke="none"/><circle cx="38" cy="40" r="1.8" fill="#d1a94e" stroke="none"/><circle cx="62" cy="40" r="1.8" fill="#d1a94e" stroke="none"/><circle cx="76" cy="40" r="1.8" fill="#d1a94e" stroke="none"/>`,
+      /* lvl2: the wheel gets colored betting segments (a real spinning-wheel motif) */
+      `<path d="M50 53 L50 43 A10 10 0 0 1 58.7 48 Z" fill="#b5453f" opacity="0.85"/><path d="M50 53 L50 63 A10 10 0 0 1 41.3 58 Z" fill="#5c8a5c" opacity="0.85"/>`,
+      /* lvl3: gold trim makes it the most lavish building in town */
+      `<rect x="18" y="40" width="64" height="26" fill="none" stroke="#d1a94e" stroke-width="2"/><circle cx="50" cy="24" r="3" fill="#d1a94e" stroke="#2b2b28" stroke-width="1.5"/>`
+   ]);
    const makeFlag = (flagType) => {
       if(!flagType) return '';
       const bg = flagType==='offer' ? '#b5453f' : '#5c8a5c';
@@ -101,6 +171,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <rect x="42" y="50" width="16" height="16" fill="#5f4632"/>
    <rect x="32" y="40" width="9" height="9" fill="#f4efe4"/>
    <line x1="36" y1="40" x2="36" y2="49"/><line x1="32" y1="44" x2="41" y2="44"/>
+   ${gafferDecor}
    ${makeFlag(gafferFlagType)}
    ${plate("Gaffer's Cottage")}
    </g>
@@ -114,6 +185,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <circle cx="36" cy="46" r="1.6" fill="#2b2b28" stroke="none"/>
    <path d="M62 30 Q66 24 62 18" fill="none" stroke-width="2.5"/>
    <path d="M66 32 Q72 24 66 16" fill="none" stroke-width="2.5"/>
+   ${hoodooDecor}
    ${makeFlag(hoodooFlagType)}
    ${plate("Hoodoo Doctor")}
    </g>
@@ -127,6 +199,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <rect x="60" y="42" width="8" height="8" fill="#f4efe4"/>
    <line x1="24" y1="28" x2="12" y2="28"/>
    <rect x="4" y="22" width="12" height="9" fill="#d1a94e"/>
+   ${innDecor}
    ${plate("The Inn")}
    ${innCooldown}
    </g>
@@ -139,6 +212,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <circle cx="50" cy="50" r="3" fill="#2b2b28" stroke="none"/>
    <rect x="34" y="40" width="8" height="8" fill="#f4efe4"/>
    <rect x="58" y="40" width="8" height="8" fill="#f4efe4"/>
+   ${tinkerDecor}
    ${makeFlag(tinkerFlagType)}
    ${plate("Tinker's Workshop")}
    </g>
@@ -177,6 +251,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <circle cx="38" cy="59" r="2.5" fill="#5c8a5c"/>
    <circle cx="50" cy="59" r="2.5" fill="#b06a97"/>
    <circle cx="62" cy="59" r="2.5" fill="#3d5a80"/>
+   ${shopDecor}
    ${plate("The Shop")}
    </g>
 
@@ -187,6 +262,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <rect x="42" y="56" width="16" height="16" fill="#5f4632"/>
    <line x1="50" y1="34" x2="50" y2="12"/>
    <path d="M50 12 L68 18 L50 24 Z" fill="#3d5a80"/>
+   ${guildDecor}
    ${makeFlag(guildFlagType)}
    ${bountyShield}
    ${plate("The Guild")}
@@ -217,6 +293,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <circle cx="50" cy="53" r="10" fill="#f4efe4" stroke="#2b2b28" stroke-width="3"/>
    <circle cx="50" cy="53" r="3" fill="#d1a94e" stroke="none"/>
    <line x1="50" y1="43" x2="50" y2="46"/><line x1="50" y1="60" x2="50" y2="63"/><line x1="40" y1="53" x2="43" y2="53"/><line x1="57" y1="53" x2="60" y2="53"/>
+   ${casinoDecor}
    ${plate("Casino")}
    </g>
    </svg>`;
