@@ -111,14 +111,14 @@ still unpassed. */
 document.getElementById('casino-trial-hint').style.display = (isCasino && classQuestState==='trials') ? 'block' : 'none';
   if(isCasino && classQuestState==='trials'){
     document.getElementById('casino-trial-hint').textContent = state.classTrialCasinoPassed
-      ? "You've already proven your nerve here — the Casino's trial is passed."
-      : `Word is the Guild's trial-takers prove their nerve here — win a bet of at least ${CLASS_TRIAL_CASINO_STAKE} Pop Tabs.`;
+      ? "You've already proven your nerve at the tables — the Casino's trial is passed."
+      : `Word around the tables is the Guild's trial-takers prove their nerve here — win a bet of at least ${CLASS_TRIAL_CASINO_STAKE} Pop Tabs.`;
   }
   document.getElementById('hoodoo-trial-hint').style.display = (isHoodoo && classQuestState==='trials') ? 'block' : 'none';
   if(isHoodoo && classQuestState==='trials'){
     document.getElementById('hoodoo-trial-hint').textContent = state.classTrialHoodooPassed
-      ? "You've already proven your hoodoo — the killing-blow trial is passed."
-      : "The Hoodoo Doctor's heard talk of trial-takers proving their hoodoo with a killing spell.";
+      ? "You've already proven your hoodoo over the pot — the killing-blow trial is passed."
+      : "The Hoodoo Doctor's heard talk over the pot of trial-takers proving their hoodoo with a killing spell.";
   }
 
 document.getElementById('gaffer-row').style.display = (isGafferHouse && !state.inCombat) ? 'flex' : 'none';
@@ -210,7 +210,7 @@ if(isGafferHouse){
     document.getElementById('quest-progress').textContent = 'Not yet accepted.';
   } else if(classQuestState==='trials'){
     document.getElementById('quest-name').textContent = "Quest: The Adventurer's Trial";
-    document.getElementById('quest-desc').textContent = "Three trainers, three tests. Beat the Guild's Trial Champion in a fight, win a big enough bet at the Casino, and land a killing blow with a damage spell at the Hoodoo Doctor's. Pass all three, then come back here to claim your path.";
+    document.getElementById('quest-desc').textContent = "Three trainers, three tests, and no partial credit. Beat the Guild's Trial Champion in a fight, win a big enough bet at the Casino, and land a killing blow with a damage spell at the Hoodoo Doctor's. Pass all three, then come back here to claim your path.";
     document.getElementById('quest-progress').textContent = `Guild: ${state.classTrialGuildPassed ? '✓ passed' : 'not yet'} — Casino: ${state.classTrialCasinoPassed ? '✓ passed' : 'not yet'} — Hoodoo: ${state.classTrialHoodooPassed ? '✓ passed' : 'not yet'}`;
   } else if(classQuestState==='ready'){
     document.getElementById('quest-name').textContent = "Quest: The Adventurer's Trial";
@@ -925,7 +925,7 @@ if(state.classQuestComplete){
   activeEntries.push(`
   <div class="quest-log-entry">
   <div class="quest-name">The Adventurer's Trial</div>
-  <div class="quest-desc">${allClassTrialsPassedLog ? "All three trainers agree: you're ready. Return to the guildmaster to claim your path." : "Three trainers, three tests: beat the Guild's Trial Champion, win a big enough bet at the Casino, and land a killing blow with a damage spell at the Hoodoo Doctor's."}</div>
+  <div class="quest-desc">${allClassTrialsPassedLog ? "All three trainers agree on this much: you're ready. Return to the guildmaster to claim your path." : "Three trainers, three tests, and no partial credit: beat the Guild's Trial Champion, win a big enough bet at the Casino, and land a killing blow with a damage spell at the Hoodoo Doctor's."}</div>
   <div class="quest-progress">${allClassTrialsPassedLog ? 'Ready — claim your path at the Guild.' : `Guild: ${state.classTrialGuildPassed ? '✓' : 'not yet'} — Casino: ${state.classTrialCasinoPassed ? '✓' : 'not yet'} — Hoodoo: ${state.classTrialHoodooPassed ? '✓' : 'not yet'}`}</div>
   </div>`);
 }
