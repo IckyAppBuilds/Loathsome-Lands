@@ -683,8 +683,13 @@ const veinIngredientItems = veinIngredients.map(v => v.item);
    hydrates correctly after a reload. The new Gnometropolis monsters'
    loot/rareDrop items need no extra line of their own: they're already
    part of monsters[], so monsterLoot/monsterRareDrops above pick them up
-   automatically. */
-return [...healItems, ...shopBuyItems, ...shopGearItemsTier2, ...monsterLoot, ...commanderLoot,
+   automatically. Same reasoning applies to the Shop-upgrade tiers
+   (shopFoodItemsTier2/shopFoodItemsTier3/shopGearItemsTier3, content.js) —
+   listed here unconditionally so a held piece still hydrates even if the
+   Shop is later downgraded somehow, or a save is loaded on a fresh
+   playthrough that hasn't reached that Shop level yet. */
+return [...healItems, ...shopBuyItems, ...shopGearItemsTier2, ...shopFoodItemsTier2,
+        ...shopFoodItemsTier3, ...shopGearItemsTier3, ...monsterLoot, ...commanderLoot,
         ...monsterRareDrops, ...Object.values(starterGear), ...potionIngredientItems,
         ...veinIngredientItems];
 }

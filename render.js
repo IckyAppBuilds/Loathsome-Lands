@@ -416,25 +416,58 @@ INVENTORY_SECTIONS.forEach(section=>{
 });
 }
 
+/* Which pane of the Shop is showing: 'food' | 'gear' | 'sell'. UI-only —
+not part of `state`, not saved — reset to 'food' on every enterShop()
+(game.js) so the drawer doesn't reopen wherever it was left last time. */
+let shopTab = 'food';
+
+function setShopTab(tab){
+  shopTab = tab;
+  renderShop();
+}
+
+function renderShopItemRow(def){
+  const div = document.createElement('div');
+  div.className = 'shop-item';
+  const iconSvg = def.icon ? def.icon() : '';
+  const canAfford = state.popTabs >= def.price;
+  const slotTag = def.slot ? ` <span class="qty-badge">${SLOT_LABELS[def.slot]}</span>` : '';
+  const bonusTag = def.bonus && Object.keys(def.bonus).length
+  ? ` (${Object.entries(def.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
+    : '';
+  div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${def.name}${slotTag}</div><div class="desc">${def.desc}${bonusTag} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyItemByName('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
+  return div;
+}
+
 function renderShop(){
   const shopList = document.getElementById('shop-list');
   shopList.innerHTML = '';
 
-const buySection = document.createElement('div');
-  buySection.innerHTML = '<div class="shop-section-title">For Sale</div>';
-  getAvailableShopItems().forEach(def=>{
-    const div = document.createElement('div');
-    div.className = 'shop-item';
-    const iconSvg = def.icon ? def.icon() : '';
-    const canAfford = state.popTabs >= def.price;
-    const slotTag = def.slot ? ` <span class="qty-badge">${SLOT_LABELS[def.slot]}</span>` : '';
-    const bonusTag = def.bonus && Object.keys(def.bonus).length
-    ? ` (${Object.entries(def.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
-      : '';
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${def.name}${slotTag}</div><div class="desc">${def.desc}${bonusTag} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyItemByName('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
-    buySection.appendChild(div);
+const tabRow = document.createElement('div');
+  tabRow.className = 'btn-row';
+  [['food','Food'], ['gear','Gear'], ['sell','Sell']].forEach(([id, label])=>{
+    const btn = document.createElement('button');
+    btn.className = shopTab === id ? 'btn-primary' : 'btn-secondary';
+    btn.textContent = label;
+    btn.onclick = () => setShopTab(id);
+    tabRow.appendChild(btn);
   });
-  shopList.appendChild(buySection);
+  shopList.appendChild(tabRow);
+
+const allItems = getAvailableShopItems();
+
+if(shopTab === 'food' || shopTab === 'gear'){
+  const items = allItems.filter(def => def.type === (shopTab === 'food' ? 'hp' : 'equip'));
+  const section = document.createElement('div');
+  section.innerHTML = `<div class="shop-section-title">${shopTab === 'food' ? 'Food For Sale' : 'Gear For Sale'}</div>`;
+  if(items.length === 0){
+    section.innerHTML += '<div class="shop-empty">Nothing here yet. Upgrading the Shop (Town Lot) brings in better stock.</div>';
+  } else {
+    items.forEach(def => section.appendChild(renderShopItemRow(def)));
+  }
+  shopList.appendChild(section);
+  return;
+}
 
 const sellSection = document.createElement('div');
   sellSection.innerHTML = '<div class="shop-section-title">Sell Your Junk</div>';
@@ -540,11 +573,15 @@ let html = '<div class="shop-section-title">Your Town Lot</div>';
   }
 
 html += '<div class="shop-section-title" style="margin-top:10px;">Upgrade Town Buildings</div>';
-  html += '<div class="quest-desc" style="margin:0 0 8px;">Spend Pop Tabs to raise a building\'s level. Doesn\'t change anything about the building yet — bonuses are coming in a future update.</div>';
+  html += '<div class="quest-desc" style="margin:0 0 8px;">Spend Pop Tabs to raise a building\'s level — a building can never out-level the lot itself, so upgrading the lot is what unlocks each building\'s next tier. Most buildings are cosmetic for now; the Shop\'s levels unlock better stock (see the Shop).</div>';
   BUILDING_UPGRADES.forEach(b=>{
     const level = state.buildingUpgrades[b.key] || 0;
     if(level >= BUILDING_UPGRADE_MAX){
       html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Fully upgraded.</div></div></div>`;
+      return;
+    }
+    if(level >= state.lotTier){
+      html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Requires the lot itself at ${LOT_TIER_NAMES[level+1]} first.</div><button class="btn-secondary" disabled>Locked</button></div></div>`;
       return;
     }
     const cost = buildingUpgradeCost(level);

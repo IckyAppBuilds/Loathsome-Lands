@@ -431,6 +431,7 @@ function leaveGafferHouse(){
 function enterShop(){
    if(state.inCombat || state.location !== 'town') return;
    state.location = 'shop';
+   shopTab = 'food'; /* always open on the Food tab — see render.js */
    clearLog();
    log("You step into the shop. The shopkeeper eyes your pack with professional interest.");
    render();
@@ -543,15 +544,21 @@ function upgradeTownLot(){
 }
 
 /* Raises state.buildingUpgrades[key] by one level, gated on owning the lot
-(lotTier>=1) — the mechanism the lot's purchase is meant to unlock. Levels
-are tracked only; see the comment above BUILDING_UPGRADES (content.js) for
-why there's deliberately no gameplay effect wired up yet. */
+(lotTier>=1) — the mechanism the lot's purchase is meant to unlock. Also
+gated so a building can never be leveled past the lot itself: raising a
+building to level L requires state.lotTier >= L, so upgrading the lot is
+what unlocks each building's next level, one lot tier at a time (lot tier
+and BUILDING_UPGRADE_MAX both top out at 3, so a maxed lot permits every
+building to fully max out too). See the comment above BUILDING_UPGRADES
+(content.js) for why most buildings still have no gameplay effect beyond
+the level number itself. */
 function upgradeBuilding(key){
    if(state.location !== 'townlot' || state.lotTier < 1) return;
    const info = BUILDING_UPGRADES.find(b => b.key === key);
    if(!info) return;
    const level = state.buildingUpgrades[key] || 0;
    if(level >= BUILDING_UPGRADE_MAX) return;
+   if(level >= state.lotTier) return; /* the lot itself must reach the next tier first */
    const cost = buildingUpgradeCost(level);
    if(state.popTabs < cost) return;
    state.popTabs -= cost;
@@ -863,9 +870,23 @@ always-available shopBuyItems once state.quest6Complete is true, rather
 than being spliced into shopBuyItems itself — that keeps tier-1
 pricing/availability untouched and the unlock gate in exactly one place.
 Before the unlock, tier-2 gear is simply absent from the Shop rather than
-shown-but-disabled. */
+shown-but-disabled.
+
+Separately, upgrading the Shop building (state.buildingUpgrades.shop, via
+the Town Lot) unlocks its own additive tiers of food and gear at each
+level — see SHOP_LEVEL_FOOD_TIER2/SHOP_LEVEL_FOOD_TIER3/
+SHOP_LEVEL_GEAR_TIER3 (content.js). This is gated purely on the Shop's
+level, independent of quest6Complete — the two unlock paths stack rather
+than one replacing the other, and nothing already unlocked is ever
+removed as new tiers are added. */
 function getAvailableShopItems(){
-   return state.quest6Complete ? [...shopBuyItems, ...shopGearItemsTier2] : shopBuyItems;
+   const shopLevel = state.buildingUpgrades.shop || 0;
+   let items = [...shopBuyItems];
+   if(state.quest6Complete) items = items.concat(shopGearItemsTier2);
+   if(shopLevel >= SHOP_LEVEL_FOOD_TIER2) items = items.concat(shopFoodItemsTier2);
+   if(shopLevel >= SHOP_LEVEL_FOOD_TIER3) items = items.concat(shopFoodItemsTier3);
+   if(shopLevel >= SHOP_LEVEL_GEAR_TIER3) items = items.concat(shopGearItemsTier3);
+   return items;
 }
 
 function buyItemByName(name){

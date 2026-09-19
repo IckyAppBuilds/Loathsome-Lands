@@ -253,6 +253,41 @@ const shopGearItemsTier2 = [
    { name:"spring-loaded gnome-tech boots", desc:"Every step has a little more bounce than it should.", type:"equip", slot:"boots", bonus:{zip:2}, price:22, icon: iconSpringBoots },
    ];
 
+/* ---------------- Shop upgrade tiers ---------------- */
+/* Upgrading the Shop building (Town Lot -> The Shop, state.buildingUpgrades.shop,
+0..BUILDING_UPGRADE_MAX — see upgradeBuilding() in game.js) unlocks better,
+pricier stock, on top of whatever's already available. Unlike the other 6
+Town Lot buildings (still cosmetic-only, see the BUILDING_UPGRADES comment
+below), the Shop's level is read directly by getAvailableShopItems()
+(game.js). Nothing already unlocked is ever taken away — these tiers are
+additive with shopBuyItems/shopGearItemsTier2, never a replacement for them.
+Reusing suspicious jerky (healItems[1]) as the level-1 food unlock rather
+than inventing a new item — it's been defined since the start but was never
+actually reachable anywhere in the game until now. */
+const SHOP_LEVEL_FOOD_TIER2 = 1;
+const SHOP_LEVEL_FOOD_TIER3 = 2;
+const SHOP_LEVEL_GEAR_TIER3 = 3;
+
+const shopFoodItemsTier2 = [
+   { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:12, price:9, icon:iconJerky },
+   ];
+
+const shopFoodItemsTier3 = [
+   { name:"a tin of hoarded biscuit crumbs", desc:"Denser than a whole biscuit, somehow. Restores a large amount of HP.", type:"hp", value:22, price:18, icon:iconBiscuitTin },
+   ];
+
+/* Top gear tier — one item per slot like shopGearItemsTier2, each granting
++3 to a stat (triple shopGearItems' +1), priced steeper still. Flavored as
+the Shop's own premium stock (bought, not looted), unlike Tier 2's
+Gnometropolis-loot theming. */
+const shopGearItemsTier3 = [
+   { name:"an heirloom hoodoo rod, mostly legitimate", desc:"The provenance is fuzzy. The results aren't.", type:"equip", slot:"weapon", bonus:{hoodoo:3}, price:40, icon: iconHeirloomRod },
+   { name:"a champion's dented crown, repurposed", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{grit:3}, price:34, icon: iconChampionCrown },
+   { name:"a reinforced adventurer's cuirass", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{grit:3}, price:38, icon: iconAdventurerCuirass },
+   { name:"a tailored pair of quick-step trousers", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{zip:3}, price:32, icon: iconQuickstepTrousers },
+   { name:"boots blessed by a mildly competent hoodoo doctor", desc:"\"Mildly\" is doing some work in that sentence.", type:"equip", slot:"boots", bonus:{zip:3}, price:36, icon: iconBlessedBoots },
+   ];
+
 /* ---------------- Spells (Hoodoo magic) ---------------- */
 /* Taught by the Hoodoo Doctor in town (a new building, data-action="hoodoo")
 for Pop Tabs, one at a time — `state.spellsKnown` holds the list of
@@ -386,10 +421,12 @@ const LOT_TIER_MAX = LOT_TIER_COST.length - 1;
 `key` must match the building's data-action in artTownSquare() (core.js)
 and the corresponding property under state.buildingUpgrades — except 'rest'
 (the Inn), which is keyed 'inn' here for a readable label since 'rest' is
-just the click action's verb, not a name. Levels are tracked only for now;
-per an explicit product decision, upgrading a building's level doesn't
-change anything about that building yet (no bonuses wired up) — that's
-deferred to a future pass once each building's effects are designed. */
+just the click action's verb, not a name. Levels are tracked for all 7, but
+per an explicit product decision only one has an effect wired up so far:
+'shop' — see SHOP_LEVEL_FOOD_TIER2/SHOP_LEVEL_FOOD_TIER3/
+SHOP_LEVEL_GEAR_TIER3 above and getAvailableShopItems() in game.js. The
+other 6 remain cosmetic-only, deferred to a future pass once each
+building's effects are designed. */
 const BUILDING_UPGRADES = [
    { key:'gaffer', name:"Gaffer's Cottage" },
    { key:'hoodoo', name:"Hoodoo Doctor's Shack" },

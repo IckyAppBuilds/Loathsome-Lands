@@ -224,6 +224,26 @@ function iconSpringBoots(){
      return iconWrap(`<rect x="14" y="30" width="32" height="20" fill="#d1a94e"/><path d="M18 30 Q18 20 24 20 Q30 20 30 30 M34 30 Q34 20 40 20" fill="none" stroke-width="3"/>`);
 }
 
+/* ---------------- Shop tier-3 icons (shopGearItemsTier3 / shopFoodItemsTier3) ---------------- */
+function iconHeirloomRod(){
+     return iconWrap(`<line x1="18" y1="52" x2="40" y2="14"/><circle cx="42" cy="12" r="7" fill="#d1a94e"/><circle cx="42" cy="12" r="2.5" fill="#b06a97" stroke="none"/>`);
+}
+function iconChampionCrown(){
+     return iconWrap(`<path d="M12 40 L16 20 L26 32 L30 16 L34 32 L44 20 L48 40 Z" fill="#d1a94e"/><rect x="12" y="40" width="36" height="8" fill="#d1a94e"/><circle cx="30" cy="20" r="2.5" fill="#b06a97" stroke="none"/>`);
+}
+function iconAdventurerCuirass(){
+     return iconWrap(`<path d="M16 14 L44 14 L48 50 L12 50 Z" fill="#8a8477"/><path d="M22 14 L22 50 M38 14 L38 50" stroke-width="2"/><circle cx="30" cy="28" r="6" fill="#d1a94e"/>`);
+}
+function iconQuickstepTrousers(){
+     return iconWrap(`<path d="M20 10 L40 10 L40 24 L34 24 L34 50 L26 50 L26 24 L20 24 Z" fill="#3d5a80"/><line x1="12" y1="30" x2="18" y2="28" stroke-width="2.5"/><line x1="12" y1="38" x2="18" y2="36" stroke-width="2.5"/>`);
+}
+function iconBlessedBoots(){
+     return iconWrap(`<path d="M18 12 L34 12 L34 34 L44 34 L44 48 L18 48 Z" fill="#5c8a5c"/><circle cx="40" cy="20" r="3" fill="#f4efe4" stroke="none"/><path d="M36 14 L40 10 L44 14 L40 18 Z" fill="#f4efe4" stroke="none"/>`);
+}
+function iconBiscuitTin(){
+     return iconWrap(`<rect x="14" y="20" width="32" height="30" fill="#b9b3a4"/><rect x="12" y="14" width="36" height="8" fill="#d1a94e"/><circle cx="30" cy="34" r="10" fill="#a97c53"/><circle cx="26" cy="31" r="1.6" fill="#2b2b28" stroke="none"/><circle cx="34" cy="30" r="1.6" fill="#2b2b28" stroke="none"/><circle cx="30" cy="38" r="1.6" fill="#2b2b28" stroke="none"/>`);
+}
+
 /* ---------------- Equipment icons (starter gear + shop upgrades) ---------------- */
 function iconFork(){
      return iconWrap(`<line x1="30" y1="12" x2="30" y2="26"/><line x1="22" y1="12" x2="22" y2="26"/><line x1="38" y1="12" x2="38" y2="26"/><path d="M18 26 Q30 32 42 26" fill="none"/><line x1="30" y1="30" x2="30" y2="52"/>`);
