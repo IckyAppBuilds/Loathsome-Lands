@@ -133,7 +133,7 @@ function acceptQuest7(){
    if(state.location !== 'guild' || !state.quest6Complete || !state.classTitle || state.quest7Accepted || state.quest7Complete) return;
    state.quest7Accepted = true;
    clearLog();
-   log("\"The King fled into Gnometropolis proper — behind a palace gate that isn't just going to open for anyone,\" the guildmaster says. \"But the way in is shaped by who you've become. Talk to the right people about gearing up for it.\"");
+   log("\"The King fled into Gnometropolis proper — behind a palace gate that isn't just going to open for anyone,\" the guildmaster says. \"But the way in is shaped by who you've become. Find the district that matches your path and prove yourself to whoever's guarding it — the gear you'll need is theirs to lose, not anyone's to sell.\"");
    render();
 }
 
@@ -158,12 +158,15 @@ function reportGnomeKingDefeat(){
 }
 
 /* The palace gate itself — triggered from Gnometropolis (state.location),
-not the Guild, even though it lives in this file with the rest of quest 7
-(a later UI task wires its button/visibility there). Requires the exact
-PALACE_GATE_GEAR item matching state.classTitle to be equipped in its
-slot before the real gnomeKing (content.js) will fight — otherwise it's a
-guaranteed-refusal no-op, same shape as every other hard-gated action in
-this codebase. */
+not the Guild, even though it lives in this file with the rest of quest 7.
+Requires the exact PALACE_GATE_GEAR item matching state.classTitle to be
+equipped in its slot before the real gnomeKing (content.js) will fight —
+otherwise it's a guaranteed-refusal no-op, same shape as every other
+hard-gated action in this codebase. Since that gear is now a guaranteed
+drop from the matching Gnometropolis district guardian (gnometropolis.js's
+challengeDistrictGuardian(), not a Bounty Token purchase — see that file
+and combat.js's winCombat()), this check itself needed no change: it only
+ever cared whether the item is equipped, never how it was obtained. */
 function approachPalaceGate(){
    if(state.inCombat !== false || state.location !== 'gnometropolis' || !state.quest7Accepted || state.quest7RareDefeated) return;
    const gearNeeded = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
@@ -177,26 +180,6 @@ function approachPalaceGate(){
    }
    startCombat(gnomeKing);
    render();
-}
-
-/* Purchase for the class-specific PALACE_GATE_GEAR (content.js) — one item
-per class, each sold at a different building (Meathead/guild, Card
-Shark/casino, Hexpert/hoodoo), same mirrored-per-building pattern as
-levelUpClassSkill() above. Priced in Bounty Tokens, not Pop Tabs, unlike
-buyItemByName() (economy.js). Double-gated on building AND classTitle so
-a Meathead standing in the Hoodoo Doctor's still can't buy the Hexpert
-piece just by being in the right place. */
-function buyPalaceGateGear(itemName){
-   if(!state.quest7Accepted || state.quest7Complete) return;
-   const item = PALACE_GATE_GEAR.find(g => g.name === itemName);
-   if(!item) return;
-   if(state.location !== item.building || state.classTitle !== item.class || state.bountyTokens < item.price) return;
-   state.bountyTokens -= item.price;
-   state.inventory.push({...item});
-   clearLog();
-   log(`You buy ${item.name} for ${item.price} Bounty Tokens.`);
-   render();
-   autosave();
 }
 
 /* ---------------- Bounty Board (The Guild) ---------------- */

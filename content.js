@@ -466,37 +466,63 @@ above — quadratic, same style as buildingUpgradeCost() below: 150/600/1350
 Pop Tabs. One cost curve shared across all 3 classes' single skill level. */
 function classSkillCost(level){ return 150 * (level+1) * (level+1); }
 
-/* Gear-gated approaches into Gnometropolis' palace for the new quest 7
-(guild.js, separate task) — the real gnomeKing (above) is holed up
-behind the palace gate, and each class reaches him through a different
-one of these three items, resolved by a not-yet-written
-approachPalaceGate() function (see the gnomeKing comment above).
-Deliberately NOT part of shopGearItems (any tier) or shopBuyItems: these are bought
-with Bounty Tokens (state.bountyTokens), not Pop Tabs — a separate
-mechanics task wires the actual purchase function, one per building,
-mirroring where each class already buys its class skill (classSkillCost
-above): Meathead at the Guild, Card Shark at the Casino, Hexpert at the
-Hoodoo Doctor's Shack. Same equip-item shape as shopGearItemsTier3
-above ({name, desc, type:'equip', slot, bonus, price, icon}) plus two
-extra lookup fields the mechanics/UI tasks need: `class` (matches
-state.classTitle) and `building` ('guild'/'casino'/'hoodoo'). Each is
+/* Gear-gated approaches into Gnometropolis' palace for quest 7 — the real
+gnomeKing (above) is holed up behind the palace gate, and each class
+reaches him through a different one of these three items, checked by
+approachPalaceGate() (guild.js). Same equip-item shape as
+shopGearItemsTier3 above ({name, desc, type:'equip', slot, bonus, icon})
+plus one extra lookup field: `class` (matches state.classTitle). Each is
 in a different equip slot on purpose — weapon/chest/head — so wearing
 one is a real trade-off against that slot's normal best-in-slot piece,
 not a free add-on. Bonuses are deliberately small (+2, half of
 shopGearItemsTier3's +3) since these exist to be functionally required
-for quest 7, not to be the best gear in the game. Price is flat Bounty
-Tokens, not scaled by state.classSkillLevel — simplest option; if a
-classSkillLevel discount is wanted later (mirroring how it already
-boosts MEATHEAD_DAMAGE_BONUS/CARD_SHARK_PAYOUT_BONUS/HEXPERT_SPELL_DMG_BONUS
-above), the formula would be
-`Math.max(1, item.price - state.classSkillLevel * 5)` — a later task
-can wire that in if desired. icon fields point at iconSiegeBreaker/
-iconGuardUniform/iconWardedSeal (icons.js), added alongside this array. */
+for quest 7, not to be the best gear in the game.
+
+Retconned: these were originally bought with Bounty Tokens at a matching
+town building (`price`/`building` fields, one purchase function per
+building). That's gone now — each item is instead a GUARANTEED drop from
+defeating its class's Gnometropolis district guardian (garrisonGuardian/
+roguesDenEnforcer/arcaneSanctumGuardian below, fought via
+gnometropolis.js's challengeDistrictGuardian()), which is why `price`/
+`building` no longer exist here. icon fields point at iconSiegeBreaker/
+iconGuardUniform/iconWardedSeal (icons.js). */
 const PALACE_GATE_GEAR = [
-   { name:"a warlord's siege-breaker", desc:"Not subtle. Doesn't need to be.", type:"equip", slot:"weapon", bonus:{beef:2}, price:25, class:'Meathead', building:'guild', icon: iconSiegeBreaker },
-   { name:"a stolen palace-guard's uniform", desc:"Fits well enough, if nobody looks twice.", type:"equip", slot:"chest", bonus:{zip:2}, price:20, class:'Card Shark', building:'casino', icon: iconGuardUniform },
-   { name:"a warded seal, still humming", desc:"Warm to the touch. Getting warmer.", type:"equip", slot:"head", bonus:{hoodoo:2}, price:30, class:'Hexpert', building:'hoodoo', icon: iconWardedSeal },
+   { name:"a warlord's siege-breaker", desc:"Not subtle. Doesn't need to be.", type:"equip", slot:"weapon", bonus:{beef:2}, class:'Meathead', icon: iconSiegeBreaker },
+   { name:"a stolen palace-guard's uniform", desc:"Fits well enough, if nobody looks twice.", type:"equip", slot:"chest", bonus:{zip:2}, class:'Card Shark', icon: iconGuardUniform },
+   { name:"a warded seal, still humming", desc:"Warm to the touch. Getting warmer.", type:"equip", slot:"head", bonus:{hoodoo:2}, class:'Hexpert', icon: iconWardedSeal },
    ];
+
+/* The three Gnometropolis district guardians — new design that turns
+PALACE_GATE_GEAR (above) from a Bounty Token purchase into a guaranteed
+combat drop, and doubles as the seed of Gnometropolis eventually becoming
+a full town hub (a later, separate task — these three names/flavors were
+picked to plausibly become real buildings then, not generic "boss arena"
+labels). Fought via a direct button in Gnometropolis
+(gnometropolis.js's challengeDistrictGuardian(districtKey)), not a wild
+spawn, so — same as trialChampion above — no `zone`/SPAWN_CHANCE of its
+own. Tuned as a step up from the Sunless Vault's rare hunts
+(gnomeKingsCaptain, hp:70/atk:7-12/xp:35) but short of the real gnomeKing
+(Act 1's true finale, hp:120/atk:12-18/xp:70): these guard the gate, they
+aren't the finale itself. `loot` references the exact PALACE_GATE_GEAR
+entry for the matching class directly — this only works because it's
+written after the array literal above has already executed; `const`
+doesn't allow a true forward reference. winCombat() (combat.js) checks
+each of these three by name and forces state.monster.loot through as a
+guaranteed drop, same tier of guarantee as a quest-item. art points at
+artGarrisonGuardian/artRoguesDenEnforcer/artArcaneSanctumGuardian
+(art.js, same task). */
+const garrisonGuardian = {
+   name:"the Garrison's watch-captain", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
+   art: artGarrisonGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Meathead')
+};
+const roguesDenEnforcer = {
+   name:"the Rogues' Den enforcer", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
+   art: artRoguesDenEnforcer, loot: PALACE_GATE_GEAR.find(g => g.class === 'Card Shark')
+};
+const arcaneSanctumGuardian = {
+   name:"the Arcane Sanctum's warden", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
+   art: artArcaneSanctumGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Hexpert')
+};
 
 /* ---------------- Casino ---------------- */
 const CASINO_WIN_CHANCE = 0.45; /* the house always wins, on average */

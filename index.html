@@ -104,10 +104,6 @@
 <div class="quest-progress" id="casino-trial-hint" style="display:none;"></div>
 <div class="quest-progress" id="hoodoo-trial-hint" style="display:none;"></div>
 
-<div id="guild-gear-block" style="display:none;"></div>
-<div id="casino-gear-block" style="display:none;"></div>
-<div id="hoodoo-gear-block" style="display:none;"></div>
-
 <div id="bounty-box" style="display:none;"></div>
 
 <div class="quest-desc" id="noticeboard-hint" style="display:none;">The board gets swept clean every night around 4am — nothing pinned here is permanent.</div>
@@ -189,6 +185,11 @@
 <div class="btn-row" id="explore-row" style="display:none;">
 <button class="btn-primary" id="adv-btn" onclick="goAdventuring()">Adventure!</button>
 <button class="btn-secondary" onclick="toggleDrawer('map')">Return to Map</button>
+</div>
+<div class="btn-row" id="district-row" style="display:none;">
+<button class="btn-secondary" id="district-garrison-btn" onclick="challengeDistrictGuardian('garrison')">Challenge the Garrison</button>
+<button class="btn-secondary" id="district-roguesden-btn" onclick="challengeDistrictGuardian('roguesden')">Challenge the Rogues' Den</button>
+<button class="btn-secondary" id="district-sanctum-btn" onclick="challengeDistrictGuardian('sanctum')">Challenge the Arcane Sanctum</button>
 </div>
 <div class="btn-row" id="palace-gate-row" style="display:none;">
 <button class="btn-attack" id="palace-gate-btn" onclick="approachPalaceGate()">Approach the Palace Gate</button>
@@ -367,6 +368,7 @@ after every script has loaded):
 <script src="combat.js"></script>
 <script src="town.js"></script>
 <script src="guild.js"></script>
+<script src="gnometropolis.js"></script>
 <script src="economy.js"></script>
 <script src="noticeboard.js"></script>
 <script src="boot.js"></script>

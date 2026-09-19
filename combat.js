@@ -286,6 +286,9 @@ function winCombat(){
    const wasVaultCaptain = !!state.monster.rare && state.monster.name === gnomeKingsCaptain.name;
    const wasRealGnomeKing = !!state.monster.rare && state.monster.name === gnomeKing.name;
    const wasTrialChampion = !!state.monster.rare && state.monster.name === trialChampion.name;
+   const wasGarrisonGuardian = !!state.monster.rare && state.monster.name === garrisonGuardian.name;
+   const wasRoguesDenEnforcer = !!state.monster.rare && state.monster.name === roguesDenEnforcer.name;
+   const wasArcaneSanctumGuardian = !!state.monster.rare && state.monster.name === arcaneSanctumGuardian.name;
    /* Rake tines are a quest item (key:'rakeTine') and the feral lawn gnome's
    ONLY loot entry — so without this gate they'd drop via the generic 70%
    roll below even before the quest is accepted or after it's turned in,
@@ -304,12 +307,19 @@ const isRakeTineLoot = state.monster.loot && state.monster.loot.key==='rakeTine'
    keeps happening on matching kills until that many are held. */
 const needsVeinIngredient = veinIngredient && state.quest5Accepted && !state.quest5Complete
    && state.inventory.filter(it => it.key === veinIngredient.item.key).length < VEIN_ITEM_COUNT_NEEDED;
+   /* The three Gnometropolis district guardians (content.js) always carry
+   their class's PALACE_GATE_GEAR item as state.monster.loot (see that
+   file's comment) — this is what turns it into a guaranteed drop instead
+   of the generic 70% roll below, same guarantee tier as a quest item. */
+   const isDistrictGuardianKill = wasGarrisonGuardian || wasRoguesDenEnforcer || wasArcaneSanctumGuardian;
    const lootRoll = needsPotionIngredient
    ? potionIngredient.item
       : needsVeinIngredient
    ? veinIngredient.item
       : isRakeTineLoot
    ? (isNeededQuestItem ? state.monster.loot : null) /* never drops outside the quest window */
+      : isDistrictGuardianKill
+   ? state.monster.loot
       : (state.monster.loot && Math.random()<0.7 ? state.monster.loot : null);
    /* Rare drops are per-monster now (state.monster.rareDrop, set in
    monsters[] in content.js) rather than a random pick from one shared
@@ -336,6 +346,12 @@ clearLog();
    } else if(wasTrialChampion){
       state.classTrialGuildPassed = true;
       log(`You defeat ${defeatedName}! The Guild's toughest test, passed. (+${xpGain} XP)`);
+   } else if(wasGarrisonGuardian){
+      log(`You defeat ${defeatedName}! The Garrison falls silent behind you. (+${xpGain} XP)`);
+   } else if(wasRoguesDenEnforcer){
+      log(`You defeat ${defeatedName}! Nobody in the Rogues' Den saw where you went. (+${xpGain} XP)`);
+   } else if(wasArcaneSanctumGuardian){
+      log(`You defeat ${defeatedName}! The Sanctum's wards flicker and go dark. (+${xpGain} XP)`);
    } else {
       log(`You defeat ${defeatedName}! (+${xpGain} XP)`);
    }

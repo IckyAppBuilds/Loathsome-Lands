@@ -272,7 +272,7 @@ if(state.quest7Complete){
   activeEntries.push(`
   <div class="quest-log-entry">
   <div class="quest-name">The Gnome King's Court</div>
-  <div class="quest-desc">Gear up with ${quest7GearItem ? quest7GearItem.name : 'the right gear'} and equip it, then use the palace gate in Gnometropolis to face the real Gnome King.</div>
+  <div class="quest-desc">Defeat your district's guardian in Gnometropolis to claim ${quest7GearItem ? quest7GearItem.name : 'the right gear'}, equip it, then use the palace gate to face the real Gnome King.</div>
   <div class="quest-progress">Not yet confronted the King.</div>
   </div>`);
 }

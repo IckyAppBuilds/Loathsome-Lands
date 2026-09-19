@@ -117,12 +117,18 @@ const quest7State = state.quest7Complete ? 'complete'
   : state.quest7Accepted ? 'active'
   : (state.quest6Complete && state.classTitle) ? 'offer'
   : 'locked';
-  /* Gear-purchase buttons at the Guild/Casino/Hoodoo Doctor's stay visible
-  for the whole quest7Accepted window (active AND ready), not just while
-  the King is still unbeaten — see step 4 of the UI task this came from. */
-  const quest7GearWindowOpen = state.quest7Accepted && !state.quest7Complete;
   const palaceGateGearItem = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
   const canApproachPalaceGate = isGnometropolis && !state.inCombat && state.quest7Accepted && !state.quest7RareDefeated;
+  /* Gnometropolis' three districts (gnometropolis.js's
+  challengeDistrictGuardian()) — same visibility window as the palace
+  gate row above, since gearing up for the gate is the whole reason to
+  fight a guardian in the first place. All three buttons render for
+  everyone (reinforces there really are 3 districts here), but only the
+  one matching state.classTitle is ever enabled — see the disabled-with-
+  hint pattern applied to the other two below. */
+  const showDistrictRow = isGnometropolis && !state.inCombat && state.quest7Accepted && !state.quest7RareDefeated;
+  const DISTRICT_CLASS = { garrison:'Meathead', roguesden:'Card Shark', sanctum:'Hexpert' };
+  const DISTRICT_LABELS = { garrison:'Challenge the Garrison', roguesden:"Challenge the Rogues' Den", sanctum:'Challenge the Arcane Sanctum' };
 
 /* 'trials': accepted, but not all three trainers' tests are passed yet.
 'ready': all three passed, waiting on claimClassPath(chosenStat) — see the
@@ -168,20 +174,6 @@ document.getElementById('accept-quest6-btn').style.display = quest6State==='offe
 
 document.getElementById('accept-quest7-btn').style.display = quest7State==='offer' ? '' : 'none';
   document.getElementById('report-gnomeking-defeat-btn').style.display = quest7State==='ready' ? '' : 'none';
-
-/* PALACE_GATE_GEAR (content.js) purchase blocks — one per building, each
-only ever showing the single item that matches the player's OWN class
-(palaceGateGearItem is already filtered to state.classTitle above), so
-checking .building here is just "and is this that item's building." */
-const showGuildGear = isGuild && quest7GearWindowOpen && !!palaceGateGearItem && palaceGateGearItem.building==='guild';
-  const showCasinoGear = isCasino && quest7GearWindowOpen && !!palaceGateGearItem && palaceGateGearItem.building==='casino';
-  const showHoodooGear = isHoodoo && quest7GearWindowOpen && !!palaceGateGearItem && palaceGateGearItem.building==='hoodoo';
-  document.getElementById('guild-gear-block').style.display = showGuildGear ? 'block' : 'none';
-  document.getElementById('casino-gear-block').style.display = showCasinoGear ? 'block' : 'none';
-  document.getElementById('hoodoo-gear-block').style.display = showHoodooGear ? 'block' : 'none';
-  if(showGuildGear) renderPalaceGateGearBlock('guild-gear-block', palaceGateGearItem);
-  if(showCasinoGear) renderPalaceGateGearBlock('casino-gear-block', palaceGateGearItem);
-  if(showHoodooGear) renderPalaceGateGearBlock('hoodoo-gear-block', palaceGateGearItem);
 
 document.getElementById('accept-quest3-btn').style.display = quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = quest3State==='active' ? '' : 'none';
@@ -241,12 +233,12 @@ if(isGafferHouse){
     document.getElementById('quest-progress').textContent = 'Not yet accepted.';
   } else if(quest7State==='offer'){
     document.getElementById('quest-name').textContent = "Quest available: The Gnome King's Court";
-    document.getElementById('quest-desc').textContent = `The King slipped deeper into Gnometropolis, behind a palace gate that isn't opening for just anyone. The guildmaster reckons the way in is shaped by who you've become as a ${state.classTitle} — talk to the right people about gearing up for it.`;
+    document.getElementById('quest-desc').textContent = `The King slipped deeper into Gnometropolis, behind a palace gate that isn't opening for just anyone. The guildmaster reckons the way in is shaped by who you've become as a ${state.classTitle} — find your district in Gnometropolis and prove it to whoever's guarding it.`;
     document.getElementById('quest-progress').textContent = 'Not yet accepted.';
   } else if(quest7State==='active'){
     const quest7GearName = palaceGateGearItem ? palaceGateGearItem.name : 'the right gear';
     document.getElementById('quest-name').textContent = "Quest: The Gnome King's Court";
-    document.getElementById('quest-desc').textContent = `Gear up with ${quest7GearName} and equip it, then use the palace gate in Gnometropolis to face the real Gnome King.`;
+    document.getElementById('quest-desc').textContent = `Defeat your district's guardian in Gnometropolis to claim ${quest7GearName}, equip it, then use the palace gate to face the real Gnome King.`;
     document.getElementById('quest-progress').textContent = 'Not yet confronted the King.';
   } else if(quest7State==='ready'){
     document.getElementById('quest-name').textContent = "Quest: The Gnome King's Court";
@@ -348,6 +340,15 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
   }
   document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || isGnometropolis) && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('palace-gate-row').style.display = canApproachPalaceGate ? 'flex' : 'none';
+  document.getElementById('district-row').style.display = showDistrictRow ? 'flex' : 'none';
+  if(showDistrictRow){
+    for(const key in DISTRICT_CLASS){
+      const btn = document.getElementById(`district-${key}-btn`);
+      const isMyDistrict = DISTRICT_CLASS[key] === state.classTitle;
+      btn.disabled = !isMyDistrict;
+      btn.textContent = DISTRICT_LABELS[key] + (isMyDistrict ? '' : ' (Not your path)');
+    }
+  }
   document.getElementById('monster-card').classList.toggle('active', state.inCombat);
   document.getElementById('scene-art').classList.toggle('boss-encounter', !!(state.inCombat && state.monster && state.monster.rare));
 
@@ -443,28 +444,6 @@ renderInventory();
   renderCharacterDrawer();
   renderQuestLogDrawer();
   autosave();
-}
-
-/* Renders a single PALACE_GATE_GEAR (content.js) purchase row into one of
-the three per-building blocks (guild/casino/hoodoo-gear-block, index.html)
-— see render()'s showGuildGear/showCasinoGear/showHoodooGear above for
-when each is actually shown. Mirrors renderShopItemRow()'s shop-item
-markup (render-shop.js) so it reads as part of the same shop-row family,
-but priced in Bounty Tokens via buyPalaceGateGear() (guild.js), not Pop
-Tabs via buyItemByName(). Once a copy is owned (equipped or just sitting
-in the Pack) the button locks to "Owned" rather than letting the player
-buy duplicates — buyPalaceGateGear() itself doesn't block repeat
-purchases, so this is purely a UI nicety. */
-function renderPalaceGateGearBlock(elId, item){
-  const el = document.getElementById(elId);
-  if(!el) return;
-  const iconSvg = item.icon ? item.icon() : '';
-  const owned = (state.equipment[item.slot] && state.equipment[item.slot].name === item.name) || state.inventory.some(it => it.name === item.name);
-  const canAfford = state.bountyTokens >= item.price;
-  const btn = owned
-  ? `<button class="btn-secondary" disabled>Owned</button>`
-    : `<button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyPalaceGateGear('${item.name.replace(/'/g,"\\'")}')">Buy — ${item.price} Bounty Tokens</button>`;
-  el.innerHTML = `<div class="shop-section-title">Palace Gate Gear</div><div class="shop-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name} <span class="qty-badge">${SLOT_LABELS[item.slot]}</span></div><div class="desc">${item.desc} Needed to approach the palace gate in Gnometropolis.</div>${btn}</div></div>`;
 }
 
 function countRakeTines(){

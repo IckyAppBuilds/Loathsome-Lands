@@ -399,6 +399,25 @@ in place of the usual single raised arm. */
 function artTrialChampion(){
    return sceneWrap(`<circle cx="50" cy="55" r="48" fill="#3d5a80" opacity="0.3"/><path d="M6 96 Q50 72 94 96 L82 26 Q50 15 18 26 Z" fill="#5f4632"/><path d="M18 26 L0 38 L4 64 L20 56 Z" fill="#8a8477"/><path d="M82 26 L100 38 L96 64 L80 56 Z" fill="#8a8477"/><rect x="32" y="22" width="36" height="10" fill="#b9b3a4"/><path d="M34 16 Q50 0 66 16 L62 38 Q50 45 38 38 Z" fill="#b9b3a4"/><line x1="42" y1="25" x2="42" y2="35"/><line x1="58" y1="25" x2="58" y2="35"/><line x1="50" y1="45" x2="50" y2="98"/><line x1="50" y1="56" x2="12" y2="47"/><line x1="12" y1="47" x2="0" y2="20"/><line x1="50" y1="56" x2="88" y2="47"/><line x1="88" y1="47" x2="100" y2="20"/><path d="M50 8 L45 62 L55 62 Z" fill="#8a8477"/><line x1="30" y1="15" x2="70" y2="15"/><path d="M34 92 L66 92 L60 100 L40 100 Z" fill="#3d5a80"/><line x1="50" y1="98" x2="32" y2="100"/><line x1="50" y1="98" x2="68" y2="100"/>`, 0);
 }
+/* Gnometropolis district guardians (garrisonGuardian/roguesDenEnforcer/
+arcaneSanctumGuardian, content.js) — same visual weight as
+artGnomeKingsCaptain above (aura radius ~40-42, no shape pushed to the
+viewBox edge), not the wider/edge-crowding treatment artGnomeKing/
+artTrialChampion get, even though `rare:true` still earns all three the
+existing boss-encounter CSS scale-up (render.js) automatically. Each
+gets its own silhouette matching its class's motif: Garrison ->
+armored guard with shield, Rogues' Den -> hooded/masked cloak, Arcane
+Sanctum -> robed construct with a floating rune. */
+function artGarrisonGuardian(){
+   return sceneWrap(`<circle cx="50" cy="54" r="42" fill="#b5453f" opacity="0.24"/><path d="M50 6 L28 40 L72 40 Z" fill="#8a8477"/><circle cx="50" cy="54" r="14" fill="#e0c49a"/><rect x="30" y="66" width="40" height="28" fill="#b9b3a4"/><rect x="34" y="70" width="10" height="20" fill="#8a8477"/><rect x="56" y="70" width="10" height="20" fill="#8a8477"/><path d="M6 58 Q0 78 10 96 Q22 92 24 74 Q22 60 6 58 Z" fill="#5f4632"/><line x1="70" y1="70" x2="88" y2="60"/><line x1="88" y1="60" x2="92" y2="76"/><line x1="50" y1="94" x2="40" y2="99"/><line x1="50" y1="94" x2="60" y2="99"/>`, 0);
+}
+function artRoguesDenEnforcer(){
+   return sceneWrap(`<circle cx="50" cy="54" r="40" fill="#2b2b28" opacity="0.26"/><path d="M50 6 Q66 18 62 38 L38 38 Q34 18 50 6 Z" fill="#2b2b28"/><circle cx="50" cy="46" r="11" fill="#e0c49a"/><rect x="40" y="42" width="20" height="6" fill="#2b2b28" stroke="none"/><path d="M30 50 Q50 42 70 50 L66 92 Q50 98 34 92 Z" fill="#2b2b28"/><line x1="30" y1="54" x2="12" y2="66"/><path d="M12 66 L4 58 M12 66 L6 76" stroke-width="2.5"/><line x1="70" y1="54" x2="88" y2="64"/><path d="M88 64 L96 56 M88 64 L94 74" stroke-width="2.5"/><line x1="50" y1="94" x2="40" y2="99"/><line x1="50" y1="94" x2="60" y2="99"/>`, 0);
+}
+function artArcaneSanctumGuardian(){
+   return sceneWrap(`<circle cx="50" cy="54" r="42" fill="#b06a97" opacity="0.28"/><path d="M50 4 L34 30 L66 30 Z" fill="#b06a97"/><circle cx="50" cy="42" r="12" fill="#e0c49a"/><circle cx="45" cy="41" r="2" fill="#d1a94e" stroke="none"/><circle cx="55" cy="41" r="2" fill="#d1a94e" stroke="none"/><path d="M30 54 Q50 46 70 54 L64 94 Q50 99 36 94 Z" fill="#b06a97"/><line x1="30" y1="58" x2="12" y2="70"/><circle cx="12" cy="76" r="9" fill="none" stroke-width="2.5" opacity="0.6"/><circle cx="12" cy="76" r="4" fill="#d1a94e" stroke="none"/><line x1="70" y1="58" x2="86" y2="66"/><line x1="50" y1="94" x2="42" y2="99"/><line x1="50" y1="94" x2="58" y2="99"/>`, 0);
+}
+
 /* ---------------- Zone backdrop art ---------------- */
 /* One scene per adventure zone (ZONE_DIFFICULTY, content.js), shown
 between fights in place of artIdle() (see render.js) so each zone has
