@@ -37,7 +37,7 @@ function artTinker(){
      return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M36 18 L64 18 L62 24 L38 24 Z" fill="#8a8477"/><rect x="34" y="36" width="32" height="42" fill="#3d5a80"/><circle cx="42" cy="50" r="6" fill="#d1a94e"/><circle cx="42" cy="50" r="2" fill="#2b2b28" stroke="none"/><rect x="54" y="46" width="10" height="10" fill="#b9b3a4"/><line x1="34" y1="40" x2="18" y2="52"/><path d="M18 52 Q10 52 12 44" fill="none" stroke-width="2.5"/><line x1="66" y1="40" x2="80" y2="48"/><line x1="50" y1="78" x2="42" y2="98"/><line x1="50" y1="78" x2="58" y2="98"/>`, 0);
 }
 
-function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlagType, lotTier, guildBountyReady){
+function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlagType, lotTier, guildBountyReady, innCooldownText){
    const makeFlag = (flagType) => {
       if(!flagType) return '';
       const bg = flagType==='offer' ? '#b5453f' : '#5c8a5c';
@@ -59,6 +59,20 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <circle cx="82" cy="16" r="12" fill="#d1a94e" opacity="0.45"/>
    <path d="M82 7 L91 10.5 L91 17 Q91 25 82 29 Q73 25 73 17 L73 10.5 Z" fill="#3d5a80" stroke="#2b2b28" stroke-width="2.5"/>
    <path d="M78 17.5 L81 20.5 L87 13" fill="none" stroke="#f4efe4" stroke-width="2.5"/>
+   </g>`;
+   /* Inn cooldown overlay — dims the whole tile (unlike the flag/shield
+   badges above, which sit on top of a fully-usable building) since
+   clicking during cooldown does nothing but log a "not yet" message.
+   The clock face's hands are two short lines from the center; the
+   countdown text gets a stable id so updateInnCooldownDisplay() (town.js)
+   can tick it down every second without regenerating this whole SVG. */
+   const innCooldown = !innCooldownText ? '' : `
+   <g class="inn-cooldown-overlay">
+   <rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.45"/>
+   <circle cx="50" cy="46" r="15" fill="#3d5a80" stroke="#2b2b28" stroke-width="2.5"/>
+   <line x1="50" y1="46" x2="50" y2="37" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
+   <line x1="50" y1="46" x2="57" y2="46" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
+   <text x="50" y="76" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-size="12" font-weight="700" fill="#f4efe4" stroke="none" id="inn-cooldown-text">${innCooldownText}</text>
    </g>`;
    const plate = (label, fontSize) => `
    <rect x="6" y="76" width="88" height="18" fill="#f4efe4" stroke="#2b2b28" stroke-width="2"/>
@@ -100,6 +114,7 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <line x1="24" y1="28" x2="12" y2="28"/>
    <rect x="4" y="22" width="12" height="9" fill="#d1a94e"/>
    ${plate("The Inn", 10)}
+   ${innCooldown}
    </g>
 
    <g transform="translate(0,100)" class="building-hit" data-action="tinker">

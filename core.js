@@ -135,6 +135,12 @@ function createDefaultState(){
         steeply off this counter (STAT_RESET_BASE_PRICE/_PRICE_MULT,
         content.js). See the brew function in game.js (separate change). */
      statResetsBrewed: 0,
+     /* Real-time cooldown gate for restAtInn() (town.js) — Date.now() of the
+        last successful rest, 0 meaning "never rested" so a brand-new
+        character can rest immediately. Checked against INN_COOLDOWN_MS
+        (content.js), independent of devMode/Biscuits — this is about
+        pacing clicks in real time, not the energy economy. */
+     lastInnRestAt: 0,
      /* Rare-drop collection log — every rareDrop item name ever obtained,
         kept even if later sold/lost (see winCombat() in game.js and the
         Character drawer's Rare Finds block in render.js). */

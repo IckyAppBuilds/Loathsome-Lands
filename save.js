@@ -79,7 +79,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        classQuestAccepted, classQuestComplete, classTitle,
        classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
        activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
-       lotTier, buildingUpgrades, statResetsBrewed } = state;
+       lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt } = state;
    return {
       hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
       lastRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
@@ -91,7 +91,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
       classQuestAccepted, classQuestComplete, classTitle,
       classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
       activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
-      lotTier, buildingUpgrades, statResetsBrewed,
+      lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt,
       equipment: Object.fromEntries(
          SLOT_ORDER.map(slot => [slot, serializeItem(state.equipment[slot])])
          ),
@@ -134,6 +134,10 @@ state.activeBounty = saved.activeBounty || null;
    /* Stat-reset potion purchase counter — added after this function was
    first written, same fallback reasoning as lotTier/buildingUpgrades. */
    state.statResetsBrewed = typeof saved.statResetsBrewed === 'number' ? saved.statResetsBrewed : 0;
+   /* Inn cooldown timestamp — same fallback reasoning as statResetsBrewed
+   above. 0 (never rested) is a safe default; it never makes an old save
+   artificially cooled-down. */
+   state.lastInnRestAt = typeof saved.lastInnRestAt === 'number' ? saved.lastInnRestAt : 0;
    recomputeMaxStats();
 }
 

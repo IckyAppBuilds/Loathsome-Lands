@@ -589,6 +589,13 @@ const STAT_SCALING_DIVISOR = 15;
 /* The Inn — chance restAtInn() (game.js) restores the player without
 consuming a Biscuit. 1.0 at max level = rest is always free. */
 const INN_FREE_REST_CHANCE = [0, 0.25, 0.5, 1.0];
+/* How many Biscuits a non-free rest costs — was a flat 1, bumped to 2 so
+resting is a genuine choice against adventuring, not a rounding error. */
+const INN_REST_BISCUIT_COST = 2;
+/* Real-time cooldown between rests, independent of the Biscuit economy —
+stops one-click infinite resting even with unlimited Biscuits (devMode)
+or a maxed-out free-rest chance. See restAtInn()/state.lastInnRestAt. */
+const INN_COOLDOWN_MS = 60 * 1000;
 
 /* Tinker's Workshop — fractional bonus added to junk sell prices in
 sellItemByName() (game.js). 0.30 at max level = junk sells for 30% more. */

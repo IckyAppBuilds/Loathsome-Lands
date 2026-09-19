@@ -10,7 +10,18 @@ function restAtInn(){
    if(state.inCombat || state.location !== 'town') return;
    regenBiscuits();
    clearLog();
-   if(!devMode && state.adventures<=0){
+   /* Real-time cooldown (INN_COOLDOWN_MS, content.js) — independent of
+   Biscuits/devMode, checked before the affordability gate below so
+   spamming the click while devMode/a maxed free-rest chance would
+   otherwise make resting free AND instant gets a clear "not yet"
+   message instead of silently doing nothing. */
+   const cooldownLeft = INN_COOLDOWN_MS - (Date.now() - state.lastInnRestAt);
+   if(cooldownLeft > 0){
+      log(`The innkeeper's still airing out the room from your last visit. Back in ${formatMs(cooldownLeft)}.`);
+      render();
+      return;
+   }
+   if(!devMode && state.adventures < INN_REST_BISCUIT_COST){
       log(`The innkeeper eyes your empty pockets. "No Biscuits, no bed." Next one's ready in ${formatMs(msUntilNextBiscuit())}.`);
       render();
       return;
@@ -20,16 +31,17 @@ function restAtInn(){
    let freeRest = false;
    if(!devMode){
       freeRest = Math.random() < INN_FREE_REST_CHANCE[state.buildingUpgrades.inn || 0];
-      if(!freeRest) state.adventures--;
+      if(!freeRest) state.adventures -= INN_REST_BISCUIT_COST;
    }
    state.hp = state.maxHp;
    state.mp = state.maxMp;
    state.showVictory = false;
    state.victoryMonster = null;
+   state.lastInnRestAt = Date.now();
    if(freeRest){
       log("You duck into the Inn and rest up. You feel merely acceptable again. (free rest — the innkeeper couldn't be bothered to charge you)");
    } else {
-      log("You duck into the Inn and rest up. You feel merely acceptable again. (-1 Biscuit)");
+      log(`You duck into the Inn and rest up. You feel merely acceptable again. (-${INN_REST_BISCUIT_COST} Biscuits)`);
    }
    render();
 }
@@ -392,3 +404,18 @@ if(state.questTinesGiven >= QUEST_TINES_NEEDED){
 }
    render();
 }
+
+/* Ticks the Inn's cooldown overlay text (#inn-cooldown-text, art.js) live,
+same setInterval pattern as guild.js's updateBountyTimerDisplay(). Guarded
+on the element existing — it's only in the DOM while standing in the town
+square with the cooldown actually active, so this is a harmless no-op
+otherwise. Once the cooldown crosses zero, re-renders so the whole
+dimming overlay disappears rather than leaving a stale "0:00" up. */
+function updateInnCooldownDisplay(){
+   const el = document.getElementById('inn-cooldown-text');
+   if(!el) return;
+   const cooldownLeft = INN_COOLDOWN_MS - (Date.now() - state.lastInnRestAt);
+   if(cooldownLeft <= 0){ render(); return; }
+   el.textContent = formatMs(cooldownLeft);
+}
+setInterval(updateInnCooldownDisplay, 1000);

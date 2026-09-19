@@ -331,7 +331,14 @@ if(state.inCombat){
   and the indicator only needs to reflect known-ready progress, not
   force a reroll just by walking past the square. */
   const guildBountyReady = isBountyReady();
-  document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag, tinkerFlag, state.lotTier, guildBountyReady);
+  /* null (no overlay) once the cooldown has actually elapsed — same
+  "read state directly, don't force anything" reasoning as guildBountyReady
+  above. updateInnCooldownDisplay() (town.js) ticks the text live and
+  re-renders once this crosses zero, so the overlay disappears without
+  needing a click. */
+  const innCooldownLeft = INN_COOLDOWN_MS - (Date.now() - state.lastInnRestAt);
+  const innCooldownText = innCooldownLeft > 0 ? formatMs(innCooldownLeft) : null;
+  document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag, tinkerFlag, state.lotTier, guildBountyReady, innCooldownText);
   document.getElementById('victory-banner').style.display = 'none';
 } else {
   document.getElementById('scene-art').innerHTML = artIdle();
