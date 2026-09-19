@@ -99,6 +99,8 @@ function createDefaultState(){
      quest6Accepted: false,
      quest6RareDefeated: false,
      quest6Complete: false,
+     quest7Accepted: false,
+     quest7Complete: false,
      classQuestAccepted: false,
      classQuestComplete: false,
      classTitle: null,

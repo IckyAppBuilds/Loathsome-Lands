@@ -204,3 +204,15 @@ function iconVeinWiring(){
      return iconWrap(`<path d="M10 16 Q30 16 20 30 Q10 44 30 44 Q50 44 40 30 Q30 16 50 16" fill="none" stroke="#d1a94e" stroke-width="3"/>`);
 }
 
+/* Palace-gate gear (content.js's PALACE_GATE_GEAR, quest 7) — one icon
+per class-gated item. */
+function iconSiegeBreaker(){
+     return iconWrap(`<line x1="14" y1="50" x2="38" y2="10"/><rect x="34" y="6" width="14" height="14" fill="#8a8477" transform="rotate(35 41 13)"/>`);
+}
+function iconGuardUniform(){
+     return iconWrap(`<path d="M16 14 L44 14 L48 50 L12 50 Z" fill="#3d5a80"/><path d="M22 14 L30 22 L38 14" fill="none"/><circle cx="30" cy="34" r="2" fill="#d1a94e" stroke="none"/>`);
+}
+function iconWardedSeal(){
+     return iconWrap(`<circle cx="30" cy="30" r="16" fill="#b06a97"/><path d="M30 16 L36 30 L30 44 L24 30 Z" fill="#f4efe4" stroke="none"/>`);
+}
+

@@ -97,17 +97,45 @@ const DIGGERBOT_SPAWN_CHANCE = 0.05;
 /* Rare hunt target for the Guild's quest 6, "The Gnome King's Throne" —
 spawns in the Sunless Vault while state.quest6Accepted is true and the
 quest isn't complete yet, same mechanic as gnomeCommander/diggerBot above
-(see gnomeKingHunt in goAdventuring()). Tuned as the toughest rare boss
-yet — highest HP of the three, even though all three now share the same
-GNOME_KING_SPAWN_CHANCE — since it's the capstone-adjacent quest that
-unlocks Gnometropolis. No rareDrop of its own, same reasoning
+(see gnomeKingHunt in goAdventuring()). Retconned: this was originally
+written as the gnome king himself, but he's been moved out of the Vault
+entirely (see the real gnomeKing below) — this is now his guard-captain,
+left behind to cover the King's retreat while quest 6 still unlocks
+Gnometropolis. Stats deliberately left untouched from the original
+gnomeKing entry (hp:70/atk:7-12/xp:35) since quest 6 itself doesn't need
+to get any harder, only its target's identity/flavor changed. Tuned as
+the toughest rare boss of the three wild-spawn hunts (gnomeCommander/
+diggerBot/this one), even though all three now share the same
+VAULT_CAPTAIN_SPAWN_CHANCE. No rareDrop of its own, same reasoning
 as gnomeCommander/diggerBot: it's already a dedicated quest reward on top
-of a much bigger XP/Pop Tab payout. */
+of a much bigger XP/Pop Tab payout. art points at a not-yet-written
+artGnomeKingsCaptain() (art.js, separate task) — referenced by name now
+so that task knows what to add. */
+const gnomeKingsCaptain = {
+   name:"the gnome king's captain, left to guard the retreat", hp:70, atkMin:7, atkMax:12, xp:35, rare:true, zone:"vault",
+   art: artGnomeKingsCaptain, loot:null
+};
+const VAULT_CAPTAIN_SPAWN_CHANCE = 0.05;
+
+/* THE REAL Gnome King — Act 1's true finale boss, and a retcon in his own
+right: he was never the one fought in the Sunless Vault (that was always
+his captain, gnomeKingsCaptain above, covering his retreat). He's holed
+up in Gnometropolis itself now, behind the palace gate, and is reached
+only through the new quest 7 (guild.js, separate task), via one of three
+class-specific gear-gated approaches — Meathead brute force, Card Shark
+disguise, or Hexpert magic — resolved by a not-yet-written
+approachPalaceGate() function (guild.js or combat.js, separate mechanics
+task; referenced by name now so that task knows what to add). Because
+he's no longer a wild zone spawn he carries no `zone` and needs no
+SPAWN_CHANCE constant of its own, same reasoning as trialChampion below.
+Buffed to exceed trialChampion (currently the toughest fight in the
+game, hp:95/atk:9-14/xp:50) since he's now the true Act 1 finale, not a
+mid-quest rare hunt. rare:true/loot:null/art unchanged from before (his
+art already exists and needs no touching). */
 const gnomeKing = {
-   name:"the gnome king, throned in scavenged gold", hp:70, atkMin:7, atkMax:12, xp:35, rare:true, zone:"vault",
+   name:"the gnome king, throned in scavenged gold", hp:120, atkMin:12, atkMax:18, xp:70, rare:true,
    art: artGnomeKing, loot:null
 };
-const GNOME_KING_SPAWN_CHANCE = 0.05;
 
 /* Boss for the GUILD TIER of the level-10 class capstone, "The
 Adventurer's Trial" (acceptClassQuest/claimClassPath in game.js). The
@@ -117,17 +145,19 @@ below) and the Hoodoo Doctor's (Hexpert, a killing blow with a damage
 spell) use their own mechanics, not a boss fight. All three must pass
 (state.classTrialGuildPassed/classTrialCasinoPassed/classTrialHoodooPassed,
 core.js) before claimClassPath() lets the player choose. Unlike
-gnomeCommander/diggerBot/gnomeKing above, this one is NOT a wild zone
-spawn — it's fought directly at the Guild via a dedicated button once a
-player hits level 10, so it carries no `zone` and needs no SPAWN_CHANCE
-constant of its own (a separate task wires the Guild-side fight).
-`rare:true` is still set so the existing winCombat() victory-detection
-pattern (state.monster.rare && state.monster.name === X.name) works for
-it unchanged — a separate task adds the actual check, gated on
-state.classQuestAccepted/!state.classTrialGuildPassed, and sets
-state.classTrialGuildPassed = true on the win. Tuned as the toughest
-fight in the game — tougher than gnomeKing (hp:70/atk:7-12/xp:35).
-loot:null for the same reason as the other three named bosses: the
+gnomeCommander/diggerBot/gnomeKingsCaptain above, this one is NOT a wild
+zone spawn — it's fought directly at the Guild via a dedicated button
+once a player hits level 10, so it carries no `zone` and needs no
+SPAWN_CHANCE constant of its own (a separate task wires the Guild-side
+fight). `rare:true` is still set so the existing winCombat()
+victory-detection pattern (state.monster.rare && state.monster.name ===
+X.name) works for it unchanged — a separate task adds the actual check,
+gated on state.classQuestAccepted/!state.classTrialGuildPassed, and sets
+state.classTrialGuildPassed = true on the win. Tuned as the toughest of
+the wild-spawn-adjacent hunts — tougher than gnomeKingsCaptain
+(hp:70/atk:7-12/xp:35) — though no longer the game's toughest fight
+outright: the real gnomeKing (above) now exceeds it, being Act 1's true
+finale rather than a mid-game trial. loot:null for the same reason as the other three named bosses: the
 reward here is trial progress, not an item drop. art points at a
 not-yet-written artTrialChampion() (core.js, separate task) — referenced
 by name now so that task knows what to add. */
@@ -435,6 +465,38 @@ const HEXPERT_SPELL_DMG_BONUS = [0, 3, 6, 9]; /* flat bonus added to spell damag
 above — quadratic, same style as buildingUpgradeCost() below: 150/600/1350
 Pop Tabs. One cost curve shared across all 3 classes' single skill level. */
 function classSkillCost(level){ return 150 * (level+1) * (level+1); }
+
+/* Gear-gated approaches into Gnometropolis' palace for the new quest 7
+(guild.js, separate task) — the real gnomeKing (above) is holed up
+behind the palace gate, and each class reaches him through a different
+one of these three items, resolved by a not-yet-written
+approachPalaceGate() function (see the gnomeKing comment above).
+Deliberately NOT part of shopGearItems (any tier) or shopBuyItems: these are bought
+with Bounty Tokens (state.bountyTokens), not Pop Tabs — a separate
+mechanics task wires the actual purchase function, one per building,
+mirroring where each class already buys its class skill (classSkillCost
+above): Meathead at the Guild, Card Shark at the Casino, Hexpert at the
+Hoodoo Doctor's Shack. Same equip-item shape as shopGearItemsTier3
+above ({name, desc, type:'equip', slot, bonus, price, icon}) plus two
+extra lookup fields the mechanics/UI tasks need: `class` (matches
+state.classTitle) and `building` ('guild'/'casino'/'hoodoo'). Each is
+in a different equip slot on purpose — weapon/chest/head — so wearing
+one is a real trade-off against that slot's normal best-in-slot piece,
+not a free add-on. Bonuses are deliberately small (+2, half of
+shopGearItemsTier3's +3) since these exist to be functionally required
+for quest 7, not to be the best gear in the game. Price is flat Bounty
+Tokens, not scaled by state.classSkillLevel — simplest option; if a
+classSkillLevel discount is wanted later (mirroring how it already
+boosts MEATHEAD_DAMAGE_BONUS/CARD_SHARK_PAYOUT_BONUS/HEXPERT_SPELL_DMG_BONUS
+above), the formula would be
+`Math.max(1, item.price - state.classSkillLevel * 5)` — a later task
+can wire that in if desired. icon fields point at iconSiegeBreaker/
+iconGuardUniform/iconWardedSeal (icons.js), added alongside this array. */
+const PALACE_GATE_GEAR = [
+   { name:"a warlord's siege-breaker", desc:"Not subtle. Doesn't need to be.", type:"equip", slot:"weapon", bonus:{beef:2}, price:25, class:'Meathead', building:'guild', icon: iconSiegeBreaker },
+   { name:"a stolen palace-guard's uniform", desc:"Fits well enough, if nobody looks twice.", type:"equip", slot:"chest", bonus:{zip:2}, price:20, class:'Card Shark', building:'casino', icon: iconGuardUniform },
+   { name:"a warded seal, still humming", desc:"Warm to the touch. Getting warmer.", type:"equip", slot:"head", bonus:{hoodoo:2}, price:30, class:'Hexpert', building:'hoodoo', icon: iconWardedSeal },
+   ];
 
 /* ---------------- Casino ---------------- */
 const CASINO_WIN_CHANCE = 0.45; /* the house always wins, on average */
