@@ -107,12 +107,14 @@ function playerAttack(){
    if(!state.inCombat) return;
    const eff = getEffectiveStats();
 
-   /* A flat chance to simply whiff — swords miss, fists miss, no stat
-   makes you immune to it. Checked before the sneak-attack roll below: a
+   /* A base 10% chance to simply whiff, worn down by Zip (a steadier hand,
+   not just faster feet) — floored at 2% so no amount of Zip makes you
+   fully immune to it. Checked before the sneak-attack roll below: a
    fumbled swing can't also land a crit. A miss still ends your turn as
    normal (the monster retaliates) — it only costs you the hit, not the
    whole turn. */
-   if(Math.random() < 0.1){
+   const missChance = Math.max(0.02, 0.1 - statBonus(eff.zip)*0.004);
+   if(Math.random() < missChance){
       log(`You swing at ${state.monster.name} and miss completely.`);
       monsterRetaliate();
       checkDefeat();
