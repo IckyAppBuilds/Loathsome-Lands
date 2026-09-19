@@ -512,15 +512,15 @@ guaranteed drop, same tier of guarantee as a quest-item. art points at
 artGarrisonGuardian/artRoguesDenEnforcer/artArcaneSanctumGuardian
 (art.js, same task). */
 const garrisonGuardian = {
-   name:"the Garrison's watch-captain", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
+   name:"the Garrison's watch-captain, built like a slammed door", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
    art: artGarrisonGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Meathead')
 };
 const roguesDenEnforcer = {
-   name:"the Rogues' Den enforcer", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
+   name:"the Rogues' Den enforcer, already taking side bets on you", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
    art: artRoguesDenEnforcer, loot: PALACE_GATE_GEAR.find(g => g.class === 'Card Shark')
 };
 const arcaneSanctumGuardian = {
-   name:"the Arcane Sanctum's warden", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
+   name:"the Arcane Sanctum's warden, muttering an unfinished spell", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
    art: artArcaneSanctumGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Hexpert')
 };
 

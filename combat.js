@@ -86,6 +86,8 @@ const mult = ZONE_DIFFICULTY[template.zone] || 1;
    log(template.rare
        ? (template === gnomeCommander
           ? "The gnome commander himself marches out to meet you. This looks serious."
+          : template === gnomeKing
+          ? "The gnome king rises from his throne of scavenged gold to meet you himself. Every fight before this was a warm-up."
           : `${capitalize(state.monster.name)} lurches into view. This looks serious.`)
        : `A wild ${state.monster.name} shuffles into view!`);
 }

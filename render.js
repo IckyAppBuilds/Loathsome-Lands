@@ -346,7 +346,7 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
       const btn = document.getElementById(`district-${key}-btn`);
       const isMyDistrict = DISTRICT_CLASS[key] === state.classTitle;
       btn.disabled = !isMyDistrict;
-      btn.textContent = DISTRICT_LABELS[key] + (isMyDistrict ? '' : ' (Not your path)');
+      btn.textContent = DISTRICT_LABELS[key] + (isMyDistrict ? '' : ' (Wrong door)');
     }
   }
   document.getElementById('monster-card').classList.toggle('active', state.inCombat);
