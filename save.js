@@ -81,7 +81,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
        classBuffFightsLeft,
        activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
-       lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt } = state;
+       lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt, casinoWinnings, lastCasinoRegenAt } = state;
    return {
       hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
       lastRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
@@ -95,7 +95,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
       classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
       classBuffFightsLeft,
       activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
-      lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt,
+      lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt, casinoWinnings, lastCasinoRegenAt,
       equipment: Object.fromEntries(
          SLOT_ORDER.map(slot => [slot, serializeItem(state.equipment[slot])])
          ),
@@ -142,6 +142,12 @@ state.activeBounty = saved.activeBounty || null;
    above. 0 (never rested) is a safe default; it never makes an old save
    artificially cooled-down. */
    state.lastInnRestAt = typeof saved.lastInnRestAt === 'number' ? saved.lastInnRestAt : 0;
+   /* Passive Casino income — same fallback reasoning as lastInnRestAt
+   above. lastCasinoRegenAt defaults to now (not 0) so an old save doesn't
+   suddenly compute years of "elapsed time" and hand over a maxed-out cap
+   the moment this field first appears. */
+   state.casinoWinnings = typeof saved.casinoWinnings === 'number' ? saved.casinoWinnings : 0;
+   state.lastCasinoRegenAt = typeof saved.lastCasinoRegenAt === 'number' ? saved.lastCasinoRegenAt : Date.now();
    recomputeMaxStats();
 }
 

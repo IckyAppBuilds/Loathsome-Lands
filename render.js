@@ -67,6 +67,9 @@ document.getElementById('casino-bet-row').style.display = (isCasino && !state.in
   document.getElementById('bet-10-btn').disabled = state.popTabs < 10;
   document.getElementById('bet-25-btn').disabled = state.popTabs < 25;
 
+document.getElementById('casino-winnings-box').style.display = (isCasino && !state.inCombat && casinoWinningsCap() > 0) ? 'block' : 'none';
+  if(isCasino && !state.inCombat) renderCasinoWinningsBox();
+
 document.getElementById('casino-spell-list').style.display = (isCasino && !state.inCombat) ? 'block' : 'none';
   if(isCasino && !state.inCombat) renderClassSpellList('casino-spell-list', 'Card Shark');
 

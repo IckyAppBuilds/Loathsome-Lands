@@ -302,9 +302,16 @@ const hazardEvents = {
       ]
 };
 
+/* Every purchasable food item's value is kept at exactly 1.6x its own Pop
+Tab price (the apple's own ratio: 8/5) — so buying and eating one is
+never a net loss of "healing per Pop Tab spent" compared to any other
+tier, and the item is always worth strictly more HP than it cost. Applies
+here (healItems[1], the canonical jerky definition also fed into
+allItemDefs(), save.js) and at shopFoodItemsTier2/Tier3 below, which
+duplicate healItems[0]/[1]'s fields for the actual shop listing. */
 const healItems = [
    { name:"a slightly bruised apple", desc:"Restores a modest amount of HP.", type:"hp", value:8, icon:iconApple },
-   { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:12, icon:iconJerky },
+   { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:32, icon:iconJerky },
    ];
 
 /* ---------------- Equipment ---------------- */
@@ -376,11 +383,11 @@ apple's existing tier-1 price in shopBuyItems): tier 2 (jerky) ~4x that
 (~20), tier 3 (biscuit tin) ~9x (~45). */
 const FOOD_BASE_UNIT = 5;
 const shopFoodItemsTier2 = [
-   { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:12, price:20, icon:iconJerky },
+   { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:32, price:20, icon:iconJerky },
    ];
 
 const shopFoodItemsTier3 = [
-   { name:"a tin of hoarded biscuit crumbs", desc:"Denser than a whole biscuit, somehow. Restores a large amount of HP.", type:"hp", value:22, price:45, icon:iconBiscuitTin },
+   { name:"a tin of hoarded biscuit crumbs", desc:"Denser than a whole biscuit, somehow. Restores a large amount of HP.", type:"hp", value:72, price:45, icon:iconBiscuitTin },
    ];
 
 /* Top gear tier — one item per slot like shopGearItemsTier2, each granting
@@ -751,3 +758,16 @@ const GUILD_BOUNTY_BONUS = [0, 0.10, 0.20, 0.30];
 a maxed casino narrows (but per product intent never eliminates) the
 house's edge. 0.10 at max level = 45% base win chance becomes 55%. */
 const CASINO_WIN_BONUS = [0, 0.03, 0.06, 0.10];
+
+/* Passive Casino income ("the house's cut", state.casinoWinnings) — 0 at
+level 0 means it's inert until the Casino is actually upgraded at least
+once, matching "once you upgrade the casino, you get a portion of the
+winnings" (this is separate from CASINO_WIN_BONUS above, which only
+affects active gambling odds). Indexed by buildingUpgrades.casino, same
+as every other per-level array here. See regenCasinoWinnings()
+(economy.js) — CASINO_WINNINGS_FULL_MS is how long it takes to go from 0
+to whichever cap applies, at ANY level, so a higher-level Casino doesn't
+just have a bigger cap, it also fills proportionally faster to reach it
+in the same ~1 day if left unclaimed. */
+const CASINO_WINNINGS_CAP = [0, 100, 200, 350];
+const CASINO_WINNINGS_FULL_MS = 24 * 60 * 60 * 1000;

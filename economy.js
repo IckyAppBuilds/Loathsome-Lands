@@ -102,6 +102,33 @@ function formatMs(ms){
    return m+':'+String(s).padStart(2,'0');
 }
 
+/* ---------------- Passive Casino income ("the house's cut") ---------------- */
+/* Same shape as regenBiscuits() above, deliberately — elapsed-real-time
+accrual up to a cap, keyed off a stored timestamp. Two differences: the
+cap is 0 (inert) until the Casino is upgraded at least once, and the
+"ms per Pop Tab" rate is derived from the current cap rather than fixed,
+so every level fills from 0 to ITS OWN (bigger) cap in the same
+CASINO_WINNINGS_FULL_MS (~1 day) instead of higher levels taking
+longer. */
+function casinoWinningsCap(){
+   return CASINO_WINNINGS_CAP[state.buildingUpgrades.casino || 0];
+}
+
+function regenCasinoWinnings(){
+   const cap = casinoWinningsCap();
+   if(cap <= 0 || state.casinoWinnings >= cap){
+      state.lastCasinoRegenAt = Date.now();
+      return;
+   }
+   const msPerPopTab = CASINO_WINNINGS_FULL_MS / cap;
+   const elapsed = Date.now() - state.lastCasinoRegenAt;
+   const gained = Math.floor(elapsed / msPerPopTab);
+   if(gained > 0){
+      state.casinoWinnings = Math.min(cap, state.casinoWinnings + gained);
+      state.lastCasinoRegenAt += gained * msPerPopTab;
+   }
+}
+
 function updateBiscuitDisplay(){
    document.getElementById('biscuit-stat').classList.toggle('dev-active', devMode);
    if(devMode){

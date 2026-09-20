@@ -184,6 +184,29 @@ function renderBountyBoard(){
   `;
 }
 
+/* Passive Casino income ("the house's cut") — only shows once the Casino
+is upgraded at least once (CASINO_WINNINGS_CAP[0]=0 means casinoWinningsCap()
+itself reports nothing to show below that). regenCasinoWinnings() (economy.js)
+is called here so the displayed amount is always current, same pattern as
+renderBountyBoard()'s ensureActiveBounty() call above. */
+function renderCasinoWinningsBox(){
+  const el = document.getElementById('casino-winnings-box');
+  if(!el) return;
+  const cap = casinoWinningsCap();
+  if(cap <= 0){ el.innerHTML = ''; return; }
+  regenCasinoWinnings();
+  const ready = state.casinoWinnings > 0;
+  const full = state.casinoWinnings >= cap;
+  el.innerHTML = `
+  <div class="block-title">The House's Cut</div>
+  <div class="quest-desc">Owning a piece of the Casino means a piece of the take, win or lose — it piles up whether you're here or not, up to a cap that grows the more you upgrade the place.</div>
+  <div class="quest-progress">${state.casinoWinnings} / ${cap} Pop Tabs banked${full ? ' — full, collect it before more piles up for nothing' : ''}</div>
+  <div class="btn-row" style="margin:8px 0 0;">
+  <button class="btn-primary" ${ready ? '' : 'disabled'} onclick="claimCasinoWinnings()">Collect Winnings</button>
+  </div>
+  `;
+}
+
 function renderHoodooShop(){
   const el = document.getElementById('hoodoo-list');
   el.innerHTML = '<div class="shop-section-title">Spells to Learn</div>';

@@ -154,6 +154,14 @@ function createDefaultState(){
         (content.js), independent of devMode/Biscuits — this is about
         pacing clicks in real time, not the energy economy. */
      lastInnRestAt: 0,
+     /* Passive Casino income ("the house's cut") — unlocked once
+        buildingUpgrades.casino is at least 1 (CASINO_WINNINGS_CAP[0]=0
+        keeps it at zero/inert before that). Accrues off real elapsed time
+        exactly like Biscuits (regenCasinoWinnings(), economy.js), capped
+        per the Casino's own upgrade level, and claimed via
+        claimCasinoWinnings() (guild.js) at the Casino screen. */
+     casinoWinnings: 0,
+     lastCasinoRegenAt: Date.now(),
      /* Rare-drop collection log — every rareDrop item name ever obtained,
         kept even if later sold/lost (see winCombat() in game.js and the
         Character drawer's Rare Finds block in render.js). */

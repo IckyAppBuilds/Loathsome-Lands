@@ -35,6 +35,24 @@ function gambleCasino(amount){
    render();
 }
 
+/* Collects whatever's accrued in state.casinoWinnings (regenCasinoWinnings(),
+economy.js — passive, real-time, capped by the Casino's own upgrade
+level) and adds it to state.popTabs. Entirely separate from gambleCasino()
+above; this is passive income for having upgraded the building at all,
+not a payout from any specific bet. */
+function claimCasinoWinnings(){
+   if(state.location !== 'casino') return;
+   regenCasinoWinnings();
+   if(state.casinoWinnings <= 0) return;
+   const amount = state.casinoWinnings;
+   state.popTabs += amount;
+   state.casinoWinnings = 0;
+   clearLog();
+   log(`You collect your cut of the house's take. (+${amount} Pop Tabs)`);
+   render();
+   autosave();
+}
+
 function enterGuild(){
    if(state.inCombat || state.location !== 'town') return;
    state.location = 'guild';

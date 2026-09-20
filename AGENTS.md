@@ -141,7 +141,8 @@ screen's own layout — see render-shop.js/render-character.js for those).
 
 ## render-shop.js — spend/earn-Pop-Tabs screens
 `renderInventory`, the Shop cluster (`shopTab`/`setShopTab`/
-`renderShopItemRow`/`renderShop`), `renderBountyBoard`, `renderHoodooShop`
+`renderShopItemRow`/`renderShop`), `renderBountyBoard`,
+`renderCasinoWinningsBox` (the Casino's passive-income box), `renderHoodooShop`
 (spell list + the stat-reset "Unravelling Draught" section),
 `BUILDING_EFFECT_INFO`/`shopTierUnlockNames()`/`buildingEffectDesc()`,
 and `renderTownLot`.
@@ -222,19 +223,23 @@ the class Trial — see guild.js), travel/unlock rules, or a building's
 upgrade gating.
 
 ## guild.js — Casino, Guild, Bounty Board, class Trial, Act 1 finale
-Casino (`enterCasino`/`leaveCasino`/`gambleCasino`), Guild
+Casino (`enterCasino`/`leaveCasino`/`gambleCasino` for ordinary wagering,
+`claimCasinoWinnings` for the separate passive-income mechanic —
+`regenCasinoWinnings()`/`casinoWinningsCap()` live in economy.js), Guild
 (`enterGuild`/`leaveGuild`, `acceptQuest2`/`reportCommanderKill`,
 `acceptQuest6`/`reportGnomeKingKill`), the Bounty Board
 (`isBountyZoneUnlocked`/`rollNewBounty`/`claimBounty`), the entire
 class-capstone Trial system: `acceptClassQuest`/`startClassTrialGuild`/
-`claimClassPath(chosenStat)`/`levelUpClassSkill`, and quest 7's Guild-side
-half: `acceptQuest7`/`reportGnomeKingDefeat`/`approachPalaceGate` (the
+`startClassTrialCasino`/`startClassTrialHoodoo`/`claimClassPath(chosenStat)`/
+`levelUpClassSkill`, and quest 7's Guild-side half:
+`acceptQuest7`/`reportGnomeKingDefeat`/`approachPalaceGate` (the
 Gnometropolis-side half — the district guardian fights — lives in
-gnometropolis.js instead). The Trial is 3 independent trainer tests
-(Guild fight, Casino wager, Hoodoo killing-blow spell — see
-`classTrialGuildPassed`/`classTrialCasinoPassed`/`classTrialHoodooPassed`,
-core.js) that must ALL pass before `claimClassPath` lets the player
-choose Meathead/Card Shark/Hexpert.
+gnometropolis.js instead). The Trial is 3 independent themed boss fights
+(trialChampion/casinoChampion/hoodooChampion, content.js — see the
+comment above trialChampion there for why each uses a different combat
+gimmick) — see `classTrialGuildPassed`/`classTrialCasinoPassed`/
+`classTrialHoodooPassed`, core.js — that must ALL pass before
+`claimClassPath` lets the player choose Meathead/Card Shark/Hexpert.
 
 Quest 6 ("The Gnome King's Throne") is now a retcon setup for quest 7:
 you fight `gnomeKingsCaptain` in the Vault, not the real King — he's
@@ -260,15 +265,22 @@ is just the player-facing trigger + the "is this your path" gate.
 Touch this file when: changing which district maps to which class, or
 adding a new district.
 
-## economy.js — shop sell/buy + Biscuit regen
+## economy.js — shop sell/buy + Biscuit regen + Casino passive income
 `isQuestItemSellable`/`sellItemByName`/`getAvailableShopItems`/
-`buyItemByName`, `randInt`, and the Biscuit (energy) economy
+`buyItemByName`, `randInt`, the Biscuit (energy) economy
 (`BISCUIT_MAX`/`effectiveBiscuitMax()`/`BISCUIT_REGEN_MS`/
 `regenBiscuits`/`msUntilNextBiscuit`/`formatMs`/`updateBiscuitDisplay`
-+ its `setInterval`).
++ its `setInterval`), and the Casino's passive income
+(`casinoWinningsCap()`/`regenCasinoWinnings()` — same elapsed-real-time-
+to-a-cap shape as Biscuits, but the cap is 0/inert until
+`buildingUpgrades.casino` is upgraded at least once, and the regen rate
+is derived from the cap so every level fills in the same ~1 day
+(`CASINO_WINNINGS_CAP`/`CASINO_WINNINGS_FULL_MS`, content.js) rather than
+a fixed per-Pop-Tab interval; claimed via `claimCasinoWinnings()`,
+guild.js).
 
-Touch this file when: changing shop pricing logic or the Biscuit-regen
-economy.
+Touch this file when: changing shop pricing logic, the Biscuit-regen
+economy, or the Casino's passive-income accrual/cap.
 
 ## boot.js — MUST STAY LAST (see rule #2 above)
 Scene-art click delegation, `startFreshGame()` (resets `state` for a
