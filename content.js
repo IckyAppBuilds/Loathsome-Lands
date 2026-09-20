@@ -284,6 +284,17 @@ used by the Bounty Board (render.js) to spell out where a bounty's
 monster lives without hand-typing zone names in a second place. */
 const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', gnometropolis:'Gnometropolis' };
 
+/* Shown on each zone's card in the Map drawer (render.js) as a "Recommended
+level" guideline — deliberately advisory, not a hard gate like zone
+unlocks (state.quest2/4/5/6Complete) or gear's own levelReq
+(getGearRequirements(), item-tiers.js) already are. Roughly tracks how
+far into the main quest chain a player typically is by the time each
+zone is actually reachable, independent of ZONE_DIFFICULTY above (that
+scales monster/combat numbers directly; this is just player-facing
+guidance) — landing a player in the right ballpark for both their own
+level and the gear tier they'd realistically have by then. */
+const ZONE_LEVEL_RECOMMENDATION = { commons:1, sewers:4, quarry:7, vault:10, gnometropolis:13 };
+
 /* Chance, per kill, that a monster's own rareDrop (defined per entry in
 monsters[] above) drops alongside its normal loot roll. What drops is
 now monster-specific — see the comment above monsters[]. */

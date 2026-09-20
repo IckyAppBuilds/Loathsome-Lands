@@ -439,6 +439,10 @@ button:disabled{ opacity:0.45; cursor:default; }
 .zone-card.locked{ opacity:0.5; pointer-events:none; }
 .zone-card.travel-card{ cursor:pointer; }
 .zone-card .ztag{ font-size:0.64rem; color:var(--red); font-weight:700; margin-top:6px; display:block; }
+/* Recommended-level guideline (ZONE_LEVEL_RECOMMENDATION, content.js) —
+color set per-card in render.js: tan while at/above the recommendation,
+red while under it, same "pay attention" language as .ztag's red. */
+.zone-card .zlevel{ font-size:0.68rem; font-weight:700; margin-top:5px; }
 
 .char-portrait{
   display:flex;
