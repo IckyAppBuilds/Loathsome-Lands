@@ -295,7 +295,7 @@ if(state.classQuestComplete){
   activeEntries.push(`
   <div class="quest-log-entry">
   <div class="quest-name">The Adventurer's Trial</div>
-  <div class="quest-desc">${allClassTrialsPassedLog ? "All three trainers agree on this much: you're ready. Return to the guildmaster to claim your path." : "Three trainers, three tests, and no partial credit: beat the Guild's Trial Champion, win a big enough bet at the Casino, and land a killing blow with a damage spell at the Hoodoo Doctor's."}</div>
+  <div class="quest-desc">${allClassTrialsPassedLog ? "All three trainers agree on this much: you're ready. Return to the guildmaster to claim your path." : "Three trainers, three fights, and no partial credit: beat the Guild's Trial Champion, outlast the Casino's own card shark, and land a killing blow with a damage spell at the Hoodoo Doctor's."}</div>
   <div class="quest-progress">${allClassTrialsPassedLog ? 'Ready — claim your path at the Guild.' : `Guild: ${state.classTrialGuildPassed ? '✓' : 'not yet'} — Casino: ${state.classTrialCasinoPassed ? '✓' : 'not yet'} — Hoodoo: ${state.classTrialHoodooPassed ? '✓' : 'not yet'}`}</div>
   </div>`);
 }
