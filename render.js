@@ -32,21 +32,31 @@ document.getElementById('poptab-text').textContent = state.popTabs;
 document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer Thistlewick's Cottage" : (isShop ? 'The Shop' : (isHoodoo ? 'The Hoodoo Doctor\'s Shack' : (isGuild ? 'The Adventurers\' Guild' : (isTinker ? "Tinker's Workshop" : (isTownLot ? LOT_TIER_NAMES[state.lotTier] : (isCasino ? 'The Casino' : (isNoticeBoard ? 'The Notice Board' : (isTownSquare ? 'Gladstone Hollow' : (isSewers ? 'Dank Sewers' : (isQuarry ? 'The Clockwork Quarry' : (isVault ? 'The Sunless Vault' : (isGnometropolis ? 'Gnometropolis' : 'The Overgrown Commons'))))))))))));
   document.getElementById('ztag-town').style.display = inTownArea ? 'block' : 'none';
   document.getElementById('ztag-commons').style.display = isCommons ? 'block' : 'none';
-  document.getElementById('quest-box').style.display = (isGafferHouse || isGuild || isHoodoo || isTinker) ? 'block' : 'none';
-  document.getElementById('bounty-box').style.display = (isGuild && state.questComplete) ? 'block' : 'none';
-  if(isGuild && state.questComplete) renderBountyBoard();
+  /* !state.inCombat matters here specifically for the Guild's own Trial
+  fight (startClassTrialGuild(), guild.js) — it's the one forced boss
+  fight that runs while state.location stays at a town building instead
+  of an exploration zone, so without this guard the building's own
+  quest text/bounty board/spell-trainer list would float on top of the
+  combat screen the whole fight. Every other forced fight (gnomeCommander/
+  diggerBot/gnomeKingsCaptain/gnomeKing/the district guardians) already
+  runs in a zone, where none of these building-only blocks ever show in
+  the first place — this is the one location that needed the same
+  "combat is its own clean screen" treatment applied explicitly. */
+  document.getElementById('quest-box').style.display = (!state.inCombat && (isGafferHouse || isGuild || isHoodoo || isTinker)) ? 'block' : 'none';
+  document.getElementById('bounty-box').style.display = (!state.inCombat && isGuild && state.questComplete) ? 'block' : 'none';
+  if(!state.inCombat && isGuild && state.questComplete) renderBountyBoard();
   document.getElementById('town-row').style.display = (isTownSquare && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('shop-row').style.display = (isShop && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('shop-list').style.display = isShop ? 'block' : 'none';
   if(isShop) renderShop();
 
 document.getElementById('hoodoo-row').style.display = (isHoodoo && !state.inCombat) ? 'flex' : 'none';
-  document.getElementById('hoodoo-list').style.display = isHoodoo ? 'block' : 'none';
-  if(isHoodoo) renderHoodooShop();
+  document.getElementById('hoodoo-list').style.display = (isHoodoo && !state.inCombat) ? 'block' : 'none';
+  if(isHoodoo && !state.inCombat) renderHoodooShop();
   else document.getElementById('hoodoo-class-spell-list').style.display = 'none';
 
-document.getElementById('guild-spell-list').style.display = isGuild ? 'block' : 'none';
-  if(isGuild) renderClassSpellList('guild-spell-list', 'Meathead');
+document.getElementById('guild-spell-list').style.display = (isGuild && !state.inCombat) ? 'block' : 'none';
+  if(isGuild && !state.inCombat) renderClassSpellList('guild-spell-list', 'Meathead');
 
 document.getElementById('townlot-row').style.display = (isTownLot && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('townlot-list').style.display = isTownLot ? 'block' : 'none';
@@ -58,8 +68,8 @@ document.getElementById('casino-bet-row').style.display = (isCasino && !state.in
   document.getElementById('bet-10-btn').disabled = state.popTabs < 10;
   document.getElementById('bet-25-btn').disabled = state.popTabs < 25;
 
-document.getElementById('casino-spell-list').style.display = isCasino ? 'block' : 'none';
-  if(isCasino) renderClassSpellList('casino-spell-list', 'Card Shark');
+document.getElementById('casino-spell-list').style.display = (isCasino && !state.inCombat) ? 'block' : 'none';
+  if(isCasino && !state.inCombat) renderClassSpellList('casino-spell-list', 'Card Shark');
 
 document.getElementById('noticeboard-row').style.display = (isNoticeBoard && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('noticeboard-hint').style.display = isNoticeBoard ? 'block' : 'none';
