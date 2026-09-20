@@ -310,8 +310,8 @@ here (healItems[1], the canonical jerky definition also fed into
 allItemDefs(), save.js) and at shopFoodItemsTier2/Tier3 below, which
 duplicate healItems[0]/[1]'s fields for the actual shop listing. */
 const healItems = [
-   { name:"a slightly bruised apple", desc:"Restores a modest amount of HP.", type:"hp", value:8, icon:iconApple },
-   { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:32, icon:iconJerky },
+   { name:"a slightly bruised apple", desc:"Restores a modest amount of HP.", type:"hp", value:8, tier:'common', icon:iconApple },
+   { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:32, tier:'uncommon', icon:iconJerky },
    ];
 
 /* ---------------- Equipment ---------------- */
@@ -319,25 +319,25 @@ const healItems = [
 Character page's 5 equip slots (head/chest/legs/boots/weapon) aren't
 just empty on day one. No stat bonuses; purely flavor. */
 const starterGear = {
-   weapon: { name:"a bent kitchen fork", desc:"Not built for combat. Works anyway, sort of.", type:"equip", slot:"weapon", bonus:{}, sell:1, icon: iconFork },
-   head:   { name:"a floppy adventuring cap", desc:"Keeps the sun out of your eyes, mostly.", type:"equip", slot:"head", bonus:{}, sell:1, icon: iconCap },
-   chest:  { name:"a slightly singed tunic", desc:"Smells like campfire. Always has.", type:"equip", slot:"chest", bonus:{}, sell:1, icon: iconTunic },
-   legs:   { name:"hand-me-down trousers, one size too big", desc:"Held up entirely by hope and a length of twine.", type:"equip", slot:"legs", bonus:{}, sell:1, icon: iconTrousers },
-   boots:  { name:"one good boot, one bad boot", desc:"You've stopped noticing the limp.", type:"equip", slot:"boots", bonus:{}, sell:1, icon: iconMismatchedBoots },
+   weapon: { name:"a bent kitchen fork", desc:"Not built for combat. Works anyway, sort of.", type:"equip", slot:"weapon", bonus:{}, sell:1, tier:'poor', icon: iconFork },
+   head:   { name:"a floppy adventuring cap", desc:"Keeps the sun out of your eyes, mostly.", type:"equip", slot:"head", bonus:{}, sell:1, tier:'poor', icon: iconCap },
+   chest:  { name:"a slightly singed tunic", desc:"Smells like campfire. Always has.", type:"equip", slot:"chest", bonus:{}, sell:1, tier:'poor', icon: iconTunic },
+   legs:   { name:"hand-me-down trousers, one size too big", desc:"Held up entirely by hope and a length of twine.", type:"equip", slot:"legs", bonus:{}, sell:1, tier:'poor', icon: iconTrousers },
+   boots:  { name:"one good boot, one bad boot", desc:"You've stopped noticing the limp.", type:"equip", slot:"boots", bonus:{}, sell:1, tier:'poor', icon: iconMismatchedBoots },
 };
 
 /* Shop-buyable upgrades, one or two per slot, each granting +1 to a stat. */
 const shopGearItems = [
-   { name:"a rake tine repurposed as a shank", desc:"Sharper than it has any right to be.", type:"equip", slot:"weapon", bonus:{beef:1}, price:12, icon: iconRakeShank },
-   { name:"a wand-shaped stick, allegedly magic", desc:"The gnome who sold it swore up and down.", type:"equip", slot:"weapon", bonus:{hoodoo:1}, price:12, icon: iconWandStick },
-   { name:"a dented pot-lid helmet", desc:"Rings like a bell if you get hit. You get used to it.", type:"equip", slot:"head", bonus:{grit:1}, price:10, icon: iconPotLid },
-   { name:"a patched burlap vest", desc:"Itchy. Surprisingly sturdy.", type:"equip", slot:"chest", bonus:{grit:1}, price:12, icon: iconVest },
-   { name:"shin guards whittled from a fence post", desc:"Splintery, but they hold.", type:"equip", slot:"legs", bonus:{zip:1}, price:10, icon: iconShinGuard },
-   { name:"boots with suspiciously good grip", desc:"You don't ask where they came from.", type:"equip", slot:"boots", bonus:{zip:1}, price:10, icon: iconGripBoots },
+   { name:"a rake tine repurposed as a shank", desc:"Sharper than it has any right to be.", type:"equip", slot:"weapon", bonus:{beef:1}, price:12, tier:'common', icon: iconRakeShank },
+   { name:"a wand-shaped stick, allegedly magic", desc:"The gnome who sold it swore up and down.", type:"equip", slot:"weapon", bonus:{hoodoo:1}, price:12, tier:'common', icon: iconWandStick },
+   { name:"a dented pot-lid helmet", desc:"Rings like a bell if you get hit. You get used to it.", type:"equip", slot:"head", bonus:{grit:1}, price:10, tier:'common', icon: iconPotLid },
+   { name:"a patched burlap vest", desc:"Itchy. Surprisingly sturdy.", type:"equip", slot:"chest", bonus:{grit:1}, price:12, tier:'common', icon: iconVest },
+   { name:"shin guards whittled from a fence post", desc:"Splintery, but they hold.", type:"equip", slot:"legs", bonus:{zip:1}, price:10, tier:'common', icon: iconShinGuard },
+   { name:"boots with suspiciously good grip", desc:"You don't ask where they came from.", type:"equip", slot:"boots", bonus:{zip:1}, price:10, tier:'common', icon: iconGripBoots },
    ];
 
 const shopBuyItems = [
-   { name:"a slightly bruised apple", desc:"Restores a modest amount of HP.", type:"hp", value:8, price:5, icon:iconApple },
+   { name:"a slightly bruised apple", desc:"Restores a modest amount of HP.", type:"hp", value:8, price:5, tier:'common', icon:iconApple },
    ...shopGearItems,
    ];
 
@@ -356,11 +356,11 @@ numbers, so the relative spread between a tier's own items (cheapest vs
 priciest) is unchanged — only the tier's overall level moved. */
 const GEAR_BASE_UNIT = 10;
 const shopGearItemsTier2 = [
-   { name:"a scepter looted from the vizier's chambers", desc:"Still radiates a faint, smug authority.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, price:40, icon: iconVizierScepter },
-   { name:"a guard-captain's dented helm", desc:"Reinforced. Dented anyway.", type:"equip", slot:"head", bonus:{grit:2}, price:38, icon: iconGuardHelm },
-   { name:"a clockwork-plated chestpiece", desc:"Ticks faintly whenever your heart rate spikes.", type:"equip", slot:"chest", bonus:{grit:2}, price:42, icon: iconClockworkPlate },
-   { name:"burrow-worm hide greaves", desc:"Flexible enough to squeeze through a tunnel-worm's old digs.", type:"equip", slot:"legs", bonus:{zip:2}, price:36, icon: iconBurrowGreaves },
-   { name:"spring-loaded gnome-tech boots", desc:"Every step has a little more bounce than it should.", type:"equip", slot:"boots", bonus:{zip:2}, price:44, icon: iconSpringBoots },
+   { name:"a scepter looted from the vizier's chambers", desc:"Still radiates a faint, smug authority.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, price:40, tier:'uncommon', icon: iconVizierScepter },
+   { name:"a guard-captain's dented helm", desc:"Reinforced. Dented anyway.", type:"equip", slot:"head", bonus:{grit:2}, price:38, tier:'uncommon', icon: iconGuardHelm },
+   { name:"a clockwork-plated chestpiece", desc:"Ticks faintly whenever your heart rate spikes.", type:"equip", slot:"chest", bonus:{grit:2}, price:42, tier:'uncommon', icon: iconClockworkPlate },
+   { name:"burrow-worm hide greaves", desc:"Flexible enough to squeeze through a tunnel-worm's old digs.", type:"equip", slot:"legs", bonus:{zip:2}, price:36, tier:'uncommon', icon: iconBurrowGreaves },
+   { name:"spring-loaded gnome-tech boots", desc:"Every step has a little more bounce than it should.", type:"equip", slot:"boots", bonus:{zip:2}, price:44, tier:'uncommon', icon: iconSpringBoots },
    ];
 
 /* ---------------- Shop upgrade tiers ---------------- */
@@ -383,11 +383,11 @@ apple's existing tier-1 price in shopBuyItems): tier 2 (jerky) ~4x that
 (~20), tier 3 (biscuit tin) ~9x (~45). */
 const FOOD_BASE_UNIT = 5;
 const shopFoodItemsTier2 = [
-   { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:32, price:20, icon:iconJerky },
+   { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:32, price:20, tier:'uncommon', icon:iconJerky },
    ];
 
 const shopFoodItemsTier3 = [
-   { name:"a tin of hoarded biscuit crumbs", desc:"Denser than a whole biscuit, somehow. Restores a large amount of HP.", type:"hp", value:72, price:45, icon:iconBiscuitTin },
+   { name:"a tin of hoarded biscuit crumbs", desc:"Denser than a whole biscuit, somehow. Restores a large amount of HP.", type:"hp", value:72, price:45, tier:'rare', icon:iconBiscuitTin },
    ];
 
 /* Top gear tier — one item per slot like shopGearItemsTier2, each granting
@@ -397,11 +397,11 @@ Gnometropolis-loot theming. Priced per the GEAR_BASE_UNIT quadratic scheme
 above shopGearItemsTier2 — ~9x GEAR_BASE_UNIT, same per-tier scale factor
 applied to every item so the tier's internal price spread is unchanged. */
 const shopGearItemsTier3 = [
-   { name:"an heirloom hoodoo rod, mostly legitimate", desc:"The provenance is fuzzy. The results aren't.", type:"equip", slot:"weapon", bonus:{hoodoo:3}, price:100, icon: iconHeirloomRod },
-   { name:"a champion's dented crown, repurposed", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{grit:3}, price:85, icon: iconChampionCrown },
-   { name:"a reinforced adventurer's cuirass", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{grit:3}, price:95, icon: iconAdventurerCuirass },
-   { name:"a tailored pair of quick-step trousers", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{zip:3}, price:80, icon: iconQuickstepTrousers },
-   { name:"boots blessed by a mildly competent hoodoo doctor", desc:"\"Mildly\" is doing some work in that sentence.", type:"equip", slot:"boots", bonus:{zip:3}, price:90, icon: iconBlessedBoots },
+   { name:"an heirloom hoodoo rod, mostly legitimate", desc:"The provenance is fuzzy. The results aren't.", type:"equip", slot:"weapon", bonus:{hoodoo:3}, price:100, tier:'rare', icon: iconHeirloomRod },
+   { name:"a champion's dented crown, repurposed", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{grit:3}, price:85, tier:'rare', icon: iconChampionCrown },
+   { name:"a reinforced adventurer's cuirass", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{grit:3}, price:95, tier:'rare', icon: iconAdventurerCuirass },
+   { name:"a tailored pair of quick-step trousers", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{zip:3}, price:80, tier:'rare', icon: iconQuickstepTrousers },
+   { name:"boots blessed by a mildly competent hoodoo doctor", desc:"\"Mildly\" is doing some work in that sentence.", type:"equip", slot:"boots", bonus:{zip:3}, price:90, tier:'rare', icon: iconBlessedBoots },
    ];
 
 /* ---------------- Spells (Hoodoo magic) ---------------- */
@@ -547,9 +547,9 @@ gnometropolis.js's challengeDistrictGuardian()), which is why `price`/
 `building` no longer exist here. icon fields point at iconSiegeBreaker/
 iconGuardUniform/iconWardedSeal (icons.js). */
 const PALACE_GATE_GEAR = [
-   { name:"a warlord's siege-breaker", desc:"Not subtle. Doesn't need to be.", type:"equip", slot:"weapon", bonus:{beef:2}, class:'Meathead', icon: iconSiegeBreaker },
-   { name:"a stolen palace-guard's uniform", desc:"Fits well enough, if nobody looks twice.", type:"equip", slot:"chest", bonus:{zip:2}, class:'Card Shark', icon: iconGuardUniform },
-   { name:"a warded seal, still humming", desc:"Warm to the touch. Getting warmer.", type:"equip", slot:"head", bonus:{hoodoo:2}, class:'Hexpert', icon: iconWardedSeal },
+   { name:"a warlord's siege-breaker", desc:"Not subtle. Doesn't need to be.", type:"equip", slot:"weapon", bonus:{beef:2}, class:'Meathead', tier:'epic', icon: iconSiegeBreaker },
+   { name:"a stolen palace-guard's uniform", desc:"Fits well enough, if nobody looks twice.", type:"equip", slot:"chest", bonus:{zip:2}, class:'Card Shark', tier:'epic', icon: iconGuardUniform },
+   { name:"a warded seal, still humming", desc:"Warm to the touch. Getting warmer.", type:"equip", slot:"head", bonus:{hoodoo:2}, class:'Hexpert', tier:'epic', icon: iconWardedSeal },
    ];
 
 /* The three Gnometropolis district guardians — new design that turns

@@ -547,7 +547,13 @@ clearLog();
       log(`You loot: ${lootRoll.name}.`);
    }
    if(rareRoll){
-      state.inventory.push({...rareRoll});
+      /* tier:'legendary' stamped on here rather than on every individual
+      rareDrop definition (content.js) — a rare drop's own `type` varies
+      ('junk' or 'luck', whichever fits its flavor), but every rare drop
+      is uniformly the game's top item tier regardless. getItemTier()
+      (item-tiers.js) always prefers this explicit tier over its
+      type-based fallback. */
+      state.inventory.push({...rareRoll, tier:'legendary'});
       log(`Wait — something rare. You find: ${rareRoll.name}!`);
       /* Rare-drop collection log — record the first time this specific rare
       item is ever obtained (kept even if later sold/lost). Once every

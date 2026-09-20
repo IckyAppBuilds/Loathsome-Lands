@@ -1,17 +1,17 @@
 # The Loathsome Lands — file map
 
 A single-page browser RPG. No build step, no bundler, no modules — plain
-HTML/CSS/`<script>` tags, all globals. 17 JS files load in a specific
+HTML/CSS/`<script>` tags, all globals. 20 JS files load in a specific
 order (see `index.html`'s `<script>` block, which documents this inline
 too):
 
 ```
 supabase (CDN)
--> core.js -> icons.js -> art.js -> content.js
--> render.js -> render-shop.js -> render-character.js
+-> core.js -> icons.js -> art.js -> content.js -> item-tiers.js
+-> render.js -> render-shop.js -> render-character.js -> class-spells.js
 -> dev-tools.js -> auth.js -> save.js -> player-actions.js -> tutorial.js
 -> combat.js -> town.js -> guild.js -> gnometropolis.js -> economy.js
--> boot.js
+-> noticeboard.js -> boot.js
 ```
 
 This project has already broken its own rule #1 twice in practice (a
@@ -129,6 +129,20 @@ etc.) and `STAT_RESET_BASE_PRICE`/`STAT_RESET_PRICE_MULT`.
 Touch this file when: adding or rebalancing a monster, item, spell, shop
 listing, casino odds, or a cost/bonus curve. Rarely needs a matching
 change elsewhere unless you're adding a new mechanic, not just new data.
+Every equip/consumable item should carry an explicit `tier` field (see
+item-tiers.js below) — 'poor'/'common'/'uncommon'/'rare'/'epic'; quest
+items and ordinary junk loot don't need one, they're derived from `type`.
+
+## item-tiers.js — item rarity colors
+`ITEM_TIER_COLORS` (the Diablo/WoW-style poor->legendary ramp, plus a
+'quest' tier, all reusing styles.css's existing custom properties),
+`getItemTier(item)`, and `itemNameHtml(item)` — wraps an item's name in
+its tier color, used everywhere an item's name renders via innerHTML
+(the Pack, Shop listings including Sell, equipped gear, Rare Finds).
+Never used in log() messages (those are textContent, not innerHTML).
+Pure: reads an item's own `tier`/`type` fields, never touches `state`.
+
+Touch this file when: changing a rarity color, or adding a new tier.
 
 ## render.js — core screen sync
 `render()` (bars, which location view is shown, quest banners, drawer
@@ -314,8 +328,11 @@ near the section it belongs to.
 - Change combat math or encounter rolls -> **combat.js**.
 - Change a per-building quest's logic or travel/unlock rules ->
   **town.js** (or **guild.js** for quest2/quest6/the class Trial).
-- Change Casino/Guild/bounty/class-Trial logic -> **guild.js**.
-- Change shop sell/buy pricing or Biscuit regen -> **economy.js**.
+- Change Casino/Guild/bounty/class-Trial/Casino-passive-income logic ->
+  **guild.js** (the regen math itself is in economy.js).
+- Change shop sell/buy pricing, Biscuit regen, or the Casino's
+  passive-income accrual/cap -> **economy.js**.
+- Change an item's rarity color, or add a new tier -> **item-tiers.js**.
 - Change what a brand-new character starts with -> **boot.js**
   (`startFreshGame()`).
 - Change equip/use-item/stat-point logic -> **player-actions.js**.

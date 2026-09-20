@@ -56,7 +56,12 @@ function renderRareFindsBlock(){
     : '';
   const rows = rareMonsters.map(m=>{
     const found = state.rareDropsSeen.includes(m.rareDrop.name);
-    return `<div class="stat-row"><div style="flex:1;"><div class="stat-row-label">${found ? m.rareDrop.name : '???'}</div></div></div>`;
+    /* m.rareDrop itself carries no explicit tier — winCombat() (combat.js)
+    only stamps tier:'legendary' onto the looted copy, not the content.js
+    definition — but every entry reachable here is definitionally a rare
+    drop, so override it the same way for display. */
+    const nameHtml = found ? itemNameHtml({...m.rareDrop, tier:'legendary'}) : '???';
+    return `<div class="stat-row"><div style="flex:1;"><div class="stat-row-label">${nameHtml}</div></div></div>`;
   }).join('');
   el.innerHTML = `<div class="block-title">Rare Finds: ${foundCount} / ${totalRares}</div>${bonusNote}${rows}`;
 }
@@ -107,7 +112,7 @@ function renderEquipmentBlock(){
     <div class="icon-box">${iconSvg}</div>
     <div style="flex:1;">
     <div class="equip-slot-label">${SLOT_LABELS[slot]}</div>
-    <div class="name">${item.name}</div>
+    <div class="name">${itemNameHtml(item)}</div>
     <div class="desc">${bonusText}</div>
     <button class="btn-secondary" onclick="unequipItem('${slot}')">Unequip</button>
     </div>

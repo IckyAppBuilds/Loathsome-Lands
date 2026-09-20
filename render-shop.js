@@ -63,7 +63,7 @@ INVENTORY_SECTIONS.forEach(section=>{
     const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
     ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
       : '';
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name}${qtyBadge}${slotBadge}${questBadge}</div><div class="desc">${item.desc}${bonusText}</div>${btn}</div>`;
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}${qtyBadge}${slotBadge}${questBadge}</div><div class="desc">${item.desc}${bonusText}</div>${btn}</div>`;
     list.appendChild(div);
   });
 });
@@ -88,7 +88,7 @@ function renderShopItemRow(def){
   const bonusTag = def.bonus && Object.keys(def.bonus).length
   ? ` (${Object.entries(def.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
     : '';
-  div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${def.name}${slotTag}</div><div class="desc">${def.desc}${bonusTag} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyItemByName('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
+  div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(def)}${slotTag}</div><div class="desc">${def.desc}${bonusTag} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyItemByName('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
   return div;
 }
 
@@ -143,7 +143,7 @@ if(sellable.length===0){
     div.className = 'shop-item';
     const iconSvg = item.icon ? item.icon() : '';
     const total = item.sell * count;
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name} <span class="qty-badge">×${count}</span></div><div class="desc">${item.desc} (${item.sell} Pop Tab${item.sell>1?'s':''} each)</div><button class="btn-secondary" onclick="sellItemByName('${item.name.replace(/'/g,"\\'")}')">Sell All — ${total} Pop Tabs</button></div>`;
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)} <span class="qty-badge">×${count}</span></div><div class="desc">${item.desc} (${item.sell} Pop Tab${item.sell>1?'s':''} each)</div><button class="btn-secondary" onclick="sellItemByName('${item.name.replace(/'/g,"\\'")}')">Sell All — ${total} Pop Tabs</button></div>`;
     sellSection.appendChild(div);
   });
 }
