@@ -105,22 +105,103 @@ function applyDamageToPlayer(dmg){
    return { absorbed, remaining };
 }
 
+/* Shared "monster takes damage" resolution, mirroring applyDamageToPlayer()
+above — a monster's own dodgeChance (content.js monster data, e.g. the
+Casino Trial's casinoChampion) gets one roll here regardless of whether
+the damage came from an Attack (playerAttack()) or a spell (castSpell()),
+so any future evasive monster gets this for free from either source.
+guaranteedHit skips the roll entirely for a landed sneak attack —
+"catching them off guard" shouldn't then let them dodge the very swing
+that caught them off guard. */
+function applyDamageToMonster(dmg, guaranteedHit){
+   if(!guaranteedHit && state.monster.dodgeChance && Math.random() < state.monster.dodgeChance){
+      return { dodged: true, dealt: 0 };
+   }
+   state.monster.hp = Math.max(0, state.monster.hp - dmg);
+   return { dodged: false, dealt: dmg };
+}
+
 /* Shared "monster gets a turn" resolution, used after every combat action
-(Attack, a damage/heal spell, Warding Charm, or Shout). Zip's dodge
-chance applies the same way regardless of what the player just did —
-casting a spell isn't stealthier than swinging a fork. */
+(Attack, a damage/heal spell, Warding Charm, or Shout). A monster can
+carry an optional skills[] array (content.js, e.g. the Hoodoo Trial's
+hoodooChampion) — each turn, its skills are tried in array order and the
+first one whose roll hits takes the turn instead of the normal attack; a
+'heal' skill is skipped while already at full HP rather than wasting its
+roll. A monster with no skills[] (everything in the game before this)
+always falls straight through to monsterAutoAttack(), unchanged. */
 function monsterRetaliate(){
+   if(state.monster.skills){
+      for(const skill of state.monster.skills){
+         if(skill.type==='heal' && state.monster.hp >= state.monster.maxHp) continue;
+         if(Math.random() < skill.chance){
+            useMonsterSkill(skill);
+            return;
+         }
+      }
+   }
+   monsterAutoAttack();
+}
+
+/* A monster's default turn: try to hit the player, worn down by the
+player's own Zip-based dodge chance same as always. Boosted by a prior
+'buff' skill use (state.monster.buffTurnsLeft/buffMult, set in
+useMonsterSkill() below) until it ticks back down to 0. */
+function monsterAutoAttack(){
    const eff = getEffectiveStats();
    const dodgeChance = Math.min(0.5, statBonus(eff.zip)*0.03);
    if(Math.random() < dodgeChance){
       log(`You dodge ${state.monster.name}'s counterattack completely.`);
+      tickMonsterBuff();
       return;
    }
-   const mdmg = randInt(state.monster.atkMin, state.monster.atkMax);
+   let mdmg = randInt(state.monster.atkMin, state.monster.atkMax);
+   if(state.monster.buffTurnsLeft > 0) mdmg = Math.round(mdmg * (state.monster.buffMult || 1.5));
    const { absorbed, remaining } = applyDamageToPlayer(mdmg);
    log(absorbed > 0
        ? `${capitalize(state.monster.name)} retaliates for ${mdmg} damage — your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'}.`
        : `${capitalize(state.monster.name)} retaliates for ${mdmg} damage.`, 'damage');
+   tickMonsterBuff();
+}
+
+/* Ticks state.monster.buffTurnsLeft down — called only from
+monsterAutoAttack() above, where the buff is actually consumed, not from
+every monster turn. A 'buff' skill use itself doesn't tick it (casting
+the buff shouldn't burn one of its own duration units), and neither does
+a 'heal'/'bolt' turn (an active buff sits dormant through those rather
+than expiring on a turn it never got to apply to an attack) — so
+buffTurns:3 reliably means "the next 3 times this monster actually
+attacks", not "the next 3 turns of any kind". */
+function tickMonsterBuff(){
+   if(state.monster.buffTurnsLeft > 0) state.monster.buffTurnsLeft--;
+}
+
+/* Executes one monster skill (content.js's skills[] entries) instead of
+the normal auto-attack for this turn. Generic by skill.type, so a future
+monster with its own skills[] needs no new dispatch code here unless it
+introduces an actual new type. */
+function useMonsterSkill(skill){
+   if(skill.type==='heal'){
+      const healAmt = randInt(skill.healMin, skill.healMax);
+      const before = state.monster.hp;
+      state.monster.hp = Math.min(state.monster.maxHp, state.monster.hp + healAmt);
+      log(`${capitalize(state.monster.name)} ${skill.flavor}. (+${state.monster.hp-before} HP)`);
+   } else if(skill.type==='buff'){
+      state.monster.buffTurnsLeft = skill.buffTurns;
+      state.monster.buffMult = skill.buffMult;
+      log(`${capitalize(state.monster.name)} ${skill.flavor}.`);
+   } else if(skill.type==='bolt'){
+      const eff = getEffectiveStats();
+      const dodgeChance = Math.min(0.5, statBonus(eff.zip)*0.03);
+      if(Math.random() < dodgeChance){
+         log(`You dodge ${state.monster.name}'s ${skill.flavor} completely.`);
+      } else {
+         const dmg = randInt(skill.boltMin, skill.boltMax);
+         const { absorbed, remaining } = applyDamageToPlayer(dmg);
+         log(absorbed > 0
+             ? `${capitalize(state.monster.name)} ${skill.flavor} for ${dmg} damage — your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'}.`
+             : `${capitalize(state.monster.name)} ${skill.flavor} for ${dmg} damage.`, 'damage');
+      }
+   }
 }
 
 function playerAttack(){
@@ -164,15 +245,18 @@ function playerAttack(){
       || (sneakAttackChance > 0 && Math.random() < sneakAttackChance);
    if(sneakAttackLands) dmg = Math.round(dmg * 2);
 
-   state.monster.hp = Math.max(0, state.monster.hp-dmg);
-   log(sneakAttackLands
-       ? `You catch ${state.monster.name} completely off guard — a critical opening strike for ${dmg} damage!`
-       : `You strike ${state.monster.name} for ${dmg} damage.`);
-
-if(state.monster.hp<=0){
-   winCombat();
-   return;
-}
+   const { dodged } = applyDamageToMonster(dmg, sneakAttackLands);
+   if(dodged){
+      log(`${capitalize(state.monster.name)} slips out of the way — your attack finds nothing but air.`);
+   } else {
+      log(sneakAttackLands
+          ? `You catch ${state.monster.name} completely off guard — a critical opening strike for ${dmg} damage!`
+          : `You strike ${state.monster.name} for ${dmg} damage.`);
+      if(state.monster.hp<=0){
+         winCombat();
+         return;
+      }
+   }
 
 if(!sneakAttackLands) monsterRetaliate();
    checkDefeat();
@@ -241,17 +325,24 @@ if(spell.type==='damage'){
    just the base roll — chosen to mirror how Adrenaline Rush stacks on
    top of MEATHEAD_DAMAGE_BONUS in playerAttack() rather than diverge. */
    if(state.classBuffFightsLeft > 0 && state.classTitle === 'Hexpert') dmg = Math.round(dmg * 1.5);
-   state.monster.hp = Math.max(0, state.monster.hp-dmg);
-   log(`You cast ${spell.name} — ${capitalize(state.monster.name)} takes ${dmg} damage.`);
-   if(state.monster.hp<=0){
-      /* Checked before winCombat() (so !state.classQuestComplete still reads
-      pre-victory state) but logged after — winCombat() calls clearLog()
-      internally, so a log() here would just get wiped by that. */
-      const passesHoodooTrial = state.classQuestAccepted && !state.classTrialHoodooPassed && !state.classQuestComplete;
-      if(passesHoodooTrial) state.classTrialHoodooPassed = true;
-      winCombat();
-      if(passesHoodooTrial) log("A killing blow with a spell — the Hoodoo Doctor's test, passed.");
-      return;
+   const { dodged } = applyDamageToMonster(dmg, false);
+   if(dodged){
+      log(`You cast ${spell.name}, but ${state.monster.name} isn't where the bolt lands.`);
+   } else {
+      log(`You cast ${spell.name} — ${capitalize(state.monster.name)} takes ${dmg} damage.`);
+      if(state.monster.hp<=0){
+         /* Checked before winCombat() (so !state.classQuestComplete still reads
+         pre-victory state) but logged after — winCombat() calls clearLog()
+         internally, so a log() here would just get wiped by that. Tightened
+         to require THIS boss specifically (hoodooChampion, content.js) —
+         any old damage-spell kill used to count, which made the trial a
+         one-click checkbox instead of a real fight. */
+         const passesHoodooTrial = state.monster.name === hoodooChampion.name && state.classQuestAccepted && !state.classTrialHoodooPassed && !state.classQuestComplete;
+         if(passesHoodooTrial) state.classTrialHoodooPassed = true;
+         winCombat();
+         if(passesHoodooTrial) log("A killing blow with a spell — the Hoodoo Doctor's test, passed.");
+         return;
+      }
    }
    monsterRetaliate();
 } else if(spell.type==='heal'){
@@ -330,15 +421,15 @@ function playerFlee(){
    const eff = getEffectiveStats();
    const fleeChance = Math.min(0.9, 0.65 + statBonus(eff.zip)*0.02);
    if(Math.random() < fleeChance){
-      /* Same reasoning as winCombat()'s wasTrialChampion branch below —
-      the Trial fight is the only one anchored to a town building instead
-      of an exploration zone, so send the player back to town on a
-      successful flee too rather than leaving them sitting back inside
-      the Guild mid-Trial. */
-      const wasTrialChampion = !!state.monster.rare && state.monster.name === trialChampion.name;
+      /* Same reasoning as winCombat()'s wasBuildingTrialFight branch below —
+      all three Trial fights are anchored to a town building instead of an
+      exploration zone, so send the player back to town on a successful
+      flee too rather than leaving them sitting back inside that building
+      mid-Trial. */
+      const wasBuildingTrialFight = !!state.monster.rare && (state.monster.name === trialChampion.name || state.monster.name === casinoChampion.name || state.monster.name === hoodooChampion.name);
       log(`You flee from ${state.monster.name}, dignity mostly intact.`);
       endCombat();
-      if(wasTrialChampion) state.location = 'town';
+      if(wasBuildingTrialFight) state.location = 'town';
    } else {
       const mdmg = randInt(state.monster.atkMin, state.monster.atkMax);
       const { absorbed, remaining } = applyDamageToPlayer(mdmg);
@@ -358,6 +449,8 @@ function winCombat(){
    const wasVaultCaptain = !!state.monster.rare && state.monster.name === gnomeKingsCaptain.name;
    const wasRealGnomeKing = !!state.monster.rare && state.monster.name === gnomeKing.name;
    const wasTrialChampion = !!state.monster.rare && state.monster.name === trialChampion.name;
+   const wasCasinoChampion = !!state.monster.rare && state.monster.name === casinoChampion.name;
+   const wasHoodooChampion = !!state.monster.rare && state.monster.name === hoodooChampion.name;
    const wasGarrisonGuardian = !!state.monster.rare && state.monster.name === garrisonGuardian.name;
    const wasRoguesDenEnforcer = !!state.monster.rare && state.monster.name === roguesDenEnforcer.name;
    const wasArcaneSanctumGuardian = !!state.monster.rare && state.monster.name === arcaneSanctumGuardian.name;
@@ -399,16 +492,17 @@ const needsVeinIngredient = veinIngredient && state.quest5Accepted && !state.que
    fires for them. */
 const rareRoll = state.monster.rareDrop && Math.random()<RARE_DROP_CHANCE ? state.monster.rareDrop : null;
 
-/* The Trial Champion fight runs while state.location stays 'guild' (it
-never changes, same as every other forced fight) — but every other one
-happens in an exploration zone, where goAdventuring()/travelTo() always
-clears the victory banner as the very first thing on the player's next
-action, and checkDefeat() sends a loss straight back to town. Nothing
-inside the Guild ever needed to play either role before, so skip the
-banner AND send a win back to town too (same landing spot a loss
-already uses) rather than trying to make the Guild's own screen behave
-like an exploration zone after the fact. */
-if(wasTrialChampion){
+/* All three Trial fights (Guild/Casino/Hoodoo) run while state.location
+stays at that building (it never changes, same as every other forced
+fight) — but every other forced fight happens in an exploration zone,
+where goAdventuring()/travelTo() always clears the victory banner as the
+very first thing on the player's next action, and checkDefeat() sends a
+loss straight back to town. No building ever needed to play either role
+before, so skip the banner AND send a win back to town too (same landing
+spot a loss already uses) rather than trying to make each building's own
+screen behave like an exploration zone after the fact. */
+const wasBuildingTrialFight = wasTrialChampion || wasCasinoChampion || wasHoodooChampion;
+if(wasBuildingTrialFight){
    state.showVictory = false;
    state.victoryMonster = null;
    state.location = 'town';
@@ -433,6 +527,11 @@ clearLog();
    } else if(wasTrialChampion){
       state.classTrialGuildPassed = true;
       log(`You defeat ${defeatedName}! The Guild's toughest test, passed. (+${xpGain} XP)`);
+   } else if(wasCasinoChampion){
+      state.classTrialCasinoPassed = true;
+      log(`You defeat ${defeatedName}! The house doesn't usually lose that hand — the Casino's test, passed. (+${xpGain} XP)`);
+   } else if(wasHoodooChampion){
+      log(`You defeat ${defeatedName}! ${state.classTrialHoodooPassed ? "A killing blow with a spell — the Hoodoo Doctor's test, passed." : "It dissolves back into the pot, gone for now."} (+${xpGain} XP)`);
    } else if(wasGarrisonGuardian){
       log(`You defeat ${defeatedName}! The Garrison falls silent behind you. (+${xpGain} XP)`);
    } else if(wasRoguesDenEnforcer){

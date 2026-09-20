@@ -137,41 +137,66 @@ const gnomeKing = {
    art: artGnomeKing, loot:null
 };
 
-/* Boss for the GUILD TIER of the level-10 class capstone, "The
-Adventurer's Trial" (acceptClassQuest/claimClassPath in game.js). The
-Trial is now three independent trainer tests — this is only the Guild's
-(the Meathead test); the Casino's (Card Shark, CLASS_TRIAL_CASINO_STAKE
-below) and the Hoodoo Doctor's (Hexpert, a killing blow with a damage
-spell) use their own mechanics, not a boss fight. All three must pass
-(state.classTrialGuildPassed/classTrialCasinoPassed/classTrialHoodooPassed,
-core.js) before claimClassPath() lets the player choose. Unlike
-gnomeCommander/diggerBot/gnomeKingsCaptain above, this one is NOT a wild
-zone spawn — it's fought directly at the Guild via a dedicated button
-once a player hits level 10, so it carries no `zone` and needs no
-SPAWN_CHANCE constant of its own (a separate task wires the Guild-side
-fight). `rare:true` is still set so the existing winCombat()
+/* The Adventurer's Trial (acceptClassQuest/claimClassPath, guild.js) is
+three independent trainer tests, one per prospective class, all fought as
+a themed boss encounter at that class's own building via a dedicated
+button (startClassTrialGuild/startClassTrialCasino/startClassTrialHoodoo,
+guild.js) once a player hits level 10 — not a wild zone spawn, so none of
+the three carries a `zone` or a SPAWN_CHANCE constant. All three must
+pass (state.classTrialGuildPassed/classTrialCasinoPassed/
+classTrialHoodooPassed, core.js) before claimClassPath() lets the player
+choose. `rare:true` on all three lets the existing winCombat()
 victory-detection pattern (state.monster.rare && state.monster.name ===
-X.name) works for it unchanged — a separate task adds the actual check,
-gated on state.classQuestAccepted/!state.classTrialGuildPassed, and sets
-state.classTrialGuildPassed = true on the win. Tuned as the toughest of
-the wild-spawn-adjacent hunts — tougher than gnomeKingsCaptain
-(hp:70/atk:7-12/xp:35) — though no longer the game's toughest fight
-outright: the real gnomeKing (above) now exceeds it, being Act 1's true
-finale rather than a mid-game trial. loot:null for the same reason as the other three named bosses: the
-reward here is trial progress, not an item drop. art points at a
-not-yet-written artTrialChampion() (core.js, separate task) — referenced
-by name now so that task knows what to add. */
+X.name) work for them unchanged. loot:null on all three for the same
+reason as gnomeCommander/diggerBot/etc.: the reward here is trial
+progress, not an item drop. None of the three requires the player to
+have already put stat points into that class's own stat — a fight works
+with whatever build the player's actually playing, same as any other
+combat encounter in the game. Each one leans on a distinct mechanical
+gimmick instead, deliberately: */
+
+/* Guild tier (Meathead test) — the straightforward slugfest. Hits harder
+than anything else in the game up to Act 1's real finale (gnomeKing,
+hp:120/atk:12-18) — no other trick, just raw power, matching the class
+fantasy. */
 const trialChampion = {
-   name:"the Guild's Trial Examiner, unbeaten and unimpressed", hp:95, atkMin:9, atkMax:14, xp:50, rare:true,
+   name:"the Guild's Trial Examiner, unbeaten and unimpressed", hp:95, atkMin:11, atkMax:17, xp:50, rare:true,
    art: artTrialChampion, loot:null
 };
 
-/* Casino tier of the same Trial (see trialChampion comment above) — the
-Card Shark test. No boss fight: gambleCasino() (game.js) checks this
-threshold and, if the player wins a bet at or above it while the trial
-is active and this tier isn't passed yet, sets
-state.classTrialCasinoPassed = true. */
-const CLASS_TRIAL_CASINO_STAKE = 50;
+/* Casino tier (Card Shark test) — replaces an earlier bet-threshold check
+(CLASS_TRIAL_CASINO_STAKE, since removed) that required betting more Pop
+Tabs than any Bet button in the UI actually offers, making it impossible
+to pass. A themed fight against a rival cardsharp instead: lower HP than
+trialChampion, but dodgeChance (applyDamageToMonster(), combat.js) means
+roughly 3 in 10 attacks — Attack or a damage spell — whiff outright
+regardless of the player's own stats. The challenge is grinding through
+an evasive target, not out-damaging a tankier one. */
+const casinoChampion = {
+   name:"the Casino's own cardsharp, impossible to pin down", hp:65, atkMin:8, atkMax:12, xp:50, rare:true,
+   dodgeChance:0.30, art: artCasinoChampion, loot:null
+};
+
+/* Hoodoo tier (Hexpert test) — a themed fight against a summoned spirit
+carrying the game's first skills[] (combat.js's useMonsterSkill(): heal/
+buff/bolt, tried in order each of its turns before falling back to a
+normal attack). Weak melee on its own (atkMin/atkMax below), but sustain
+(heal) and burst (bolt/a buffed attack) make it a real war of attrition
+rather than a tankier trialChampion. classTrialHoodooPassed itself is
+still only set in castSpell()'s damage branch (combat.js) when the
+killing blow on THIS specific boss comes from a cast spell — winning the
+fight with a plain Attack doesn't count, preserving the "prove your
+hoodoo" flavor without requiring Hoodoo stat investment (any class can
+buy Hex Bolt for 15 Pop Tabs and finish the job with it). */
+const hoodooChampion = {
+   name:"a spirit summoned from the bottom of the pot", hp:80, atkMin:7, atkMax:11, xp:50, rare:true,
+   skills:[
+      { type:'heal', chance:0.18, healMin:12, healMax:20, flavor:"mutters over its own embers and knits its wounds shut" },
+      { type:'buff', chance:0.12, buffMult:1.6, buffTurns:3, flavor:"traces a sigil in the air, crackling with borrowed power" },
+      { type:'bolt', chance:0.25, boltMin:11, boltMax:17, flavor:"flings a crackling hex" }
+   ],
+   art: artHoodooChampion, loot:null
+};
 
 /* Per-zone difficulty multiplier — makes each successive area meaningfully
 tougher than the last, on top of the already-different base hp/atk/xp

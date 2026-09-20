@@ -399,6 +399,22 @@ in place of the usual single raised arm. */
 function artTrialChampion(){
    return sceneWrap(`<circle cx="50" cy="55" r="48" fill="#3d5a80" opacity="0.3"/><path d="M6 96 Q50 72 94 96 L82 26 Q50 15 18 26 Z" fill="#5f4632"/><path d="M18 26 L0 38 L4 64 L20 56 Z" fill="#8a8477"/><path d="M82 26 L100 38 L96 64 L80 56 Z" fill="#8a8477"/><rect x="32" y="22" width="36" height="10" fill="#b9b3a4"/><path d="M34 16 Q50 0 66 16 L62 38 Q50 45 38 38 Z" fill="#b9b3a4"/><line x1="42" y1="25" x2="42" y2="35"/><line x1="58" y1="25" x2="58" y2="35"/><line x1="50" y1="45" x2="50" y2="98"/><line x1="50" y1="56" x2="12" y2="47"/><line x1="12" y1="47" x2="0" y2="20"/><line x1="50" y1="56" x2="88" y2="47"/><line x1="88" y1="47" x2="100" y2="20"/><path d="M50 8 L45 62 L55 62 Z" fill="#8a8477"/><line x1="30" y1="15" x2="70" y2="15"/><path d="M34 92 L66 92 L60 100 L40 100 Z" fill="#3d5a80"/><line x1="50" y1="98" x2="32" y2="100"/><line x1="50" y1="98" x2="68" y2="100"/>`, 0);
 }
+/* Casino tier of the Trial (casinoChampion, content.js) — same cloaked-
+silhouette build as artRoguesDenEnforcer below, but swaps its empty
+raised arm for a fan of cards (same motif as artCardShark above) and
+gets a gold-tinted aura instead of grey, tying it to the Casino/chips
+rather than the Rogues' Den. */
+function artCasinoChampion(){
+   return sceneWrap(`<circle cx="50" cy="55" r="42" fill="#d1a94e" opacity="0.28"/><path d="M50 6 Q66 20 60 42 L40 42 Q34 20 50 6 Z" fill="#2b2b28"/><circle cx="50" cy="48" r="12" fill="#e0c49a"/><rect x="40" y="44" width="20" height="6" fill="#2b2b28" stroke="none"/><path d="M30 52 Q50 44 70 52 L64 94 Q50 100 36 94 Z" fill="#2b2b28"/><line x1="30" y1="56" x2="14" y2="66"/><rect x="4" y="52" width="11" height="16" fill="#f4efe4" stroke-width="2" transform="rotate(-18 9 60)"/><rect x="8" y="50" width="11" height="16" fill="#f4efe4" stroke-width="2" transform="rotate(2 13 58)"/><rect x="12" y="53" width="11" height="16" fill="#f4efe4" stroke-width="2" transform="rotate(20 17 61)"/><line x1="70" y1="56" x2="88" y2="64"/><line x1="50" y1="94" x2="40" y2="99"/><line x1="50" y1="94" x2="60" y2="99"/>`, 0);
+}
+/* Hoodoo tier of the Trial (hoodooChampion, content.js) — a spectral
+riff on artArcaneSanctumGuardian below: translucent robe (opacity, not a
+solid fill) instead of a solid construct, a jagged/wavy hem instead of a
+straight one to read as trailing smoke rather than legs, and a cauldron
+at its base (the "pot" it was summoned from) instead of ground. */
+function artHoodooChampion(){
+   return sceneWrap(`<circle cx="50" cy="52" r="44" fill="#3d5a80" opacity="0.24"/><path d="M50 6 Q64 22 56 40 L44 40 Q36 22 50 6 Z" fill="#3d5a80" opacity="0.7"/><circle cx="50" cy="46" r="11" fill="#e0c49a" opacity="0.85"/><circle cx="45" cy="45" r="2" fill="#d1a94e" stroke="none"/><circle cx="55" cy="45" r="2" fill="#d1a94e" stroke="none"/><path d="M30 54 Q50 46 70 54 Q66 74 74 92 Q50 84 26 92 Q34 74 30 54 Z" fill="#3d5a80" opacity="0.7"/><circle cx="16" cy="70" r="8" fill="none" stroke-width="2.5" opacity="0.6"/><circle cx="16" cy="70" r="3.5" fill="#d1a94e" stroke="none"/><ellipse cx="50" cy="94" rx="30" ry="6" fill="#5f4632"/><ellipse cx="50" cy="92" rx="14" ry="3" fill="#2b2b28" opacity="0.3"/>`, 0);
+}
 /* Gnometropolis district guardians (garrisonGuardian/roguesDenEnforcer/
 arcaneSanctumGuardian, content.js) — same visual weight as
 artGnomeKingsCaptain above (aura radius ~40-42, no shape pushed to the

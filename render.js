@@ -171,7 +171,7 @@ document.getElementById('guild-trial-box').style.display = (isGuild && !state.in
     document.getElementById('trial-progress').textContent = 'Not yet accepted.';
   } else if(isGuild && !state.inCombat && classQuestState==='trials'){
     document.getElementById('trial-name').textContent = "Quest: The Adventurer's Trial";
-    document.getElementById('trial-desc').textContent = "Three trainers, three tests, and no partial credit. Beat the Guild's Trial Champion in a fight, win a big enough bet at the Casino, and land a killing blow with a damage spell at the Hoodoo Doctor's. Pass all three, then come back here to claim your path.";
+    document.getElementById('trial-desc').textContent = "Three trainers, three fights, and no partial credit. Beat the Guild's Trial Champion, outlast the Casino's own cardsharp, and put down the Hoodoo Doctor's summoned spirit with a killing blow from a spell. Pass all three, then come back here to claim your path.";
     document.getElementById('trial-progress').textContent = `Guild: ${state.classTrialGuildPassed ? '✓ passed' : 'not yet'} — Casino: ${state.classTrialCasinoPassed ? '✓ passed' : 'not yet'} — Hoodoo: ${state.classTrialHoodooPassed ? '✓ passed' : 'not yet'}`;
   } else if(isGuild && !state.inCombat && classQuestState==='ready'){
     document.getElementById('trial-name').textContent = "Quest: The Adventurer's Trial";
@@ -186,15 +186,20 @@ mainline-quest text alongside it. */
 document.getElementById('casino-trial-hint').style.display = (isCasino && classQuestState==='trials') ? 'block' : 'none';
   if(isCasino && classQuestState==='trials'){
     document.getElementById('casino-trial-hint').textContent = state.classTrialCasinoPassed
-      ? "You've already proven your nerve at the tables — the Casino's trial is passed."
-      : `Word around the tables is the Guild's trial-takers prove their nerve here — win a bet of at least ${CLASS_TRIAL_CASINO_STAKE} Pop Tabs.`;
+      ? "You've already put the Casino's own cardsharp in their place — that trial is passed."
+      : "The Croupier nods toward a card sharp working the far table — impossible to pin down, by all accounts. Trial-takers prove their nerve by beating them outright.";
   }
-  document.getElementById('hoodoo-trial-hint').style.display = (isHoodoo && classQuestState==='trials') ? 'block' : 'none';
+  document.getElementById('casino-trial-row').style.display = (isCasino && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('start-trial-fight-casino-btn').style.display = (classQuestState==='trials' && !state.classTrialCasinoPassed) ? '' : 'none';
+
+document.getElementById('hoodoo-trial-hint').style.display = (isHoodoo && classQuestState==='trials') ? 'block' : 'none';
   if(isHoodoo && classQuestState==='trials'){
     document.getElementById('hoodoo-trial-hint').textContent = state.classTrialHoodooPassed
-      ? "You've already proven your hoodoo over the pot — the killing-blow trial is passed."
-      : "The Hoodoo Doctor's heard talk over the pot of trial-takers proving their hoodoo with a killing spell.";
+      ? "You've already put the spirit from the pot back where it came from — the killing-blow trial is passed."
+      : "The Hoodoo Doctor's summoned something out of the pot to test trial-takers — beat it, and finish it with a spell, not your fists.";
   }
+  document.getElementById('hoodoo-trial-row').style.display = (isHoodoo && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('start-trial-fight-hoodoo-btn').style.display = (classQuestState==='trials' && !state.classTrialHoodooPassed) ? '' : 'none';
 
 document.getElementById('gaffer-row').style.display = (isGafferHouse && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('accept-quest-btn').style.display = questState==='offer' ? '' : 'none';

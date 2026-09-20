@@ -110,15 +110,18 @@ portrait.
 
 ## content.js — game data tables
 `monsters[]` (per-zone, each with its own optional `rareDrop`), the
-named bosses (`gnomeCommander`, `diggerBot`, `gnomeKing`, `trialChampion`)
-with their own spawn-chance constants, `ZONE_DIFFICULTY`/`ZONE_LABELS`,
-`noncombatEvents`/`hazardEvents`, `healItems`/`shopFoodItemsTier2`/
-`shopFoodItemsTier3`, `starterGear`, `shopGearItems`/`shopGearItemsTier2`/
-`shopGearItemsTier3`, `shopBuyItems`, `spells`, `potionIngredients`,
-`veinIngredients`, `CLASS_TITLES` + each class's skill-bonus constants
+named bosses (`gnomeCommander`, `diggerBot`, `gnomeKing`, and the
+Adventurer's Trial's three themed fights — `trialChampion`/
+`casinoChampion`/`hoodooChampion`, the last carrying a `skills[]` array —
+see combat.js's `useMonsterSkill()`) with their own spawn-chance
+constants, `ZONE_DIFFICULTY`/`ZONE_LABELS`, `noncombatEvents`/
+`hazardEvents`, `healItems`/`shopFoodItemsTier2`/`shopFoodItemsTier3`,
+`starterGear`, `shopGearItems`/`shopGearItemsTier2`/`shopGearItemsTier3`,
+`shopBuyItems`, `spells`, `potionIngredients`, `veinIngredients`,
+`CLASS_TITLES` + each class's skill-bonus constants
 (`MEATHEAD_DAMAGE_BONUS`/`CARD_SHARK_PAYOUT_BONUS`/`HEXPERT_SPELL_DMG_BONUS`
-+ `classSkillCost()`), `CLASS_TRIAL_CASINO_STAKE`, casino odds/flavor
-lines, `BOUNTY_TEMPLATES`, and the Town Lot/building-upgrade cost
++ `classSkillCost()`), casino odds/flavor lines, `BOUNTY_TEMPLATES`, and
+the Town Lot/building-upgrade cost
 tables (`buildingUpgradeCost()`, `LOT_TIER_COST` — both quadratic) plus
 each building's per-level effect constants (`GAFFER_BISCUIT_MAX_BONUS`
 etc.) and `STAT_RESET_BASE_PRICE`/`STAT_RESET_PRICE_MULT`.

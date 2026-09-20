@@ -107,14 +107,18 @@ function createDefaultState(){
      classTitle: null,
      /* "The Adventurer's Trial" capstone, cont'd — three independent trainers
         each administer their own test once classQuestAccepted; all three
-        must be true before claimClassPath() (game.js) can be called. Not a
-        single boss fight anymore — one tier per prospective class:
-        - classTrialGuildPassed: beat the Trial Champion boss at the Guild
-          (trialChampion, content.js) — the Meathead test.
-        - classTrialCasinoPassed: win a wager at/above CLASS_TRIAL_CASINO_STAKE
-          (content.js) at the Casino — the Card Shark test.
-        - classTrialHoodooPassed: land a killing blow with a damage spell —
-          the Hexpert test.
+        must be true before claimClassPath() (game.js) can be called. Each
+        tier is its own themed boss fight (content.js's trialChampion/
+        casinoChampion/hoodooChampion), none requiring the player to have
+        already put stat points into that class's own stat:
+        - classTrialGuildPassed: beat the Trial Champion at the Guild — a
+          straightforward, hard-hitting fight (the Meathead test).
+        - classTrialCasinoPassed: beat the Casino's cardsharp — lower HP but
+          evasive (dodgeChance), so the challenge is landing hits, not
+          surviving them (the Card Shark test).
+        - classTrialHoodooPassed: beat the Hoodoo Doctor's summoned spirit
+          (the game's first monster with skills[] — heal/buff/bolt) AND land
+          the killing blow specifically with a cast spell (the Hexpert test).
         classSkillLevel is the single shared level counter for whichever
         class-skill the chosen classTitle unlocks (MEATHEAD_DAMAGE_BONUS/
         CARD_SHARK_PAYOUT_BONUS/HEXPERT_SPELL_DMG_BONUS, content.js) — see

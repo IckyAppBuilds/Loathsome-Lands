@@ -13,6 +13,9 @@ function leaveCasino(){
    render();
 }
 
+/* Ordinary gambling — entirely separate from the Casino tier of the
+Adventurer's Trial now (see startClassTrialCasino() below), which used to
+piggyback on this function via a bet-threshold check. */
 function gambleCasino(amount){
    if(state.location !== 'casino' || state.popTabs < amount) return;
    state.popTabs -= amount;
@@ -26,10 +29,6 @@ function gambleCasino(amount){
       const winnings = Math.round(amount * payoutMult);
       state.popTabs += winnings;
       log(`${casinoWinLines[Math.floor(Math.random()*casinoWinLines.length)]} (+${winnings} Pop Tabs)`);
-      if(state.classQuestAccepted && !state.classTrialCasinoPassed && !state.classQuestComplete && amount >= CLASS_TRIAL_CASINO_STAKE){
-         state.classTrialCasinoPassed = true;
-         log("A big enough bet, won — the Casino's test, passed.");
-      }
    } else {
       log(`${casinoLoseLines[Math.floor(Math.random()*casinoLoseLines.length)]} (-${amount} Pop Tabs)`);
    }
@@ -282,14 +281,20 @@ see classQuestState in render(). No longer a single auto-picked-stat capstone:
 once accepted, three independent trainers each administer their own test, and
 only after all three pass does the player CHOOSE which class to become
 (claimClassPath(chosenStat) below no longer computes a "dominant" stat itself).
-The three tiers, and where each one lives:
+The three tiers are now all themed boss fights (see content.js's comment
+above trialChampion/casinoChampion/hoodooChampion for why each one uses a
+different mechanical gimmick instead of just being three copies of the
+same fight), and where each one lives:
 - Guild/Meathead: startClassTrialGuild() below forces a fight against
   trialChampion (content.js); winCombat()'s wasTrialChampion branch sets
   state.classTrialGuildPassed = true on the win.
-- Casino/Card Shark: gambleCasino() (this file) checks CLASS_TRIAL_CASINO_STAKE
-  on a win and sets state.classTrialCasinoPassed = true.
-- Hoodoo/Hexpert: castSpell()'s damage branch (this file) sets
-  state.classTrialHoodooPassed = true on a killing blow with a damage spell.
+- Casino/Card Shark: startClassTrialCasino() below forces a fight against
+  casinoChampion; winCombat()'s wasCasinoChampion branch sets
+  state.classTrialCasinoPassed = true on the win.
+- Hoodoo/Hexpert: startClassTrialHoodoo() below forces a fight against
+  hoodooChampion; castSpell()'s damage branch (combat.js) sets
+  state.classTrialHoodooPassed = true specifically when the killing blow
+  on THAT boss comes from a cast spell, not just from winning the fight.
 claimClassPath(chosenStat) then gates on all three flags plus chosenStat being
 one of 'beef'/'zip'/'hoodoo' (Bulwark/grit has no trial tier and isn't a valid
 choice), and hands out a permanent title plus a small +2 bonus to chosenStat,
@@ -310,6 +315,26 @@ passed before handing it that template. */
 function startClassTrialGuild(){
    if(state.location !== 'guild' || !state.classQuestAccepted || state.classTrialGuildPassed || state.classQuestComplete) return;
    startCombat(trialChampion);
+   render();
+}
+
+/* Casino tier — forces a fight against casinoChampion (content.js). Same
+shape as startClassTrialGuild() above; replaces an earlier bet-threshold
+check in gambleCasino() that required a bet bigger than any Bet button
+the UI actually offers. */
+function startClassTrialCasino(){
+   if(state.location !== 'casino' || !state.classQuestAccepted || state.classTrialCasinoPassed || state.classQuestComplete) return;
+   startCombat(casinoChampion);
+   render();
+}
+
+/* Hoodoo tier — forces a fight against hoodooChampion (content.js). Same
+shape as startClassTrialGuild() above; state.classTrialHoodooPassed itself
+is only set in castSpell()'s damage branch (combat.js) when the killing
+blow on this specific boss comes from a cast spell. */
+function startClassTrialHoodoo(){
+   if(state.location !== 'hoodoo' || !state.classQuestAccepted || state.classTrialHoodooPassed || state.classQuestComplete) return;
+   startCombat(hoodooChampion);
    render();
 }
 
