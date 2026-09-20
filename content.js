@@ -302,19 +302,27 @@ each zone's unlock quest completed:
 - Quarry (quest4/diggerBot): 6-8.
 - Vault (quest5/vein parts): 7-9 — right on Quarry's heels, since
   quest4->quest5 chain back-to-back with no real gap.
-- Gnometropolis (quest6/gnomeKingsCaptain): 16-17 in every run, NOT the
-  ~13 an earlier hand-guess assumed — hunting a 5%-per-fight rare spawn
-  while grinding the Vault (ZONE_DIFFICULTY 1.9x XP) reliably levels a
-  player far past Vault's own unlock floor before the captain shows up.
-  Vault's own `max` is set to just under this (15) rather than its raw
-  unlock ceiling (9), since that whole 7-15 span is genuinely how long a
-  player is actually still in the Vault, not just its arrival window. */
+- Gnometropolis (quest6/gnomeKingsCaptain): a first pass of this sim that
+  skipped straight from Vault's unlock to soloing gnomeKingsCaptain
+  (hp70/atk7-12 template, x1.9 from ZONE_DIFFICULTY in real combat) found
+  the player fleeing 20-60 encounters in a row at level 7-9 and only
+  winning once incidentally overleveled to 16-17 through pure Vault
+  grinding — a "dead grind" gap far worse than any other transition.
+  That's not a real pacing problem, though: it's the sim not taking the
+  level-10 Guild capstone ("The Adventurer's Trial", guild.js) before
+  going after the captain. Re-run with that detour included — reach
+  level 10, pass the three class trials, claim a class, then return to
+  the captain with class-boosted stats — gnomeKingsCaptain becomes a
+  clean 1-4-encounter fight and Gnometropolis unlocks at level 10-12
+  every run. The captain's own stats are correctly tuned for "level 10
+  with a class," not for a Vault-fresh level 7-9 player — vault's `max`
+  and gnometropolis's `min` below reflect that intended detour. */
 const ZONE_LEVEL_RECOMMENDATION = {
    commons: { min:1, max:4 },
    sewers: { min:4, max:7 },
    quarry: { min:6, max:9 },
-   vault: { min:7, max:15 },
-   gnometropolis: { min:15 },
+   vault: { min:7, max:10 },
+   gnometropolis: { min:10 },
 };
 
 /* Chance, per kill, that a monster's own rareDrop (defined per entry in
