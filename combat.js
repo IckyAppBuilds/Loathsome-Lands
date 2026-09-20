@@ -330,8 +330,15 @@ function playerFlee(){
    const eff = getEffectiveStats();
    const fleeChance = Math.min(0.9, 0.65 + statBonus(eff.zip)*0.02);
    if(Math.random() < fleeChance){
+      /* Same reasoning as winCombat()'s wasTrialChampion branch below —
+      the Trial fight is the only one anchored to a town building instead
+      of an exploration zone, so send the player back to town on a
+      successful flee too rather than leaving them sitting back inside
+      the Guild mid-Trial. */
+      const wasTrialChampion = !!state.monster.rare && state.monster.name === trialChampion.name;
       log(`You flee from ${state.monster.name}, dignity mostly intact.`);
       endCombat();
+      if(wasTrialChampion) state.location = 'town';
    } else {
       const mdmg = randInt(state.monster.atkMin, state.monster.atkMax);
       const { absorbed, remaining } = applyDamageToPlayer(mdmg);
@@ -396,15 +403,15 @@ const rareRoll = state.monster.rareDrop && Math.random()<RARE_DROP_CHANCE ? stat
 never changes, same as every other forced fight) — but every other one
 happens in an exploration zone, where goAdventuring()/travelTo() always
 clears the victory banner as the very first thing on the player's next
-action. Nothing plays that role inside a building, so without this the
-Guild would be stuck showing "Victory!" over the dead boss's art
-forever, through Leave and back in, since enterGuild()/leaveGuild()
-have never needed to reset it before. Skip the banner for this fight
-and let the Guild's own screen — now reporting the Trial's Guild tier
-passed — be the "you won" moment instead. */
+action, and checkDefeat() sends a loss straight back to town. Nothing
+inside the Guild ever needed to play either role before, so skip the
+banner AND send a win back to town too (same landing spot a loss
+already uses) rather than trying to make the Guild's own screen behave
+like an exploration zone after the fact. */
 if(wasTrialChampion){
    state.showVictory = false;
    state.victoryMonster = null;
+   state.location = 'town';
 } else {
    state.victoryMonster = { art: state.monster.art, name: state.monster.name };
    state.showVictory = true;

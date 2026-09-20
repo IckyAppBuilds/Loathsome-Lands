@@ -155,19 +155,35 @@ const classQuestState = state.classQuestComplete ? 'complete'
   : (state.classTrialGuildPassed && state.classTrialCasinoPassed && state.classTrialHoodooPassed) ? 'ready'
   : 'trials';
 
-/* Same condition that gives the Trial's own dialog priority over quest6/
-quest7's (above) — while it applies, the Guild's quest6/quest7 accept/
-report buttons are hidden too, so the only Guild action offered is the
-Trial's own (Accept/Face Down/Claim). Reaching level 10 (classQuestState's
-only real gate besides quest2Complete) can land mid-quest6 or mid-quest7,
-and showing both sets of buttons at once let a player accept/report a
-mainline quest while a dialog talking only about the Trial was on screen. */
-const trialTakesPriority = classQuestState==='offer' || classQuestState==='trials' || classQuestState==='ready';
+/* The Adventurer's Trial gets its own dialog box at the Guild, separate
+from quest-box (which stays reserved for quest2/quest6/quest7's own
+text) — reaching level 10, the Trial's only real gate besides
+quest2Complete, can easily land mid-quest6 or mid-quest7, and hiding
+either dialog to show the other meant a player couldn't see (or act on)
+a mainline quest that was still genuinely active. Its own accept/fight/
+claim buttons already show independently of quest6/7's state (see
+accept-classquest-btn/start-trial-fight-btn/claim-path-*-btn below), so
+this box is purely the informational half — the Guild keeps working
+normally underneath it no matter what it's showing. */
+document.getElementById('guild-trial-box').style.display = (isGuild && !state.inCombat && classQuestState!=='locked' && classQuestState!=='complete') ? 'block' : 'none';
+  if(isGuild && !state.inCombat && classQuestState==='offer'){
+    document.getElementById('trial-name').textContent = "Quest available: The Adventurer's Trial";
+    document.getElementById('trial-desc').textContent = "You've reached level 10. The guildmaster looks you over — really looks, this time. There's a Trial for adventurers who come this far, and it isn't the Guild's alone to give: the guildmaster, the Casino's croupier, and the Hoodoo Doctor each test something different before a name gets put to what you've become.";
+    document.getElementById('trial-progress').textContent = 'Not yet accepted.';
+  } else if(isGuild && !state.inCombat && classQuestState==='trials'){
+    document.getElementById('trial-name').textContent = "Quest: The Adventurer's Trial";
+    document.getElementById('trial-desc').textContent = "Three trainers, three tests, and no partial credit. Beat the Guild's Trial Champion in a fight, win a big enough bet at the Casino, and land a killing blow with a damage spell at the Hoodoo Doctor's. Pass all three, then come back here to claim your path.";
+    document.getElementById('trial-progress').textContent = `Guild: ${state.classTrialGuildPassed ? '✓ passed' : 'not yet'} — Casino: ${state.classTrialCasinoPassed ? '✓ passed' : 'not yet'} — Hoodoo: ${state.classTrialHoodooPassed ? '✓ passed' : 'not yet'}`;
+  } else if(isGuild && !state.inCombat && classQuestState==='ready'){
+    document.getElementById('trial-name').textContent = "Quest: The Adventurer's Trial";
+    document.getElementById('trial-desc').textContent = "All three trainers agree: you're ready. The guildmaster will name your path — choose it below.";
+    document.getElementById('trial-progress').textContent = 'All three trials passed — claim your path.';
+  }
 
-/* Small one-line trial hints on the Casino/Hoodoo screens — the Guild's
-own per-tier status line lives in the isGuild 'trials' branch below, this
-is just a nudge on the other two trainers' screens while their tier is
-still unpassed. */
+/* Small one-line trial hints on the Casino/Hoodoo screens — same
+purpose as guild-trial-box above, just a single-line nudge instead of
+a full dialog since neither screen also needs to show its own separate
+mainline-quest text alongside it. */
 document.getElementById('casino-trial-hint').style.display = (isCasino && classQuestState==='trials') ? 'block' : 'none';
   if(isCasino && classQuestState==='trials'){
     document.getElementById('casino-trial-hint').textContent = state.classTrialCasinoPassed
@@ -193,13 +209,13 @@ document.getElementById('guild-row').style.display = (isGuild && !state.inCombat
   document.getElementById('report-kill-btn').disabled = !canReport;
   document.getElementById('report-kill-btn').textContent = state.commanderDefeated ? 'Report the Kill' : 'Report the Kill (not yet)';
 
-document.getElementById('accept-quest6-btn').style.display = (quest6State==='offer' && !trialTakesPriority) ? '' : 'none';
-  document.getElementById('report-gnomeking-btn').style.display = (quest6State==='active' && !trialTakesPriority) ? '' : 'none';
+document.getElementById('accept-quest6-btn').style.display = quest6State==='offer' ? '' : 'none';
+  document.getElementById('report-gnomeking-btn').style.display = quest6State==='active' ? '' : 'none';
   document.getElementById('report-gnomeking-btn').disabled = !canReportGnomeKing;
   document.getElementById('report-gnomeking-btn').textContent = state.quest6RareDefeated ? 'Report the Gnome King' : 'Report the Gnome King (not yet)';
 
-document.getElementById('accept-quest7-btn').style.display = (quest7State==='offer' && !trialTakesPriority) ? '' : 'none';
-  document.getElementById('report-gnomeking-defeat-btn').style.display = (quest7State==='ready' && !trialTakesPriority) ? '' : 'none';
+document.getElementById('accept-quest7-btn').style.display = quest7State==='offer' ? '' : 'none';
+  document.getElementById('report-gnomeking-defeat-btn').style.display = quest7State==='ready' ? '' : 'none';
 
 document.getElementById('accept-quest3-btn').style.display = quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = quest3State==='active' ? '' : 'none';
@@ -249,23 +265,6 @@ if(isGafferHouse){
     document.getElementById('quest-name').textContent = 'Quest: The Gnome Commander';
     document.getElementById('quest-desc').textContent = "Hunt down and defeat the gnome commander in the Overgrown Commons. He's rare — keep adventuring until he shows himself.";
     document.getElementById('quest-progress').textContent = state.commanderDefeated ? 'Commander defeated — report back!' : 'Commander not yet encountered.';
-  } else if(classQuestState==='offer'){
-    /* Takes priority over quest6/quest7's own active/offer dialog below —
-    hitting level 10 (the only gate on this offer besides quest2Complete)
-    can easily happen mid-quest6 or mid-quest7, and a player shouldn't
-    have the Trial's availability hidden behind whichever mainline quest
-    happens to be showing at the time. */
-    document.getElementById('quest-name').textContent = "Quest available: The Adventurer's Trial";
-    document.getElementById('quest-desc').textContent = "You've reached level 10. The guildmaster looks you over — really looks, this time. There's a Trial for adventurers who come this far, and it isn't the Guild's alone to give: the guildmaster, the Casino's croupier, and the Hoodoo Doctor each test something different before a name gets put to what you've become.";
-    document.getElementById('quest-progress').textContent = 'Not yet accepted.';
-  } else if(classQuestState==='trials'){
-    document.getElementById('quest-name').textContent = "Quest: The Adventurer's Trial";
-    document.getElementById('quest-desc').textContent = "Three trainers, three tests, and no partial credit. Beat the Guild's Trial Champion in a fight, win a big enough bet at the Casino, and land a killing blow with a damage spell at the Hoodoo Doctor's. Pass all three, then come back here to claim your path.";
-    document.getElementById('quest-progress').textContent = `Guild: ${state.classTrialGuildPassed ? '✓ passed' : 'not yet'} — Casino: ${state.classTrialCasinoPassed ? '✓ passed' : 'not yet'} — Hoodoo: ${state.classTrialHoodooPassed ? '✓ passed' : 'not yet'}`;
-  } else if(classQuestState==='ready'){
-    document.getElementById('quest-name').textContent = "Quest: The Adventurer's Trial";
-    document.getElementById('quest-desc').textContent = "All three trainers agree: you're ready. The guildmaster will name your path — choose it below.";
-    document.getElementById('quest-progress').textContent = 'All three trials passed — claim your path.';
   } else if(quest6State==='active'){
     document.getElementById('quest-name').textContent = "Quest: The Gnome King's Throne";
     document.getElementById('quest-desc').textContent = "Hunt down and defeat the Gnome King's captain, left to guard his retreat in the Sunless Vault. He's rare — keep adventuring until he shows himself.";
@@ -291,7 +290,13 @@ if(isGafferHouse){
     document.getElementById('quest-name').textContent = "Quest complete: The Gnome King's Court";
     document.getElementById('quest-desc').textContent = "Act One is done. The King is dead, Gnometropolis is yours, and nobody's quite sure what comes next.";
     document.getElementById('quest-progress').textContent = 'Reward claimed.';
-  } else if(classQuestState==='locked'){
+  } else if(!state.classTitle){
+    /* General "no other Guild quest-text applies, and the Trial (now its
+    own separate box below) isn't claimed yet" fallback — deliberately
+    NOT gated to classQuestState==='locked' specifically, since that's
+    only true pre-level-10. A player who's hit level 10 while quest6/
+    quest7 have nothing of their own to show yet (e.g. quest6 just
+    turned in, quest7 not reachable without a class) still lands here. */
     if(state.quest6Complete){
       document.getElementById('quest-name').textContent = "Quest complete: The Gnome King's Throne";
       document.getElementById('quest-desc').textContent = "The Gnome King has been dethroned. Beneath the Vault lies Gnometropolis, the gnomes' hidden capital — yours to explore now.";
