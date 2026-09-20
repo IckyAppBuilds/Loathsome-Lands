@@ -128,13 +128,15 @@ function formatMs(ms){
 }
 
 /* ---------------- Passive Casino income ("the house's cut") ---------------- */
-/* Same shape as regenBiscuits() above, deliberately — elapsed-real-time
-accrual up to a cap, keyed off a stored timestamp. Two differences: the
-cap is 0 (inert) until the Casino is upgraded at least once, and the
-"ms per Pop Tab" rate is derived from the current cap rather than fixed,
-so every level fills from 0 to ITS OWN (bigger) cap in the same
-CASINO_WINNINGS_FULL_MS (~1 day) instead of higher levels taking
-longer. */
+/* Exactly the same shape as regenBiscuits() above — a flat regen rate
+(CASINO_WINNINGS_REGEN_MS, content.js, same 3-minute number
+BISCUIT_REGEN_MS uses) accruing toward a level-scaled cap
+(CASINO_WINNINGS_CAP), elapsed-real-time, keyed off a stored timestamp.
+The only difference from Biscuits is the cap starts at 0 (inert) until
+the Casino is upgraded at least once, instead of always having a
+baseline like BISCUIT_MAX does. Because the rate is fixed, a higher
+level's bigger cap takes proportionally longer to fill from empty —
+same trade-off Biscuits already has via GAFFER_BISCUIT_MAX_BONUS. */
 function casinoWinningsCap(){
    return CASINO_WINNINGS_CAP[state.buildingUpgrades.casino || 0];
 }
@@ -145,12 +147,11 @@ function regenCasinoWinnings(){
       state.lastCasinoRegenAt = Date.now();
       return;
    }
-   const msPerPopTab = CASINO_WINNINGS_FULL_MS / cap;
    const elapsed = Date.now() - state.lastCasinoRegenAt;
-   const gained = Math.floor(elapsed / msPerPopTab);
+   const gained = Math.floor(elapsed / CASINO_WINNINGS_REGEN_MS);
    if(gained > 0){
       state.casinoWinnings = Math.min(cap, state.casinoWinnings + gained);
-      state.lastCasinoRegenAt += gained * msPerPopTab;
+      state.lastCasinoRegenAt += gained * CASINO_WINNINGS_REGEN_MS;
    }
 }
 

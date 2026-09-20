@@ -320,13 +320,14 @@ fixed by the definition, only which OTHER stat(s) it gets is random),
 (`BISCUIT_MAX`/`effectiveBiscuitMax()`/`BISCUIT_REGEN_MS`/
 `regenBiscuits`/`msUntilNextBiscuit`/`formatMs`/`updateBiscuitDisplay`
 + its `setInterval`), and the Casino's passive income
-(`casinoWinningsCap()`/`regenCasinoWinnings()` — same elapsed-real-time-
-to-a-cap shape as Biscuits, but the cap is 0/inert until
-`buildingUpgrades.casino` is upgraded at least once, and the regen rate
-is derived from the cap so every level fills in the same ~1 day
-(`CASINO_WINNINGS_CAP`/`CASINO_WINNINGS_FULL_MS`, content.js) rather than
-a fixed per-Pop-Tab interval; claimed via `claimCasinoWinnings()`,
-guild.js).
+(`casinoWinningsCap()`/`regenCasinoWinnings()` — exactly the same
+elapsed-real-time-to-a-cap shape as Biscuits, including a flat regen
+rate (`CASINO_WINNINGS_REGEN_MS`, content.js — 1 Pop Tab/3 min at every
+level, same number `BISCUIT_REGEN_MS` uses) against a level-scaled cap
+(`CASINO_WINNINGS_CAP`) — the only difference is the cap starts at
+0/inert until `buildingUpgrades.casino` is upgraded at least once,
+instead of always having a baseline like `BISCUIT_MAX`; claimed via
+`claimCasinoWinnings()`, guild.js).
 
 Touch this file when: changing shop pricing logic, the Biscuit-regen
 economy, or the Casino's passive-income accrual/cap.

@@ -880,15 +880,19 @@ a maxed casino narrows (but per product intent never eliminates) the
 house's edge. 0.10 at max level = 45% base win chance becomes 55%. */
 const CASINO_WIN_BONUS = [0, 0.03, 0.06, 0.10];
 
-/* Passive Casino income ("the house's cut", state.casinoWinnings) — 0 at
-level 0 means it's inert until the Casino is actually upgraded at least
-once, matching "once you upgrade the casino, you get a portion of the
-winnings" (this is separate from CASINO_WIN_BONUS above, which only
-affects active gambling odds). Indexed by buildingUpgrades.casino, same
-as every other per-level array here. See regenCasinoWinnings()
-(economy.js) — CASINO_WINNINGS_FULL_MS is how long it takes to go from 0
-to whichever cap applies, at ANY level, so a higher-level Casino doesn't
-just have a bigger cap, it also fills proportionally faster to reach it
-in the same ~1 day if left unclaimed. */
+/* Passive Casino income ("the house's cut", state.casinoWinnings) — same
+two-constant shape as the Biscuit economy above (BISCUIT_REGEN_MS/
+BISCUIT_MAX): a flat regen rate that never changes, and a separate
+level-scaled cap. CASINO_WINNINGS_REGEN_MS is that flat rate (1 Pop Tab
+every 3 minutes, same number BISCUIT_REGEN_MS already uses, regardless
+of Casino level), and CASINO_WINNINGS_CAP is the level-scaled ceiling
+(0 at level 0 means it's inert until the Casino is actually upgraded at
+least once, matching "once you upgrade the casino, you get a portion of
+the winnings" — separate from CASINO_WIN_BONUS above, which only affects
+active gambling odds). Because the rate is fixed and the cap grows,
+filling from empty takes proportionally LONGER at higher levels (level 1:
+100 * 3min = 5 hours; level 3: 350 * 3min = 17.5 hours) — a real
+trade-off for the bigger ceiling, same as Biscuits already works via
+GAFFER_BISCUIT_MAX_BONUS. See regenCasinoWinnings() (economy.js). */
 const CASINO_WINNINGS_CAP = [0, 100, 200, 350];
-const CASINO_WINNINGS_FULL_MS = 24 * 60 * 60 * 1000;
+const CASINO_WINNINGS_REGEN_MS = 3 * 60 * 1000; /* 1 Pop Tab every 3 minutes, any level */
