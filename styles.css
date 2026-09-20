@@ -177,7 +177,11 @@ header h1{
 .building-hit{ cursor:pointer; }
 .building-label{ font-family:Verdana, Geneva, Arial, sans-serif; font-size:7px; font-weight:700; }
 
-#quest-box{
+/* Shared bordered-card look for every "quest-ish" box on a building
+screen (the main quest-box, the Guild's own Trial box, the Bounty
+Board) — so when more than one shows at once, each reads as its own
+distinct card instead of one run-on block of text. */
+.quest-panel{
   background:var(--white);
   border:2px dashed var(--black);
   padding:8px 10px;
@@ -192,12 +196,6 @@ header h1{
 .quest-desc{ font-size:0.76rem; line-height:1.4; margin-bottom:5px; }
 .quest-progress{ font-size:0.72rem; font-weight:700; color:var(--tan); }
 
-#bounty-box{
-  background:var(--white);
-  border:2px dashed var(--black);
-  padding:8px 10px;
-  margin-bottom:12px;
-}
 #bounty-box .block-title{ margin-bottom:4px; }
 
 #shop-list{ display:none; margin-bottom:12px; }

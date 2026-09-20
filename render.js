@@ -42,7 +42,6 @@ document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer This
   runs in a zone, where none of these building-only blocks ever show in
   the first place — this is the one location that needed the same
   "combat is its own clean screen" treatment applied explicitly. */
-  document.getElementById('quest-box').style.display = (!state.inCombat && (isGafferHouse || isGuild || isHoodoo || isTinker)) ? 'block' : 'none';
   document.getElementById('bounty-box').style.display = (!state.inCombat && isGuild && state.questComplete) ? 'block' : 'none';
   if(!state.inCombat && isGuild && state.questComplete) renderBountyBoard();
   document.getElementById('town-row').style.display = (isTownSquare && !state.inCombat) ? 'flex' : 'none';
@@ -160,11 +159,11 @@ from quest-box (which stays reserved for quest2/quest6/quest7's own
 text) — reaching level 10, the Trial's only real gate besides
 quest2Complete, can easily land mid-quest6 or mid-quest7, and hiding
 either dialog to show the other meant a player couldn't see (or act on)
-a mainline quest that was still genuinely active. Its own accept/fight/
-claim buttons already show independently of quest6/7's state (see
-accept-classquest-btn/start-trial-fight-btn/claim-path-*-btn below), so
-this box is purely the informational half — the Guild keeps working
-normally underneath it no matter what it's showing. */
+a mainline quest that was still genuinely active. Its own accept/fight/claim buttons live in their own trial-row (below,
+separate from guild-row's mainline-quest buttons) and already show
+independently of quest6/7's state, so this box is purely the
+informational half — the Guild keeps working normally underneath it no
+matter what it's showing. */
 document.getElementById('guild-trial-box').style.display = (isGuild && !state.inCombat && classQuestState!=='locked' && classQuestState!=='complete') ? 'block' : 'none';
   if(isGuild && !state.inCombat && classQuestState==='offer'){
     document.getElementById('trial-name').textContent = "Quest available: The Adventurer's Trial";
@@ -222,7 +221,8 @@ document.getElementById('accept-quest3-btn').style.display = quest3State==='offe
   document.getElementById('brew-potion-btn').disabled = !canBrew;
   document.getElementById('brew-potion-btn').textContent = canBrew ? 'Brew the Potion' : `Brew the Potion (${ingredientsHeld}/${potionIngredients.length})`;
 
-document.getElementById('accept-classquest-btn').style.display = classQuestState==='offer' ? '' : 'none';
+document.getElementById('trial-row').style.display = (isGuild && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('accept-classquest-btn').style.display = classQuestState==='offer' ? '' : 'none';
   document.getElementById('start-trial-fight-btn').style.display = (classQuestState==='trials' && !state.classTrialGuildPassed) ? '' : 'none';
   document.getElementById('claim-path-beef-btn').style.display = classQuestState==='ready' ? '' : 'none';
   document.getElementById('claim-path-zip-btn').style.display = classQuestState==='ready' ? '' : 'none';
@@ -238,6 +238,22 @@ document.getElementById('tinker-row').style.display = (isTinker && !state.inComb
   document.getElementById('turn-in-vein-btn').disabled = !canTurnInVein;
   document.getElementById('turn-in-vein-btn').textContent = canTurnInVein ? 'Turn In the Parts' : `Turn In the Parts (${veinHeld}/${veinNeeded})`;
 
+/* quest-box only takes up space when a building actually has something
+active or newly offered to say — a "locked, nothing yet" or "complete,
+reward already claimed" building has nothing left worth a permanent box
+on screen. Each building's own branch below only ever sets quest-name/
+desc/progress for its offer/active(/ready) states now; anything else
+falls through to leaving the box hidden. */
+const guildQuestBoxNeeded = quest2State==='offer' || quest2State==='active'
+  || quest6State==='offer' || quest6State==='active'
+  || quest7State==='offer' || quest7State==='active' || quest7State==='ready';
+document.getElementById('quest-box').style.display = (!state.inCombat && (
+  (isGafferHouse && (questState==='offer' || questState==='active'))
+  || (isGuild && guildQuestBoxNeeded)
+  || (isHoodoo && (quest3State==='offer' || quest3State==='active'))
+  || (isTinker && (quest4State==='offer' || quest4State==='active' || quest5State==='offer' || quest5State==='active'))
+)) ? 'block' : 'none';
+
 if(isGafferHouse){
   if(questState==='offer'){
     document.getElementById('quest-name').textContent = 'Quest available: A Proper Rake';
@@ -247,17 +263,9 @@ if(isGafferHouse){
     document.getElementById('quest-name').textContent = 'Quest: A Proper Rake';
     document.getElementById('quest-desc').textContent = "Bring back the rake's tines from the gnomes in the Overgrown Commons, and Gaffer will put it back together.";
     document.getElementById('quest-progress').textContent = `Rake tines turned in: ${state.questTinesGiven}/${QUEST_TINES_NEEDED}`;
-  } else {
-    document.getElementById('quest-name').textContent = 'Quest complete: A Proper Rake';
-    document.getElementById('quest-desc').textContent = "Gaffer Thistlewick's rake stands whole again. He's out back, raking his lawn with the quiet satisfaction of a man at peace.";
-    document.getElementById('quest-progress').textContent = 'Reward claimed.';
   }
 } else if(isGuild){
-  if(quest2State==='locked'){
-    document.getElementById('quest-name').textContent = 'The Guild';
-    document.getElementById('quest-desc').textContent = "The guildmaster looks you over. \"Prove yourself around town first — come back when you've done something useful.\"";
-    document.getElementById('quest-progress').textContent = 'No quest available yet.';
-  } else if(quest2State==='offer'){
+  if(quest2State==='offer'){
     document.getElementById('quest-name').textContent = 'Quest available: The Gnome Commander';
     document.getElementById('quest-desc').textContent = "Word has spread of a gnome commander rallying the Overgrown Commons. He's rare, dangerous, and worth putting down.";
     document.getElementById('quest-progress').textContent = 'Not yet accepted.';
@@ -286,43 +294,9 @@ if(isGafferHouse){
     document.getElementById('quest-name').textContent = "Quest: The Gnome King's Court";
     document.getElementById('quest-desc').textContent = "The King has fallen — report back to the guildmaster.";
     document.getElementById('quest-progress').textContent = 'Ready to report.';
-  } else if(quest7State==='complete'){
-    document.getElementById('quest-name').textContent = "Quest complete: The Gnome King's Court";
-    document.getElementById('quest-desc').textContent = "Act One is done. The King is dead, Gnometropolis is yours, and nobody's quite sure what comes next.";
-    document.getElementById('quest-progress').textContent = 'Reward claimed.';
-  } else if(!state.classTitle){
-    /* General "no other Guild quest-text applies, and the Trial (now its
-    own separate box below) isn't claimed yet" fallback — deliberately
-    NOT gated to classQuestState==='locked' specifically, since that's
-    only true pre-level-10. A player who's hit level 10 while quest6/
-    quest7 have nothing of their own to show yet (e.g. quest6 just
-    turned in, quest7 not reachable without a class) still lands here. */
-    if(state.quest6Complete){
-      document.getElementById('quest-name').textContent = "Quest complete: The Gnome King's Throne";
-      document.getElementById('quest-desc').textContent = "The Gnome King has been dethroned. Beneath the Vault lies Gnometropolis, the gnomes' hidden capital — yours to explore now.";
-      document.getElementById('quest-progress').textContent = 'Reward claimed. Gnometropolis is now open — check the Map.';
-    } else {
-      document.getElementById('quest-name').textContent = 'Quest complete: The Gnome Commander';
-      document.getElementById('quest-desc').textContent = "The gnome commander has been dealt with. The guildmaster seems genuinely impressed, which seems rare for him. He mentions the sewers under the square have been acting up too — worth a look, if you're not afraid of rats.";
-      document.getElementById('quest-progress').textContent = 'Reward claimed. The Dank Sewers are now open — check the Map.';
-    }
-  } else if(quest7State==='locked'){
-    /* True fallback for "class claimed but quest7 itself isn't offerable
-    yet" — shouldn't actually be reachable given quest7's own gate
-    already requires quest6Complete (same requirement classQuestState's
-    'complete' implies once a class is claimed), but kept as the safe
-    default rather than assuming that invariant always holds. */
-    document.getElementById('quest-name').textContent = "Quest complete: The Adventurer's Trial";
-    document.getElementById('quest-desc').textContent = `The guildmaster studied your training, your gear, the way you carry yourself, and named your path. You are recognized as a ${state.classTitle}.`;
-    document.getElementById('quest-progress').textContent = 'Reward claimed.';
   }
 } else if(isHoodoo){
-  if(quest3State==='locked'){
-    document.getElementById('quest-name').textContent = 'The Hoodoo Doctor';
-    document.getElementById('quest-desc').textContent = "The Hoodoo Doctor eyes you over the pot. \"Nothing for you here yet, dear. Come back once you've dealt with that gnome business.\"";
-
-  document.getElementById('quest-progress').textContent = 'No quest available yet.';
-  } else if(quest3State==='offer'){
+  if(quest3State==='offer'){
     document.getElementById('quest-name').textContent = 'Quest available: A Proper Potion';
     document.getElementById('quest-desc').textContent = "The Hoodoo Doctor wants to brew something powerful, but needs fresh ingredients — a couple from the Overgrown Commons, a couple from the Dank Sewers.";
     document.getElementById('quest-progress').textContent = 'Not yet accepted.';
@@ -330,17 +304,9 @@ if(isGafferHouse){
     document.getElementById('quest-name').textContent = 'Quest: A Proper Potion';
     document.getElementById('quest-desc').textContent = "Gather the ingredients from monsters in the Overgrown Commons and the Dank Sewers, then bring them back to brew the potion.";
     document.getElementById('quest-progress').textContent = `Ingredients gathered: ${ingredientsHeld}/${potionIngredients.length}`;
-  } else {
-    document.getElementById('quest-name').textContent = 'Quest complete: A Proper Potion';
-    document.getElementById('quest-desc').textContent = "The potion is brewed and bottled. The Hoodoo Doctor taught you how to unleash it yourself — Bottled Fury is yours to cast.";
-    document.getElementById('quest-progress').textContent = 'Reward claimed.';
   }
 } else if(isTinker){
-  if(quest4State==='locked'){
-    document.getElementById('quest-name').textContent = 'The Tinker';
-    document.getElementById('quest-desc').textContent = "The Tinker barely looks up from their workbench. \"Not much for you here yet. Come back once you've sorted that gnome commander out.\"";
-    document.getElementById('quest-progress').textContent = 'No quest available yet.';
-  } else if(quest4State==='offer'){
+  if(quest4State==='offer'){
     document.getElementById('quest-name').textContent = 'Quest available: What the Sewers Shed';
     document.getElementById('quest-desc').textContent = "Strange clockwork parts keep turning up in the Dank Sewers. The Tinker wants to know what's shedding them, and would like it stopped.";
     document.getElementById('quest-progress').textContent = 'Not yet accepted.';
@@ -348,10 +314,6 @@ if(isGafferHouse){
     document.getElementById('quest-name').textContent = 'Quest: What the Sewers Shed';
     document.getElementById('quest-desc').textContent = "Find and defeat whatever's loose in the Dank Sewers. It's rare — keep adventuring until it shows itself.";
     document.getElementById('quest-progress').textContent = state.quest4RareDefeated ? 'Digger-bot defeated — report back!' : 'Digger-bot not yet encountered.';
-  } else if(quest5State==='locked'){
-    document.getElementById('quest-name').textContent = 'Quest complete: What the Sewers Shed';
-    document.getElementById('quest-desc').textContent = "The digger-bot is scrap. The Tinker traced its wiring to a sealed service tunnel — the old Clockwork Quarry, now yours to explore.";
-    document.getElementById('quest-progress').textContent = 'Reward claimed. The Clockwork Quarry is now open — check the Map.';
   } else if(quest5State==='offer'){
     document.getElementById('quest-name').textContent = 'Quest available: The Vein';
     document.getElementById('quest-desc').textContent = "The Tinker wants intact parts — a couple from the Clockwork Quarry, a couple more from deeper in the Dank Sewers — to trace where the old vein of gnome-tech actually leads.";
@@ -360,10 +322,6 @@ if(isGafferHouse){
     document.getElementById('quest-name').textContent = 'Quest: The Vein';
     document.getElementById('quest-desc').textContent = "Gather parts from monsters in the Clockwork Quarry and the Dank Sewers, then bring them back to the Tinker.";
     document.getElementById('quest-progress').textContent = `Parts gathered: ${veinHeld}/${veinNeeded}`;
-  } else {
-    document.getElementById('quest-name').textContent = 'Quest complete: The Vein';
-    document.getElementById('quest-desc').textContent = "The Tinker traced every part back to something sealed beneath the Quarry floor. The Sunless Vault is yours to check out.";
-    document.getElementById('quest-progress').textContent = 'Reward claimed. The Sunless Vault is now open — check the Map.';
   }
 }
 
