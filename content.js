@@ -880,19 +880,24 @@ a maxed casino narrows (but per product intent never eliminates) the
 house's edge. 0.10 at max level = 45% base win chance becomes 55%. */
 const CASINO_WIN_BONUS = [0, 0.03, 0.06, 0.10];
 
-/* Passive Casino income ("the house's cut", state.casinoWinnings) — same
-two-constant shape as the Biscuit economy above (BISCUIT_REGEN_MS/
-BISCUIT_MAX): a flat regen rate that never changes, and a separate
-level-scaled cap. CASINO_WINNINGS_REGEN_MS is that flat rate (1 Pop Tab
-every 3 minutes, same number BISCUIT_REGEN_MS already uses, regardless
-of Casino level), and CASINO_WINNINGS_CAP is the level-scaled ceiling
-(0 at level 0 means it's inert until the Casino is actually upgraded at
-least once, matching "once you upgrade the casino, you get a portion of
-the winnings" — separate from CASINO_WIN_BONUS above, which only affects
-active gambling odds). Because the rate is fixed and the cap grows,
-filling from empty takes proportionally LONGER at higher levels (level 1:
-100 * 3min = 5 hours; level 3: 350 * 3min = 17.5 hours) — a real
-trade-off for the bigger ceiling, same as Biscuits already works via
-GAFFER_BISCUIT_MAX_BONUS. See regenCasinoWinnings() (economy.js). */
+/* Passive Casino income ("the house's cut", state.casinoWinnings) — 0 at
+level 0 means it's inert until the Casino is actually upgraded at least
+once, matching "once you upgrade the casino, you get a portion of the
+winnings" (separate from CASINO_WIN_BONUS above, which only affects
+active gambling odds). Indexed by buildingUpgrades.casino, same as
+every other per-level array here.
+
+Unlike the Biscuit economy above (a flat rate, BISCUIT_REGEN_MS, against
+a cap that only grows via a separate building upgrade), the Casino's
+rate scales WITH its own cap, so every level fills from empty to its own
+(bigger) ceiling in roughly the same span of time instead of a bigger
+cap just taking proportionally longer. CASINO_WINNINGS_BASE_RATE_MS
+pins level 1's own rate at 1 Pop Tab per 3 minutes; CASINO_WINNINGS_FULL_MS
+is derived from that (level 1's cap * its rate) rather than a standalone
+number, so it can't drift out of sync — level 1 = 3 min/Pop Tab exactly,
+level 2 = 1.5 min/Pop Tab, level 3 = ~51s/Pop Tab, all reaching their own
+cap in the same ~5 hours. See regenCasinoWinnings() (economy.js), which
+derives each level's actual "ms per Pop Tab" from this at regen time. */
 const CASINO_WINNINGS_CAP = [0, 100, 200, 350];
-const CASINO_WINNINGS_REGEN_MS = 3 * 60 * 1000; /* 1 Pop Tab every 3 minutes, any level */
+const CASINO_WINNINGS_BASE_RATE_MS = 3 * 60 * 1000; /* 1 Pop Tab per 3 min at level 1 */
+const CASINO_WINNINGS_FULL_MS = CASINO_WINNINGS_CAP[1] * CASINO_WINNINGS_BASE_RATE_MS;
