@@ -9,18 +9,30 @@ function isQuestItemSellable(item){
    return !!flag && !!state[flag];
 }
 
-function sellItemByName(name){
+/* tier is only passed for equip items (render-shop.js's Sell tab button) —
+same name can carry different rolled tiers (rollGearDropTier(), combat.js),
+so without it a "Sell All" click could mix, say, a common and a rare
+copy of the same-named drop into one sale at the wrong combined price.
+Junk/quest items never vary by tier, so their callers omit it and every
+same-named copy sells together same as before. */
+function sellItemByName(name, tier){
    if(state.location !== 'shop') return;
    const idxList = [];
    state.inventory.forEach((it,i)=>{
-      if(it.name===name && it.sell && ((it.type==='junk' || it.type==='equip') || isQuestItemSellable(it))) idxList.push(i);
+      if(it.name !== name) return;
+      if(tier !== undefined && it.tier !== tier) return;
+      const sellable = it.type==='equip' || (it.sell && (it.type==='junk' || isQuestItemSellable(it)));
+      if(sellable) idxList.push(i);
    });
    if(idxList.length===0) return;
-   const sellPrice = state.inventory[idxList[0]].sell;
    const count = idxList.length;
+   const total = idxList.reduce((sum,i) => {
+      const it = state.inventory[i];
+      return sum + (it.type==='equip' ? getGearSellValue(it) : it.sell);
+   }, 0);
    /* Tinker bonus applied to the total, then rounded once, so per-unit
    rounding can't shave off Pop Tabs across a multi-item sale. */
-   const earned = Math.round(sellPrice * count * (1 + TINKER_SELL_BONUS[state.buildingUpgrades.tinker || 0]));
+   const earned = Math.round(total * (1 + TINKER_SELL_BONUS[state.buildingUpgrades.tinker || 0]));
    for(let n=idxList.length-1; n>=0; n--){ state.inventory.splice(idxList[n],1); }
    state.popTabs += earned;
    clearLog();

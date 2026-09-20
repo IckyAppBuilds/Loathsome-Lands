@@ -86,3 +86,21 @@ function gearRequirementText(item){
    const statPart = req.statKey ? `, ${req.statReq} base ${STAT_LABELS[req.statKey]}` : '';
    return ` — Requires Lv.${req.levelReq}${statPart}`;
 }
+
+/* An equip item's sell price, same "derive it fresh, never store it"
+shape as getGearRequirements() above — scales with the item's total
+stat power (so a level-appropriate/higher item sells for more) times a
+rarity premium on top of that (so two items of equal power but
+different tier don't sell identically — a rare should feel worth more
+than a common even at the same stat total, e.g. PALACE_GATE_GEAR's
+deliberately-low-power epic gear). Floored at 1 so starterGear (no
+bonus at all) still sells for a token amount, matching its old flat
+sell:1. */
+const GEAR_SELL_TIER_MULTIPLIER = { poor:1, common:1, uncommon:1.3, rare:1.6, epic:2, legendary:2.5 };
+const GEAR_SELL_PER_POWER = 4;
+function getGearSellValue(item){
+   const statKeys = (item && item.bonus) ? Object.keys(item.bonus) : [];
+   const totalPower = statKeys.reduce((sum, k) => sum + item.bonus[k], 0);
+   const mult = GEAR_SELL_TIER_MULTIPLIER[getItemTier(item)] || 1;
+   return Math.max(1, Math.round(totalPower * GEAR_SELL_PER_POWER * mult));
+}
