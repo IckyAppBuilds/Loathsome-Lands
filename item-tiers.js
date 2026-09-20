@@ -87,6 +87,20 @@ function gearRequirementText(item){
    return ` — Requires Lv.${req.levelReq}${statPart}`;
 }
 
+/* Short "(+N HP)"/"(+N MP)"/"(+N HP, +N MP)" suffix for an hp/mp/luck
+consumable's desc line (Pack/Shop/victory-banner listings) — the actual
+numbers useItem() (player-actions.js) applies, so the description
+always matches what using it really does rather than leaving it to a
+vague flavor line like "restores a modest amount." Blank for anything
+else (equip/junk/quest have their own suffixes or none). */
+function consumableEffectText(item){
+   if(!item) return '';
+   if(item.type === 'hp') return ` (+${item.value} HP)`;
+   if(item.type === 'mp') return ` (+${item.value} MP)`;
+   if(item.type === 'luck') return ` (+${item.hpValue} HP, +${item.mpValue} MP)`;
+   return '';
+}
+
 /* Shared rarity premium for BOTH getGearSellValue() and
 getConsumableSellValue() below — a rare/legendary item sells for more
 than a common one of equal "power," gear stat total or consumable

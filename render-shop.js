@@ -68,7 +68,7 @@ INVENTORY_SECTIONS.forEach(section=>{
                   const questBadge = item.type==='quest' ? ` <span class="quest-badge">Quest Item</span>` : '';
     const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
     ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
-      : '';
+      : consumableEffectText(item);
     const reqText = item.type==='equip' ? gearRequirementText(item) : '';
     div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}${qtyBadge}${slotBadge}${questBadge}</div><div class="desc">${item.desc}${bonusText}${reqText}</div>${btn}</div>`;
     list.appendChild(div);
@@ -91,7 +91,7 @@ function victoryDropsHtml(drops){
     const slotBadge = item.type==='equip' ? ` <span class="qty-badge">${SLOT_LABELS[item.slot]}</span>` : '';
     const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
       ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
-      : '';
+      : consumableEffectText(item);
     const reqText = item.type==='equip' ? gearRequirementText(item) : '';
     return `<div class="inv-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}${slotBadge}</div><div class="desc">${item.desc}${bonusText}${reqText}</div></div></div>`;
   }).join('');
@@ -136,7 +136,7 @@ function renderShopItemRow(def){
   not a promise of exactly which ones. Tier 1 (a single stat) has
   nothing to roll, so it still shows its one stat plainly. */
   const statKeys = def.bonus ? Object.keys(def.bonus) : [];
-  let bonusTag = '';
+  let bonusTag = consumableEffectText(def);
   if(statKeys.length === 1){
     bonusTag = ` (+${def.bonus[statKeys[0]]} ${STAT_LABELS[statKeys[0]]})`;
   } else if(statKeys.length > 1){
