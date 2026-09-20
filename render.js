@@ -43,6 +43,10 @@ document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer This
 document.getElementById('hoodoo-row').style.display = (isHoodoo && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('hoodoo-list').style.display = isHoodoo ? 'block' : 'none';
   if(isHoodoo) renderHoodooShop();
+  else document.getElementById('hoodoo-class-spell-list').style.display = 'none';
+
+document.getElementById('guild-spell-list').style.display = isGuild ? 'block' : 'none';
+  if(isGuild) renderClassSpellList('guild-spell-list', 'Meathead');
 
 document.getElementById('townlot-row').style.display = (isTownLot && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('townlot-list').style.display = isTownLot ? 'block' : 'none';
@@ -53,6 +57,9 @@ document.getElementById('casino-bet-row').style.display = (isCasino && !state.in
   document.getElementById('bet-5-btn').disabled = state.popTabs < 5;
   document.getElementById('bet-10-btn').disabled = state.popTabs < 10;
   document.getElementById('bet-25-btn').disabled = state.popTabs < 25;
+
+document.getElementById('casino-spell-list').style.display = isCasino ? 'block' : 'none';
+  if(isCasino) renderClassSpellList('casino-spell-list', 'Card Shark');
 
 document.getElementById('noticeboard-row').style.display = (isNoticeBoard && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('noticeboard-hint').style.display = isNoticeBoard ? 'block' : 'none';
@@ -138,6 +145,15 @@ const classQuestState = state.classQuestComplete ? 'complete'
   : (state.classTrialGuildPassed && state.classTrialCasinoPassed && state.classTrialHoodooPassed) ? 'ready'
   : 'trials';
 
+/* Same condition that gives the Trial's own dialog priority over quest6/
+quest7's (above) — while it applies, the Guild's quest6/quest7 accept/
+report buttons are hidden too, so the only Guild action offered is the
+Trial's own (Accept/Face Down/Claim). Reaching level 10 (classQuestState's
+only real gate besides quest2Complete) can land mid-quest6 or mid-quest7,
+and showing both sets of buttons at once let a player accept/report a
+mainline quest while a dialog talking only about the Trial was on screen. */
+const trialTakesPriority = classQuestState==='offer' || classQuestState==='trials' || classQuestState==='ready';
+
 /* Small one-line trial hints on the Casino/Hoodoo screens — the Guild's
 own per-tier status line lives in the isGuild 'trials' branch below, this
 is just a nudge on the other two trainers' screens while their tier is
@@ -167,13 +183,13 @@ document.getElementById('guild-row').style.display = (isGuild && !state.inCombat
   document.getElementById('report-kill-btn').disabled = !canReport;
   document.getElementById('report-kill-btn').textContent = state.commanderDefeated ? 'Report the Kill' : 'Report the Kill (not yet)';
 
-document.getElementById('accept-quest6-btn').style.display = quest6State==='offer' ? '' : 'none';
-  document.getElementById('report-gnomeking-btn').style.display = quest6State==='active' ? '' : 'none';
+document.getElementById('accept-quest6-btn').style.display = (quest6State==='offer' && !trialTakesPriority) ? '' : 'none';
+  document.getElementById('report-gnomeking-btn').style.display = (quest6State==='active' && !trialTakesPriority) ? '' : 'none';
   document.getElementById('report-gnomeking-btn').disabled = !canReportGnomeKing;
   document.getElementById('report-gnomeking-btn').textContent = state.quest6RareDefeated ? 'Report the Gnome King' : 'Report the Gnome King (not yet)';
 
-document.getElementById('accept-quest7-btn').style.display = quest7State==='offer' ? '' : 'none';
-  document.getElementById('report-gnomeking-defeat-btn').style.display = quest7State==='ready' ? '' : 'none';
+document.getElementById('accept-quest7-btn').style.display = (quest7State==='offer' && !trialTakesPriority) ? '' : 'none';
+  document.getElementById('report-gnomeking-defeat-btn').style.display = (quest7State==='ready' && !trialTakesPriority) ? '' : 'none';
 
 document.getElementById('accept-quest3-btn').style.display = quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = quest3State==='active' ? '' : 'none';

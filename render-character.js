@@ -35,6 +35,7 @@ document.getElementById('char-facts').innerHTML = `
 `;
 
 renderStatsBlock();
+  renderClassBuffBlock();
   renderEquipmentBlock();
   renderRareFindsBlock();
 }

@@ -187,7 +187,11 @@ function renderBountyBoard(){
 function renderHoodooShop(){
   const el = document.getElementById('hoodoo-list');
   el.innerHTML = '<div class="shop-section-title">Spells to Learn</div>';
-  spells.filter(s => !s.questReward).forEach(spell=>{
+  /* classRequired spells (content.js) are hidden here — each class's own
+  spell trainer lives at that class's own building instead (Hoodoo's own
+  Hexpert-only section is rendered separately below via the shared
+  class-spells.js helper, so this list stays "learnable by anyone"). */
+  spells.filter(s => !s.questReward && !s.classRequired).forEach(spell=>{
     const known = state.spellsKnown.includes(spell.id);
     const div = document.createElement('div');
     div.className = 'shop-item';
@@ -210,6 +214,8 @@ function renderHoodooShop(){
   resetDiv.className = 'shop-item';
   resetDiv.innerHTML = `<div style="flex:1;"><div class="name">Unravelling Draught</div><div class="desc">Untangles every stat point you've ever sunk into Beef, Zip, Grit, or Hoodoo, so you can lay them down again — hopefully better this time. Gets pricier with practice.</div><button class="btn-secondary" ${resetCanAfford?'':'disabled'} onclick="brewStatResetPotion()">Brew — ${resetPrice} Pop Tabs</button></div>`;
   el.appendChild(resetDiv);
+
+  renderClassSpellList('hoodoo-class-spell-list', 'Hexpert');
 }
 
 /* Per-building level-effect formatters for the Town Lot listing below.
