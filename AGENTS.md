@@ -115,11 +115,15 @@ stat modifier per the comment above `monsters[]`, authored as the
 tier-1/1-stat baseline; `RARE_DROP_CHANCE`/`GEAR_DROP_CHANCE` roll each
 independently in `winCombat()`, and a dropped gearDrop then rolls a
 tier via `GEAR_DROP_TIER_CHANCE`/`rollGearDropTier()` — see combat.js),
-the named bosses (`gnomeCommander`,
-`diggerBot`, `gnomeKing`, and the
-Adventurer's Trial's three themed fights — `trialChampion`/
-`casinoChampion`/`hoodooChampion`, the last carrying a `skills[]` array —
-see combat.js's `useMonsterSkill()`) with their own spawn-chance
+the named bosses — every one of them (`gnomeCommander`/`diggerBot`/
+`gnomeKingsCaptain`/`gnomeKing`/the Adventurer's Trial's three themed
+fights, `trialChampion`/`casinoChampion`/`hoodooChampion`/the three
+Gnometropolis district guardians) carries its own `skills[]` and/or
+`dodgeChance` giving it one signature mechanic (a rally buff, a self-
+heal, an elemental bolt, evasion, or some combination — see the comment
+above `gnomeCommander` for the full rundown and reasoning) dispatched
+generically by combat.js's `monsterRetaliate()`/`useMonsterSkill()`,
+no per-boss combat code needed — with their own spawn-chance
 constants, `ZONE_DIFFICULTY`/`ZONE_LABELS`, `noncombatEvents`/
 `hazardEvents`, `healItems`/`shopFoodItemsTier2`/`shopFoodItemsTier3`,
 `starterGear`, `shopGearItems`/`shopGearItemsTier2`/`shopGearItemsTier3`

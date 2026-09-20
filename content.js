@@ -121,8 +121,16 @@ const monsters = [
     gearDrop:{name:"an automaton's salvaged headplate of the Tortoise", desc:"Still sparks a little when it rains.", type:"equip", slot:"head", bonus:{grit:3}, tier:'common', icon:iconGuardHelm} },
    ];
 
+/* Every named boss below (gnomeCommander through arcaneSanctumGuardian)
+carries a skills[] entry giving it one signature mechanic on top of its
+plain auto-attack — same generic dispatcher trialChampion/casinoChampion/
+hoodooChampion already use (monsterRetaliate(), combat.js), so no new
+combat code was needed, just data. Picked to fit each one's own flavor:
+a commander rallies, a captain guarding a retreat digs in and heals, a
+rogue enforcer is hard to pin down, etc. */
 const gnomeCommander = {
    name:"the gnome commander", hp:45, atkMin:4, atkMax:8, xp:20, rare:true, zone:"commons",
+   skills:[ { type:'buff', chance:0.20, buffMult:1.6, buffTurns:2, flavor:"rallies the gnomes for one more push" } ],
    art: artGnomeCommander, loot:null
 };
 const COMMANDER_SPAWN_CHANCE = 0.05;
@@ -135,6 +143,7 @@ gnomeCommander to keep it a step up in difficulty even though all
 three named hunts now share the same DIGGERBOT_SPAWN_CHANCE. */
 const diggerBot = {
    name:"a runaway digger-bot, venting steam", hp:55, atkMin:4, atkMax:8, xp:22, rare:true, zone:"sewers",
+   skills:[ { type:'bolt', chance:0.22, boltMin:7, boltMax:12, flavor:"vents a scalding jet of built-up steam" } ],
    art: artDiggerBot, loot:null
 };
 const DIGGERBOT_SPAWN_CHANCE = 0.05;
@@ -158,6 +167,7 @@ artGnomeKingsCaptain() (art.js, separate task) — referenced by name now
 so that task knows what to add. */
 const gnomeKingsCaptain = {
    name:"the gnome king's captain, left to guard the retreat", hp:70, atkMin:7, atkMax:12, xp:35, rare:true, zone:"vault",
+   skills:[ { type:'heal', chance:0.20, healMin:10, healMax:16, flavor:"digs in and patches his wounds, buying the King more time" } ],
    art: artGnomeKingsCaptain, loot:null
 };
 const VAULT_CAPTAIN_SPAWN_CHANCE = 0.05;
@@ -177,8 +187,18 @@ Buffed to exceed trialChampion (currently the toughest fight in the
 game, hp:95/atk:9-14/xp:50) since he's now the true Act 1 finale, not a
 mid-quest rare hunt. rare:true/loot:null/art unchanged from before (his
 art already exists and needs no touching). */
+/* hp trimmed from the original 120 to 105 to compensate for adding two
+skills at once (below) — the Act 1 finale should still clearly be the
+hardest fight in the game on the strength of its mechanics, not by
+stacking a skills[] kit on top of already being the highest raw hp/atk.
+No sustain (unlike hoodooChampion) — he's meant to be rushed down before
+his own buff+bolt combo snowballs, not out-attritioned. */
 const gnomeKing = {
-   name:"the gnome king, throned in scavenged gold", hp:120, atkMin:12, atkMax:18, xp:70, rare:true,
+   name:"the gnome king, throned in scavenged gold", hp:105, atkMin:12, atkMax:18, xp:70, rare:true,
+   skills:[
+      { type:'buff', chance:0.15, buffMult:1.7, buffTurns:3, flavor:"rallies the last of his gnomes for one final push" },
+      { type:'bolt', chance:0.20, boltMin:14, boltMax:20, flavor:"hurls a scavenged treasure-shard, crackling with stolen magic" },
+   ],
    art: artGnomeKing, loot:null
 };
 
@@ -667,14 +687,21 @@ artGarrisonGuardian/artRoguesDenEnforcer/artArcaneSanctumGuardian
 (art.js, same task). */
 const garrisonGuardian = {
    name:"the Garrison's watch-captain, built like a slammed door", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
+   skills:[ { type:'buff', chance:0.20, buffMult:1.6, buffTurns:2, flavor:"braces like a slammed door and hits back twice as hard" } ],
    art: artGarrisonGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Meathead')
 };
+/* Evasive rather than tanky/bursty like its two counterparts above —
+same dodgeChance mechanic casinoChampion uses (applyDamageToMonster(),
+combat.js), fitting a Rogues' Den enforcer who's "already taking side
+bets on you" i.e. never where you'd expect. */
 const roguesDenEnforcer = {
    name:"the Rogues' Den enforcer, already taking side bets on you", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
+   dodgeChance:0.25,
    art: artRoguesDenEnforcer, loot: PALACE_GATE_GEAR.find(g => g.class === 'Card Shark')
 };
 const arcaneSanctumGuardian = {
    name:"the Arcane Sanctum's warden, muttering an unfinished spell", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
+   skills:[ { type:'bolt', chance:0.25, boltMin:12, boltMax:18, flavor:"finally finishes the spell, unleashing a burst of raw arcane energy" } ],
    art: artArcaneSanctumGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Hexpert')
 };
 
