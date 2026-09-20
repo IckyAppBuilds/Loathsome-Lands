@@ -85,6 +85,13 @@ function rollShopGearStats(def){
    return { ...def, bonus };
 }
 
+/* Which shop row (if any) just sold, and when — read by
+renderShopItemRow() (render-shop.js) to flash a "just bought this" CSS
+animation on that specific row. UI-only, like shopTab below: never part
+of `state`, never saved, and it goes stale on its own (checked against
+Date.now() at render time) rather than needing an explicit clear. */
+let lastPurchase = null;
+
 function buyItemByName(name){
    if(state.location !== 'shop') return;
    const def = getAvailableShopItems().find(i=>i.name===name);
@@ -92,6 +99,7 @@ function buyItemByName(name){
    state.popTabs -= def.price;
    const item = rollShopGearStats(def);
    state.inventory.push(item);
+   lastPurchase = { name: item.name, tier: item.tier, at: Date.now() };
    clearLog();
    const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
    ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`

@@ -107,12 +107,28 @@ function setShopTab(tab){
   renderShop();
 }
 
+/* How long a shop row keeps flashing its "just bought" animation after a
+purchase — checked against lastPurchase.at (economy.js) rather than
+cleared by a timer, so it just stops matching once enough real time has
+passed. Long enough to register as feedback, short enough that flipping
+back to this tab later never replays it. */
+const PURCHASE_FLASH_MS = 1200;
+
 function renderShopItemRow(def){
   const div = document.createElement('div');
-  div.className = 'shop-item';
+  const justBought = lastPurchase && lastPurchase.name===def.name
+    && (def.type!=='equip' || lastPurchase.tier===def.tier)
+    && (Date.now() - lastPurchase.at < PURCHASE_FLASH_MS);
+  div.className = 'shop-item' + (justBought ? ' just-bought' : '');
   const iconSvg = def.icon ? def.icon() : '';
   const canAfford = state.popTabs >= def.price;
   const slotTag = def.slot ? ` <span class="qty-badge">${SLOT_LABELS[def.slot]}</span>` : '';
+  /* How many of this exact shop listing are already sitting in the Pack
+  — equip matches by name+tier (rollShopGearStats(), economy.js, keeps
+  both fixed across a purchase, only secondary stats vary), everything
+  else by name alone, same convention the Sell tab's grouping uses. */
+  const ownedCount = state.inventory.filter(it => it.name===def.name && (def.type!=='equip' || it.tier===def.tier)).length;
+  const ownedTag = ownedCount>0 ? ` <span class="qty-badge">Owned: ${ownedCount}</span>` : '';
   /* Tier 2/3 gear rolls its secondary stat(s) fresh at purchase
   (rollShopGearStats(), economy.js) rather than always granting the
   specific secondary stat(s) listed on this definition — so the listing
@@ -137,7 +153,7 @@ function renderShopItemRow(def){
   the player isn't surprised when equipItem() (player-actions.js) later
   refuses it. */
   const reqText = def.type==='equip' ? gearRequirementText(def) : '';
-  div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(def)}${slotTag}</div><div class="desc">${def.desc}${bonusTag}${reqText} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyItemByName('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
+  div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(def)}${slotTag}${ownedTag}</div><div class="desc">${def.desc}${bonusTag}${reqText} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyItemByName('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
   return div;
 }
 
