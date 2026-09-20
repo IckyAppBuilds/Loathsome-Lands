@@ -441,6 +441,31 @@ function playerFlee(){
    render();
 }
 
+/* Scales a monster's authored gearDrop (content.js — always the tier-1
+baseline, 1 stat) up to a randomly-rolled tier per GEAR_DROP_TIER_CHANCE
+(content.js), weighted toward the lower tiers. Tier 2/3 each add +1 to
+the primary stat and one more secondary stat at +1 (STAT_ROTATION,
+content.js) — the same 1/2/3-stat, +1-per-step progression
+shopGearItemsTier2/3 use, so a monster-dropped item at a given tier
+reads the same way a shop item at that tier would. Name/desc/slot/icon
+are untouched — only `bonus` and `tier` change with the roll. */
+function rollGearDropTier(baseDrop){
+   const roll = Math.random();
+   let cumulative = 0;
+   let tierIndex = 0;
+   for(let i=0;i<GEAR_DROP_TIER_CHANCE.length;i++){
+      cumulative += GEAR_DROP_TIER_CHANCE[i];
+      if(roll < cumulative){ tierIndex = i; break; }
+      tierIndex = i;
+   }
+   const primaryStat = Object.keys(baseDrop.bonus)[0];
+   const primaryValue = baseDrop.bonus[primaryStat];
+   const bonus = { [primaryStat]: primaryValue + tierIndex };
+   const secondaryStats = STAT_ROTATION[primaryStat].slice(0, tierIndex);
+   secondaryStats.forEach(stat => { bonus[stat] = 1; });
+   return { ...baseDrop, bonus, tier: GEAR_DROP_TIER_NAMES[tierIndex] };
+}
+
 function winCombat(){
    const defeatedName = state.monster.name;
    const xpGain = state.monster.xp;
@@ -579,8 +604,11 @@ clearLog();
    }
    }
    if(gearRoll){
-      state.inventory.push({...gearRoll});
-      log(`It drops something wearable: ${gearRoll.name}.`);
+      const gearItem = rollGearDropTier(gearRoll);
+      state.inventory.push(gearItem);
+      log(gearItem.tier === 'common'
+          ? `It drops something wearable: ${gearItem.name}.`
+          : `It drops something wearable — and a nice one: ${gearItem.name}!`);
    }
    /* Bounty Board progress — checked against the CURRENT zone as well as the
    monster's name, since bounty monster names could theoretically collide

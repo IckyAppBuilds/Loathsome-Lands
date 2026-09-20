@@ -110,17 +110,22 @@ portrait.
 
 ## content.js — game data tables
 `monsters[]` (per-zone, each with its own optional `rareDrop` AND
-`gearDrop` — an uncommon-tier, monster-themed equip drop, own Diablo-
-style "of the ___" stat modifier per the comment above `monsters[]`;
-`RARE_DROP_CHANCE`/`GEAR_DROP_CHANCE` roll each independently in
-`winCombat()`, combat.js), the named bosses (`gnomeCommander`,
+`gearDrop` — a monster-themed equip drop, own Diablo-style "of the ___"
+stat modifier per the comment above `monsters[]`, authored as the
+tier-1/1-stat baseline; `RARE_DROP_CHANCE`/`GEAR_DROP_CHANCE` roll each
+independently in `winCombat()`, and a dropped gearDrop then rolls a
+tier via `GEAR_DROP_TIER_CHANCE`/`rollGearDropTier()` — see combat.js),
+the named bosses (`gnomeCommander`,
 `diggerBot`, `gnomeKing`, and the
 Adventurer's Trial's three themed fights — `trialChampion`/
 `casinoChampion`/`hoodooChampion`, the last carrying a `skills[]` array —
 see combat.js's `useMonsterSkill()`) with their own spawn-chance
 constants, `ZONE_DIFFICULTY`/`ZONE_LABELS`, `noncombatEvents`/
 `hazardEvents`, `healItems`/`shopFoodItemsTier2`/`shopFoodItemsTier3`,
-`starterGear`, `shopGearItems`/`shopGearItemsTier2`/`shopGearItemsTier3`,
+`starterGear`, `shopGearItems`/`shopGearItemsTier2`/`shopGearItemsTier3`
+(1/2/3 stats respectively — each tier up adds one more +1 secondary
+stat on top of the previous tier's own bonuses), `STAT_ROTATION` (which
+secondary stat a tier-2/3 item/drop gets, cycled per primary stat),
 `shopBuyItems`, `spells`, `potionIngredients`, `veinIngredients`,
 `CLASS_TITLES` + each class's skill-bonus constants
 (`MEATHEAD_DAMAGE_BONUS`/`CARD_SHARK_PAYOUT_BONUS`/`HEXPERT_SPELL_DMG_BONUS`
@@ -227,7 +232,8 @@ from everything else.
 `openSpellMenu`/`closeSpellMenu`/`castSpell`/`learnSpell`/`playerFlee`/
 `winCombat` (rolls lootRoll/rareRoll/gearRoll independently on every
 kill — see the comment above monsters[], content.js, for what each
-one is)/`endCombat`/`checkDefeat`/`checkLevelUp`.
+one is; a successful gearRoll is then scaled to a random tier by
+`rollGearDropTier()`)/`endCombat`/`checkDefeat`/`checkLevelUp`.
 
 Touch this file when: changing combat math or encounter rolls.
 
