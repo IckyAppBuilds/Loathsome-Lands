@@ -94,6 +94,9 @@ function iconServoJoint(){
 function iconVizierScepter(){
      return iconWrap(`<line x1="20" y1="52" x2="42" y2="12"/><circle cx="44" cy="10" r="7" fill="#b06a97"/><circle cx="44" cy="10" r="2.5" fill="#f4efe4" stroke="none"/>`);
 }
+function iconGuardCleaver(){
+     return iconWrap(`<path d="M14 40 L14 16 Q14 10 22 10 L40 10 Q48 10 48 20 L48 34 Q48 40 40 40 Z" fill="#b9b3a4"/><rect x="8" y="38" width="10" height="16" fill="#5f4632"/>`);
+}
 function iconGuardHelm(){
      return iconWrap(`<path d="M14 36 Q14 14 30 14 Q46 14 46 36 L46 42 L14 42 Z" fill="#8a8477"/><rect x="24" y="30" width="12" height="6" fill="#2b2b28" stroke="none"/><rect x="12" y="42" width="36" height="6" fill="#8a8477"/>`);
 }
@@ -110,6 +113,9 @@ function iconSpringBoots(){
 /* ---------------- Shop tier-3 icons (shopGearItemsTier3 / shopFoodItemsTier3) ---------------- */
 function iconHeirloomRod(){
      return iconWrap(`<line x1="18" y1="52" x2="40" y2="14"/><circle cx="42" cy="12" r="7" fill="#d1a94e"/><circle cx="42" cy="12" r="2.5" fill="#b06a97" stroke="none"/>`);
+}
+function iconHeirloomCleaver(){
+     return iconWrap(`<path d="M14 40 L14 16 Q14 10 22 10 L40 10 Q48 10 48 20 L48 34 Q48 40 40 40 Z" fill="#d1a94e"/><rect x="8" y="38" width="10" height="16" fill="#5f4632"/><line x1="16" y1="16" x2="44" y2="14" stroke="#f4efe4" stroke-width="2"/>`);
 }
 function iconChampionCrown(){
      return iconWrap(`<path d="M12 40 L16 20 L26 32 L30 16 L34 32 L44 20 L48 40 Z" fill="#d1a94e"/><rect x="12" y="40" width="36" height="8" fill="#d1a94e"/><circle cx="30" cy="20" r="2.5" fill="#b06a97" stroke="none"/>`);
@@ -130,6 +136,9 @@ function iconBiscuitTin(){
 /* ---------------- Shop tier-4 icons (shopGearItemsTier4) ---------------- */
 function iconThroneScepter(){
      return iconWrap(`<line x1="18" y1="54" x2="38" y2="16"/><circle cx="40" cy="14" r="8" fill="#d1a94e"/><circle cx="40" cy="14" r="3" fill="#b06a97" stroke="none"/><path d="M32 22 L36 18 M44 10 L48 6" stroke-width="2.5"/>`);
+}
+function iconThroneAxe(){
+     return iconWrap(`<line x1="30" y1="10" x2="30" y2="52" stroke-width="5"/><path d="M30 10 Q8 6 6 22 Q8 32 30 26 Z" fill="#d1a94e"/><circle cx="16" cy="18" r="2.2" fill="#b06a97" stroke="none"/>`);
 }
 function iconStolenCrown(){
      return iconWrap(`<path d="M10 42 L14 18 L24 32 L30 14 L36 32 L46 18 L50 42 Z" fill="#d1a94e"/><rect x="10" y="42" width="40" height="8" fill="#d1a94e"/><circle cx="30" cy="18" r="3" fill="#b06a97" stroke="none"/><circle cx="18" cy="30" r="2" fill="#f4efe4" stroke="none"/><circle cx="42" cy="30" r="2" fill="#f4efe4" stroke="none"/>`);

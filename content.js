@@ -508,9 +508,13 @@ const GEAR_BASE_UNIT = 10;
 /* Tier 2 gives each item a second, smaller stat on top of its primary
 one — tier 1 has 1 stat, tier 2 has 2, tier 3 (below) has 3, each
 secondary stat worth +1 regardless of the primary's own value. Picked
-per item to fit its own flavor rather than a mechanical rotation. */
+per item to fit its own flavor rather than a mechanical rotation.
+Weapon slot gets two entries, same as shopGearItems' tier-1 weapons —
+one Beef-primary, one Hoodoo-primary — so both a melee and a
+spellcasting build have their own weapon at every tier, not just tier 1. */
 const shopGearItemsTier2 = [
    { name:"a scepter looted from the vizier's chambers", desc:"Still radiates a faint, smug authority.", type:"equip", slot:"weapon", bonus:{hoodoo:2, grit:1}, price:40, tier:'uncommon', icon: iconVizierScepter },
+   { name:"a guard-captain's confiscated cleaver", desc:"Standard issue, before it wasn't standard issue anymore.", type:"equip", slot:"weapon", bonus:{beef:2, zip:1}, price:38, tier:'uncommon', icon: iconGuardCleaver },
    { name:"a guard-captain's dented helm", desc:"Reinforced. Dented anyway.", type:"equip", slot:"head", bonus:{grit:2, beef:1}, price:38, tier:'uncommon', icon: iconGuardHelm },
    { name:"a clockwork-plated chestpiece", desc:"Ticks faintly whenever your heart rate spikes.", type:"equip", slot:"chest", bonus:{grit:2, hoodoo:1}, price:42, tier:'uncommon', icon: iconClockworkPlate },
    { name:"burrow-worm hide greaves", desc:"Flexible enough to squeeze through a tunnel-worm's old digs.", type:"equip", slot:"legs", bonus:{zip:2, grit:1}, price:36, tier:'uncommon', icon: iconBurrowGreaves },
@@ -560,9 +564,11 @@ Gnometropolis-loot theming. Priced per the GEAR_BASE_UNIT quadratic scheme
 above shopGearItemsTier2 — ~9x GEAR_BASE_UNIT, same per-tier scale factor
 applied to every item so the tier's internal price spread is unchanged. */
 /* Tier 3 adds a third stat on top of tier 2's two — same +1-per-secondary
-convention, just one more of them. */
+convention, just one more of them. Same two-weapons pattern as tier 1/2
+below — one Beef-primary, one Hoodoo-primary. */
 const shopGearItemsTier3 = [
    { name:"an heirloom hoodoo rod, mostly legitimate", desc:"The provenance is fuzzy. The results aren't.", type:"equip", slot:"weapon", bonus:{hoodoo:3, grit:1, zip:1}, price:100, tier:'rare', icon: iconHeirloomRod },
+   { name:"an heirloom war-cleaver, mostly legitimate", desc:"Family heirloom. Allegedly.", type:"equip", slot:"weapon", bonus:{beef:3, zip:1, grit:1}, price:95, tier:'rare', icon: iconHeirloomCleaver },
    { name:"a champion's dented crown, repurposed", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{grit:3, hoodoo:1, beef:1}, price:85, tier:'rare', icon: iconChampionCrown },
    { name:"a reinforced adventurer's cuirass", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{grit:3, beef:1, zip:1}, price:95, tier:'rare', icon: iconAdventurerCuirass },
    { name:"a tailored pair of quick-step trousers", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{zip:3, grit:1, hoodoo:1}, price:80, tier:'rare', icon: iconQuickstepTrousers },
@@ -580,9 +586,14 @@ the same GEAR_BASE_UNIT quadratic scheme as tier 2/3 (4^2 * GEAR_BASE_UNIT
 internal spread across slots carries forward unchanged. Palace-themed
 (stolen/repurposed royal trappings) rather than Gnometropolis-loot or
 premium-boutique like tiers 2/3 — this is the Shop's own top-shelf stock,
-sourced from wherever the Shop gets away with sourcing it. */
+sourced from wherever the Shop gets away with sourcing it. Same
+two-weapons pattern as every tier before it — one Beef-primary, one
+Hoodoo-primary — though at this tier both necessarily touch all 4 stats
+(primary+3 secondaries, and there are only 4 stats total), same as
+every other slot here; only which stat is primary still tells them apart. */
 const shopGearItemsTier4 = [
    { name:"a scepter reforged from the throne room's own gold", desc:"Melted down and reshaped before the guards even noticed it was gone.", type:"equip", slot:"weapon", bonus:{hoodoo:4, beef:1, zip:1, grit:1}, price:180, tier:'epic', icon: iconThroneScepter },
+   { name:"a headsman's axe, liberated from the throne room", desc:"The guards really should've kept a closer eye on the ceremonial weapons rack.", type:"equip", slot:"weapon", bonus:{beef:4, zip:1, grit:1, hoodoo:1}, price:175, tier:'epic', icon: iconThroneAxe },
    { name:"a crown stripped from the throne itself", desc:"Too big. You've stuffed it with rags to make it fit.", type:"equip", slot:"head", bonus:{grit:4, hoodoo:1, beef:1, zip:1}, price:150, tier:'epic', icon: iconStolenCrown },
    { name:"plate forged in the palace's own furnace", desc:"Still warm, if you believe the gnome who sold it to you.", type:"equip", slot:"chest", bonus:{grit:4, hoodoo:1, beef:1, zip:1}, price:170, tier:'epic', icon: iconPalaceForgedPlate },
    { name:"greaves stitched from a guard captain's dress uniform", desc:"Ceremonial. Somehow still holds up in a real fight.", type:"equip", slot:"legs", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, price:140, tier:'epic', icon: iconDressGreaves },

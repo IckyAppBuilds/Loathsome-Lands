@@ -207,6 +207,12 @@ function useMonsterSkill(skill){
 function playerAttack(){
    if(!state.inCombat) return;
    const eff = getEffectiveStats();
+   /* Named in every log line below rather than a generic "You swing/
+   strike" — state.equipment.weapon is always populated in real play
+   (starterGear is auto-equipped at game start, and equipItem() only
+   ever replaces the slot, never clears it), but the fallback keeps this
+   safe against any future path that could leave it unset. */
+   const weaponName = state.equipment.weapon ? state.equipment.weapon.name : 'your bare hands';
 
    /* A base 10% chance to simply whiff, worn down by Zip (a steadier hand,
    not just faster feet) — floored at 2% so no amount of Zip makes you
@@ -216,7 +222,7 @@ function playerAttack(){
    whole turn. */
    const missChance = Math.max(0.02, 0.1 - statBonus(eff.zip)*0.004);
    if(Math.random() < missChance){
-      log(`You swing at ${state.monster.name} and miss completely.`);
+      log(`You swing ${weaponName} at ${state.monster.name} and miss completely.`);
       monsterRetaliate();
       checkDefeat();
       render();
@@ -247,11 +253,11 @@ function playerAttack(){
 
    const { dodged } = applyDamageToMonster(dmg, sneakAttackLands);
    if(dodged){
-      log(`${capitalize(state.monster.name)} slips out of the way — your attack finds nothing but air.`);
+      log(`${capitalize(state.monster.name)} slips out of the way — ${weaponName} finds nothing but air.`);
    } else {
       log(sneakAttackLands
-          ? `You catch ${state.monster.name} completely off guard — a critical opening strike for ${dmg} damage!`
-          : `You strike ${state.monster.name} for ${dmg} damage.`);
+          ? `You catch ${state.monster.name} completely off guard with ${weaponName} — a critical opening strike for ${dmg} damage!`
+          : `You strike ${state.monster.name} with ${weaponName} for ${dmg} damage.`);
       if(state.monster.hp<=0){
          winCombat();
          return;
