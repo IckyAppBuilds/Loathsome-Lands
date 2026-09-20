@@ -216,3 +216,15 @@ function iconWardedSeal(){
      return iconWrap(`<circle cx="30" cy="30" r="16" fill="#b06a97"/><path d="M30 16 L36 30 L30 44 L24 30 Z" fill="#f4efe4" stroke="none"/>`);
 }
 
+/* Class-exclusive buff spells (content.js's spells[], classRequired) —
+one icon per class, same fixed palette as everything above. */
+function iconAdrenalineRush(){
+     return iconWrap(`<circle cx="28" cy="36" r="14" fill="#b5453f"/><path d="M34 8 L22 28 L30 28 L24 48" fill="none" stroke="#d1a94e" stroke-width="4"/>`);
+}
+function iconLoadedDice(){
+     return iconWrap(`<rect x="9" y="24" width="20" height="20" fill="#b06a97" transform="rotate(-8 19 34)"/><rect x="29" y="15" width="20" height="20" fill="#3d5a80" transform="rotate(8 39 25)"/><circle cx="17" cy="32" r="2" fill="#f4efe4" stroke="none"/><circle cx="23" cy="38" r="2" fill="#f4efe4" stroke="none"/><circle cx="35" cy="21" r="2" fill="#f4efe4" stroke="none"/><circle cx="41" cy="27" r="2" fill="#f4efe4" stroke="none"/><circle cx="38" cy="21" r="2" fill="#f4efe4" stroke="none"/>`);
+}
+function iconArcaneFocus(){
+     return iconWrap(`<circle cx="30" cy="30" r="16" fill="#3d5a80"/><path d="M30 14 L38 30 L30 46 L22 30 Z" fill="#d1a94e"/><circle cx="30" cy="30" r="4" fill="#f4efe4" stroke="none"/>`);
+}
+

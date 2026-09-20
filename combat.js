@@ -144,6 +144,10 @@ function playerAttack(){
 
    let dmg = randInt(3,7) + (state.level-1) + statBonus(eff.beef);
    if(state.classTitle === 'Meathead') dmg = Math.round(dmg * (1 + MEATHEAD_DAMAGE_BONUS[state.classSkillLevel]));
+   /* Adrenaline Rush buff (content.js's spells[], classRequired:'Meathead')
+   — chains on top of the passive MEATHEAD_DAMAGE_BONUS line above rather
+   than replacing it, so a buffed Meathead gets both bonuses at once. */
+   if(state.classBuffFightsLeft > 0 && state.classTitle === 'Meathead') dmg = Math.round(dmg * 1.25);
 
    /* Zip's sneak attack: only on the opening swing of a fresh fight (monster
    still at full HP, the simplest reliable "first turn" check without a
@@ -153,7 +157,11 @@ function playerAttack(){
    is worth more (crit + a free turn, not just damage mitigation). */
    const isOpeningAttack = state.monster.hp === state.monster.maxHp;
    const sneakAttackChance = isOpeningAttack ? Math.min(0.4, statBonus(eff.zip)*0.025) : 0;
-   const sneakAttackLands = sneakAttackChance > 0 && Math.random() < sneakAttackChance;
+   /* Loaded Dice buff (content.js's spells[], classRequired:'Card Shark') —
+   guarantees the opening sneak attack lands while buffed, instead of
+   still rolling sneakAttackChance like normal. */
+   const sneakAttackLands = (isOpeningAttack && state.classBuffFightsLeft>0 && state.classTitle==='Card Shark')
+      || (sneakAttackChance > 0 && Math.random() < sneakAttackChance);
    if(sneakAttackLands) dmg = Math.round(dmg * 2);
 
    state.monster.hp = Math.max(0, state.monster.hp-dmg);
@@ -202,9 +210,23 @@ function closeSpellMenu(){
 }
 
 function castSpell(id){
-   if(!state.inCombat) return;
    const spell = spells.find(s=>s.id===id);
-   if(!spell || !state.spellsKnown.includes(id) || state.mp < spell.mpCost) return;
+   if(!spell) return;
+   /* A buff spell has no monster to target, so it's the one type castable
+   outside combat — everything below this still assumes state.monster
+   exists (via monsterRetaliate()/checkDefeat()) for the other 3 types,
+   which is why they still require an active fight. */
+   if(spell.type!=='buff' && !state.inCombat) return;
+   if(!state.spellsKnown.includes(id) || state.mp < spell.mpCost) return;
+   /* Defense-in-depth: learnSpell() already refuses to teach a buff spell
+   to the wrong class, but a crafted castSpell() call could still try to
+   cast one it never learned via the normal flow — refuse with a message
+   rather than silently no-oping. */
+   if(spell.classRequired && state.classTitle !== spell.classRequired){
+      log(`${spell.name} isn't for you — that's a ${spell.classRequired} spell.`);
+      render();
+      return;
+   }
 
 state.mp -= spell.mpCost;
    const eff = getEffectiveStats();
@@ -213,6 +235,12 @@ state.mp -= spell.mpCost;
 if(spell.type==='damage'){
    let dmg = randInt(spell.dmgMin, spell.dmgMax) + (state.level-1) + statBonus(eff.hoodoo);
    if(state.classTitle === 'Hexpert') dmg += HEXPERT_SPELL_DMG_BONUS[state.classSkillLevel];
+   /* Arcane Focus buff (content.js's spells[], classRequired:'Hexpert') —
+   applied AFTER the flat HEXPERT_SPELL_DMG_BONUS line above so the
+   multiplier scales the whole total (base roll + passive bonus), not
+   just the base roll — chosen to mirror how Adrenaline Rush stacks on
+   top of MEATHEAD_DAMAGE_BONUS in playerAttack() rather than diverge. */
+   if(state.classBuffFightsLeft > 0 && state.classTitle === 'Hexpert') dmg = Math.round(dmg * 1.5);
    state.monster.hp = Math.max(0, state.monster.hp-dmg);
    log(`You cast ${spell.name} — ${capitalize(state.monster.name)} takes ${dmg} damage.`);
    if(state.monster.hp<=0){
@@ -241,16 +269,51 @@ if(spell.type==='damage'){
    state.shield += shieldAmount;
    log(`You cast ${spell.name} — a shimmering barrier settles over you. (+${shieldAmount} Shield)`);
    monsterRetaliate();
+} else if(spell.type==='buff'){
+   state.classBuffFightsLeft = CLASS_BUFF_FIGHTS;
+   log(`You cast ${spell.name} — the next ${CLASS_BUFF_FIGHTS} fights are yours.`);
+   /* Only give a mid-fight buff cast the other types' free monster turn
+   when there's actually a fight going — a buff cast outside combat has
+   no monster to retaliate. */
+   if(state.inCombat) monsterRetaliate();
 }
 
-checkDefeat();
+if(state.inCombat){
+   checkDefeat();
    render();
+} else {
+   /* Combat actions never autosave mid-fight (see the rest of this file),
+   but a buff cast outside combat is itself the whole state change, so it
+   has to persist itself rather than riding along with a later combat
+   render(). */
+   render();
+   autosave();
 }
+}
+
+/* Which town building teaches a given class's buff spell — same
+class->building mapping as levelUpClassSkill()'s atRightBuilding check
+(guild.js), mirrored here rather than invented separately. The 4 original
+spells (no classRequired) have no entry here and fall back to 'hoodoo'
+below, unchanged from before this spell type existed. */
+const CLASS_SPELL_LOCATION = { 'Meathead':'guild', 'Card Shark':'casino', 'Hexpert':'hoodoo' };
+/* Flavor for the "who taught you this" log line — keyed the same way. */
+const CLASS_SPELL_TRAINER = { 'Meathead':'The Guild', 'Card Shark':'The Casino', 'Hexpert':'The Hoodoo Doctor' };
 
 function learnSpell(id){
-   if(state.location !== 'hoodoo') return;
    const spell = spells.find(s=>s.id===id);
    if(!spell || state.spellsKnown.includes(id)) return;
+   const requiredLocation = spell.classRequired ? CLASS_SPELL_LOCATION[spell.classRequired] : 'hoodoo';
+   if(state.location !== requiredLocation) return;
+   /* A class buff spell can only be learned by its own class — someone
+   could otherwise reach this via a crafted call even though the UI only
+   ever shows it to the matching class. Refuse with a message rather than
+   a silent no-op, same reasoning as castSpell()'s own class check. */
+   if(spell.classRequired && state.classTitle !== spell.classRequired){
+      log(`${spell.name} isn't for you — that's a ${spell.classRequired} spell.`);
+      render();
+      return;
+   }
    /* Computed once so the affordability gate and the deduction below can't
    drift apart (e.g. gate checks the discounted price but full price gets
    deducted, or vice versa). */
@@ -259,7 +322,7 @@ function learnSpell(id){
    state.popTabs -= price;
    state.spellsKnown.push(id);
    clearLog();
-   log(`The Hoodoo Doctor teaches you ${spell.name}. (-${price} Pop Tabs)`);
+   log(`${CLASS_SPELL_TRAINER[spell.classRequired] || 'The Hoodoo Doctor'} teaches you ${spell.name}. (-${price} Pop Tabs)`);
    render();
 }
 function playerFlee(){
@@ -400,6 +463,14 @@ function endCombat(){
    state.inCombat = false;
    state.monster = null;
    combatSubView = 'main';
+   /* Class buff spells (content.js's spells[]) tick down once per completed
+   fight, not per turn — winCombat()/playerFlee() (a successful escape)/
+   checkDefeat() (a defeat) are the only 3 real fight-ending paths, and
+   they all funnel through this one function, so decrementing here fires
+   exactly once per encounter regardless of how it ended. A mid-fight
+   action that doesn't end the fight (a normal attack, a non-lethal spell)
+   never reaches endCombat() at all, so it can't double-decrement. */
+   if(state.classBuffFightsLeft > 0) state.classBuffFightsLeft--;
 }
 
 function checkDefeat(){

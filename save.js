@@ -79,6 +79,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        quest7Accepted, quest7RareDefeated, quest7Complete,
        classQuestAccepted, classQuestComplete, classTitle,
        classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
+       classBuffFightsLeft,
        activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
        lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt } = state;
    return {
@@ -92,6 +93,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
       quest7Accepted, quest7RareDefeated, quest7Complete,
       classQuestAccepted, classQuestComplete, classTitle,
       classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
+      classBuffFightsLeft,
       activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
       lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt,
       equipment: Object.fromEntries(

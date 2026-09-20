@@ -123,6 +123,11 @@ function createDefaultState(){
      classTrialCasinoPassed: false,
      classTrialHoodooPassed: false,
      classSkillLevel: 0,
+     /* Class-exclusive buff spells (content.js's spells[], classRequired) —
+        how many upcoming fights the active buff still applies to. Set to
+        CLASS_BUFF_FIGHTS (content.js) on cast, ticked down by 1 (never
+        below 0) once per completed fight — see endCombat(), combat.js. */
+     classBuffFightsLeft: 0,
      /* Bounty board (The Guild) — one active bounty at a time, auto-refreshed
         on claim or expiry (see ensureActiveBounty()/claimBounty() in
         guild.js). null until the player's first visit rolls one, or once

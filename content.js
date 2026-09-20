@@ -380,13 +380,36 @@ formula, swapped stat), same monster-retaliation flow as a melee Attack.
 - 'heal'   — restores state.hp by `healValue`, then the monster still
 gets its turn (casting isn't a free action).
 - 'ward'   — no offense; halves the monster's retaliation damage this
-turn via monsterRetaliate(0.5). The "defensive" option in the trio. */
+turn via monsterRetaliate(0.5). The "defensive" option in the trio.
+- 'buff'   — class-exclusive (see `classRequired` below), no immediate
+combat effect. Sets state.classBuffFightsLeft = CLASS_BUFF_FIGHTS
+(castSpell(), combat.js), which powers up that class's existing
+mechanic (Meathead melee damage/Card Shark sneak attack/Hexpert spell
+damage) for the next few fights. Unlike the other three types, castable
+outside combat too (there's no monster to target) — see castSpell()'s
+top-line gate.
+
+`classRequired` (only set on the 3 buff spells below, `undefined` — not
+`null` — on the original 4) restricts BOTH where a spell can be learned
+(learnSpell(), combat.js — a class's own building, not the Hoodoo
+Doctor's, e.g. Meathead only at the Guild) and who can learn/cast it
+(must match state.classTitle). The original 4 spells stay Hoodoo-only
+and learnable by anyone, unchanged. */
 const spells = [
    { id:'hexbolt', name:'Hex Bolt', desc:'A jagged little curse that stings more than it should.', type:'damage', mpCost:3, price:15, dmgMin:4, dmgMax:9, icon: iconHexBolt },
    { id:'mendcharm', name:'Mending Charm', desc:'Patches you up with muttered nonsense and surprising effectiveness.', type:'heal', healValue:10, mpCost:4, price:15, icon: iconMendCharm },
    { id:'wardcharm', name:'Warding Charm', desc:"Throws up a shimmering barrier that soaks up damage before it reaches you. Stacks if you're already shielded.", type:'ward', mpCost:3, price:12, icon: iconWardCharm },
    { id:'bottledfury', name:'Bottled Fury', desc:'Everything the potion ingredients were trying to tell you, unleashed at once.', type:'damage', mpCost:6, dmgMin:9, dmgMax:16, questReward:true, icon: iconBottledFury },
+   { id:'adrenalinerush', name:'Adrenaline Rush', desc:"Floods your muscles with borrowed strength — hits harder than usual for your next few fights, not just this one.", type:'buff', mpCost:10, price:250, classRequired:'Meathead', icon: iconAdrenalineRush },
+   { id:'loadeddice', name:'Loaded Dice', desc:"Tips the odds your way for a while — your opening strike is guaranteed to catch the next few fights' targets off guard.", type:'buff', mpCost:10, price:250, classRequired:'Card Shark', icon: iconLoadedDice },
+   { id:'arcanefocus', name:'Arcane Focus', desc:"Sharpens your Hoodoo to a fine point for a while — your spells bite harder for the next few fights.", type:'buff', mpCost:10, price:250, classRequired:'Hexpert', icon: iconArcaneFocus },
    ];
+/* How many upcoming fights a class buff spell's effect lasts, set into
+state.classBuffFightsLeft on cast and ticked down once per completed
+fight (endCombat(), combat.js — the one place winCombat()/playerFlee()/
+checkDefeat() all funnel through, so the decrement happens exactly once
+per encounter regardless of how it ended). */
+const CLASS_BUFF_FIGHTS = 3;
 
 /* ---------------- Potion ingredients (Hoodoo Doctor's quest, "A Proper Potion") ---------------- */
 /* Each entry ties one specific monster to one specific ingredient item.
