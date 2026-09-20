@@ -51,7 +51,13 @@ INVENTORY_SECTIONS.forEach(section=>{
     if(item.type==='hp' || item.type==='mp' || item.type==='luck'){
       btn = `<button class="btn-secondary" onclick="useItem(${firstIdx})">Use</button>`;
     } else if(item.type==='equip'){
-      btn = `<button class="btn-secondary" onclick="equipItem(${firstIdx})">Equip</button>`;
+      /* getGearRequirements() (item-tiers.js) derives both checks from
+      the item's own bonus — same requirement equipItem() (player-
+      actions.js) itself enforces, so the button's disabled state never
+      disagrees with what actually happens on click. */
+      const req = getGearRequirements(item);
+      const meetsReq = state.level >= req.levelReq && (!req.statKey || state.stats[req.statKey] >= req.statReq);
+      btn = `<button class="btn-secondary" ${meetsReq?'':'disabled'} onclick="equipItem(${firstIdx})">Equip</button>`;
     }
     const iconSvg = item.icon ? item.icon() : '';
     const qtyBadge = count>1 ? `<span class="qty-badge">×${count}</span>` : '';
@@ -63,7 +69,8 @@ INVENTORY_SECTIONS.forEach(section=>{
     const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
     ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
       : '';
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}${qtyBadge}${slotBadge}${questBadge}</div><div class="desc">${item.desc}${bonusText}</div>${btn}</div>`;
+    const reqText = item.type==='equip' ? gearRequirementText(item) : '';
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}${qtyBadge}${slotBadge}${questBadge}</div><div class="desc">${item.desc}${bonusText}${reqText}</div>${btn}</div>`;
     list.appendChild(div);
   });
 });
@@ -102,7 +109,14 @@ function renderShopItemRow(def){
     ? ` (+${def.bonus[primaryStat]} ${STAT_LABELS[primaryStat]}, plus ${secondaryCount} random stat${secondaryCount>1?'s':''})`
       : ` (${Object.entries(def.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`;
   }
-  div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(def)}${slotTag}</div><div class="desc">${def.desc}${bonusTag} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyItemByName('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
+  /* Purchasing itself is only gated on Pop Tabs — an item can be bought
+  ahead of meeting its own level/stat requirement (getGearRequirements(),
+  item-tiers.js) and equipped later once you get there, same as any
+  ARPG lets you loot/buy above-your-level gear. This is just an FYI so
+  the player isn't surprised when equipItem() (player-actions.js) later
+  refuses it. */
+  const reqText = def.type==='equip' ? gearRequirementText(def) : '';
+  div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(def)}${slotTag}</div><div class="desc">${def.desc}${bonusTag}${reqText} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyItemByName('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
   return div;
 }
 

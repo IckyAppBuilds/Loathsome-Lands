@@ -12,21 +12,29 @@ too and misfire that log branch in startCombat(). gnomeCommander/
 diggerBot don't carry a rareDrop of their own — they're already a
 dedicated quest reward on top of a much bigger XP/Pop Tab payout.
 
-Each regular monster also carries a gearDrop — an uncommon-tier piece of
-equipment (GEAR_DROP_CHANCE, winCombat()) themed to that specific
-monster, same "specific to what you killed" reasoning as rareDrop. Every
-gearDrop is tier:'uncommon' regardless of zone (see item-tiers.js) — the
-color signals "this came from a monster, not the shop," not raw power —
-but its bonus VALUE scales with the zone it's found in (+1 Commons/
-Sewers, +2 Quarry/Vault, +3 Gnometropolis), tracking the same curve as
-shopGearItems/Tier2/Tier3 so a drop is never wildly out of step with
-what the Shop already sells at that point in the game. Slot/stat follows
-the same convention the Shop already uses (weapon: beef or hoodoo;
-head/chest: grit; legs/boots: zip), and every name ends in a short
-Diablo-style "of the ___" modifier naming which stat it boosts — one
-animal per stat, reused across every drop that carries that stat:
-of the Badger (beef), of the Weasel (zip), of the Tortoise (grit),
-of the Loon (hoodoo). */
+Each regular monster also carries a gearDrop — a piece of equipment
+(GEAR_DROP_CHANCE, winCombat()) themed to that specific monster, same
+"specific to what you killed" reasoning as rareDrop. As authored here
+it's the tier-1/1-stat baseline (tier:'common'); a successful gearRoll
+then rolls a real tier via rollGearDropTier() (combat.js, weighted
+toward tier 1 — see GEAR_DROP_TIER_CHANCE), scaling the bonus/stat
+count up the same way shopGearItemsTier2/3 do. No item anywhere in the
+game (shop, monster drop, or PALACE_GATE_GEAR below) carries its own
+stored level/stat requirement — getGearRequirements() (item-tiers.js)
+derives both straight from an item's own `bonus` object wherever it's
+needed (equipItem(), player-actions.js; shop/Pack listings), so a
+requirement can never drift out of alignment with what the item
+actually grants. Its bonus's own base VALUE (before any tier roll)
+scales with the zone it's found in (+1 Commons/Sewers, +2 Quarry/Vault,
++3 Gnometropolis), tracking the same curve shopGearItems/Tier2/Tier3
+use so a drop is never wildly out of step with what the Shop already
+sells at that point in the game. Slot/stat follows the same convention
+the Shop already uses (weapon: beef or hoodoo; head/chest: grit;
+legs/boots: zip), and every name ends in a short Diablo-style
+"of the ___" modifier naming which stat it boosts — one animal per
+stat, reused across every drop that carries that stat: of the Badger
+(beef), of the Weasel (zip), of the Tortoise
+(grit), of the Loon (hoodoo). */
 const monsters = [
    { name:"a disgruntled compost gnome", hp:9, atkMin:1, atkMax:2, xp:3, zone:"commons",
     art: artCompostGnome, loot:{name:"a fistful of righteous soil", desc:"Smells like victory and mulch.", type:"junk", sell:1, icon:iconSoil},
@@ -424,7 +432,16 @@ to sit right where shopGearItems' own tier-1 prices already cluster):
 tier 2 averages ~4x GEAR_BASE_UNIT (~40), tier 3 (below) ~9x (~90). Each
 tier's prices are scaled by a single constant factor off its pre-quadratic
 numbers, so the relative spread between a tier's own items (cheapest vs
-priciest) is unchanged — only the tier's overall level moved. */
+priciest) is unchanged — only the tier's overall level moved.
+
+Equipping any of these (here or in Tier2/3 below) also needs a minimum
+level AND a minimum base stat in whichever stat the item's own primary
+bonus boosts — neither is stored on the item itself; both are derived
+straight from its `bonus` object by getGearRequirements() (item-tiers.js)
+and enforced in equipItem() (player-actions.js), so a requirement always
+scales with what the item actually grants rather than needing separate
+hand-tuned numbers kept in sync by hand. Pop Tabs alone can't buy past
+your own level or stats — you can afford an item before you can wear it. */
 const GEAR_BASE_UNIT = 10;
 /* Tier 2 gives each item a second, smaller stat on top of its primary
 one — tier 1 has 1 stat, tier 2 has 2, tier 3 (below) has 3, each

@@ -46,3 +46,42 @@ literal tags rather than being XSS-relevant, but it'd look broken). */
 function itemNameHtml(item){
    return `<span style="color:${ITEM_TIER_COLORS[getItemTier(item)]};">${item.name}</span>`;
 }
+
+/* An equip item's level/stat requirements are never stored on the item
+itself — they're derived here, straight from its own `bonus` object,
+every time they're needed (equipItem(), player-actions.js; the Pack and
+Shop listings, render-shop.js/render-character.js). This is deliberate:
+requirements this way can never drift out of alignment with what the
+item actually grants, the way a hand-authored parallel field could once
+bonus values get rebalanced later.
+
+levelReq = 2x the item's total stat points (every bonus value summed) —
+a plain +1 tier-1 item needs level 2, a 3-stat (+3/+1/+1) tier-3 item
+needs level 10. statReq = 2x the item's PRIMARY stat's own value (the
+first key in its bonus object, by authoring convention — the stat the
+item is really "for"), checked against state.stats[stat] directly
+(raw allocated points), never getEffectiveStats() — otherwise wearing
+OTHER stat-boosting gear could bootstrap you past a requirement you
+haven't actually earned. An item with no bonus (starterGear) or no
+stats at all needs nothing. */
+function getGearRequirements(item){
+   const statKeys = (item && item.bonus) ? Object.keys(item.bonus) : [];
+   if(statKeys.length === 0) return { levelReq: 1, statReq: 0, statKey: null };
+   const primaryStat = statKeys[0];
+   const totalPower = statKeys.reduce((sum, k) => sum + item.bonus[k], 0);
+   return {
+      levelReq: Math.max(1, totalPower * 2),
+      statReq: item.bonus[primaryStat] * 2,
+      statKey: primaryStat,
+   };
+}
+
+/* Short " — Requires Lv.X, Y base Stat" suffix for an equip item's desc
+line (Pack/Shop listings) — blank for starterGear/anything else with
+nothing worth requiring (levelReq<=1 and no statReq). */
+function gearRequirementText(item){
+   const req = getGearRequirements(item);
+   if(req.levelReq <= 1 && req.statReq <= 0) return '';
+   const statPart = req.statKey ? `, ${req.statReq} base ${STAT_LABELS[req.statKey]}` : '';
+   return ` — Requires Lv.${req.levelReq}${statPart}`;
+}

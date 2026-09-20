@@ -142,16 +142,30 @@ Every equip/consumable item should carry an explicit `tier` field (see
 item-tiers.js below) — 'poor'/'common'/'uncommon'/'rare'/'epic'; quest
 items and ordinary junk loot don't need one, they're derived from `type`.
 
-## item-tiers.js — item rarity colors
+## item-tiers.js — item rarity colors + gear requirements
 `ITEM_TIER_COLORS` (the Diablo/WoW-style poor->legendary ramp, plus a
 'quest' tier, all reusing styles.css's existing custom properties),
 `getItemTier(item)`, and `itemNameHtml(item)` — wraps an item's name in
 its tier color, used everywhere an item's name renders via innerHTML
 (the Pack, Shop listings including Sell, equipped gear, Rare Finds).
 Never used in log() messages (those are textContent, not innerHTML).
-Pure: reads an item's own `tier`/`type` fields, never touches `state`.
 
-Touch this file when: changing a rarity color, or adding a new tier.
+Also `getGearRequirements(item)` and `gearRequirementText(item)` — an
+equip item's level/stat requirement is never stored on the item itself,
+it's derived here from the item's own `bonus` object every time it's
+needed (equipItem(), player-actions.js; the Pack/Shop listings), so a
+requirement can never drift out of sync with what the item actually
+grants. levelReq = 2x total stat points across the whole bonus; statReq
+= 2x the primary (first-keyed) stat's own value, checked against raw
+`state.stats`, never `getEffectiveStats()`.
+
+Pure throughout: every function here only reads its `item` argument,
+never `state` — comparing a requirement against the player's actual
+level/stats is left to each caller (equipItem(); the Pack/Shop
+listings' own disabled-button checks).
+
+Touch this file when: changing a rarity color, adding a new tier, or
+changing how level/stat requirements scale off an item's bonus.
 
 ## render.js — core screen sync
 `render()` (bars, which location view is shown, quest banners, drawer
@@ -216,7 +230,9 @@ silently resets on the next reload.
 
 ## player-actions.js — drawers, equip/use-item, stat points
 `DRAWER_IDS`/`toggleDrawer`/`openDrawer`/`closeAllDrawers`, `useItem`/
-`equipItem`/`unequipItem`, `getEffectiveStats`/`recomputeMaxStats`/
+`equipItem` (refuses below the item's own level/stat requirement —
+`getGearRequirements()`, item-tiers.js — with a log message rather than
+a silent no-op)/`unequipItem`, `getEffectiveStats`/`recomputeMaxStats`/
 `spendStatPoint`.
 
 Touch this file when: changing equip/use-item/stat-point logic.

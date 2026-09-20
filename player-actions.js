@@ -75,6 +75,24 @@ function spendStatPoint(stat){
 function equipItem(idx){
    const item = state.inventory[idx];
    if(!item || item.type!=='equip') return;
+   /* Both requirements are derived from the item's own bonus, never
+   stored on it — see getGearRequirements() (item-tiers.js). statReq is
+   checked against state.stats directly (raw allocated points), not
+   getEffectiveStats() — gear you already have on shouldn't be able to
+   bootstrap you into a requirement you haven't actually earned. */
+   const req = getGearRequirements(item);
+   if(state.level < req.levelReq){
+      clearLog();
+      log(`${item.name} requires level ${req.levelReq}. You're not there yet.`);
+      render();
+      return;
+   }
+   if(req.statKey && state.stats[req.statKey] < req.statReq){
+      clearLog();
+      log(`${item.name} requires ${req.statReq} base ${STAT_LABELS[req.statKey]}. Equipment bonuses don't count toward that.`);
+      render();
+      return;
+   }
    const slot = item.slot;
    const prev = state.equipment[slot];
    state.equipment[slot] = item;
