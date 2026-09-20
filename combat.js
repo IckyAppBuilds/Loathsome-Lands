@@ -392,8 +392,23 @@ const needsVeinIngredient = veinIngredient && state.quest5Accepted && !state.que
    fires for them. */
 const rareRoll = state.monster.rareDrop && Math.random()<RARE_DROP_CHANCE ? state.monster.rareDrop : null;
 
-state.victoryMonster = { art: state.monster.art, name: state.monster.name };
+/* The Trial Champion fight runs while state.location stays 'guild' (it
+never changes, same as every other forced fight) — but every other one
+happens in an exploration zone, where goAdventuring()/travelTo() always
+clears the victory banner as the very first thing on the player's next
+action. Nothing plays that role inside a building, so without this the
+Guild would be stuck showing "Victory!" over the dead boss's art
+forever, through Leave and back in, since enterGuild()/leaveGuild()
+have never needed to reset it before. Skip the banner for this fight
+and let the Guild's own screen — now reporting the Trial's Guild tier
+passed — be the "you won" moment instead. */
+if(wasTrialChampion){
+   state.showVictory = false;
+   state.victoryMonster = null;
+} else {
+   state.victoryMonster = { art: state.monster.art, name: state.monster.name };
    state.showVictory = true;
+}
 
 clearLog();
    if(wasCommander){
