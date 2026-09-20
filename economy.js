@@ -91,7 +91,7 @@ function buyItemByName(name){
 function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
 /* ---------------- Biscuit regeneration ---------------- */
-const BISCUIT_MAX = 200;
+const BISCUIT_MAX = 100;
 const BISCUIT_REGEN_MS = 3 * 60 * 1000; /* one new Biscuit every 3 minutes */
 
 /* The player's live cap — BISCUIT_MAX plus whatever the Gaffer's Cottage
