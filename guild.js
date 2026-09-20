@@ -310,6 +310,7 @@ passed before handing it that template. */
 function startClassTrialGuild(){
    if(state.location !== 'guild' || !state.classQuestAccepted || state.classTrialGuildPassed || state.classQuestComplete) return;
    startCombat(trialChampion);
+   render();
 }
 
 function claimClassPath(chosenStat){
