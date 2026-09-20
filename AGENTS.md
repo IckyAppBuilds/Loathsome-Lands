@@ -109,8 +109,12 @@ Touch this file when: adding new monster/scene art or a new class
 portrait.
 
 ## content.js — game data tables
-`monsters[]` (per-zone, each with its own optional `rareDrop`), the
-named bosses (`gnomeCommander`, `diggerBot`, `gnomeKing`, and the
+`monsters[]` (per-zone, each with its own optional `rareDrop` AND
+`gearDrop` — an uncommon-tier, monster-themed equip drop, own Diablo-
+style "of the ___" stat modifier per the comment above `monsters[]`;
+`RARE_DROP_CHANCE`/`GEAR_DROP_CHANCE` roll each independently in
+`winCombat()`, combat.js), the named bosses (`gnomeCommander`,
+`diggerBot`, `gnomeKing`, and the
 Adventurer's Trial's three themed fights — `trialChampion`/
 `casinoChampion`/`hoodooChampion`, the last carrying a `skills[]` array —
 see combat.js's `useMonsterSkill()`) with their own spawn-chance
@@ -218,10 +222,12 @@ Touch this file when: changing equip/use-item/stat-point logic.
 from everything else.
 
 ## combat.js — exploration + combat
-`ADVENTURE_ZONES`/`goAdventuring()`, `startCombat`/`monsterRetaliate`/
-`playerAttack`/`openSpellMenu`/`closeSpellMenu`/`castSpell`/
-`learnSpell`/`playerFlee`/`winCombat`/`endCombat`/`checkDefeat`/
-`checkLevelUp`.
+`ADVENTURE_ZONES`/`goAdventuring()`, `startCombat`/`applyDamageToMonster`/
+`monsterRetaliate`/`monsterAutoAttack`/`useMonsterSkill`/`playerAttack`/
+`openSpellMenu`/`closeSpellMenu`/`castSpell`/`learnSpell`/`playerFlee`/
+`winCombat` (rolls lootRoll/rareRoll/gearRoll independently on every
+kill — see the comment above monsters[], content.js, for what each
+one is)/`endCombat`/`checkDefeat`/`checkLevelUp`.
 
 Touch this file when: changing combat math or encounter rolls.
 

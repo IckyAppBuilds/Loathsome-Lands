@@ -491,6 +491,12 @@ const needsVeinIngredient = veinIngredient && state.quest5Accepted && !state.que
    pool — gnomeCommander/diggerBot don't carry one, so this simply never
    fires for them. */
 const rareRoll = state.monster.rareDrop && Math.random()<RARE_DROP_CHANCE ? state.monster.rareDrop : null;
+   /* Gear drops (state.monster.gearDrop, content.js) are rolled entirely
+   independently of both lootRoll and rareRoll above — a single kill can
+   in principle hand over all three. gnomeCommander/diggerBot/the Trial
+   champions/district guardians don't carry one, so this never fires for
+   them. */
+const gearRoll = state.monster.gearDrop && Math.random()<GEAR_DROP_CHANCE ? state.monster.gearDrop : null;
 
 /* All three Trial fights (Guild/Casino/Hoodoo) run while state.location
 stays at that building (it never changes, same as every other forced
@@ -571,6 +577,10 @@ clearLog();
          log(`You've found every rare drop in the Loathsome Lands! The Guild wires you a congratulatory bonus. (+100 Pop Tabs)`);
       }
    }
+   }
+   if(gearRoll){
+      state.inventory.push({...gearRoll});
+      log(`It drops something wearable: ${gearRoll.name}.`);
    }
    /* Bounty Board progress — checked against the CURRENT zone as well as the
    monster's name, since bounty monster names could theoretically collide
