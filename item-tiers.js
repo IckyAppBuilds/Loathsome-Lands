@@ -87,6 +87,12 @@ function gearRequirementText(item){
    return ` — Requires Lv.${req.levelReq}${statPart}`;
 }
 
+/* Shared rarity premium for BOTH getGearSellValue() and
+getConsumableSellValue() below — a rare/legendary item sells for more
+than a common one of equal "power," gear stat total or consumable
+heal value alike. */
+const ITEM_SELL_TIER_MULTIPLIER = { poor:1, common:1, uncommon:1.3, rare:1.6, epic:2, legendary:2.5 };
+
 /* An equip item's sell price, same "derive it fresh, never store it"
 shape as getGearRequirements() above — scales with the item's total
 stat power (so a level-appropriate/higher item sells for more) times a
@@ -96,11 +102,40 @@ than a common even at the same stat total, e.g. PALACE_GATE_GEAR's
 deliberately-low-power epic gear). Floored at 1 so starterGear (no
 bonus at all) still sells for a token amount, matching its old flat
 sell:1. */
-const GEAR_SELL_TIER_MULTIPLIER = { poor:1, common:1, uncommon:1.3, rare:1.6, epic:2, legendary:2.5 };
 const GEAR_SELL_PER_POWER = 4;
 function getGearSellValue(item){
    const statKeys = (item && item.bonus) ? Object.keys(item.bonus) : [];
    const totalPower = statKeys.reduce((sum, k) => sum + item.bonus[k], 0);
-   const mult = GEAR_SELL_TIER_MULTIPLIER[getItemTier(item)] || 1;
+   const mult = ITEM_SELL_TIER_MULTIPLIER[getItemTier(item)] || 1;
    return Math.max(1, Math.round(totalPower * GEAR_SELL_PER_POWER * mult));
+}
+
+/* Same shape again for hp/mp/luck consumables (healItems/shopFoodItems'
+tiers, content.js, plus the "luck" rareDrops that restore both) — none
+of these carry a `sell` field either. "Power" is the HP/MP restored
+(luck items sum both, since they heal both at once); healItems/
+shopFoodItems' buy price already runs a flat ~0.625 Pop Tabs per point
+of value regardless of tier, so 0.25 per point here lands common-tier
+consumables around a ~40% sell-back of their buy price, same ballpark
+resale ratio as everything else, before the rarity premium above lifts
+higher tiers further (uncapped drops like the luck rareDrops have no
+buy price to compare against, so that premium is the only signal that
+a rarer find is worth more). */
+const CONSUMABLE_SELL_PER_VALUE = 0.25;
+function getConsumableSellValue(item){
+   const power = item.type === 'luck' ? (item.hpValue||0) + (item.mpValue||0) : (item.value||0);
+   const mult = ITEM_SELL_TIER_MULTIPLIER[getItemTier(item)] || 1;
+   return Math.max(1, Math.round(power * CONSUMABLE_SELL_PER_VALUE * mult));
+}
+
+/* One dispatcher for "what does this item sell for," used everywhere a
+sale needs a price (sellItemByName(), economy.js; the Sell tab,
+render-shop.js) instead of each caller re-deriving which formula
+applies. Junk/quest items keep their hand-authored flat `sell` field
+(content.js) — those were never a formula, no reason to make them one. */
+function getItemSellValue(item){
+   if(!item) return 0;
+   if(item.type === 'equip') return getGearSellValue(item);
+   if(item.type === 'hp' || item.type === 'mp' || item.type === 'luck') return getConsumableSellValue(item);
+   return item.sell || 0;
 }

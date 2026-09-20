@@ -21,15 +21,13 @@ function sellItemByName(name, tier){
    state.inventory.forEach((it,i)=>{
       if(it.name !== name) return;
       if(tier !== undefined && it.tier !== tier) return;
-      const sellable = it.type==='equip' || (it.sell && (it.type==='junk' || isQuestItemSellable(it)));
+      const sellable = it.type==='equip' || it.type==='hp' || it.type==='mp' || it.type==='luck'
+         || (it.sell && (it.type==='junk' || isQuestItemSellable(it)));
       if(sellable) idxList.push(i);
    });
    if(idxList.length===0) return;
    const count = idxList.length;
-   const total = idxList.reduce((sum,i) => {
-      const it = state.inventory[i];
-      return sum + (it.type==='equip' ? getGearSellValue(it) : it.sell);
-   }, 0);
+   const total = idxList.reduce((sum,i) => sum + getItemSellValue(state.inventory[i]), 0);
    /* Tinker bonus applied to the total, then rounded once, so per-unit
    rounding can't shave off Pop Tabs across a multi-item sale. */
    const earned = Math.round(total * (1 + TINKER_SELL_BONUS[state.buildingUpgrades.tinker || 0]));

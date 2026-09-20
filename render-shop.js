@@ -205,10 +205,12 @@ if(shopTab === 'food' || shopTab === 'gear'){
 
 const sellSection = document.createElement('div');
   sellSection.innerHTML = '<div class="shop-section-title">Sell Your Junk</div>';
-  /* Equip items are always sellable now — getGearSellValue() (item-tiers.js)
-  derives a price from tier/bonus, so there's no stored `sell` field to
-  gate on the way junk/quest items still have. */
-  const sellable = state.inventory.filter(it => it.type==='equip' || (it.sell && (it.type==='junk' || isQuestItemSellable(it))));
+  /* Equip/consumable items are always sellable now — getItemSellValue()
+  (item-tiers.js) derives a price from tier/bonus or tier/heal-value, so
+  there's no stored `sell` field to gate on the way junk/quest items
+  still have. */
+  const sellable = state.inventory.filter(it => it.type==='equip' || it.type==='hp' || it.type==='mp' || it.type==='luck'
+    || (it.sell && (it.type==='junk' || isQuestItemSellable(it))));
 
 if(sellable.length===0){
   sellSection.innerHTML += '<div class="shop-empty">Nothing in your pack worth selling. Bring back some gnome junk.</div>';
@@ -232,7 +234,7 @@ if(sellable.length===0){
     const div = document.createElement('div');
     div.className = 'shop-item';
     const iconSvg = item.icon ? item.icon() : '';
-    const unitSell = item.type==='equip' ? getGearSellValue(item) : item.sell;
+    const unitSell = getItemSellValue(item);
     const total = unitSell * count;
     const tierArg = item.type==='equip' ? `, '${item.tier}'` : '';
     div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)} <span class="qty-badge">×${count}</span></div><div class="desc">${item.desc} (${unitSell} Pop Tab${unitSell>1?'s':''} each)</div><button class="btn-secondary" onclick="sellItemByName('${item.name.replace(/'/g,"\\'")}'${tierArg})">Sell All — ${total} Pop Tabs</button></div>`;
