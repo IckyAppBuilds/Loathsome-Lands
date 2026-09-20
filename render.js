@@ -375,6 +375,7 @@ if(state.inCombat){
 } else if(state.showVictory && state.victoryMonster){
   document.getElementById('scene-art').innerHTML = artDefeated(state.victoryMonster.art);
   document.getElementById('victory-banner').style.display = 'block';
+  document.getElementById('victory-drops').innerHTML = victoryDropsHtml(state.victoryMonster.drops);
 } else if(isGafferHouse){
   document.getElementById('scene-art').innerHTML = artVillager();
   document.getElementById('victory-banner').style.display = 'none';

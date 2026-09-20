@@ -573,8 +573,16 @@ clearLog();
       log(`You defeat ${defeatedName}! (+${xpGain} XP)`);
    }
    state.xp += xpGain;
+   /* Everything actually pushed to state.inventory below also collects
+   here, so the victory banner (render.js) can show each drop exactly as
+   the Pack would — same item objects, not a re-derived guess. Left
+   empty (and never read) for the wasBuildingTrialFight case above,
+   since none of those bosses carry loot/rareDrop/gearDrop anyway. */
+   const drops = [];
    if(lootRoll){
-      state.inventory.push({...lootRoll});
+      const lootedItem = {...lootRoll};
+      state.inventory.push(lootedItem);
+      drops.push(lootedItem);
       log(`You loot: ${lootRoll.name}.`);
    }
    if(rareRoll){
@@ -584,7 +592,9 @@ clearLog();
       is uniformly the game's top item tier regardless. getItemTier()
       (item-tiers.js) always prefers this explicit tier over its
       type-based fallback. */
-      state.inventory.push({...rareRoll, tier:'legendary'});
+      const rareItem = {...rareRoll, tier:'legendary'};
+      state.inventory.push(rareItem);
+      drops.push(rareItem);
       log(`Wait — something rare. You find: ${rareRoll.name}!`);
       /* Rare-drop collection log — record the first time this specific rare
       item is ever obtained (kept even if later sold/lost). Once every
@@ -606,10 +616,12 @@ clearLog();
    if(gearRoll){
       const gearItem = rollGearDropTier(gearRoll);
       state.inventory.push(gearItem);
+      drops.push(gearItem);
       log(gearItem.tier === 'common'
           ? `It drops something wearable: ${gearItem.name}.`
           : `It drops something wearable — and a nice one: ${gearItem.name}!`);
    }
+   if(state.victoryMonster) state.victoryMonster.drops = drops;
    /* Bounty Board progress — checked against the CURRENT zone as well as the
    monster's name, since bounty monster names could theoretically collide
    across zones even though today's roster doesn't. */

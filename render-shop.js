@@ -76,6 +76,27 @@ INVENTORY_SECTIONS.forEach(section=>{
 });
 }
 
+/* Item rows for whatever just dropped off the monster winCombat() (combat.js)
+just beat — collected onto state.victoryMonster.drops there, the same
+item objects pushed to state.inventory, so this is never a re-derived
+guess at what dropped. Same row markup as renderInventory()'s Equipment/
+Loot rows (icon, tier-colored name, bonus/requirement text) minus the
+Use/Equip button, since these are already sitting in the Pack — this is
+just an at-a-glance preview on the combat screen itself, not a second
+place to act on them. */
+function victoryDropsHtml(drops){
+  if(!drops || drops.length===0) return '';
+  return drops.map(item=>{
+    const iconSvg = item.icon ? item.icon() : '';
+    const slotBadge = item.type==='equip' ? ` <span class="qty-badge">${SLOT_LABELS[item.slot]}</span>` : '';
+    const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
+      ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
+      : '';
+    const reqText = item.type==='equip' ? gearRequirementText(item) : '';
+    return `<div class="inv-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}${slotBadge}</div><div class="desc">${item.desc}${bonusText}${reqText}</div></div></div>`;
+  }).join('');
+}
+
 /* Which pane of the Shop is showing: 'food' | 'gear' | 'sell'. UI-only —
 not part of `state`, not saved — reset to 'food' on every enterShop()
 (game.js) so the drawer doesn't reopen wherever it was left last time. */

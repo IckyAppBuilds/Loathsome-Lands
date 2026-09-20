@@ -144,6 +144,17 @@ header h1{
   transform:rotate(-1.2deg);
   margin:2px 0 4px;
 }
+/* Un-rotates/un-centers item rows dropped into the banner above (they
+reuse .inv-item, the same card the Pack uses, which reads badly tilted
+and centered) — empty (no drop this fight) collapses to nothing. */
+.victory-drops{
+  transform:rotate(1.2deg);
+  text-align:left;
+  font-weight:400;
+  font-size:1rem;
+  text-shadow:none;
+}
+.victory-drops:not(:empty){ margin-top:8px; }
 .scene-art{
   display:flex;
   justify-content:center;
