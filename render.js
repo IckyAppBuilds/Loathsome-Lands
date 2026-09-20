@@ -187,7 +187,7 @@ document.getElementById('casino-trial-hint').style.display = (isCasino && classQ
   if(isCasino && classQuestState==='trials'){
     document.getElementById('casino-trial-hint').textContent = state.classTrialCasinoPassed
       ? "You've already put the Casino's own cardsharp in their place — that trial is passed."
-      : "The Croupier nods toward a card sharp working the far table — impossible to pin down, by all accounts. Trial-takers prove their nerve by beating them outright.";
+      : "The Croupier nods toward a cardsharp working the far table — impossible to pin down, by all accounts. Trial-takers prove their nerve by beating them outright.";
   }
   document.getElementById('casino-trial-row').style.display = (isCasino && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('start-trial-fight-casino-btn').style.display = (classQuestState==='trials' && !state.classTrialCasinoPassed) ? '' : 'none';
