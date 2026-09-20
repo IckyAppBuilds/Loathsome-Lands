@@ -281,6 +281,13 @@ button:disabled{ opacity:0.45; cursor:default; }
   background-color:var(--yellow);
   background-image:repeating-linear-gradient(135deg, rgba(43,43,40,0.08) 0px, rgba(43,43,40,0.08) 2px, transparent 2px, transparent 8px);
 }
+/* Toggled (render.js) on a quest turn-in button once its actual turn-in
+condition is met — a visible "go do this" cue distinct from just not
+being greyed out by button:disabled above. */
+.btn-ready{
+  background-color:var(--green);
+  color:var(--white);
+}
 .btn-attack{
   background-color:var(--red);
   background-image:repeating-linear-gradient(135deg, rgba(244,239,228,0.14) 0px, rgba(244,239,228,0.14) 2px, transparent 2px, transparent 8px);

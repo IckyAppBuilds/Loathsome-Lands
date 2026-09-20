@@ -223,25 +223,30 @@ document.getElementById('gaffer-row').style.display = (isGafferHouse && !state.i
   document.getElementById('accept-quest-btn').style.display = questState==='offer' ? '' : 'none';
   document.getElementById('give-tines-btn').style.display = questState==='active' ? '' : 'none';
   document.getElementById('give-tines-btn').disabled = !canGive;
+  document.getElementById('give-tines-btn').classList.toggle('btn-ready', canGive);
   document.getElementById('give-tines-btn').textContent = tinesHeld>0 ? `Give Rake Tines (${Math.min(tinesHeld,tinesStillNeeded)})` : 'Give Rake Tines';
 
 document.getElementById('guild-row').style.display = (isGuild && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('accept-quest2-btn').style.display = quest2State==='offer' ? '' : 'none';
   document.getElementById('report-kill-btn').style.display = quest2State==='active' ? '' : 'none';
   document.getElementById('report-kill-btn').disabled = !canReport;
+  document.getElementById('report-kill-btn').classList.toggle('btn-ready', canReport);
   document.getElementById('report-kill-btn').textContent = state.commanderDefeated ? 'Report the Kill' : 'Report the Kill (not yet)';
 
 document.getElementById('accept-quest6-btn').style.display = quest6State==='offer' ? '' : 'none';
   document.getElementById('report-gnomeking-btn').style.display = quest6State==='active' ? '' : 'none';
   document.getElementById('report-gnomeking-btn').disabled = !canReportGnomeKing;
+  document.getElementById('report-gnomeking-btn').classList.toggle('btn-ready', canReportGnomeKing);
   document.getElementById('report-gnomeking-btn').textContent = state.quest6RareDefeated ? 'Report the Gnome King' : 'Report the Gnome King (not yet)';
 
 document.getElementById('accept-quest7-btn').style.display = quest7State==='offer' ? '' : 'none';
   document.getElementById('report-gnomeking-defeat-btn').style.display = quest7State==='ready' ? '' : 'none';
+  document.getElementById('report-gnomeking-defeat-btn').classList.toggle('btn-ready', quest7State==='ready');
 
 document.getElementById('accept-quest3-btn').style.display = quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = quest3State==='active' ? '' : 'none';
   document.getElementById('brew-potion-btn').disabled = !canBrew;
+  document.getElementById('brew-potion-btn').classList.toggle('btn-ready', canBrew);
   document.getElementById('brew-potion-btn').textContent = canBrew ? 'Brew the Potion' : `Brew the Potion (${ingredientsHeld}/${potionIngredients.length})`;
 
 document.getElementById('trial-row').style.display = (isGuild && !state.inCombat) ? 'flex' : 'none';
@@ -250,15 +255,20 @@ document.getElementById('trial-row').style.display = (isGuild && !state.inCombat
   document.getElementById('claim-path-beef-btn').style.display = classQuestState==='ready' ? '' : 'none';
   document.getElementById('claim-path-zip-btn').style.display = classQuestState==='ready' ? '' : 'none';
   document.getElementById('claim-path-hoodoo-btn').style.display = classQuestState==='ready' ? '' : 'none';
+  document.getElementById('claim-path-beef-btn').classList.toggle('btn-ready', classQuestState==='ready');
+  document.getElementById('claim-path-zip-btn').classList.toggle('btn-ready', classQuestState==='ready');
+  document.getElementById('claim-path-hoodoo-btn').classList.toggle('btn-ready', classQuestState==='ready');
 
 document.getElementById('tinker-row').style.display = (isTinker && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('accept-quest4-btn').style.display = quest4State==='offer' ? '' : 'none';
   document.getElementById('report-diggerbot-btn').style.display = quest4State==='active' ? '' : 'none';
   document.getElementById('report-diggerbot-btn').disabled = !canReportDigger;
+  document.getElementById('report-diggerbot-btn').classList.toggle('btn-ready', canReportDigger);
   document.getElementById('report-diggerbot-btn').textContent = state.quest4RareDefeated ? 'Report the Digger-Bot' : 'Report the Digger-Bot (not yet)';
   document.getElementById('accept-quest5-btn').style.display = quest5State==='offer' ? '' : 'none';
   document.getElementById('turn-in-vein-btn').style.display = quest5State==='active' ? '' : 'none';
   document.getElementById('turn-in-vein-btn').disabled = !canTurnInVein;
+  document.getElementById('turn-in-vein-btn').classList.toggle('btn-ready', canTurnInVein);
   document.getElementById('turn-in-vein-btn').textContent = canTurnInVein ? 'Turn In the Parts' : `Turn In the Parts (${veinHeld}/${veinNeeded})`;
 
 /* quest-box only takes up space when a building actually has something
