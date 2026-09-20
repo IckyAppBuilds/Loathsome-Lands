@@ -223,6 +223,23 @@ if(isGafferHouse){
     document.getElementById('quest-name').textContent = 'Quest: The Gnome Commander';
     document.getElementById('quest-desc').textContent = "Hunt down and defeat the gnome commander in the Overgrown Commons. He's rare — keep adventuring until he shows himself.";
     document.getElementById('quest-progress').textContent = state.commanderDefeated ? 'Commander defeated — report back!' : 'Commander not yet encountered.';
+  } else if(classQuestState==='offer'){
+    /* Takes priority over quest6/quest7's own active/offer dialog below —
+    hitting level 10 (the only gate on this offer besides quest2Complete)
+    can easily happen mid-quest6 or mid-quest7, and a player shouldn't
+    have the Trial's availability hidden behind whichever mainline quest
+    happens to be showing at the time. */
+    document.getElementById('quest-name').textContent = "Quest available: The Adventurer's Trial";
+    document.getElementById('quest-desc').textContent = "You've reached level 10. The guildmaster looks you over — really looks, this time. There's a Trial for adventurers who come this far, and it isn't the Guild's alone to give: the guildmaster, the Casino's croupier, and the Hoodoo Doctor each test something different before a name gets put to what you've become.";
+    document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+  } else if(classQuestState==='trials'){
+    document.getElementById('quest-name').textContent = "Quest: The Adventurer's Trial";
+    document.getElementById('quest-desc').textContent = "Three trainers, three tests, and no partial credit. Beat the Guild's Trial Champion in a fight, win a big enough bet at the Casino, and land a killing blow with a damage spell at the Hoodoo Doctor's. Pass all three, then come back here to claim your path.";
+    document.getElementById('quest-progress').textContent = `Guild: ${state.classTrialGuildPassed ? '✓ passed' : 'not yet'} — Casino: ${state.classTrialCasinoPassed ? '✓ passed' : 'not yet'} — Hoodoo: ${state.classTrialHoodooPassed ? '✓ passed' : 'not yet'}`;
+  } else if(classQuestState==='ready'){
+    document.getElementById('quest-name').textContent = "Quest: The Adventurer's Trial";
+    document.getElementById('quest-desc').textContent = "All three trainers agree: you're ready. The guildmaster will name your path — choose it below.";
+    document.getElementById('quest-progress').textContent = 'All three trials passed — claim your path.';
   } else if(quest6State==='active'){
     document.getElementById('quest-name').textContent = "Quest: The Gnome King's Throne";
     document.getElementById('quest-desc').textContent = "Hunt down and defeat the Gnome King's captain, left to guard his retreat in the Sunless Vault. He's rare — keep adventuring until he shows himself.";
@@ -258,18 +275,6 @@ if(isGafferHouse){
       document.getElementById('quest-desc').textContent = "The gnome commander has been dealt with. The guildmaster seems genuinely impressed, which seems rare for him. He mentions the sewers under the square have been acting up too — worth a look, if you're not afraid of rats.";
       document.getElementById('quest-progress').textContent = 'Reward claimed. The Dank Sewers are now open — check the Map.';
     }
-  } else if(classQuestState==='offer'){
-    document.getElementById('quest-name').textContent = "Quest available: The Adventurer's Trial";
-    document.getElementById('quest-desc').textContent = "You've reached level 10. The guildmaster looks you over — really looks, this time. There's a Trial for adventurers who come this far, and it isn't the Guild's alone to give: the guildmaster, the Casino's croupier, and the Hoodoo Doctor each test something different before a name gets put to what you've become.";
-    document.getElementById('quest-progress').textContent = 'Not yet accepted.';
-  } else if(classQuestState==='trials'){
-    document.getElementById('quest-name').textContent = "Quest: The Adventurer's Trial";
-    document.getElementById('quest-desc').textContent = "Three trainers, three tests, and no partial credit. Beat the Guild's Trial Champion in a fight, win a big enough bet at the Casino, and land a killing blow with a damage spell at the Hoodoo Doctor's. Pass all three, then come back here to claim your path.";
-    document.getElementById('quest-progress').textContent = `Guild: ${state.classTrialGuildPassed ? '✓ passed' : 'not yet'} — Casino: ${state.classTrialCasinoPassed ? '✓ passed' : 'not yet'} — Hoodoo: ${state.classTrialHoodooPassed ? '✓ passed' : 'not yet'}`;
-  } else if(classQuestState==='ready'){
-    document.getElementById('quest-name').textContent = "Quest: The Adventurer's Trial";
-    document.getElementById('quest-desc').textContent = "All three trainers agree: you're ready. The guildmaster will name your path — choose it below.";
-    document.getElementById('quest-progress').textContent = 'All three trials passed — claim your path.';
   } else if(quest7State==='locked'){
     /* True fallback for "class claimed but quest7 itself isn't offerable
     yet" — shouldn't actually be reachable given quest7's own gate
