@@ -293,7 +293,10 @@ adding a new district.
 
 ## economy.js — shop sell/buy + Biscuit regen + Casino passive income
 `isQuestItemSellable`/`sellItemByName`/`getAvailableShopItems`/
-`buyItemByName`, `randInt`, the Biscuit (energy) economy
+`buyItemByName` (rolls tier-2/3 gear's secondary stat(s) fresh via
+`rollShopGearStats()` on every purchase — the primary stat/value is
+fixed by the definition, only which OTHER stat(s) it gets is random),
+`randInt`, the Biscuit (energy) economy
 (`BISCUIT_MAX`/`effectiveBiscuitMax()`/`BISCUIT_REGEN_MS`/
 `regenBiscuits`/`msUntilNextBiscuit`/`formatMs`/`updateBiscuitDisplay`
 + its `setInterval`), and the Casino's passive income

@@ -85,9 +85,23 @@ function renderShopItemRow(def){
   const iconSvg = def.icon ? def.icon() : '';
   const canAfford = state.popTabs >= def.price;
   const slotTag = def.slot ? ` <span class="qty-badge">${SLOT_LABELS[def.slot]}</span>` : '';
-  const bonusTag = def.bonus && Object.keys(def.bonus).length
-  ? ` (${Object.entries(def.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
-    : '';
+  /* Tier 2/3 gear rolls its secondary stat(s) fresh at purchase
+  (rollShopGearStats(), economy.js) rather than always granting the
+  specific secondary stat(s) listed on this definition — so the listing
+  shows the guaranteed primary stat plus how many stats get rolled,
+  not a promise of exactly which ones. Tier 1 (a single stat) has
+  nothing to roll, so it still shows its one stat plainly. */
+  const statKeys = def.bonus ? Object.keys(def.bonus) : [];
+  let bonusTag = '';
+  if(statKeys.length === 1){
+    bonusTag = ` (+${def.bonus[statKeys[0]]} ${STAT_LABELS[statKeys[0]]})`;
+  } else if(statKeys.length > 1){
+    const primaryStat = statKeys[0];
+    const secondaryCount = statKeys.length - 1;
+    bonusTag = def.type === 'equip'
+    ? ` (+${def.bonus[primaryStat]} ${STAT_LABELS[primaryStat]}, plus ${secondaryCount} random stat${secondaryCount>1?'s':''})`
+      : ` (${Object.entries(def.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`;
+  }
   div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(def)}${slotTag}</div><div class="desc">${def.desc}${bonusTag} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyItemByName('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
   return div;
 }
@@ -112,11 +126,27 @@ const allItems = getAvailableShopItems();
 if(shopTab === 'food' || shopTab === 'gear'){
   const items = allItems.filter(def => def.type === (shopTab === 'food' ? 'hp' : 'equip'));
   const section = document.createElement('div');
-  section.innerHTML = `<div class="shop-section-title">${shopTab === 'food' ? 'Food For Sale' : 'Gear For Sale'}</div>`;
   if(items.length === 0){
-    section.innerHTML += '<div class="shop-empty">Nothing here yet. Upgrading the Shop (Town Lot) brings in better stock.</div>';
+    section.innerHTML = `<div class="shop-section-title">${shopTab === 'food' ? 'Food For Sale' : 'Gear For Sale'}</div><div class="shop-empty">Nothing here yet. Upgrading the Shop (Town Lot) brings in better stock.</div>`;
   } else {
-    items.forEach(def => section.appendChild(renderShopItemRow(def)));
+    /* Each tier gets its own section instead of one flat list that just
+    grows as more tiers unlock — tier order is fixed (common -> uncommon
+    -> rare) rather than trusting array order, since shopBuyItems/
+    shopGearItemsTier2/Tier3 concatenate in unlock order, not tier order.
+    Section header colored to match that tier's rarity color
+    (item-tiers.js), same visual language as the items listed under it. */
+    const TIER_ORDER = ['common', 'uncommon', 'rare'];
+    const TIER_LABEL = { common:'Tier 1', uncommon:'Tier 2', rare:'Tier 3' };
+    TIER_ORDER.forEach(tier => {
+      const tierItems = items.filter(def => (def.tier || 'common') === tier);
+      if(tierItems.length === 0) return;
+      const header = document.createElement('div');
+      header.className = 'shop-section-title';
+      header.style.color = ITEM_TIER_COLORS[tier];
+      header.textContent = `${TIER_LABEL[tier]} ${shopTab === 'food' ? 'Food' : 'Gear'}`;
+      section.appendChild(header);
+      tierItems.forEach(def => section.appendChild(renderShopItemRow(def)));
+    });
   }
   shopList.appendChild(section);
   return;

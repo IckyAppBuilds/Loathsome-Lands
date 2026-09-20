@@ -52,14 +52,39 @@ function getAvailableShopItems(){
    return items;
 }
 
+/* Tier 2/3 shop gear (shopGearItemsTier2/3, content.js) keeps its
+authored primary stat/value, but rolls which OTHER stat(s) it actually
+gets fresh on every purchase — same "guaranteed primary, randomized
+secondary" shape as rollGearDropTier() (combat.js) uses for monster
+drops, minus the tier roll itself (a shop purchase's tier is already
+fixed by which tier's price you paid). Tier 1 (a single stat) and
+non-equip items pass through unchanged — there's nothing to roll. */
+function rollShopGearStats(def){
+   if(def.type !== 'equip' || !def.bonus) return { ...def };
+   const statKeys = Object.keys(def.bonus);
+   if(statKeys.length <= 1) return { ...def };
+   const primaryStat = statKeys[0];
+   const primaryValue = def.bonus[primaryStat];
+   const secondaryCount = statKeys.length - 1;
+   const candidates = ['beef','zip','grit','hoodoo'].filter(s => s !== primaryStat);
+   const shuffled = candidates.map(s => ({ s, r: Math.random() })).sort((a,b) => a.r - b.r).map(x => x.s);
+   const bonus = { [primaryStat]: primaryValue };
+   shuffled.slice(0, secondaryCount).forEach(s => { bonus[s] = 1; });
+   return { ...def, bonus };
+}
+
 function buyItemByName(name){
    if(state.location !== 'shop') return;
    const def = getAvailableShopItems().find(i=>i.name===name);
    if(!def || state.popTabs < def.price) return;
    state.popTabs -= def.price;
-   state.inventory.push({...def});
+   const item = rollShopGearStats(def);
+   state.inventory.push(item);
    clearLog();
-   log(`You buy ${def.name} for ${def.price} Pop Tabs.`);
+   const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
+   ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
+     : '';
+   log(`You buy ${item.name} for ${def.price} Pop Tabs.${bonusText}`);
    render();
 }
 
