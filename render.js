@@ -85,16 +85,16 @@ document.getElementById('noticeboard-row').style.display = (isNoticeBoard && !st
 /* Recommended-level guideline on every adventure zone's Map card
 (ZONE_LEVEL_RECOMMENDATION, content.js) — purely advisory, doesn't gate
 anything (that's still state.questXComplete/travelTo()'s own checks),
-just tells the player where they should roughly be before treating a
-zone as "current" rather than "already outleveled" or "not ready yet".
-Colored red below the recommendation, tan at or above it — same
-red-means-pay-attention language .ztag's "Locked" text already uses. */
+just tells the player roughly which levels this zone is meant for.
+`min` is a floor (below it, colored red — same "pay attention" language
+.ztag's "Locked" text already uses); `max`, where the zone has one,
+rounds it out into a real range rather than just an open-ended "+". */
 Object.keys(ZONE_LEVEL_RECOMMENDATION).forEach(zone => {
   const el = document.getElementById(`zlevel-${zone}`);
   if(!el) return;
   const rec = ZONE_LEVEL_RECOMMENDATION[zone];
-  el.textContent = `Recommended: Level ${rec}+`;
-  el.style.color = state.level >= rec ? 'var(--tan)' : 'var(--red)';
+  el.textContent = `Recommended: Level ${rec.min}${rec.max ? `-${rec.max}` : '+'}`;
+  el.style.color = state.level >= rec.min ? 'var(--tan)' : 'var(--red)';
 });
 
 const sewersUnlocked = state.quest2Complete;

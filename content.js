@@ -287,13 +287,35 @@ const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers',
 /* Shown on each zone's card in the Map drawer (render.js) as a "Recommended
 level" guideline — deliberately advisory, not a hard gate like zone
 unlocks (state.quest2/4/5/6Complete) or gear's own levelReq
-(getGearRequirements(), item-tiers.js) already are. Roughly tracks how
-far into the main quest chain a player typically is by the time each
-zone is actually reachable, independent of ZONE_DIFFICULTY above (that
-scales monster/combat numbers directly; this is just player-facing
-guidance) — landing a player in the right ballpark for both their own
-level and the gear tier they'd realistically have by then. */
-const ZONE_LEVEL_RECOMMENDATION = { commons:1, sewers:4, quarry:7, vault:10, gnometropolis:13 };
+(getGearRequirements(), item-tiers.js) already are. `min` is the floor:
+below it the zone is a real step up in difficulty (ZONE_DIFFICULTY above
+scales the actual combat numbers; this is just the player-facing
+guidance). `max` (undefined for gnometropolis, the open-ended finale
+zone) is roughly where a player naturally moves on to the next one.
+
+These are simulated, not guessed: a full autoplay through the main
+quest chain (10 runs, always attacking/fleeing/turning in the next
+available quest step, real combat RNG, only the Inn's real-world-time
+cooldown bypassed) measured the player's actual level at the moment
+each zone's unlock quest completed:
+- Sewers (quest2/gnomeCommander): unlocked at level 4-6 across all runs.
+- Quarry (quest4/diggerBot): 6-8.
+- Vault (quest5/vein parts): 7-9 — right on Quarry's heels, since
+  quest4->quest5 chain back-to-back with no real gap.
+- Gnometropolis (quest6/gnomeKingsCaptain): 16-17 in every run, NOT the
+  ~13 an earlier hand-guess assumed — hunting a 5%-per-fight rare spawn
+  while grinding the Vault (ZONE_DIFFICULTY 1.9x XP) reliably levels a
+  player far past Vault's own unlock floor before the captain shows up.
+  Vault's own `max` is set to just under this (15) rather than its raw
+  unlock ceiling (9), since that whole 7-15 span is genuinely how long a
+  player is actually still in the Vault, not just its arrival window. */
+const ZONE_LEVEL_RECOMMENDATION = {
+   commons: { min:1, max:4 },
+   sewers: { min:4, max:7 },
+   quarry: { min:6, max:9 },
+   vault: { min:7, max:15 },
+   gnometropolis: { min:15 },
+};
 
 /* Chance, per kill, that a monster's own rareDrop (defined per entry in
 monsters[] above) drops alongside its normal loot roll. What drops is

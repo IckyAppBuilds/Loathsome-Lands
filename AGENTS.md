@@ -173,10 +173,10 @@ changing how level/stat requirements scale off an item's bonus.
 
 ## render.js — core screen sync
 `render()` (bars, which location view is shown, quest banners, drawer
-counts, and each Map zone card's advisory "Recommended: Level X+" tag —
-`ZONE_LEVEL_RECOMMENDATION`, content.js, colored red/tan against
-`state.level`; doesn't gate anything, that's still travelTo()'s own
-quest-flag checks), `log()`/`clearLog()`, the counting helpers shared
+counts, and each Map zone card's advisory "Recommended: Level X-Y" tag
+— `ZONE_LEVEL_RECOMMENDATION` {min,max}, content.js, colored red/tan
+against `state.level`; doesn't gate anything, that's still travelTo()'s
+own quest-flag checks), `log()`/`clearLog()`, the counting helpers shared
 with the game.js-successor files (`countRakeTines`/
 `countPotionIngredientsHeld`/`countVeinIngredientsHeld`), and
 `capitalize()`.
