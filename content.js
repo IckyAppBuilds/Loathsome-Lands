@@ -37,88 +37,88 @@ stat, reused across every drop that carries that stat: of the Badger
 (grit), of the Loon (hoodoo). */
 const monsters = [
    { name:"a disgruntled compost gnome", hp:9, atkMin:1, atkMax:2, xp:3, zone:"commons",
-    art: artCompostGnome, loot:{name:"a fistful of righteous soil", desc:"Smells like victory and mulch.", type:"junk", sell:1, icon:iconSoil},
-    rareDrop:{name:"a gnome-sized medal of composting excellence", desc:"Awarded by nobody. Cherished anyway.", type:"junk", sell:10, icon:iconFigurine},
-    gearDrop:{name:"a compost-crusted trowel of the Badger", desc:"Sharpened on rocks, mostly by accident.", type:"equip", slot:"weapon", bonus:{beef:1}, tier:'common', icon:iconRakeShank} },
+    art: artCompostGnome, loot:{name:"fistful of righteous soil", desc:"Smells like victory and mulch.", type:"junk", sell:1, icon:iconSoil},
+    rareDrop:{name:"gnome-sized medal of composting excellence", desc:"Awarded by nobody. Cherished anyway.", type:"junk", sell:10, icon:iconFigurine},
+    gearDrop:{name:"compost-crusted trowel of the Badger", desc:"Sharpened on rocks, mostly by accident.", type:"equip", slot:"weapon", bonus:{beef:1}, tier:'common', icon:iconRakeShank} },
    { name:"a feral lawn gnome, off its stake", hp:8, atkMin:1, atkMax:3, xp:4, zone:"commons",
-    art: artGnomeFeral, loot:{name:"a bent rake tine", desc:"Still menacing, somehow.", type:"quest", key:"rakeTine", sell:2, icon:iconRakeTine},
-    rareDrop:{name:"a stake-shaped good luck charm", desc:"Whittled by whoever this gnome escaped from.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
-    gearDrop:{name:"a stake-notched shin guard of the Weasel", desc:"Salvaged off the stake it was chained to.", type:"equip", slot:"legs", bonus:{zip:1}, tier:'common', icon:iconShinGuard} },
+    art: artGnomeFeral, loot:{name:"bent rake tine", desc:"Still menacing, somehow.", type:"quest", key:"rakeTine", sell:2, icon:iconRakeTine},
+    rareDrop:{name:"stake-shaped good luck charm", desc:"Whittled by whoever this gnome escaped from.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
+    gearDrop:{name:"stake-notched shin guard of the Weasel", desc:"Salvaged off the stake it was chained to.", type:"equip", slot:"legs", bonus:{zip:1}, tier:'common', icon:iconShinGuard} },
    { name:"a fishing gnome with an empty bucket", hp:11, atkMin:1, atkMax:2, xp:4, zone:"commons",
-    art: artGnomeFishing, loot:{name:"a suspiciously confident lure", desc:"Has never once caught anything.", type:"junk", sell:2, icon:iconLure},
-    rareDrop:{name:"an actually-lucky fishing lure", desc:"This one's clearly caught something, at some point.", type:"junk", sell:11, icon:iconFigurine},
-    gearDrop:{name:"a waterlogged fishing hat of the Tortoise", desc:"Smells like pond. You get used to it.", type:"equip", slot:"head", bonus:{grit:1}, tier:'common', icon:iconPotLid} },
+    art: artGnomeFishing, loot:{name:"suspiciously confident lure", desc:"Has never once caught anything.", type:"junk", sell:2, icon:iconLure},
+    rareDrop:{name:"actually-lucky fishing lure", desc:"This one's clearly caught something, at some point.", type:"junk", sell:11, icon:iconFigurine},
+    gearDrop:{name:"waterlogged fishing hat of the Tortoise", desc:"Smells like pond. You get used to it.", type:"equip", slot:"head", bonus:{grit:1}, tier:'common', icon:iconPotLid} },
    { name:"a gnome cavalry unit, mounted on a garden snail", hp:13, atkMin:1, atkMax:3, xp:5, zone:"commons",
-    art: artGnomeSnail, loot:{name:"a spiral shell fragment", desc:"Still faintly slimy.", type:"junk", sell:3, icon:iconShellFragment},
-    rareDrop:{name:"a snail-slime polished pebble", desc:"Smooth as glass. Smells faintly of victory.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
-    gearDrop:{name:"a snail-shell breastplate of the Tortoise", desc:"Surprisingly load-bearing, for a shell.", type:"equip", slot:"chest", bonus:{grit:1}, tier:'common', icon:iconVest} },
+    art: artGnomeSnail, loot:{name:"spiral shell fragment", desc:"Still faintly slimy.", type:"junk", sell:3, icon:iconShellFragment},
+    rareDrop:{name:"snail-slime polished pebble", desc:"Smooth as glass. Smells faintly of victory.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
+    gearDrop:{name:"snail-shell breastplate of the Tortoise", desc:"Surprisingly load-bearing, for a shell.", type:"equip", slot:"chest", bonus:{grit:1}, tier:'common', icon:iconVest} },
    { name:"the self-appointed gnome sergeant", hp:17, atkMin:2, atkMax:4, xp:7, zone:"commons",
-    art: artGnomeSergeant, loot:{name:"a tiny sergeant's whistle", desc:"Blowing it clears your head a little.", type:"mp", value:4, icon:iconWhistle},
+    art: artGnomeSergeant, loot:{name:"tiny sergeant's whistle", desc:"Blowing it clears your head a little.", type:"mp", value:4, icon:iconWhistle},
     rareDrop:{name:"the sergeant's secret stash of medals", desc:"Every one of them self-awarded.", type:"junk", sell:12, icon:iconFigurine},
-    gearDrop:{name:"a sergeant's spit-shined boots of the Weasel", desc:"Standard issue. Aggressively polished.", type:"equip", slot:"boots", bonus:{zip:1}, tier:'common', icon:iconSpringBoots} },
+    gearDrop:{name:"sergeant's spit-shined boots of the Weasel", desc:"Standard issue. Aggressively polished.", type:"equip", slot:"boots", bonus:{zip:1}, tier:'common', icon:iconSpringBoots} },
    { name:"a sewer rat with delusions of grandeur", hp:15, atkMin:2, atkMax:4, xp:6, zone:"sewers",
-    art: artSewerRat, loot:{name:"a slightly damp rat tail", desc:"You're not sure why you kept this.", type:"junk", sell:2, icon:iconRatTail},
-    rareDrop:{name:"a rat king's tiny crown", desc:"Delusions of grandeur, it turns out, were warranted.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
-    gearDrop:{name:"a rat-gnawed divining rod of the Loon", desc:"Points at whatever it feels like, confidently.", type:"equip", slot:"weapon", bonus:{hoodoo:1}, tier:'common', icon:iconWandStick} },
+    art: artSewerRat, loot:{name:"slightly damp rat tail", desc:"You're not sure why you kept this.", type:"junk", sell:2, icon:iconRatTail},
+    rareDrop:{name:"rat king's tiny crown", desc:"Delusions of grandeur, it turns out, were warranted.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
+    gearDrop:{name:"rat-gnawed divining rod of the Loon", desc:"Points at whatever it feels like, confidently.", type:"equip", slot:"weapon", bonus:{hoodoo:1}, tier:'common', icon:iconWandStick} },
    { name:"a rat wearing a bottlecap as a helmet", hp:18, atkMin:2, atkMax:5, xp:7, zone:"sewers",
-    art: artRatHelmet, loot:{name:"a dented bottlecap helmet", desc:"Barely fits a rat. Definitely doesn't fit you.", type:"junk", sell:3, icon:iconBottlecapHelmet},
-    rareDrop:{name:"a helmet dented in a suspiciously lucky pattern", desc:"Every dent lines up with a near-miss.", type:"junk", sell:15, icon:iconFigurine},
-    gearDrop:{name:"a bottlecap-studded skullcap of the Tortoise", desc:"Rat-sized, once. Stretched since.", type:"equip", slot:"head", bonus:{grit:1}, tier:'common', icon:iconPotLid} },
+    art: artRatHelmet, loot:{name:"dented bottlecap helmet", desc:"Barely fits a rat. Definitely doesn't fit you.", type:"junk", sell:3, icon:iconBottlecapHelmet},
+    rareDrop:{name:"helmet dented in a suspiciously lucky pattern", desc:"Every dent lines up with a near-miss.", type:"junk", sell:15, icon:iconFigurine},
+    gearDrop:{name:"bottlecap-studded skullcap of the Tortoise", desc:"Rat-sized, once. Stretched since.", type:"equip", slot:"head", bonus:{grit:1}, tier:'common', icon:iconPotLid} },
    { name:"a positively enormous sewer rat", hp:24, atkMin:3, atkMax:6, xp:9, zone:"sewers",
-    art: artGiantSewerRat, loot:{name:"a rat-gnawed pipe fitting", desc:"Chewed clean through solid metal. Concerning.", type:"junk", sell:4, icon:iconPipeFitting},
-    rareDrop:{name:"a glowing sewer pearl", desc:"You don't ask how it got down here. Or how it glows.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
-    gearDrop:{name:"a rat-hide vest of the Tortoise", desc:"Roomier than you'd expect. Best not to think why.", type:"equip", slot:"chest", bonus:{grit:1}, tier:'common', icon:iconVest} },
+    art: artGiantSewerRat, loot:{name:"rat-gnawed pipe fitting", desc:"Chewed clean through solid metal. Concerning.", type:"junk", sell:4, icon:iconPipeFitting},
+    rareDrop:{name:"glowing sewer pearl", desc:"You don't ask how it got down here. Or how it glows.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
+    gearDrop:{name:"rat-hide vest of the Tortoise", desc:"Roomier than you'd expect. Best not to think why.", type:"equip", slot:"chest", bonus:{grit:1}, tier:'common', icon:iconVest} },
    { name:"three rats in a trenchcoat, unconvincingly", hp:20, atkMin:3, atkMax:5, xp:8, zone:"sewers",
-    art: artRatTrenchcoat, loot:{name:"a comically oversized coat button", desc:"None of the three rats will admit to owning this.", type:"junk", sell:3, icon:iconCoatButton},
+    art: artRatTrenchcoat, loot:{name:"comically oversized coat button", desc:"None of the three rats will admit to owning this.", type:"junk", sell:3, icon:iconCoatButton},
     rareDrop:{name:"the trenchcoat's secret inside pocket, still full", desc:"Whatever they were hiding, it's yours now.", type:"junk", sell:16, icon:iconFigurine},
-    gearDrop:{name:"a trenchcoat's spare trouser leg of the Weasel", desc:"The other two rats never noticed it was missing.", type:"equip", slot:"legs", bonus:{zip:1}, tier:'common', icon:iconQuickstepTrousers} },
+    gearDrop:{name:"trenchcoat's spare trouser leg of the Weasel", desc:"The other two rats never noticed it was missing.", type:"equip", slot:"legs", bonus:{zip:1}, tier:'common', icon:iconQuickstepTrousers} },
    { name:"a wind-up quarry drone, badly wound", hp:20, atkMin:3, atkMax:6, xp:10, zone:"quarry",
-    art: artQuarryDrone, loot:{name:"a stripped brass gear", desc:"Still spins if you flick it. Mostly for fun now.", type:"junk", sell:4, icon:iconGear},
-    rareDrop:{name:"a drone's still-humming power core", desc:"Warm, faintly ticking, best not examined too closely.", type:"junk", sell:19, icon:iconFigurine},
-    gearDrop:{name:"a drone's stripped control wand of the Loon", desc:"Still beeps if you squeeze it just right.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, tier:'common', icon:iconVizierScepter} },
+    art: artQuarryDrone, loot:{name:"stripped brass gear", desc:"Still spins if you flick it. Mostly for fun now.", type:"junk", sell:4, icon:iconGear},
+    rareDrop:{name:"drone's still-humming power core", desc:"Warm, faintly ticking, best not examined too closely.", type:"junk", sell:19, icon:iconFigurine},
+    gearDrop:{name:"drone's stripped control wand of the Loon", desc:"Still beeps if you squeeze it just right.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, tier:'common', icon:iconVizierScepter} },
    { name:"a gnome surveyor squinting at an upside-down map", hp:18, atkMin:3, atkMax:5, xp:9, zone:"quarry",
-    art: artGnomeSurveyor, loot:{name:"a crumpled survey map", desc:"Confidently wrong about where you are.", type:"junk", sell:3, icon:iconSurveyMap},
-    rareDrop:{name:"a compass that always points to safety", desc:"Not north. Safety. Somehow more useful.", type:"luck", hpValue:12, mpValue:6, icon:iconClover},
-    gearDrop:{name:"a surveyor's dented hard-hat of the Tortoise", desc:"Confidently the wrong size. Sturdy anyway.", type:"equip", slot:"head", bonus:{grit:2}, tier:'common', icon:iconGuardHelm} },
+    art: artGnomeSurveyor, loot:{name:"crumpled survey map", desc:"Confidently wrong about where you are.", type:"junk", sell:3, icon:iconSurveyMap},
+    rareDrop:{name:"compass that always points to safety", desc:"Not north. Safety. Somehow more useful.", type:"luck", hpValue:12, mpValue:6, icon:iconClover},
+    gearDrop:{name:"surveyor's dented hard-hat of the Tortoise", desc:"Confidently the wrong size. Sturdy anyway.", type:"equip", slot:"head", bonus:{grit:2}, tier:'common', icon:iconGuardHelm} },
    { name:"a pickaxe golem, held together by spite", hp:26, atkMin:4, atkMax:7, xp:13, zone:"quarry",
-    art: artPickaxeGolem, loot:{name:"a chipped pickaxe head", desc:"Has seen better decades.", type:"junk", sell:5, icon:iconPickaxeHead},
-    rareDrop:{name:"a fist-sized nugget of pure stubbornness", desc:"Heavier than it should be. Refuses to be dropped.", type:"junk", sell:20, icon:iconFigurine},
-    gearDrop:{name:"a golem's chipped chest-plating of the Tortoise", desc:"Held together by spite, same as the rest of it.", type:"equip", slot:"chest", bonus:{grit:2}, tier:'common', icon:iconClockworkPlate} },
+    art: artPickaxeGolem, loot:{name:"chipped pickaxe head", desc:"Has seen better decades.", type:"junk", sell:5, icon:iconPickaxeHead},
+    rareDrop:{name:"fist-sized nugget of pure stubbornness", desc:"Heavier than it should be. Refuses to be dropped.", type:"junk", sell:20, icon:iconFigurine},
+    gearDrop:{name:"golem's chipped chest-plating of the Tortoise", desc:"Held together by spite, same as the rest of it.", type:"equip", slot:"chest", bonus:{grit:2}, tier:'common', icon:iconClockworkPlate} },
    { name:"a rock-crusted quarry rat, huge for some reason", hp:22, atkMin:3, atkMax:6, xp:11, zone:"quarry",
-    art: artQuarryRat, loot:{name:"a fistful of ore-flecked grit", desc:"Somewhere between dirt and treasure. Mostly dirt.", type:"junk", sell:4, icon:iconOreGrit},
-    rareDrop:{name:"a rat-gnawed lucky pebble (not a rabbit's foot)", desc:"The rat was very clear on that point, somehow.", type:"luck", hpValue:12, mpValue:6, icon:iconClover},
+    art: artQuarryRat, loot:{name:"fistful of ore-flecked grit", desc:"Somewhere between dirt and treasure. Mostly dirt.", type:"junk", sell:4, icon:iconOreGrit},
+    rareDrop:{name:"rat-gnawed lucky pebble (not a rabbit's foot)", desc:"The rat was very clear on that point, somehow.", type:"luck", hpValue:12, mpValue:6, icon:iconClover},
     gearDrop:{name:"ore-crusted quarry boots of the Weasel", desc:"Better footing than they have any right to give.", type:"equip", slot:"boots", bonus:{zip:2}, tier:'common', icon:iconGripBoots} },
    { name:"a vault wisp, humming with old magic", hp:28, atkMin:4, atkMax:7, xp:15, zone:"vault",
-    art: artVaultWisp, loot:{name:"a sliver of captured light", desc:"Warm to the touch. Slightly judgmental.", type:"junk", sell:6, icon:iconCapturedLight},
-    rareDrop:{name:"a captured wisp of pure luck", desc:"It flickers approvingly whenever you make a good call.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
-    gearDrop:{name:"a wisp-charred conducting rod of the Loon", desc:"Still warm. Hums when you're not paying attention.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, tier:'common', icon:iconHeirloomRod} },
+    art: artVaultWisp, loot:{name:"sliver of captured light", desc:"Warm to the touch. Slightly judgmental.", type:"junk", sell:6, icon:iconCapturedLight},
+    rareDrop:{name:"captured wisp of pure luck", desc:"It flickers approvingly whenever you make a good call.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
+    gearDrop:{name:"wisp-charred conducting rod of the Loon", desc:"Still warm. Hums when you're not paying attention.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, tier:'common', icon:iconHeirloomRod} },
    { name:"a stone sentinel, one eye still lit", hp:34, atkMin:5, atkMax:8, xp:18, zone:"vault",
-    art: artStoneSentinel, loot:{name:"a fractured sentinel eye", desc:"Stopped watching. Eventually.", type:"junk", sell:7, icon:iconSentinelEye},
+    art: artStoneSentinel, loot:{name:"fractured sentinel eye", desc:"Stopped watching. Eventually.", type:"junk", sell:7, icon:iconSentinelEye},
     rareDrop:{name:"the sentinel's other eye, still watching", desc:"You can feel it tracking you from the bottom of your pack.", type:"junk", sell:26, icon:iconFigurine},
-    gearDrop:{name:"a sentinel's cracked faceplate of the Tortoise", desc:"One eye socket. Still watching, faithfully.", type:"equip", slot:"head", bonus:{grit:2}, tier:'common', icon:iconChampionCrown} },
-   { name:"a hoard-rat, absolutely covered in gold flecks", hp:26, atkMin:4, atkMax:7, xp:14, zone:"vault",art: artHoardRat, loot:{name:"a gold-dusted whisker", desc:"Rich by rat standards.", type:"junk", sell:6, icon:iconGoldWhisker},
-    rareDrop:{name:"a fistful of the hoard-rat's actual hoard", desc:"It was surprisingly well-organized, for a rat.", type:"junk", sell:28, icon:iconFigurine},
+    gearDrop:{name:"sentinel's cracked faceplate of the Tortoise", desc:"One eye socket. Still watching, faithfully.", type:"equip", slot:"head", bonus:{grit:2}, tier:'common', icon:iconChampionCrown} },
+   { name:"a hoard-rat, absolutely covered in gold flecks", hp:26, atkMin:4, atkMax:7, xp:14, zone:"vault",art: artHoardRat, loot:{name:"gold-dusted whisker", desc:"Rich by rat standards.", type:"junk", sell:6, icon:iconGoldWhisker},
+    rareDrop:{name:"fistful of the hoard-rat's actual hoard", desc:"It was surprisingly well-organized, for a rat.", type:"junk", sell:28, icon:iconFigurine},
     gearDrop:{name:"gold-flecked greaves of the Weasel", desc:"Surprisingly light, for how much they're worth.", type:"equip", slot:"legs", bonus:{zip:2}, tier:'common', icon:iconBurrowGreaves} },
    { name:"an animated suit of ceremonial armor, empty inside", hp:36, atkMin:5, atkMax:9, xp:20, zone:"vault",
-    art: artCeremonialArmor, loot:{name:"a dented ceremonial gauntlet", desc:"Once belonged to somebody important, probably.", type:"junk", sell:8, icon:iconCeremonialGauntlet},
-    rareDrop:{name:"a ceremonial luck-charm, still humming with old magic", desc:"Whoever it was made for never got to keep it.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
-    gearDrop:{name:"a scrap of animated ceremonial mail of the Tortoise", desc:"Keeps twitching like it's still wearing someone.", type:"equip", slot:"chest", bonus:{grit:2}, tier:'common', icon:iconAdventurerCuirass} },
+    art: artCeremonialArmor, loot:{name:"dented ceremonial gauntlet", desc:"Once belonged to somebody important, probably.", type:"junk", sell:8, icon:iconCeremonialGauntlet},
+    rareDrop:{name:"ceremonial luck-charm, still humming with old magic", desc:"Whoever it was made for never got to keep it.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
+    gearDrop:{name:"scrap of animated ceremonial mail of the Tortoise", desc:"Keeps twitching like it's still wearing someone.", type:"equip", slot:"chest", bonus:{grit:2}, tier:'common', icon:iconAdventurerCuirass} },
    { name:"a gnome vizier, draped in stolen finery", hp:34, atkMin:5, atkMax:9, xp:19, zone:"gnometropolis",
-    art: artGnomeVizier, loot:{name:"a vizier's confiscated ledger", desc:"Every debt in Gnometropolis, written in tiny cramped handwriting.", type:"junk", sell:9, icon:iconVizierLedger},
-    rareDrop:{name:"a vizier's uncanny hunch, bottled", desc:"It practically whispers good advice.", type:"luck", hpValue:18, mpValue:9, icon:iconClover},
-    gearDrop:{name:"a vizier's confiscated cane-wand of the Loon", desc:"Equal parts walking stick and unlicensed magic.", type:"equip", slot:"weapon", bonus:{hoodoo:3}, tier:'common', icon:iconWandStick} },
+    art: artGnomeVizier, loot:{name:"vizier's confiscated ledger", desc:"Every debt in Gnometropolis, written in tiny cramped handwriting.", type:"junk", sell:9, icon:iconVizierLedger},
+    rareDrop:{name:"vizier's uncanny hunch, bottled", desc:"It practically whispers good advice.", type:"luck", hpValue:18, mpValue:9, icon:iconClover},
+    gearDrop:{name:"vizier's confiscated cane-wand of the Loon", desc:"Equal parts walking stick and unlicensed magic.", type:"equip", slot:"weapon", bonus:{hoodoo:3}, tier:'common', icon:iconWandStick} },
    { name:"a heavily-armored gnome guard", hp:44, atkMin:6, atkMax:10, xp:23, zone:"gnometropolis",
-    art: artGnomeGuard, loot:{name:"a dented guard-captain's shield-boss", desc:"Scratched from decades of very small, very serious duels.", type:"junk", sell:10, icon:iconShieldBoss},
+    art: artGnomeGuard, loot:{name:"dented guard-captain's shield-boss", desc:"Scratched from decades of very small, very serious duels.", type:"junk", sell:10, icon:iconShieldBoss},
     rareDrop:{name:"the guard-captain's ceremonial sash", desc:"Awarded for uninterrupted vigilance. Interrupted now.", type:"junk", sell:32, icon:iconFigurine},
-    gearDrop:{name:"a guard's dented vambrace-plating of the Tortoise", desc:"Decades of very small, very serious duels.", type:"equip", slot:"chest", bonus:{grit:3}, tier:'common', icon:iconClockworkPlate} },
+    gearDrop:{name:"guard's dented vambrace-plating of the Tortoise", desc:"Decades of very small, very serious duels.", type:"equip", slot:"chest", bonus:{grit:3}, tier:'common', icon:iconClockworkPlate} },
    { name:"a burrowing tunnel-worm, gnome-bred", hp:38, atkMin:6, atkMax:10, xp:21, zone:"gnometropolis",
-    art: artBurrowWorm, loot:{name:"a chitinous burrow-shell fragment", desc:"Warm from the tunnel. You don't ask why.", type:"junk", sell:9, icon:iconBurrowShell},
-    rareDrop:{name:"a burrow-worm's lucky cast-off tooth", desc:"Smooth, oddly warm, and very possibly why you're still standing.", type:"luck", hpValue:19, mpValue:9, icon:iconClover},
+    art: artBurrowWorm, loot:{name:"chitinous burrow-shell fragment", desc:"Warm from the tunnel. You don't ask why.", type:"junk", sell:9, icon:iconBurrowShell},
+    rareDrop:{name:"burrow-worm's lucky cast-off tooth", desc:"Smooth, oddly warm, and very possibly why you're still standing.", type:"luck", hpValue:19, mpValue:9, icon:iconClover},
     gearDrop:{name:"worm-chewed tunneling boots of the Weasel", desc:"Already broken in. Not by you.", type:"equip", slot:"boots", bonus:{zip:3}, tier:'common', icon:iconBlessedBoots} },
    { name:"a rogue clockwork automaton, sparking wildly", hp:46, atkMin:7, atkMax:11, xp:26, zone:"gnometropolis",
-    art: artFeralAutomaton, loot:{name:"a scorched servo joint", desc:"Still twitches, if you're not careful.", type:"junk", sell:11, icon:iconServoJoint},
+    art: artFeralAutomaton, loot:{name:"scorched servo joint", desc:"Still twitches, if you're not careful.", type:"junk", sell:11, icon:iconServoJoint},
     rareDrop:{name:"the automaton's still-warm power cell", desc:"Hums like it's not entirely done working yet.", type:"junk", sell:34, icon:iconFigurine},
-    gearDrop:{name:"an automaton's salvaged headplate of the Tortoise", desc:"Still sparks a little when it rains.", type:"equip", slot:"head", bonus:{grit:3}, tier:'common', icon:iconGuardHelm} },
+    gearDrop:{name:"automaton's salvaged headplate of the Tortoise", desc:"Still sparks a little when it rains.", type:"equip", slot:"head", bonus:{grit:3}, tier:'common', icon:iconGuardHelm} },
    ];
 
 /* Every named boss below (gnomeCommander through arcaneSanctumGuardian)
@@ -447,7 +447,7 @@ here (healItems[1], the canonical jerky definition also fed into
 allItemDefs(), save.js) and at shopFoodItemsTier2/Tier3 below, which
 duplicate healItems[0]/[1]'s fields for the actual shop listing. */
 const healItems = [
-   { name:"a slightly bruised apple", desc:"Restores a modest amount of HP.", type:"hp", value:8, tier:'common', icon:iconApple },
+   { name:"slightly bruised apple", desc:"Restores a modest amount of HP.", type:"hp", value:8, tier:'common', icon:iconApple },
    { name:"suspicious jerky", desc:"Restores HP. Ask no further questions.", type:"hp", value:32, tier:'uncommon', icon:iconJerky },
    ];
 
@@ -456,9 +456,9 @@ const healItems = [
 Character page's 5 equip slots (head/chest/legs/boots/weapon) aren't
 just empty on day one. No stat bonuses; purely flavor. */
 const starterGear = {
-   weapon: { name:"a bent kitchen fork", desc:"Not built for combat. Works anyway, sort of.", type:"equip", slot:"weapon", bonus:{}, sell:1, tier:'poor', icon: iconFork },
-   head:   { name:"a floppy adventuring cap", desc:"Keeps the sun out of your eyes, mostly.", type:"equip", slot:"head", bonus:{}, sell:1, tier:'poor', icon: iconCap },
-   chest:  { name:"a slightly singed tunic", desc:"Smells like campfire. Always has.", type:"equip", slot:"chest", bonus:{}, sell:1, tier:'poor', icon: iconTunic },
+   weapon: { name:"bent kitchen fork", desc:"Not built for combat. Works anyway, sort of.", type:"equip", slot:"weapon", bonus:{}, sell:1, tier:'poor', icon: iconFork },
+   head:   { name:"floppy adventuring cap", desc:"Keeps the sun out of your eyes, mostly.", type:"equip", slot:"head", bonus:{}, sell:1, tier:'poor', icon: iconCap },
+   chest:  { name:"slightly singed tunic", desc:"Smells like campfire. Always has.", type:"equip", slot:"chest", bonus:{}, sell:1, tier:'poor', icon: iconTunic },
    legs:   { name:"hand-me-down trousers, one size too big", desc:"Held up entirely by hope and a length of twine.", type:"equip", slot:"legs", bonus:{}, sell:1, tier:'poor', icon: iconTrousers },
    boots:  { name:"one good boot, one bad boot", desc:"You've stopped noticing the limp.", type:"equip", slot:"boots", bonus:{}, sell:1, tier:'poor', icon: iconMismatchedBoots },
 };
@@ -468,16 +468,16 @@ tier 1 of 3: exactly 1 stat per item. shopGearItemsTier2/Tier3 below each
 add one more stat on top (2 and 3 respectively), so stat COUNT climbs
 with tier the same way price/bonus magnitude already does. */
 const shopGearItems = [
-   { name:"a rake tine repurposed as a shank", desc:"Sharper than it has any right to be.", type:"equip", slot:"weapon", bonus:{beef:1}, price:12, tier:'common', icon: iconRakeShank },
-   { name:"a wand-shaped stick, allegedly magic", desc:"The gnome who sold it swore up and down.", type:"equip", slot:"weapon", bonus:{hoodoo:1}, price:12, tier:'common', icon: iconWandStick },
-   { name:"a dented pot-lid helmet", desc:"Rings like a bell if you get hit. You get used to it.", type:"equip", slot:"head", bonus:{grit:1}, price:10, tier:'common', icon: iconPotLid },
-   { name:"a patched burlap vest", desc:"Itchy. Surprisingly sturdy.", type:"equip", slot:"chest", bonus:{grit:1}, price:12, tier:'common', icon: iconVest },
+   { name:"rake tine repurposed as a shank", desc:"Sharper than it has any right to be.", type:"equip", slot:"weapon", bonus:{beef:1}, price:12, tier:'common', icon: iconRakeShank },
+   { name:"wand-shaped stick, allegedly magic", desc:"The gnome who sold it swore up and down.", type:"equip", slot:"weapon", bonus:{hoodoo:1}, price:12, tier:'common', icon: iconWandStick },
+   { name:"dented pot-lid helmet", desc:"Rings like a bell if you get hit. You get used to it.", type:"equip", slot:"head", bonus:{grit:1}, price:10, tier:'common', icon: iconPotLid },
+   { name:"patched burlap vest", desc:"Itchy. Surprisingly sturdy.", type:"equip", slot:"chest", bonus:{grit:1}, price:12, tier:'common', icon: iconVest },
    { name:"shin guards whittled from a fence post", desc:"Splintery, but they hold.", type:"equip", slot:"legs", bonus:{zip:1}, price:10, tier:'common', icon: iconShinGuard },
    { name:"boots with suspiciously good grip", desc:"You don't ask where they came from.", type:"equip", slot:"boots", bonus:{zip:1}, price:10, tier:'common', icon: iconGripBoots },
    ];
 
 const shopBuyItems = [
-   { name:"a slightly bruised apple", desc:"Restores a modest amount of HP.", type:"hp", value:8, price:5, tier:'common', icon:iconApple },
+   { name:"slightly bruised apple", desc:"Restores a modest amount of HP.", type:"hp", value:8, price:5, tier:'common', icon:iconApple },
    ...shopGearItems,
    ];
 
@@ -513,10 +513,10 @@ Weapon slot gets two entries, same as shopGearItems' tier-1 weapons —
 one Beef-primary, one Hoodoo-primary — so both a melee and a
 spellcasting build have their own weapon at every tier, not just tier 1. */
 const shopGearItemsTier2 = [
-   { name:"a scepter looted from the vizier's chambers", desc:"Still radiates a faint, smug authority.", type:"equip", slot:"weapon", bonus:{hoodoo:2, grit:1}, price:40, tier:'uncommon', icon: iconVizierScepter },
-   { name:"a guard-captain's confiscated cleaver", desc:"Standard issue, before it wasn't standard issue anymore.", type:"equip", slot:"weapon", bonus:{beef:2, zip:1}, price:38, tier:'uncommon', icon: iconGuardCleaver },
-   { name:"a guard-captain's dented helm", desc:"Reinforced. Dented anyway.", type:"equip", slot:"head", bonus:{grit:2, beef:1}, price:38, tier:'uncommon', icon: iconGuardHelm },
-   { name:"a clockwork-plated chestpiece", desc:"Ticks faintly whenever your heart rate spikes.", type:"equip", slot:"chest", bonus:{grit:2, hoodoo:1}, price:42, tier:'uncommon', icon: iconClockworkPlate },
+   { name:"scepter looted from the vizier's chambers", desc:"Still radiates a faint, smug authority.", type:"equip", slot:"weapon", bonus:{hoodoo:2, grit:1}, price:40, tier:'uncommon', icon: iconVizierScepter },
+   { name:"guard-captain's confiscated cleaver", desc:"Standard issue, before it wasn't standard issue anymore.", type:"equip", slot:"weapon", bonus:{beef:2, zip:1}, price:38, tier:'uncommon', icon: iconGuardCleaver },
+   { name:"guard-captain's dented helm", desc:"Reinforced. Dented anyway.", type:"equip", slot:"head", bonus:{grit:2, beef:1}, price:38, tier:'uncommon', icon: iconGuardHelm },
+   { name:"clockwork-plated chestpiece", desc:"Ticks faintly whenever your heart rate spikes.", type:"equip", slot:"chest", bonus:{grit:2, hoodoo:1}, price:42, tier:'uncommon', icon: iconClockworkPlate },
    { name:"burrow-worm hide greaves", desc:"Flexible enough to squeeze through a tunnel-worm's old digs.", type:"equip", slot:"legs", bonus:{zip:2, grit:1}, price:36, tier:'uncommon', icon: iconBurrowGreaves },
    { name:"spring-loaded gnome-tech boots", desc:"Every step has a little more bounce than it should.", type:"equip", slot:"boots", bonus:{zip:2, beef:1}, price:44, tier:'uncommon', icon: iconSpringBoots },
    ];
@@ -554,7 +554,7 @@ const shopFoodItemsTier2 = [
    ];
 
 const shopFoodItemsTier3 = [
-   { name:"a tin of hoarded biscuit crumbs", desc:"Denser than a whole biscuit, somehow. Restores a large amount of HP.", type:"hp", value:72, price:45, tier:'rare', icon:iconBiscuitTin },
+   { name:"tin of hoarded biscuit crumbs", desc:"Denser than a whole biscuit, somehow. Restores a large amount of HP.", type:"hp", value:72, price:45, tier:'rare', icon:iconBiscuitTin },
    ];
 
 /* Top gear tier — one item per slot like shopGearItemsTier2, each granting
@@ -567,11 +567,11 @@ applied to every item so the tier's internal price spread is unchanged. */
 convention, just one more of them. Same two-weapons pattern as tier 1/2
 below — one Beef-primary, one Hoodoo-primary. */
 const shopGearItemsTier3 = [
-   { name:"an heirloom hoodoo rod, mostly legitimate", desc:"The provenance is fuzzy. The results aren't.", type:"equip", slot:"weapon", bonus:{hoodoo:3, grit:1, zip:1}, price:100, tier:'rare', icon: iconHeirloomRod },
-   { name:"an heirloom war-cleaver, mostly legitimate", desc:"Family heirloom. Allegedly.", type:"equip", slot:"weapon", bonus:{beef:3, zip:1, grit:1}, price:95, tier:'rare', icon: iconHeirloomCleaver },
-   { name:"a champion's dented crown, repurposed", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{grit:3, hoodoo:1, beef:1}, price:85, tier:'rare', icon: iconChampionCrown },
-   { name:"a reinforced adventurer's cuirass", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{grit:3, beef:1, zip:1}, price:95, tier:'rare', icon: iconAdventurerCuirass },
-   { name:"a tailored pair of quick-step trousers", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{zip:3, grit:1, hoodoo:1}, price:80, tier:'rare', icon: iconQuickstepTrousers },
+   { name:"heirloom hoodoo rod, mostly legitimate", desc:"The provenance is fuzzy. The results aren't.", type:"equip", slot:"weapon", bonus:{hoodoo:3, grit:1, zip:1}, price:100, tier:'rare', icon: iconHeirloomRod },
+   { name:"heirloom war-cleaver, mostly legitimate", desc:"Family heirloom. Allegedly.", type:"equip", slot:"weapon", bonus:{beef:3, zip:1, grit:1}, price:95, tier:'rare', icon: iconHeirloomCleaver },
+   { name:"champion's dented crown, repurposed", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{grit:3, hoodoo:1, beef:1}, price:85, tier:'rare', icon: iconChampionCrown },
+   { name:"reinforced adventurer's cuirass", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{grit:3, beef:1, zip:1}, price:95, tier:'rare', icon: iconAdventurerCuirass },
+   { name:"tailored pair of quick-step trousers", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{zip:3, grit:1, hoodoo:1}, price:80, tier:'rare', icon: iconQuickstepTrousers },
    { name:"boots blessed by a mildly competent hoodoo doctor", desc:"\"Mildly\" is doing some work in that sentence.", type:"equip", slot:"boots", bonus:{zip:3, hoodoo:1, beef:1}, price:90, tier:'rare', icon: iconBlessedBoots },
    ];
 
@@ -592,9 +592,9 @@ Hoodoo-primary — though at this tier both necessarily touch all 4 stats
 (primary+3 secondaries, and there are only 4 stats total), same as
 every other slot here; only which stat is primary still tells them apart. */
 const shopGearItemsTier4 = [
-   { name:"a scepter reforged from the throne room's own gold", desc:"Melted down and reshaped before the guards even noticed it was gone.", type:"equip", slot:"weapon", bonus:{hoodoo:4, beef:1, zip:1, grit:1}, price:180, tier:'epic', icon: iconThroneScepter },
-   { name:"a headsman's axe, liberated from the throne room", desc:"The guards really should've kept a closer eye on the ceremonial weapons rack.", type:"equip", slot:"weapon", bonus:{beef:4, zip:1, grit:1, hoodoo:1}, price:175, tier:'epic', icon: iconThroneAxe },
-   { name:"a crown stripped from the throne itself", desc:"Too big. You've stuffed it with rags to make it fit.", type:"equip", slot:"head", bonus:{grit:4, hoodoo:1, beef:1, zip:1}, price:150, tier:'epic', icon: iconStolenCrown },
+   { name:"scepter reforged from the throne room's own gold", desc:"Melted down and reshaped before the guards even noticed it was gone.", type:"equip", slot:"weapon", bonus:{hoodoo:4, beef:1, zip:1, grit:1}, price:180, tier:'epic', icon: iconThroneScepter },
+   { name:"headsman's axe, liberated from the throne room", desc:"The guards really should've kept a closer eye on the ceremonial weapons rack.", type:"equip", slot:"weapon", bonus:{beef:4, zip:1, grit:1, hoodoo:1}, price:175, tier:'epic', icon: iconThroneAxe },
+   { name:"crown stripped from the throne itself", desc:"Too big. You've stuffed it with rags to make it fit.", type:"equip", slot:"head", bonus:{grit:4, hoodoo:1, beef:1, zip:1}, price:150, tier:'epic', icon: iconStolenCrown },
    { name:"plate forged in the palace's own furnace", desc:"Still warm, if you believe the gnome who sold it to you.", type:"equip", slot:"chest", bonus:{grit:4, hoodoo:1, beef:1, zip:1}, price:170, tier:'epic', icon: iconPalaceForgedPlate },
    { name:"greaves stitched from a guard captain's dress uniform", desc:"Ceremonial. Somehow still holds up in a real fight.", type:"equip", slot:"legs", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, price:140, tier:'epic', icon: iconDressGreaves },
    { name:"boots off the palace steward's own feet", desc:"He wasn't using them anymore. Long story.", type:"equip", slot:"boots", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, price:160, tier:'epic', icon: iconStewardBoots },
@@ -652,13 +652,13 @@ loot) as long as the player doesn't already hold it — see winCombat().
 Two ingredients come from the Commons, two from the Dank Sewers. */
 const potionIngredients = [
    { monsterName:"a disgruntled compost gnome",
-    item:{ name:"a knot of fat white grubs", desc:"Wriggling, pale, and apparently essential to the recipe.", type:"quest", key:"potionWorms", sell:2, icon:iconPotionWorms } },
+    item:{ name:"knot of fat white grubs", desc:"Wriggling, pale, and apparently essential to the recipe.", type:"quest", key:"potionWorms", sell:2, icon:iconPotionWorms } },
    { monsterName:"a fishing gnome with an empty bucket",
-    item:{ name:"a jar of pond tadpoles", desc:"The fishing gnome never caught anything. You, apparently, just did.", type:"quest", key:"potionTadpole", sell:2, icon:iconPotionTadpole } },
+    item:{ name:"jar of pond tadpoles", desc:"The fishing gnome never caught anything. You, apparently, just did.", type:"quest", key:"potionTadpole", sell:2, icon:iconPotionTadpole } },
    { monsterName:"a sewer rat with delusions of grandeur",
-    item:{ name:"a gob of glowing sewer sludge", desc:"It hums faintly. That's probably fine.", type:"quest", key:"potionSludge", sell:3, icon:iconPotionSludge } },
+    item:{ name:"gob of glowing sewer sludge", desc:"It hums faintly. That's probably fine.", type:"quest", key:"potionSludge", sell:3, icon:iconPotionSludge } },
    { monsterName:"a rat wearing a bottlecap as a helmet",
-    item:{ name:"a whisker plucked from a suspiciously large rat", desc:"It practically vibrates with potency.", type:"quest", key:"potionWhisker", sell:3, icon:iconPotionWhisker } },
+    item:{ name:"whisker plucked from a suspiciously large rat", desc:"It practically vibrates with potency.", type:"quest", key:"potionWhisker", sell:3, icon:iconPotionWhisker } },
    ];
 
 /* ---------------- Vein ingredients (the Tinker's quest, "The Last Vein") ---------------- */
@@ -679,13 +679,13 @@ change needed to retune the whole quest's length. */
 const VEIN_ITEM_COUNT_NEEDED = 2;
 const veinIngredients = [
    { monsterName:"a wind-up quarry drone, badly wound",
-    item:{ name:"a still-ticking gear core", desc:"Keeps perfect time for a reason nobody can explain.", type:"quest", key:"veinGearCore", sell:4, icon:iconVeinGearCore } },
+    item:{ name:"still-ticking gear core", desc:"Keeps perfect time for a reason nobody can explain.", type:"quest", key:"veinGearCore", sell:4, icon:iconVeinGearCore } },
    { monsterName:"a pickaxe golem, held together by spite",
-    item:{ name:"a vein-streaked ore chunk", desc:"Heavier than it looks. Warmer too.", type:"quest", key:"veinOreChunk", sell:5, icon:iconVeinOreChunk } },
+    item:{ name:"vein-streaked ore chunk", desc:"Heavier than it looks. Warmer too.", type:"quest", key:"veinOreChunk", sell:5, icon:iconVeinOreChunk } },
    { monsterName:"a positively enormous sewer rat",
-    item:{ name:"a fist-sized raw gemstone", desc:"How a sewer rat came by this is a question best not asked.", type:"quest", key:"veinGemstone", sell:4, icon:iconVeinGemstone } },
+    item:{ name:"fist-sized raw gemstone", desc:"How a sewer rat came by this is a question best not asked.", type:"quest", key:"veinGemstone", sell:4, icon:iconVeinGemstone } },
    { monsterName:"three rats in a trenchcoat, unconvincingly",
-    item:{ name:"a tangle of copper wiring", desc:"All three rats insist it was already like that.", type:"quest", key:"veinWiring", sell:4, icon:iconVeinWiring } },
+    item:{ name:"tangle of copper wiring", desc:"All three rats insist it was already like that.", type:"quest", key:"veinWiring", sell:4, icon:iconVeinWiring } },
    ];
 
 /* Which state flag has to be true before a given quest item (by its `key`)
@@ -743,9 +743,9 @@ gnometropolis.js's challengeDistrictGuardian()), which is why `price`/
 `building` no longer exist here. icon fields point at iconSiegeBreaker/
 iconGuardUniform/iconWardedSeal (icons.js). */
 const PALACE_GATE_GEAR = [
-   { name:"a warlord's siege-breaker", desc:"Not subtle. Doesn't need to be.", type:"equip", slot:"weapon", bonus:{beef:2}, class:'Meathead', tier:'epic', icon: iconSiegeBreaker },
-   { name:"a stolen palace-guard's uniform", desc:"Fits well enough, if nobody looks twice.", type:"equip", slot:"chest", bonus:{zip:2}, class:'Card Shark', tier:'epic', icon: iconGuardUniform },
-   { name:"a warded seal, still humming", desc:"Warm to the touch. Getting warmer.", type:"equip", slot:"head", bonus:{hoodoo:2}, class:'Hexpert', tier:'epic', icon: iconWardedSeal },
+   { name:"warlord's siege-breaker", desc:"Not subtle. Doesn't need to be.", type:"equip", slot:"weapon", bonus:{beef:2}, class:'Meathead', tier:'epic', icon: iconSiegeBreaker },
+   { name:"stolen palace-guard's uniform", desc:"Fits well enough, if nobody looks twice.", type:"equip", slot:"chest", bonus:{zip:2}, class:'Card Shark', tier:'epic', icon: iconGuardUniform },
+   { name:"warded seal, still humming", desc:"Warm to the touch. Getting warmer.", type:"equip", slot:"head", bonus:{hoodoo:2}, class:'Hexpert', tier:'epic', icon: iconWardedSeal },
    ];
 
 /* The three Gnometropolis district guardians — new design that turns
