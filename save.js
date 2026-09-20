@@ -36,19 +36,18 @@ const monsterRareDrops = monsters.map(m => m.rareDrop).filter(Boolean);
    save/reload since itemByName() couldn't find their def. Fixed as part
    of tagging quest items in the inventory UI. */
 const veinIngredientItems = veinIngredients.map(v => v.item);
-   /* shopGearItemsTier2 (content.js, unlocked once state.quest6Complete is
-   true) isn't part of shopBuyItems — listed separately here, always
-   (regardless of the current unlock state), so a held tier-2 piece still
-   hydrates correctly after a reload. The new Gnometropolis monsters'
-   loot/rareDrop items need no extra line of their own: they're already
-   part of monsters[], so monsterLoot/monsterRareDrops above pick them up
-   automatically. Same reasoning applies to the Shop-upgrade tiers
-   (shopFoodItemsTier2/shopFoodItemsTier3/shopGearItemsTier3, content.js) —
-   listed here unconditionally so a held piece still hydrates even if the
-   Shop is later downgraded somehow, or a save is loaded on a fresh
-   playthrough that hasn't reached that Shop level yet. */
+   /* The Shop-upgrade tiers (shopGearItemsTier2/3/4, shopFoodItemsTier2/3,
+   content.js, all gated on state.buildingUpgrades.shop — see
+   getAvailableShopItems(), economy.js) aren't part of shopBuyItems —
+   listed separately here, always (regardless of the current unlock
+   state), so a held piece still hydrates correctly after a reload even
+   if the Shop is later downgraded somehow, or a save is loaded on a
+   fresh playthrough that hasn't reached that Shop level yet. The new
+   Gnometropolis monsters' loot/rareDrop items need no extra line of
+   their own: they're already part of monsters[], so monsterLoot/
+   monsterRareDrops above pick them up automatically. */
 return [...healItems, ...shopBuyItems, ...shopGearItemsTier2, ...shopFoodItemsTier2,
-        ...shopFoodItemsTier3, ...shopGearItemsTier3, ...monsterLoot, ...commanderLoot,
+        ...shopFoodItemsTier3, ...shopGearItemsTier3, ...shopGearItemsTier4, ...monsterLoot, ...commanderLoot,
         ...monsterRareDrops, ...Object.values(starterGear), ...potionIngredientItems,
         ...veinIngredientItems, ...PALACE_GATE_GEAR];
 }

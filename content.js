@@ -481,12 +481,13 @@ const shopBuyItems = [
    ...shopGearItems,
    ];
 
-/* Second gear tier, unlocked once state.quest6Complete is true (see
-getAvailableShopItems() in game.js and renderShop() in render.js) — one
-item per equipment slot, each granting +2 to a stat (double shopGearItems'
-+1), priced a little steeper. Kept as its own array rather than folded
-into shopGearItems/shopBuyItems so tier-1 pricing/availability is
-untouched and the unlock gate lives in exactly one place.
+/* Second gear tier, unlocked at Shop level 1 (SHOP_LEVEL_GEAR_TIER2 below;
+see getAvailableShopItems() in economy.js and renderShop() in
+render-shop.js) — one item per equipment slot, each granting +2 to a stat
+(double shopGearItems' +1), priced a little steeper. Kept as its own array
+rather than folded into shopGearItems/shopBuyItems so tier-1
+pricing/availability is untouched and the unlock gate lives in exactly
+one place.
 
 Gear tier pricing is quadratic against a shared GEAR_BASE_UNIT (10, chosen
 to sit right where shopGearItems' own tier-1 prices already cluster):
@@ -522,14 +523,23 @@ const shopGearItemsTier2 = [
 pricier stock, on top of whatever's already available. Unlike the other 6
 Town Lot buildings (still cosmetic-only, see the BUILDING_UPGRADES comment
 below), the Shop's level is read directly by getAvailableShopItems()
-(game.js). Nothing already unlocked is ever taken away — these tiers are
-additive with shopBuyItems/shopGearItemsTier2, never a replacement for them.
-Reusing suspicious jerky (healItems[1]) as the level-1 food unlock rather
-than inventing a new item — it's been defined since the start but was never
-actually reachable anywhere in the game until now. */
+(economy.js). Nothing already unlocked is ever taken away — these tiers are
+additive with shopBuyItems, never a replacement for them. Reusing
+suspicious jerky (healItems[1]) as the level-1 food unlock rather than
+inventing a new item — it's been defined since the start but was never
+actually reachable anywhere in the game until now.
+
+Each Shop level unlocks one new food tier AND one new gear tier together
+(a level buys into both at once, rather than gear and food climbing on
+separate schedules) — gear tier N unlocks at the same level food tier N
+does, one level ahead of gear's own tier number (tier 2 at level 1, tier 3
+at level 2, tier 4 at level 3) since tier 1 gear is always available from
+the start, same as tier 1 food. */
 const SHOP_LEVEL_FOOD_TIER2 = 1;
 const SHOP_LEVEL_FOOD_TIER3 = 2;
-const SHOP_LEVEL_GEAR_TIER3 = 3;
+const SHOP_LEVEL_GEAR_TIER2 = 1;
+const SHOP_LEVEL_GEAR_TIER3 = 2;
+const SHOP_LEVEL_GEAR_TIER4 = 3;
 
 /* Food tier pricing is quadratic against a shared FOOD_BASE_UNIT (5, the
 apple's existing tier-1 price in shopBuyItems): tier 2 (jerky) ~4x that
@@ -557,6 +567,26 @@ const shopGearItemsTier3 = [
    { name:"a reinforced adventurer's cuirass", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{grit:3, beef:1, zip:1}, price:95, tier:'rare', icon: iconAdventurerCuirass },
    { name:"a tailored pair of quick-step trousers", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{zip:3, grit:1, hoodoo:1}, price:80, tier:'rare', icon: iconQuickstepTrousers },
    { name:"boots blessed by a mildly competent hoodoo doctor", desc:"\"Mildly\" is doing some work in that sentence.", type:"equip", slot:"boots", bonus:{zip:3, hoodoo:1, beef:1}, price:90, tier:'rare', icon: iconBlessedBoots },
+   ];
+
+/* Fourth and top gear tier, unlocked at Shop level 3 (SHOP_LEVEL_GEAR_TIER4
+above) — one item per slot like every tier before it, each granting +4 to
+a stat (up from tier 3's +3) plus, for the first time, ALL THREE other
+stats at +1 each rather than a partial pick — there are only 4 stats
+total, and primary+3 secondaries uses all of them, so there's no "which
+stat to leave off" choice left to make the way tier 1-3 had. Priced per
+the same GEAR_BASE_UNIT quadratic scheme as tier 2/3 (4^2 * GEAR_BASE_UNIT
+= 160), scaled off tier 3's own prices by that tier's 16/9 factor so the
+internal spread across slots carries forward unchanged. Palace-themed
+(stolen/repurposed royal trappings) rather than Gnometropolis-loot or
+premium-boutique like tiers 2/3 — this is the Shop's own top-shelf stock,
+sourced from wherever the Shop gets away with sourcing it. */
+const shopGearItemsTier4 = [
+   { name:"a scepter reforged from the throne room's own gold", desc:"Melted down and reshaped before the guards even noticed it was gone.", type:"equip", slot:"weapon", bonus:{hoodoo:4, beef:1, zip:1, grit:1}, price:180, tier:'epic', icon: iconThroneScepter },
+   { name:"a crown stripped from the throne itself", desc:"Too big. You've stuffed it with rags to make it fit.", type:"equip", slot:"head", bonus:{grit:4, hoodoo:1, beef:1, zip:1}, price:150, tier:'epic', icon: iconStolenCrown },
+   { name:"plate forged in the palace's own furnace", desc:"Still warm, if you believe the gnome who sold it to you.", type:"equip", slot:"chest", bonus:{grit:4, hoodoo:1, beef:1, zip:1}, price:170, tier:'epic', icon: iconPalaceForgedPlate },
+   { name:"greaves stitched from a guard captain's dress uniform", desc:"Ceremonial. Somehow still holds up in a real fight.", type:"equip", slot:"legs", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, price:140, tier:'epic', icon: iconDressGreaves },
+   { name:"boots off the palace steward's own feet", desc:"He wasn't using them anymore. Long story.", type:"equip", slot:"boots", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, price:160, tier:'epic', icon: iconStewardBoots },
    ];
 
 /* ---------------- Spells (Hoodoo magic) ---------------- */

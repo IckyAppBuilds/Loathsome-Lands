@@ -126,10 +126,12 @@ generically by combat.js's `monsterRetaliate()`/`useMonsterSkill()`,
 no per-boss combat code needed — with their own spawn-chance
 constants, `ZONE_DIFFICULTY`/`ZONE_LABELS`, `noncombatEvents`/
 `hazardEvents`, `healItems`/`shopFoodItemsTier2`/`shopFoodItemsTier3`,
-`starterGear`, `shopGearItems`/`shopGearItemsTier2`/`shopGearItemsTier3`
-(1/2/3 stats respectively — each tier up adds one more +1 secondary
-stat on top of the previous tier's own bonuses), `STAT_ROTATION` (which
-secondary stat a tier-2/3 item/drop gets, cycled per primary stat),
+`starterGear`, `shopGearItems`/`shopGearItemsTier2`/`shopGearItemsTier3`/
+`shopGearItemsTier4` (1/2/3/4 stats respectively — each tier up adds one
+more +1 secondary stat on top of the previous tier's own bonuses, all
+gated by Shop level via `SHOP_LEVEL_GEAR_TIER2/3/4`, see
+`getAvailableShopItems()` in economy.js), `STAT_ROTATION` (which
+secondary stat a tier-2/3/4 item/drop gets, cycled per primary stat),
 `shopBuyItems`, `spells`, `potionIngredients`, `veinIngredients`,
 `CLASS_TITLES` + each class's skill-bonus constants
 (`MEATHEAD_DAMAGE_BONUS`/`CARD_SHARK_PAYOUT_BONUS`/`HEXPERT_SPELL_DMG_BONUS`

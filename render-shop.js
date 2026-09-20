@@ -182,12 +182,12 @@ if(shopTab === 'food' || shopTab === 'gear'){
   } else {
     /* Each tier gets its own section instead of one flat list that just
     grows as more tiers unlock — tier order is fixed (common -> uncommon
-    -> rare) rather than trusting array order, since shopBuyItems/
-    shopGearItemsTier2/Tier3 concatenate in unlock order, not tier order.
-    Section header colored to match that tier's rarity color
+    -> rare -> epic) rather than trusting array order, since shopBuyItems/
+    shopGearItemsTier2/Tier3/Tier4 concatenate in unlock order, not tier
+    order. Section header colored to match that tier's rarity color
     (item-tiers.js), same visual language as the items listed under it. */
-    const TIER_ORDER = ['common', 'uncommon', 'rare'];
-    const TIER_LABEL = { common:'Tier 1', uncommon:'Tier 2', rare:'Tier 3' };
+    const TIER_ORDER = ['common', 'uncommon', 'rare', 'epic'];
+    const TIER_LABEL = { common:'Tier 1', uncommon:'Tier 2', rare:'Tier 3', epic:'Tier 4' };
     TIER_ORDER.forEach(tier => {
       const tierItems = items.filter(def => (def.tier || 'common') === tier);
       if(tierItems.length === 0) return;
@@ -365,16 +365,22 @@ const BUILDING_EFFECT_INFO = {
    };
 
 /* The Shop's tiers aren't a single cumulative number like the other 6
-buildings — each level unlocks a specific stock tier (see the
-SHOP_LEVEL_FOOD_TIER2/TIER3/GEAR_TIER3 comment in content.js), so its
-"currently"/"next level" text lists unlock names instead of formatting
-a value. Pulls the level numbers from those constants rather than
-hardcoding 1/2/3 so this stays correct if the tiers are ever reordered. */
+buildings — each level unlocks specific stock tiers (see the
+SHOP_LEVEL_FOOD_TIER2/TIER3/GEAR_TIER2/TIER3/TIER4 comment in content.js),
+so its "currently"/"next level" text lists unlock names instead of
+formatting a value. Pulls the level numbers from those constants rather
+than hardcoding 1/2/3 so this stays correct if the tiers are ever
+reordered. Food and gear share a level (tier 2 of each at level 1, tier 3
+at level 2), so a level can unlock more than one thing — add() appends
+rather than overwrites when that happens. */
 function shopTierUnlockNames(){
   const names = {};
-  names[SHOP_LEVEL_FOOD_TIER2] = 'Tier 2 food stock';
-  names[SHOP_LEVEL_FOOD_TIER3] = 'Tier 3 food stock';
-  names[SHOP_LEVEL_GEAR_TIER3] = 'Tier 3 gear stock';
+  const add = (level, label) => { names[level] = names[level] ? `${names[level]}, ${label}` : label; };
+  add(SHOP_LEVEL_GEAR_TIER2, 'Tier 2 gear stock');
+  add(SHOP_LEVEL_FOOD_TIER2, 'Tier 2 food stock');
+  add(SHOP_LEVEL_GEAR_TIER3, 'Tier 3 gear stock');
+  add(SHOP_LEVEL_FOOD_TIER3, 'Tier 3 food stock');
+  add(SHOP_LEVEL_GEAR_TIER4, 'Tier 4 gear stock');
   return names;
 }
 

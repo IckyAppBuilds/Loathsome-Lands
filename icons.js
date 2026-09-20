@@ -127,6 +127,23 @@ function iconBiscuitTin(){
      return iconWrap(`<rect x="14" y="20" width="32" height="30" fill="#b9b3a4"/><rect x="12" y="14" width="36" height="8" fill="#d1a94e"/><circle cx="30" cy="34" r="10" fill="#a97c53"/><circle cx="26" cy="31" r="1.6" fill="#2b2b28" stroke="none"/><circle cx="34" cy="30" r="1.6" fill="#2b2b28" stroke="none"/><circle cx="30" cy="38" r="1.6" fill="#2b2b28" stroke="none"/>`);
 }
 
+/* ---------------- Shop tier-4 icons (shopGearItemsTier4) ---------------- */
+function iconThroneScepter(){
+     return iconWrap(`<line x1="18" y1="54" x2="38" y2="16"/><circle cx="40" cy="14" r="8" fill="#d1a94e"/><circle cx="40" cy="14" r="3" fill="#b06a97" stroke="none"/><path d="M32 22 L36 18 M44 10 L48 6" stroke-width="2.5"/>`);
+}
+function iconStolenCrown(){
+     return iconWrap(`<path d="M10 42 L14 18 L24 32 L30 14 L36 32 L46 18 L50 42 Z" fill="#d1a94e"/><rect x="10" y="42" width="40" height="8" fill="#d1a94e"/><circle cx="30" cy="18" r="3" fill="#b06a97" stroke="none"/><circle cx="18" cy="30" r="2" fill="#f4efe4" stroke="none"/><circle cx="42" cy="30" r="2" fill="#f4efe4" stroke="none"/>`);
+}
+function iconPalaceForgedPlate(){
+     return iconWrap(`<path d="M16 14 L44 14 L48 50 L12 50 Z" fill="#8a8477"/><path d="M16 14 L44 14 L46 20 L14 20 Z" fill="#d1a94e" stroke="none"/><path d="M22 20 L22 50 M38 20 L38 50" stroke-width="2"/><circle cx="30" cy="32" r="6" fill="#b06a97"/>`);
+}
+function iconDressGreaves(){
+     return iconWrap(`<path d="M20 10 L40 10 L40 24 L34 24 L34 50 L26 50 L26 24 L20 24 Z" fill="#3d5a80"/><line x1="20" y1="10" x2="40" y2="10" stroke="#d1a94e" stroke-width="3"/><line x1="26" y1="24" x2="26" y2="50" stroke="#d1a94e" stroke-width="2"/><line x1="34" y1="24" x2="34" y2="50" stroke="#d1a94e" stroke-width="2"/>`);
+}
+function iconStewardBoots(){
+     return iconWrap(`<path d="M18 12 L34 12 L34 34 L44 34 L44 48 L18 48 Z" fill="#5f4632"/><rect x="18" y="12" width="16" height="6" fill="#d1a94e" stroke="none"/><circle cx="26" cy="40" r="2" fill="#d1a94e" stroke="none"/><circle cx="34" cy="40" r="2" fill="#d1a94e" stroke="none"/>`);
+}
+
 /* ---------------- Equipment icons (starter gear + shop upgrades) ---------------- */
 function iconFork(){
      return iconWrap(`<line x1="30" y1="12" x2="30" y2="26"/><line x1="22" y1="12" x2="22" y2="26"/><line x1="38" y1="12" x2="38" y2="26"/><path d="M18 26 Q30 32 42 26" fill="none"/><line x1="30" y1="30" x2="30" y2="52"/>`);

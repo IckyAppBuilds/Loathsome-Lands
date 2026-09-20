@@ -38,27 +38,24 @@ function sellItemByName(name, tier){
    render();
 }
 
-/* Tier-2 gear (shopGearItemsTier2, content.js) is folded in on top of the
-always-available shopBuyItems once state.quest6Complete is true, rather
-than being spliced into shopBuyItems itself — that keeps tier-1
-pricing/availability untouched and the unlock gate in exactly one place.
-Before the unlock, tier-2 gear is simply absent from the Shop rather than
-shown-but-disabled.
-
-Separately, upgrading the Shop building (state.buildingUpgrades.shop, via
-the Town Lot) unlocks its own additive tiers of food and gear at each
-level — see SHOP_LEVEL_FOOD_TIER2/SHOP_LEVEL_FOOD_TIER3/
-SHOP_LEVEL_GEAR_TIER3 (content.js). This is gated purely on the Shop's
-level, independent of quest6Complete — the two unlock paths stack rather
-than one replacing the other, and nothing already unlocked is ever
-removed as new tiers are added. */
+/* Upgrading the Shop building (state.buildingUpgrades.shop, via the Town
+Lot) unlocks additive tiers of both food and gear at each level — see
+SHOP_LEVEL_FOOD_TIER2/SHOP_LEVEL_FOOD_TIER3/SHOP_LEVEL_GEAR_TIER2/
+SHOP_LEVEL_GEAR_TIER3/SHOP_LEVEL_GEAR_TIER4 (content.js). Gated purely on
+the Shop's own level — nothing already unlocked is ever removed as new
+tiers are added, and gear no longer has a separate unlock path (it used
+to fold in shopGearItemsTier2 once state.quest6Complete was true,
+independent of Shop level entirely; that meant it could show up before
+the Shop was upgraded at all, or never show up if quest6 was skipped —
+now every gear tier climbs the same one ladder food does). */
 function getAvailableShopItems(){
    const shopLevel = state.buildingUpgrades.shop || 0;
    let items = [...shopBuyItems];
-   if(state.quest6Complete) items = items.concat(shopGearItemsTier2);
+   if(shopLevel >= SHOP_LEVEL_GEAR_TIER2) items = items.concat(shopGearItemsTier2);
    if(shopLevel >= SHOP_LEVEL_FOOD_TIER2) items = items.concat(shopFoodItemsTier2);
    if(shopLevel >= SHOP_LEVEL_FOOD_TIER3) items = items.concat(shopFoodItemsTier3);
    if(shopLevel >= SHOP_LEVEL_GEAR_TIER3) items = items.concat(shopGearItemsTier3);
+   if(shopLevel >= SHOP_LEVEL_GEAR_TIER4) items = items.concat(shopGearItemsTier4);
    return items;
 }
 
