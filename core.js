@@ -113,9 +113,10 @@ function createDefaultState(){
         already put stat points into that class's own stat:
         - classTrialGuildPassed: beat the Trial Champion at the Guild — a
           straightforward, hard-hitting fight (the Meathead test).
-        - classTrialCasinoPassed: beat the Casino's cardsharp — lower HP but
-          evasive (dodgeChance), so the challenge is landing hits, not
-          surviving them (the Card Shark test).
+        - classTrialCasinoPassed: beat the Casino's card shark — lower HP but
+          evasive (dodgeChance) and opens with a guaranteed Loaded Dice
+          crit, so the challenge is landing hits, not surviving them
+          (the Card Shark test).
         - classTrialHoodooPassed: beat the Hoodoo Doctor's summoned spirit
           (the game's first monster with skills[] — heal/buff/bolt) AND land
           the killing blow specifically with a cast spell (the Hexpert test).

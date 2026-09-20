@@ -171,7 +171,7 @@ document.getElementById('guild-trial-box').style.display = (isGuild && !state.in
     document.getElementById('trial-progress').textContent = 'Not yet accepted.';
   } else if(isGuild && !state.inCombat && classQuestState==='trials'){
     document.getElementById('trial-name').textContent = "Quest: The Adventurer's Trial";
-    document.getElementById('trial-desc').textContent = "Three trainers, three fights, and no partial credit. Beat the Guild's Trial Champion, outlast the Casino's own cardsharp, and put down the Hoodoo Doctor's summoned spirit with a killing blow from a spell. Pass all three, then come back here to claim your path.";
+    document.getElementById('trial-desc').textContent = "Three trainers, three fights, and no partial credit. Beat the Guild's Trial Champion, outlast the Casino's own card shark, and put down the Hoodoo Doctor's summoned spirit with a killing blow from a spell. Pass all three, then come back here to claim your path.";
     document.getElementById('trial-progress').textContent = `Guild: ${state.classTrialGuildPassed ? '✓ passed' : 'not yet'} — Casino: ${state.classTrialCasinoPassed ? '✓ passed' : 'not yet'} — Hoodoo: ${state.classTrialHoodooPassed ? '✓ passed' : 'not yet'}`;
   } else if(isGuild && !state.inCombat && classQuestState==='ready'){
     document.getElementById('trial-name').textContent = "Quest: The Adventurer's Trial";
@@ -186,8 +186,8 @@ mainline-quest text alongside it. */
 document.getElementById('casino-trial-hint').style.display = (isCasino && classQuestState==='trials') ? 'block' : 'none';
   if(isCasino && classQuestState==='trials'){
     document.getElementById('casino-trial-hint').textContent = state.classTrialCasinoPassed
-      ? "You've already put the Casino's own cardsharp in their place — that trial is passed."
-      : "The Croupier nods toward a cardsharp working the far table — impossible to pin down, by all accounts. Trial-takers prove their nerve by beating them outright.";
+      ? "You've already put the Casino's own card shark in their place — that trial is passed."
+      : "The Croupier nods toward a card shark working the far table — impossible to pin down, by all accounts. Trial-takers prove their nerve by beating them outright.";
   }
   document.getElementById('casino-trial-row').style.display = (isCasino && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('start-trial-fight-casino-btn').style.display = (classQuestState==='trials' && !state.classTrialCasinoPassed) ? '' : 'none';

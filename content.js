@@ -167,14 +167,19 @@ const trialChampion = {
 /* Casino tier (Card Shark test) — replaces an earlier bet-threshold check
 (CLASS_TRIAL_CASINO_STAKE, since removed) that required betting more Pop
 Tabs than any Bet button in the UI actually offers, making it impossible
-to pass. A themed fight against a rival cardsharp instead: lower HP than
+to pass. A themed fight against a rival card shark instead: lower HP than
 trialChampion, but dodgeChance (applyDamageToMonster(), combat.js) means
 roughly 3 in 10 attacks — Attack or a damage spell — whiff outright
 regardless of the player's own stats. The challenge is grinding through
-an evasive target, not out-damaging a tankier one. */
+an evasive target, not out-damaging a tankier one. Also opens the fight
+with its own Loaded Dice (spells[], classRequired:'Card Shark') —
+buffTurnsLeft/buffMult baked directly into the template so its very
+first attack (monsterAutoAttack(), combat.js) lands as a guaranteed
+double-damage opening hit, same flavor as the player's own version
+guaranteeing a crit on the opening sneak attack. */
 const casinoChampion = {
-   name:"the Casino's own cardsharp, impossible to pin down", hp:65, atkMin:8, atkMax:12, xp:50, rare:true,
-   dodgeChance:0.30, art: artCasinoChampion, loot:null
+   name:"the Casino's own card shark, impossible to pin down", hp:65, atkMin:8, atkMax:12, xp:50, rare:true,
+   dodgeChance:0.30, buffTurnsLeft:1, buffMult:2, art: artCasinoChampion, loot:null
 };
 
 /* Hoodoo tier (Hexpert test) — a themed fight against a summoned spirit
