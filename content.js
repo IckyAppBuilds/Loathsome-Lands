@@ -841,7 +841,10 @@ a future reader can find the mechanism without re-deriving it:
 - 'guild'  — GUILD_BOUNTY_BONUS, applied to Bounty Token rewards in
              claimBounty() (game.js).
 - 'casino' — CASINO_WIN_BONUS, added to CASINO_WIN_CHANCE above when
-             gambling.
+             gambling, PLUS a second, independent effect,
+             CASINO_WINNINGS_CAP (see its own comment further below) —
+             raising the passive-income cap and unlocking it in the
+             first place at level 1.
 None of these mechanics are wired up in game.js yet as of this data-layer
 pass — that's the next task; this file only defines the numbers. */
 const BUILDING_UPGRADES = [

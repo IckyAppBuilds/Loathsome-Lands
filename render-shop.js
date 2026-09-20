@@ -336,21 +336,32 @@ function renderHoodooShop(){
 }
 
 /* Per-building level-effect formatters for the Town Lot listing below.
-Keyed the same as BUILDING_UPGRADES (content.js); each entry's `values`
-is the matching LEVEL-indexed constant from content.js (index 0 is the
-no-bonus baseline) and `format(v)` turns one entry into the one-line
-text shown for "Currently"/"Next level". Percent-based effects are
-fractions in content.js (e.g. 0.30), so format() multiplies by 100 and
-rounds rather than hardcoding a number here — 'shop' isn't a fraction/
-flat-bonus array like the rest, so it's handled separately below by
-buildingEffectDesc(). */
+Keyed the same as BUILDING_UPGRADES (content.js); each array entry's
+`values` is a matching LEVEL-indexed constant from content.js (index 0
+is the no-bonus baseline) and `format(v)` turns one entry into the
+one-line text shown for "Currently"/"Next level". Percent-based effects
+are fractions in content.js (e.g. 0.30), so format() multiplies by 100
+and rounds rather than hardcoding a number here — 'shop' isn't a
+fraction/flat-bonus array like the rest, so it's handled separately
+below by buildingEffectDesc().
+
+Most buildings only have one effect, but Casino has two independent
+ones (CASINO_WIN_BONUS for active gambling odds, CASINO_WINNINGS_CAP
+for the separate passive-income mechanic, content.js) — each key maps
+to an ARRAY of these so buildingEffectDesc() below can print a
+"Currently"/"Next level" pair per effect instead of only ever showing
+the first (which was the actual bug: the passive-income unlock/raise
+never showed up here at all, only the win-odds bump did). */
 const BUILDING_EFFECT_INFO = {
-   gaffer: { values: GAFFER_BISCUIT_MAX_BONUS, format: v => `+${v} max Biscuits` },
-   hoodoo: { values: HOODOO_SPELL_DISCOUNT, format: v => `${Math.round(v*100)}% off spells` },
-   inn: { values: INN_FREE_REST_CHANCE, format: v => `${Math.round(v*100)}% chance of a free rest` },
-   tinker: { values: TINKER_SELL_BONUS, format: v => `+${Math.round(v*100)}% on junk sale prices` },
-   guild: { values: GUILD_BOUNTY_BONUS, format: v => `+${Math.round(v*100)}% Bounty Token rewards` },
-   casino: { values: CASINO_WIN_BONUS, format: v => `+${Math.round(v*100)}% casino win odds` },
+   gaffer: [ { values: GAFFER_BISCUIT_MAX_BONUS, format: v => `+${v} max Biscuits` } ],
+   hoodoo: [ { values: HOODOO_SPELL_DISCOUNT, format: v => `${Math.round(v*100)}% off spells` } ],
+   inn: [ { values: INN_FREE_REST_CHANCE, format: v => `${Math.round(v*100)}% chance of a free rest` } ],
+   tinker: [ { values: TINKER_SELL_BONUS, format: v => `+${Math.round(v*100)}% on junk sale prices` } ],
+   guild: [ { values: GUILD_BOUNTY_BONUS, format: v => `+${Math.round(v*100)}% Bounty Token rewards` } ],
+   casino: [
+      { values: CASINO_WIN_BONUS, format: v => `+${Math.round(v*100)}% casino win odds` },
+      { values: CASINO_WINNINGS_CAP, format: v => `passive Casino income, capped at ${v} Pop Tabs` },
+   ],
    };
 
 /* The Shop's tiers aren't a single cumulative number like the other 6
@@ -384,15 +395,17 @@ function buildingEffectDesc(key, level){
     }
     return lines;
   }
-  const info = BUILDING_EFFECT_INFO[key];
-  if(!info) return '';
+  const infos = BUILDING_EFFECT_INFO[key];
+  if(!infos) return '';
   let lines = '';
-  if(level > 0){
-    lines += `<div class="quest-desc">Currently: ${info.format(info.values[level])}.</div>`;
-  }
-  if(level < BUILDING_UPGRADE_MAX){
-    lines += `<div class="quest-desc">Next level: ${info.format(info.values[level+1])}.</div>`;
-  }
+  infos.forEach(info => {
+    if(level > 0){
+      lines += `<div class="quest-desc">Currently: ${info.format(info.values[level])}.</div>`;
+    }
+    if(level < BUILDING_UPGRADE_MAX){
+      lines += `<div class="quest-desc">Next level: ${info.format(info.values[level+1])}.</div>`;
+    }
+  });
   return lines;
 }
 
