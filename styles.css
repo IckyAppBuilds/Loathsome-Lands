@@ -185,6 +185,16 @@ and centered) — empty (no drop this fight) collapses to nothing. */
   0%,100%{ opacity:0.6; }
   50%{ opacity:1; }
 }
+.trial-ready-icon{
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: trialClash 1.1s ease-in-out infinite;
+  cursor:pointer;
+}
+@keyframes trialClash{
+  0%,100%{ transform:translateY(0) rotate(0deg); }
+  50%{ transform:translateY(-2px) rotate(-6deg); }
+}
 .building-hit{ cursor:pointer; }
 .building-label{ font-family:Verdana, Geneva, Arial, sans-serif; font-size:7px; font-weight:700; }
 

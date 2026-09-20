@@ -43,7 +43,18 @@ function artTinker(){
      return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M36 18 L64 18 L62 24 L38 24 Z" fill="#8a8477"/><rect x="34" y="36" width="32" height="42" fill="#3d5a80"/><circle cx="42" cy="50" r="6" fill="#d1a94e"/><circle cx="42" cy="50" r="2" fill="#2b2b28" stroke="none"/><rect x="54" y="46" width="10" height="10" fill="#b9b3a4"/><line x1="34" y1="40" x2="18" y2="52"/><path d="M18 52 Q10 52 12 44" fill="none" stroke-width="2.5"/><line x1="66" y1="40" x2="80" y2="48"/><line x1="50" y1="78" x2="42" y2="98"/><line x1="50" y1="78" x2="58" y2="98"/>`, 0);
 }
 
-function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlagType, lotTier, guildBountyReady, innCooldownText, buildingUpgrades){
+/* buildingIndicators is one object per building tile, keyed by its
+data-action (gaffer/hoodoo/rest/tinker/townlot/shop/guild/fountain/
+casino), each an optional {flag, bounty, trial} — see makeFlag()/
+makeBountyBadge()/makeTrialIcon() below for what each one means. Every
+building calls all three uniformly (bi() below just returns {} for a
+key with nothing set, so each helper's own `!show` guard renders
+nothing) rather than only the buildings that currently use one having
+a slot for it — a future 4th indicator, or a bounty/trial moving to a
+different building, is then just a matter of the render.js caller
+passing that key, not a signature change here. */
+function artTownSquare(buildingIndicators, lotTier, innCooldownText, buildingUpgrades){
+   const bi = (key) => (buildingIndicators && buildingIndicators[key]) || {};
    /* Building-upgrade decoration -- layers progressively more small
    detail shapes onto a building's FIXED base art as its real
    state.buildingUpgrades[key] level (0..BUILDING_UPGRADE_MAX, content.js)
@@ -125,16 +136,28 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
       </g>`;
    };
    /* Separate from makeFlag()'s quest-! / turn-in-? — a bounty being ready
-   isn't a quest state (see isBountyReady(), guild.js), and needs to be
-   visible alongside a genuine Guild quest flag without overlapping it, so
-   it sits in the opposite corner. Glow via a soft pulsing halo circle
-   behind a solid shield shape, rather than quest-flag's bob, so the two
-   read as distinct kinds of "something's ready here." */
-   const bountyShield = !guildBountyReady ? '' : `
+   isn't a quest state (see isBountyReady(), guild.js). Sits in the
+   opposite top corner from makeFlag so both can show on the same tile
+   without overlapping. Glow via a soft pulsing halo circle behind a solid
+   shield shape, rather than quest-flag's bob, so the two read as
+   distinct kinds of "something's ready here." */
+   const makeBountyBadge = (show) => !show ? '' : `
    <g class="bounty-ready-shield">
    <circle cx="82" cy="16" r="12" fill="#d1a94e" opacity="0.45"/>
    <path d="M82 7 L91 10.5 L91 17 Q91 25 82 29 Q73 25 73 17 L73 10.5 Z" fill="#3d5a80" stroke="#2b2b28" stroke-width="2.5"/>
    <path d="M78 17.5 L81 20.5 L87 13" fill="none" stroke="#f4efe4" stroke-width="2.5"/>
+   </g>`;
+   /* A class-trial fight (startClassTrialGuild/Casino/Hoodoo, guild.js) is
+   available and not yet passed at this specific building — separate from
+   both indicators above, so it gets the third corner (top-left) rather
+   than overlapping either. */
+   const makeTrialIcon = (show) => !show ? '' : `
+   <g class="trial-ready-icon">
+   <circle cx="18" cy="16" r="9" fill="#b5453f" stroke="#2b2b28" stroke-width="3"/>
+   <line x1="13" y1="11" x2="23" y2="21" stroke="#f4efe4" stroke-width="2.2" stroke-linecap="round"/>
+   <line x1="23" y1="11" x2="13" y2="21" stroke="#f4efe4" stroke-width="2.2" stroke-linecap="round"/>
+   <line x1="15" y1="13" x2="17.5" y2="10.5" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
+   <line x1="21" y1="13" x2="18.5" y2="10.5" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
    </g>`;
    /* Inn cooldown overlay — dims the whole tile (unlike the flag/shield
    badges above, which sit on top of a fully-usable building) since
@@ -172,7 +195,9 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <rect x="32" y="40" width="9" height="9" fill="#f4efe4"/>
    <line x1="36" y1="40" x2="36" y2="49"/><line x1="32" y1="44" x2="41" y2="44"/>
    ${gafferDecor}
-   ${makeFlag(gafferFlagType)}
+   ${makeFlag(bi('gaffer').flag)}
+   ${makeBountyBadge(bi('gaffer').bounty)}
+   ${makeTrialIcon(bi('gaffer').trial)}
    ${plate("Gaffer's Cottage")}
    </g>
 
@@ -186,7 +211,9 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <path d="M62 30 Q66 24 62 18" fill="none" stroke-width="2.5"/>
    <path d="M66 32 Q72 24 66 16" fill="none" stroke-width="2.5"/>
    ${hoodooDecor}
-   ${makeFlag(hoodooFlagType)}
+   ${makeFlag(bi('hoodoo').flag)}
+   ${makeBountyBadge(bi('hoodoo').bounty)}
+   ${makeTrialIcon(bi('hoodoo').trial)}
    ${plate("Hoodoo Doctor")}
    </g>
 
@@ -200,6 +227,9 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <line x1="24" y1="28" x2="12" y2="28"/>
    <rect x="4" y="22" width="12" height="9" fill="#d1a94e"/>
    ${innDecor}
+   ${makeFlag(bi('rest').flag)}
+   ${makeBountyBadge(bi('rest').bounty)}
+   ${makeTrialIcon(bi('rest').trial)}
    ${plate("The Inn")}
    ${innCooldown}
    </g>
@@ -213,7 +243,9 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <rect x="34" y="40" width="8" height="8" fill="#f4efe4"/>
    <rect x="58" y="40" width="8" height="8" fill="#f4efe4"/>
    ${tinkerDecor}
-   ${makeFlag(tinkerFlagType)}
+   ${makeFlag(bi('tinker').flag)}
+   ${makeBountyBadge(bi('tinker').bounty)}
+   ${makeTrialIcon(bi('tinker').trial)}
    ${plate("Tinker's Workshop")}
    </g>
 
@@ -239,6 +271,9 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <rect x="30" y="46" width="8" height="8" fill="#f4efe4"/>
    <rect x="62" y="46" width="8" height="8" fill="#f4efe4"/>
    `}
+   ${makeFlag(bi('townlot').flag)}
+   ${makeBountyBadge(bi('townlot').bounty)}
+   ${makeTrialIcon(bi('townlot').trial)}
    ${plate(lotTier===0 ? 'Empty Lot' : (lotTier>=3 ? 'Town Hall' : 'Town Lot'))}
    </g>
 
@@ -252,6 +287,9 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <circle cx="50" cy="59" r="2.5" fill="#b06a97"/>
    <circle cx="62" cy="59" r="2.5" fill="#3d5a80"/>
    ${shopDecor}
+   ${makeFlag(bi('shop').flag)}
+   ${makeBountyBadge(bi('shop').bounty)}
+   ${makeTrialIcon(bi('shop').trial)}
    ${plate("The Shop")}
    </g>
 
@@ -263,8 +301,9 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <line x1="50" y1="34" x2="50" y2="12"/>
    <path d="M50 12 L68 18 L50 24 Z" fill="#3d5a80"/>
    ${guildDecor}
-   ${makeFlag(guildFlagType)}
-   ${bountyShield}
+   ${makeFlag(bi('guild').flag)}
+   ${makeBountyBadge(bi('guild').bounty)}
+   ${makeTrialIcon(bi('guild').trial)}
    ${plate("The Guild")}
    </g>
 
@@ -283,6 +322,9 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <rect x="74" y="60" width="13" height="8" fill="#f4efe4" transform="rotate(2 80.5 64)"/>
    <circle cx="80" cy="53.5" r="1.3" fill="#b5453f" stroke="none"/>
    <circle cx="80.5" cy="64" r="1.3" fill="#b5453f" stroke="none"/>
+   ${makeFlag(bi('fountain').flag)}
+   ${makeBountyBadge(bi('fountain').bounty)}
+   ${makeTrialIcon(bi('fountain').trial)}
    ${plate("Fountain")}
    </g>
 
@@ -294,6 +336,9 @@ function artTownSquare(gafferFlagType, guildFlagType, hoodooFlagType, tinkerFlag
    <circle cx="50" cy="53" r="3" fill="#d1a94e" stroke="none"/>
    <line x1="50" y1="43" x2="50" y2="46"/><line x1="50" y1="60" x2="50" y2="63"/><line x1="40" y1="53" x2="43" y2="53"/><line x1="57" y1="53" x2="60" y2="53"/>
    ${casinoDecor}
+   ${makeFlag(bi('casino').flag)}
+   ${makeBountyBadge(bi('casino').bounty)}
+   ${makeTrialIcon(bi('casino').trial)}
    ${plate("Casino")}
    </g>
    </svg>`;

@@ -439,7 +439,29 @@ if(state.inCombat){
   needing a click. */
   const innCooldownLeft = INN_COOLDOWN_MS - (Date.now() - state.lastInnRestAt);
   const innCooldownText = innCooldownLeft > 0 ? formatMs(innCooldownLeft) : null;
-  document.getElementById('scene-art').innerHTML = artTownSquare(gafferFlag, guildFlag, hoodooFlag, tinkerFlag, state.lotTier, guildBountyReady, innCooldownText, state.buildingUpgrades);
+  /* Same "trial accepted, this specific tier not yet passed" condition
+  each start-trial-fight-*-btn above already gates on — a class-trial
+  fight is available and not yet passed at that one building. */
+  const guildTrialReady = classQuestState==='trials' && !state.classTrialGuildPassed;
+  const casinoTrialReady = classQuestState==='trials' && !state.classTrialCasinoPassed;
+  const hoodooTrialReady = classQuestState==='trials' && !state.classTrialHoodooPassed;
+  /* One {flag, bounty, trial} slot per building tile (artTownSquare(),
+  art.js) — every building gets an entry here (even ones with nothing to
+  show yet) so a future indicator on the Inn/Shop/Fountain/Town Lot is
+  just adding a key to its object, not changing artTownSquare's
+  signature again. */
+  const buildingIndicators = {
+    gaffer: { flag: gafferFlag },
+    hoodoo: { flag: hoodooFlag, trial: hoodooTrialReady },
+    rest: {},
+    tinker: { flag: tinkerFlag },
+    townlot: {},
+    shop: {},
+    guild: { flag: guildFlag, bounty: guildBountyReady, trial: guildTrialReady },
+    fountain: {},
+    casino: { trial: casinoTrialReady },
+  };
+  document.getElementById('scene-art').innerHTML = artTownSquare(buildingIndicators, state.lotTier, innCooldownText, state.buildingUpgrades);
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isCommons){
   document.getElementById('scene-art').innerHTML = artZoneCommons();
