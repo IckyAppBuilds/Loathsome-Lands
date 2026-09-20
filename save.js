@@ -57,7 +57,19 @@ function itemByName(name){
 function serializeItem(item){ return item ? item.name : null; }
 function hydrateItem(name){
    if(!name) return null;
-   const def = itemByName(name);
+   let def = itemByName(name);
+   if(!def){
+      /* Backward-compat with saves written before item names dropped
+      their leading "a "/"an " (content.js) — an existing save still
+      stores the old, article-prefixed name, which no longer matches
+      anything in allItemDefs(). Without this, every already-equipped
+      or already-held item — armor, weapons, potions, quest items,
+      everything — silently resolved to null on load, which is exactly
+      what wiped players' equipment down to nothing. Strip the same
+      leading article the rename did and retry before giving up. */
+      const stripped = name.replace(/^(a|an)\s+/i, '');
+      if(stripped !== name) def = itemByName(stripped);
+   }
    if(!def){ console.warn(`Save referenced unknown item "${name}" — dropped.`); return null; }
    return { ...def };
 }
