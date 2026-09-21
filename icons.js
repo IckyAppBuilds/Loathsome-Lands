@@ -253,4 +253,7 @@ function iconLoadedDice(){
 function iconArcaneFocus(){
      return iconWrap(`<circle cx="30" cy="30" r="16" fill="#3d5a80"/><path d="M30 14 L38 30 L30 46 L22 30 Z" fill="#d1a94e"/><circle cx="30" cy="30" r="4" fill="#f4efe4" stroke="none"/>`);
 }
+function iconShout(){
+     return iconWrap(`<path d="M18 20 Q30 8 42 20 L42 40 Q30 52 18 40 Z" fill="#b5453f"/><path d="M46 16 Q56 24 46 32" fill="none" stroke-width="3"/><path d="M48 10 Q62 24 48 38" fill="none" stroke-width="2.5"/>`);
+}
 

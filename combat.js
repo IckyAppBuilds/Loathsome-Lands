@@ -92,11 +92,11 @@ const mult = ZONE_DIFFICULTY[template.zone] || 1;
        : `A wild ${state.monster.name} shuffles into view!`);
 }
 
-/* Shared "player takes damage" resolution — state.shield (granted by the
-Hoodoo Doctor's Warding Charm or the Meathead's Shout, see castSpell()/
-shout() below) absorbs first, hp only takes what's left over. Every place
-the player loses HP to an attack or hazard routes through this so a
-shield protects reliably regardless of source. */
+/* Shared "player takes damage" resolution — state.shield (granted by
+Warding Charm or Shout, both cast via castSpell() below) absorbs first,
+hp only takes what's left over. Every place the player loses HP to an
+attack or hazard routes through this so a shield protects reliably
+regardless of source. */
 function applyDamageToPlayer(dmg){
    const absorbed = Math.min(state.shield, dmg);
    state.shield -= absorbed;
@@ -269,25 +269,6 @@ if(!sneakAttackLands) monsterRetaliate();
    render();
 }
 
-/* Meathead-exclusive combat action — a battle cry that braces for impact
-instead of attacking, granting a Beef-scaled shield (see
-applyDamageToPlayer() above) boosted further by classSkillLevel, the same
-lever that boosts a Meathead's passive damage bonus (MEATHEAD_DAMAGE_BONUS,
-content.js) — one class-skill purchase strengthens both. No MP cost, since
-a Beef-focused build rarely invests in Hoodoo; the real cost is spending
-the turn on this instead of Attack, same trade-off as casting Warding
-Charm. */
-function shout(){
-   if(!state.inCombat || state.classTitle !== 'Meathead') return;
-   const eff = getEffectiveStats();
-   const shieldAmount = 8 + statBonus(eff.beef)*2 + state.classSkillLevel*10;
-   state.shield += shieldAmount;
-   log(`You let out a bone-rattling shout, bracing for whatever's coming. (+${shieldAmount} Shield)`);
-   monsterRetaliate();
-   checkDefeat();
-   render();
-}
-
 /* ---------------- Spells ---------------- */
 function openSpellMenu(){
    if(!state.inCombat || state.spellsKnown.length===0) return;
@@ -373,6 +354,18 @@ if(spell.type==='damage'){
    when there's actually a fight going — a buff cast outside combat has
    no monster to retaliate. */
    if(state.inCombat) monsterRetaliate();
+} else if(spell.type==='shout'){
+   /* Meathead-exclusive — same "grant a shield" mechanic as 'ward' above,
+   but Beef-scaled instead of Hoodoo-scaled (this class rarely invests in
+   Hoodoo) and boosted by classSkillLevel the same way MEATHEAD_DAMAGE_
+   BONUS is, since one class-skill purchase strengthens both. Used to be
+   a free, unlearnable dedicated button — folded into the normal spell
+   system (learnSpell()/castSpell()) so it costs Pop Tabs to learn and MP
+   to cast, same as every other class-exclusive ability. */
+   const shieldAmount = 8 + statBonus(eff.beef)*2 + state.classSkillLevel*10;
+   state.shield += shieldAmount;
+   log(`You let out a bone-rattling shout, bracing for whatever's coming. (+${shieldAmount} Shield)`);
+   monsterRetaliate();
 }
 
 if(state.inCombat){

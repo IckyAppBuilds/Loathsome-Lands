@@ -622,17 +622,31 @@ damage) for the next few fights. Unlike the other three types, castable
 outside combat too (there's no monster to target) — see castSpell()'s
 top-line gate.
 
-`classRequired` (only set on the 3 buff spells below, `undefined` — not
-`null` — on the original 4) restricts BOTH where a spell can be learned
-(learnSpell(), combat.js — a class's own building, not the Hoodoo
-Doctor's, e.g. Meathead only at the Guild) and who can learn/cast it
-(must match state.classTitle). The original 4 spells stay Hoodoo-only
-and learnable by anyone, unchanged. */
+`classRequired` (only set on the 4 class-exclusive spells below,
+`undefined` — not `null` — on the original 4) restricts BOTH where a
+spell can be learned (learnSpell(), combat.js — a class's own building,
+not the Hoodoo Doctor's, e.g. Meathead only at the Guild) and who can
+learn/cast it (must match state.classTitle). The original 4 spells stay
+Hoodoo-only and learnable by anyone, unchanged.
+
+'shout' (Meathead's, below) is its own type — mechanically identical to
+'ward' (a flat shield, castSpell(), combat.js) but Beef-scaled instead
+of Hoodoo-scaled, since this class rarely invests in Hoodoo. Used to be
+a free, always-available dedicated combat button with no MP cost;
+folded into the normal learnSpell()/castSpell() system so it costs Pop
+Tabs to learn and MP to cast like every other class-exclusive ability,
+and shows up in the Guild's class-spell list / in-combat spell menu
+automatically with no further UI wiring (see renderClassSpellList(),
+class-spells.js). Priced/costed to match Warding Charm (the spell it's
+mechanically closest to — a repeatable per-turn shield, not a rare
+multi-fight buff like the other 3 class spells below), not the pricier
+buff-spell tier. */
 const spells = [
    { id:'hexbolt', name:'Hex Bolt', desc:'A jagged little curse that stings more than it should.', type:'damage', mpCost:3, price:15, dmgMin:4, dmgMax:9, icon: iconHexBolt },
    { id:'mendcharm', name:'Mending Charm', desc:'Patches you up with muttered nonsense and surprising effectiveness.', type:'heal', healValue:10, mpCost:4, price:15, icon: iconMendCharm },
    { id:'wardcharm', name:'Warding Charm', desc:"Throws up a shimmering barrier that soaks up damage before it reaches you. Stacks if you're already shielded.", type:'ward', mpCost:3, price:12, icon: iconWardCharm },
    { id:'bottledfury', name:'Bottled Fury', desc:'Everything the potion ingredients were trying to tell you, unleashed at once.', type:'damage', mpCost:6, dmgMin:9, dmgMax:16, questReward:true, icon: iconBottledFury },
+   { id:'shout', name:'Shout', desc:"A bone-rattling battle cry that braces for impact instead of attacking — throws up a Beef-scaled shield.", type:'shout', mpCost:3, price:12, classRequired:'Meathead', icon: iconShout },
    { id:'adrenalinerush', name:'Adrenaline Rush', desc:"Floods your muscles with borrowed strength — hits harder than usual for your next few fights, not just this one.", type:'buff', mpCost:10, price:250, classRequired:'Meathead', icon: iconAdrenalineRush },
    { id:'loadeddice', name:'Loaded Dice', desc:"Tips the odds your way for a while — your opening strike is guaranteed to catch the next few fights' targets off guard.", type:'buff', mpCost:10, price:250, classRequired:'Card Shark', icon: iconLoadedDice },
    { id:'arcanefocus', name:'Arcane Focus', desc:"Sharpens your Hoodoo to a fine point for a while — your spells bite harder for the next few fights.", type:'buff', mpCost:10, price:250, classRequired:'Hexpert', icon: iconArcaneFocus },
