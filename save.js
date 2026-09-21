@@ -22,6 +22,18 @@ async function manualLoadGame(){
 }
 
 /* ---------------- Save / load (serialize/hydrate around the icon-function gotcha) ---------------- */
+/* Still used for devItemList() (dev-tools.js, "Give Item" dropdown) and
+as the fallback catalog hydrateItem() below searches when it's handed an
+OLD save that only stored an item's name (see that function). Gear drops
+(monsters[].gearDrop, content.js) were missing from this list entirely —
+since a monster-dropped weapon/armor's actual name never appears
+anywhere else in this array, itemByName() could never find one, so
+hydrateItem()'s old name-only lookup ALWAYS failed for monster-dropped
+gear specifically, silently dropping it on every save/reload. That's a
+separate, longer-standing bug from the one hydrateItem() itself now
+fixes below (which was about ANY item's name changing after the save
+was written) — this one is about a whole category of item never having
+been reachable by name at all. */
 function allItemDefs(){
    const monsterLoot = monsters.map(m => m.loot).filter(Boolean);
    const commanderLoot = gnomeCommander.loot ? [gnomeCommander.loot] : [];
@@ -30,6 +42,7 @@ function allItemDefs(){
    item here so hydrateItem() can still look each one up by name after a
    save/reload, same as monsterLoot above. */
 const monsterRareDrops = monsters.map(m => m.rareDrop).filter(Boolean);
+   const monsterGearDrops = monsters.map(m => m.gearDrop).filter(Boolean);
    const potionIngredientItems = potionIngredients.map(p => p.item);
    /* veinIngredients (quest 5's gather items, content.js) were missing here
    — hydrateItem() below would silently drop them from inventory on
@@ -42,36 +55,66 @@ const veinIngredientItems = veinIngredients.map(v => v.item);
    listed separately here, always (regardless of the current unlock
    state), so a held piece still hydrates correctly after a reload even
    if the Shop is later downgraded somehow, or a save is loaded on a
-   fresh playthrough that hasn't reached that Shop level yet. The new
-   Gnometropolis monsters' loot/rareDrop items need no extra line of
-   their own: they're already part of monsters[], so monsterLoot/
-   monsterRareDrops above pick them up automatically. */
+   fresh playthrough that hasn't reached that Shop level yet. */
 return [...healItems, ...shopBuyItems, ...shopGearItemsTier2, ...shopFoodItemsTier2,
         ...shopFoodItemsTier3, ...shopGearItemsTier3, ...shopGearItemsTier4, ...monsterLoot, ...commanderLoot,
-        ...monsterRareDrops, ...Object.values(starterGear), ...potionIngredientItems,
+        ...monsterRareDrops, ...monsterGearDrops, ...Object.values(starterGear), ...potionIngredientItems,
         ...veinIngredientItems, ...PALACE_GATE_GEAR];
 }
 function itemByName(name){
    return allItemDefs().find(d => d.name === name) || null;
 }
-function serializeItem(item){ return item ? item.name : null; }
-function hydrateItem(name){
-   if(!name) return null;
-   let def = itemByName(name);
-   if(!def){
-      /* Backward-compat with saves written before item names dropped
-      their leading "a "/"an " (content.js) — an existing save still
-      stores the old, article-prefixed name, which no longer matches
-      anything in allItemDefs(). Without this, every already-equipped
-      or already-held item — armor, weapons, potions, quest items,
-      everything — silently resolved to null on load, which is exactly
-      what wiped players' equipment down to nothing. Strip the same
-      leading article the rename did and retry before giving up. */
-      const stripped = name.replace(/^(a|an)\s+/i, '');
-      if(stripped !== name) def = itemByName(stripped);
+
+/* An item instance can carry data no static content.js definition has —
+rollGearDropTier()/rollShopGearStats() (combat.js/economy.js) roll random
+secondary stats and a random tier onto a shared base name, so two items
+with the identical name can have different `bonus`/`tier`. The OLD
+approach here saved only `item.name` and rebuilt from whatever matched
+that name in allItemDefs() at load time — which (a) always returned the
+generic base stats, silently discarding whatever was actually rolled,
+(b) depended on that exact name still existing in content.js at all,
+which broke outright for any monster-dropped gear (never in
+allItemDefs() to begin with, see the comment above it) and broke for
+every item the moment its display name was ever changed/rebalanced, and
+(c) was the direct cause of players' equipped gear "disappearing" on
+reload. Content is only going to keep getting more custom (more rolled
+stats, more one-off items), so a name-keyed lookup was never going to
+hold up.
+
+Now the item's own data is what's saved — every field it actually has
+(name/desc/type/slot/bonus/tier/sell/value/hpValue/mpValue/key/price/
+class/whatever a future item adds) round-trips exactly as rolled, with
+one exception: `icon` is a function (icons.js) and can't survive
+JSON. Every icon is a plain top-level `function iconX(){...}` (not a
+const/arrow function), so in this non-module script its own `.name`
+is enough to find it again via `window[...]` — no dependency on
+looking the ITEM back up by its (changeable) display name at all. */
+function serializeItem(item){
+   if(!item) return null;
+   const { icon, ...rest } = item;
+   return { ...rest, iconName: icon ? icon.name : null };
+}
+function hydrateItem(saved){
+   if(!saved) return null;
+   /* Backward compat with saves written before this format — those
+   stored just the item's bare name as a string (a save from right
+   after the "a"/"an" strip stored the new name; anything older stored
+   the pre-strip name with the article still on it). Reconstruct from
+   whatever currently matches in allItemDefs(), trying the article-
+   stripped form too, same as before — this is the one path that still
+   depends on the catalog, and only for saves nothing else can recover. */
+   if(typeof saved === 'string'){
+      let def = itemByName(saved);
+      if(!def){
+         const stripped = saved.replace(/^(a|an)\s+/i, '');
+         if(stripped !== saved) def = itemByName(stripped);
+      }
+      if(!def){ console.warn(`Save referenced unknown item "${saved}" — dropped.`); return null; }
+      return { ...def };
    }
-   if(!def){ console.warn(`Save referenced unknown item "${name}" — dropped.`); return null; }
-   return { ...def };
+   const { iconName, ...rest } = saved;
+   const icon = iconName && typeof window[iconName] === 'function' ? window[iconName] : null;
+   return { ...rest, icon };
 }
 
 function serializeState(){
