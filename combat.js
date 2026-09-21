@@ -355,14 +355,15 @@ if(spell.type==='damage'){
    no monster to retaliate. */
    if(state.inCombat) monsterRetaliate();
 } else if(spell.type==='shout'){
-   /* Meathead-exclusive — same "grant a shield" mechanic as 'ward' above,
-   but Beef-scaled instead of Hoodoo-scaled (this class rarely invests in
-   Hoodoo) and boosted by classSkillLevel the same way MEATHEAD_DAMAGE_
-   BONUS is, since one class-skill purchase strengthens both. Used to be
-   a free, unlearnable dedicated button — folded into the normal spell
-   system (learnSpell()/castSpell()) so it costs Pop Tabs to learn and MP
-   to cast, same as every other class-exclusive ability. */
-   const shieldAmount = 8 + statBonus(eff.beef)*2 + state.classSkillLevel*10;
+   /* Meathead-exclusive — a small, mostly-flat shield, NOT scaled off
+   statBonus(beef) the way 'ward' scales off Hoodoo. Beef is this class's
+   primary combat stat already (playerAttack()'s own damage formula), so
+   scaling the shield off it too double-dipped the exact same investment
+   into a second, unrelated payoff — at high Beef the shield ballooned
+   into effective invincibility instead of the small "braces for impact"
+   utility it's meant to be. classSkillLevel still grows it a little,
+   same lever that grows MEATHEAD_DAMAGE_BONUS, just capped small. */
+   const shieldAmount = 5 + state.classSkillLevel*3;
    state.shield += shieldAmount;
    log(`You let out a bone-rattling shout, bracing for whatever's coming. (+${shieldAmount} Shield)`);
    monsterRetaliate();
