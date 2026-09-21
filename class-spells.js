@@ -31,6 +31,56 @@ function renderClassSpellList(containerId, classTitle){
    });
 }
 
+/* Per-class formatter for the class-skill upgrade block below — keyed the
+same way BUILDING_EFFECT_INFO (render-shop.js) formats a Town Lot
+building's per-level bonus, since state.classSkillLevel drives its bonus
+the exact same "level-indexed array, format(v) turns one entry into a
+one-line string" way those do. */
+const CLASS_SKILL_INFO = {
+   'Meathead': v => `+${Math.round(v*100)}% melee damage`,
+   'Card Shark': v => `+${Math.round(v*100)}% casino payouts`,
+   'Hexpert': v => `+${v} spell damage`,
+};
+const CLASS_SKILL_VALUES = {
+   'Meathead': MEATHEAD_DAMAGE_BONUS,
+   'Card Shark': CARD_SHARK_PAYOUT_BONUS,
+   'Hexpert': HEXPERT_SPELL_DMG_BONUS,
+};
+
+/* Shared by the same 3 screens as renderClassSpellList() above — the
+purchase UI levelUpClassSkill() (guild.js) never had until now, so the
+class-skill counter it levels was raisable in state but unreachable from
+any button. Shows the current bonus, and — gated on BOTH state.level
+(CLASS_SKILL_LEVEL_REQ, content.js) and Pop Tabs (classSkillCost()),
+same as gear's own level requirement — the next tier's bonus and cost. */
+function renderClassSkillUpgrade(containerId, classTitle){
+   const el = document.getElementById(containerId);
+   if(!el) return;
+   if(state.classTitle !== classTitle){
+      el.style.display = 'none';
+      el.innerHTML = '';
+      return;
+   }
+   el.style.display = 'block';
+   const format = CLASS_SKILL_INFO[classTitle];
+   const values = CLASS_SKILL_VALUES[classTitle];
+   const level = state.classSkillLevel;
+   let html = '<div class="shop-section-title">Class Skill</div>';
+   if(level > 0) html += `<div class="quest-desc">Currently: ${format(values[level])}.</div>`;
+   if(level >= 3){
+      html += `<div class="shop-item"><div style="flex:1;"><div class="name">Class Skill <span class="qty-badge">Lv.${level}/3</span></div><div class="desc">Fully trained.</div></div></div>`;
+   } else {
+      const levelReq = CLASS_SKILL_LEVEL_REQ[level];
+      const cost = classSkillCost(level);
+      const meetsLevel = state.level >= levelReq;
+      const canAfford = state.popTabs >= cost;
+      const ready = meetsLevel && canAfford;
+      const reqText = meetsLevel ? '' : ` — Requires Lv.${levelReq}`;
+      html += `<div class="shop-item"><div style="flex:1;"><div class="name">Class Skill <span class="qty-badge">Lv.${level}/3</span></div><div class="desc">Next: ${format(values[level+1])}${reqText}</div><button class="btn-secondary ${ready?'btn-ready':''}" ${ready?'':'disabled'} onclick="levelUpClassSkill()">Train — ${cost} Pop Tabs</button></div></div>`;
+   }
+   el.innerHTML = html;
+}
+
 /* Character drawer block for casting a known class buff spell outside
 combat (castSpell() itself already allows type:'buff' casts outside a
 fight — see combat.js). Filtered to state.classTitle same as the

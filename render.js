@@ -51,11 +51,21 @@ document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer This
 
 document.getElementById('hoodoo-row').style.display = (isHoodoo && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('hoodoo-list').style.display = (isHoodoo && !state.inCombat) ? 'block' : 'none';
-  if(isHoodoo && !state.inCombat) renderHoodooShop();
-  else document.getElementById('hoodoo-class-spell-list').style.display = 'none';
+  if(isHoodoo && !state.inCombat){
+    renderHoodooShop();
+    renderClassSkillUpgrade('hoodoo-classskill-block', 'Hexpert');
+  } else {
+    document.getElementById('hoodoo-class-spell-list').style.display = 'none';
+    document.getElementById('hoodoo-classskill-block').style.display = 'none';
+  }
 
 document.getElementById('guild-spell-list').style.display = (isGuild && !state.inCombat) ? 'block' : 'none';
-  if(isGuild && !state.inCombat) renderClassSpellList('guild-spell-list', 'Meathead');
+  if(isGuild && !state.inCombat){
+    renderClassSpellList('guild-spell-list', 'Meathead');
+    renderClassSkillUpgrade('guild-classskill-block', 'Meathead');
+  } else {
+    document.getElementById('guild-classskill-block').style.display = 'none';
+  }
 
 document.getElementById('townlot-row').style.display = (isTownLot && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('townlot-list').style.display = isTownLot ? 'block' : 'none';
@@ -71,7 +81,12 @@ document.getElementById('casino-winnings-box').style.display = (isCasino && !sta
   if(isCasino && !state.inCombat) renderCasinoWinningsBox();
 
 document.getElementById('casino-spell-list').style.display = (isCasino && !state.inCombat) ? 'block' : 'none';
-  if(isCasino && !state.inCombat) renderClassSpellList('casino-spell-list', 'Card Shark');
+  if(isCasino && !state.inCombat){
+    renderClassSpellList('casino-spell-list', 'Card Shark');
+    renderClassSkillUpgrade('casino-classskill-block', 'Card Shark');
+  } else {
+    document.getElementById('casino-classskill-block').style.display = 'none';
+  }
 
 document.getElementById('noticeboard-row').style.display = (isNoticeBoard && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('noticeboard-hint').style.display = isNoticeBoard ? 'block' : 'none';

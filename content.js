@@ -738,6 +738,14 @@ const HEXPERT_SPELL_DMG_BONUS = [0, 3, 6, 9]; /* flat bonus added to spell damag
 above — quadratic, same style as buildingUpgradeCost() below: 150/600/1350
 Pop Tabs. One cost curve shared across all 3 classes' single skill level. */
 function classSkillCost(level){ return 150 * (level+1) * (level+1); }
+/* Player level required to go from `level` to `level+1` — index the same
+way classSkillCost() is (current classSkillLevel, not the target). A
+class can't even be chosen before level 10 (the Adventurer's Trial,
+guild.js), so the first tier unlocks right alongside it rather than
+gating it further; the next two climb with the same escalating feel as
+the Pop Tabs cost, so a maxed-out skill is a real late-game milestone,
+not something affordable the moment you pick a class. */
+const CLASS_SKILL_LEVEL_REQ = [10, 15, 20];
 
 /* Gear-gated approaches into Gnometropolis' palace for quest 7 — the real
 gnomeKing (above) is holed up behind the palace gate, and each class

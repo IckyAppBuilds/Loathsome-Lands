@@ -377,13 +377,19 @@ content.js) — see those bonuses applied in playerAttack()/gambleCasino()/
 castSpell() respectively. Purchasable only at the building matching the
 player's class, same 0..3 index range as the bonus arrays (mirrors
 BUILDING_UPGRADE_MAX's capping style), and only one copy of the counter
-exists since a player only ever has one active class at a time. */
+exists since a player only ever has one active class at a time. Gated on
+BOTH state.level (CLASS_SKILL_LEVEL_REQ, content.js) and Pop Tabs
+(classSkillCost()) — same "afford it, but you might not be able to use
+it yet" shape gear's own level requirement uses, so training can't be
+rushed just by grinding Pop Tabs. */
 function levelUpClassSkill(){
    const atRightBuilding =
       (state.classTitle==='Meathead' && state.location==='guild') ||
       (state.classTitle==='Card Shark' && state.location==='casino') ||
       (state.classTitle==='Hexpert' && state.location==='hoodoo');
    if(!atRightBuilding || state.classSkillLevel>=3) return;
+   const levelReq = CLASS_SKILL_LEVEL_REQ[state.classSkillLevel];
+   if(state.level < levelReq) return;
    const cost = classSkillCost(state.classSkillLevel);
    if(state.popTabs < cost) return;
    state.popTabs -= cost;
