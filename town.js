@@ -52,7 +52,19 @@ function travelTo(dest){
    if(dest === 'quarry' && !state.quest4Complete) return;
    if(dest === 'vault' && !state.quest5Complete) return;
    if(dest === 'gnometropolis' && !state.quest6Complete) return;
-   if((dest === 'garrison' || dest === 'roguesden' || dest === 'sanctum' || dest === 'palace') && !state.quest7Accepted) return;
+   /* No quest7Accepted gate on the 4 district/palace destinations below —
+   they're only ever reachable by clicking a building tile inside the
+   Gnometropolis square (boot.js's data-action dispatch), so standing
+   there already implies quest6Complete. Same "always enterable, NPC
+   dialogue reflects quest state" convention every Gladstone Hollow
+   building uses (see enterGuild()/enterHoodoo() etc. above) — an
+   earlier version of this gated entry on quest7Accepted too, which left
+   the 4 tiles looking clickable but silently doing nothing for a player
+   who'd reached Gnometropolis without yet claiming a class (quest7's own
+   prerequisite), a confusing dead end with no explanation. Guardian
+   encounters and the real palace fight still have their own quest7
+   gates (goAdventuring()'s *Hunt blocks, combat.js; approachPalaceGate(),
+   guild.js) — only basic entry needed loosening. */
    if(dest === 'town'){
       const wasGaffer = state.location === 'gaffer';
       state.location = 'town';
