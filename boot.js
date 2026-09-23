@@ -23,6 +23,10 @@ document.getElementById('scene-art').addEventListener('click', function(e){
    else if(action === 'tinker') enterTinker();
    else if(action === 'townlot') enterTownLot();
    else if(action === 'fountain') enterNoticeBoard();
+   else if(action === 'garrison') travelTo('garrison');
+   else if(action === 'roguesden') travelTo('roguesden');
+   else if(action === 'sanctum') travelTo('sanctum');
+   else if(action === 'palace') travelTo('palace');
 });
 
 /* Seed a brand-new run: starter gear (equipped) and a couple of starter

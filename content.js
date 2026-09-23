@@ -103,19 +103,19 @@ const monsters = [
     art: artCeremonialArmor, loot:{name:"dented ceremonial gauntlet", desc:"Once belonged to somebody important, probably.", type:"junk", sell:8, icon:iconCeremonialGauntlet},
     rareDrop:{name:"ceremonial luck-charm, still humming with old magic", desc:"Whoever it was made for never got to keep it.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
     gearDrop:{name:"scrap of animated ceremonial mail of the Tortoise", desc:"Keeps twitching like it's still wearing someone.", type:"equip", slot:"chest", bonus:{grit:2}, tier:'common', icon:iconAdventurerCuirass} },
-   { name:"a gnome vizier, draped in stolen finery", hp:34, atkMin:5, atkMax:9, xp:19, zone:"gnometropolis",
+   { name:"a gnome vizier, draped in stolen finery", hp:34, atkMin:5, atkMax:9, xp:19, zone:"sanctum",
     art: artGnomeVizier, loot:{name:"vizier's confiscated ledger", desc:"Every debt in Gnometropolis, written in tiny cramped handwriting.", type:"junk", sell:9, icon:iconVizierLedger},
     rareDrop:{name:"vizier's uncanny hunch, bottled", desc:"It practically whispers good advice.", type:"luck", hpValue:18, mpValue:9, icon:iconClover},
     gearDrop:{name:"vizier's confiscated cane-wand of the Loon", desc:"Equal parts walking stick and unlicensed magic.", type:"equip", slot:"weapon", bonus:{hoodoo:3}, tier:'common', icon:iconWandStick} },
-   { name:"a heavily-armored gnome guard", hp:44, atkMin:6, atkMax:10, xp:23, zone:"gnometropolis",
+   { name:"a heavily-armored gnome guard", hp:44, atkMin:6, atkMax:10, xp:23, zone:"garrison",
     art: artGnomeGuard, loot:{name:"dented guard-captain's shield-boss", desc:"Scratched from decades of very small, very serious duels.", type:"junk", sell:10, icon:iconShieldBoss},
     rareDrop:{name:"the guard-captain's ceremonial sash", desc:"Awarded for uninterrupted vigilance. Interrupted now.", type:"junk", sell:32, icon:iconFigurine},
     gearDrop:{name:"guard's dented vambrace-plating of the Tortoise", desc:"Decades of very small, very serious duels.", type:"equip", slot:"chest", bonus:{grit:3}, tier:'common', icon:iconClockworkPlate} },
-   { name:"a burrowing tunnel-worm, gnome-bred", hp:38, atkMin:6, atkMax:10, xp:21, zone:"gnometropolis",
+   { name:"a burrowing tunnel-worm, gnome-bred", hp:38, atkMin:6, atkMax:10, xp:21, zone:"roguesden",
     art: artBurrowWorm, loot:{name:"chitinous burrow-shell fragment", desc:"Warm from the tunnel. You don't ask why.", type:"junk", sell:9, icon:iconBurrowShell},
     rareDrop:{name:"burrow-worm's lucky cast-off tooth", desc:"Smooth, oddly warm, and very possibly why you're still standing.", type:"luck", hpValue:19, mpValue:9, icon:iconClover},
     gearDrop:{name:"worm-chewed tunneling boots of the Weasel", desc:"Already broken in. Not by you.", type:"equip", slot:"boots", bonus:{zip:3}, tier:'common', icon:iconBlessedBoots} },
-   { name:"a rogue clockwork automaton, sparking wildly", hp:46, atkMin:7, atkMax:11, xp:26, zone:"gnometropolis",
+   { name:"a rogue clockwork automaton, sparking wildly", hp:46, atkMin:7, atkMax:11, xp:26, zone:"roguesden",
     art: artFeralAutomaton, loot:{name:"scorched servo joint", desc:"Still twitches, if you're not careful.", type:"junk", sell:11, icon:iconServoJoint},
     rareDrop:{name:"the automaton's still-warm power cell", desc:"Hums like it's not entirely done working yet.", type:"junk", sell:34, icon:iconFigurine},
     gearDrop:{name:"automaton's salvaged headplate of the Tortoise", desc:"Still sparks a little when it rains.", type:"equip", slot:"head", bonus:{grit:3}, tier:'common', icon:iconGuardHelm} },
@@ -184,20 +184,26 @@ hp:95/atk:11-17/xp:50) since he's meant to be the true Act 1 finale, not
 a mid-quest rare hunt. rare:true/loot:null/art unchanged from before
 (his art already exists and needs no touching).
 
-`zone:"gnometropolis"` restored — a past pass removed it reasoning "he's
-no longer a wild zone spawn, so he needs no zone" (true for whether he's
-in the random encounter pool, monsters[] never included him either way
-— but startCombat()'s ZONE_DIFFICULTY scaling (combat.js) keys off this
-SAME field, and that part of the reasoning didn't hold: every other
-Gnometropolis monster gets scaled 2.3x by fighting there, but he
-didn't, so his "buffed" 105 raw hp was actually LOWER, post-scaling,
-than gnomeKingsCaptain's own 70-base Vault fight (133 real hp — that one
+`zone:"palace"` (was briefly `zone:"gnometropolis"`, and briefly missing
+entirely before that) — a past pass removed it reasoning "he's no longer
+a wild zone spawn, so he needs no zone" (true for whether he's in the
+random encounter pool, monsters[] never included him either way — but
+startCombat()'s ZONE_DIFFICULTY scaling (combat.js) keys off this SAME
+field, and that part of the reasoning didn't hold: every other
+Gnometropolis monster gets scaled by fighting there, but he didn't, so
+his "buffed" 105 raw hp was actually LOWER, post-scaling, than
+gnomeKingsCaptain's own 70-base Vault fight (133 real hp — that one
 correctly kept its zone:"vault"). The result: by the level a player
-realistically reaches the palace gate (having already cleared
-Gnometropolis's own 2.3x-scaled trash and a district guardian), the
-"hardest fight in the game" was costing under 10% HP and ending in 3
-turns — confirmed by simulation, this is what made it feel too easy.
-Same fix applied to garrisonGuardian/roguesDenEnforcer/
+realistically reaches the palace gate, the "hardest fight in the game"
+was costing under 10% HP and ending in 3 turns — confirmed by
+simulation, this is what made it feel too easy. `zone` moved from
+`"gnometropolis"` to `"palace"` now that Gnometropolis is a town hub
+with its own state.location ('gnometropolis') distinct from where this
+fight actually happens (approachPalaceGate() only runs from
+state.location==='palace', guild.js) — ZONE_DIFFICULTY.palace carries
+the same 2.3 the old shared gnometropolis entry did, so this is a pure
+rename, not a balance change. Same fix (zone restored, now to their own
+district) applied to garrisonGuardian/roguesDenEnforcer/
 arcaneSanctumGuardian below, which had the identical gap. */
 /* hp trimmed from the original 120 to 105 to compensate for adding two
 skills at once (below) — the Act 1 finale should still clearly be the
@@ -206,7 +212,7 @@ stacking a skills[] kit on top of already being the highest raw hp/atk.
 No sustain (unlike hoodooChampion) — he's meant to be rushed down before
 his own buff+bolt combo snowballs, not out-attritioned. */
 const gnomeKing = {
-   name:"the gnome king, throned in scavenged gold", hp:100, atkMin:11, atkMax:17, xp:70, rare:true, zone:"gnometropolis",
+   name:"the gnome king, throned in scavenged gold", hp:100, atkMin:11, atkMax:17, xp:70, rare:true, zone:"palace",
    skills:[
       { type:'buff', chance:0.15, buffMult:1.7, buffTurns:3, flavor:"rallies the last of his gnomes for one final push" },
       { type:'bolt', chance:0.20, boltMin:14, boltMax:20, flavor:"hurls a scavenged treasure-shard, crackling with stolen magic" },
@@ -291,12 +297,19 @@ stay each monster's zone-relative baseline, and retuning how much harder
 an area feels is just one number here, not a pass through every entry.
 Tuned per user feedback that later areas weren't feeling more
 challenging than earlier ones. */
-const ZONE_DIFFICULTY = { commons:1, sewers:1.15, quarry:1.55, vault:1.9, gnometropolis:2.3 };
+/* gnometropolis's flat 2.3 became one entry per district (garrison/
+roguesden/sanctum) plus palace once Gnometropolis stopped being a single
+adventure zone and became its own town hub with 3 explorable districts
++ the palace (gnometropolis.js, town.js's travelTo()) — all four keep
+the same 2.3 value the old shared zone used, since a player only ever
+needs to clear ONE district (their own class's) rather than all three,
+so there's no reason to differentiate difficulty between them. */
+const ZONE_DIFFICULTY = { commons:1, sewers:1.15, quarry:1.55, vault:1.9, garrison:2.3, roguesden:2.3, sanctum:2.3, palace:2.3 };
 
 /* Display names for each adventure zone, keyed by state.location/zone id —
 used by the Bounty Board (render.js) to spell out where a bounty's
 monster lives without hand-typing zone names in a second place. */
-const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', gnometropolis:'Gnometropolis' };
+const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace' };
 
 /* Shown on each zone's card in the Map drawer (render.js) as a "Recommended
 level" guideline — deliberately advisory, not a hard gate like zone
@@ -780,44 +793,56 @@ Retconned: these were originally bought with Bounty Tokens at a matching
 town building (`price`/`building` fields, one purchase function per
 building). That's gone now — each item is instead a GUARANTEED drop from
 defeating its class's Gnometropolis district guardian (garrisonGuardian/
-roguesDenEnforcer/arcaneSanctumGuardian below, fought via
-gnometropolis.js's challengeDistrictGuardian()), which is why `price`/
-`building` no longer exist here. icon fields point at iconSiegeBreaker/
-iconGuardUniform/iconWardedSeal (icons.js). */
+roguesDenEnforcer/arcaneSanctumGuardian below, a rare encounter while
+exploring that district — see the *Hunt blocks in goAdventuring(),
+combat.js), which is why `price`/`building` no longer exist here.
+icon fields point at iconSiegeBreaker/iconGuardUniform/iconWardedSeal
+(icons.js). */
 const PALACE_GATE_GEAR = [
    { name:"warlord's siege-breaker", desc:"Not subtle. Doesn't need to be.", type:"equip", slot:"weapon", bonus:{beef:2}, class:'Meathead', tier:'epic', icon: iconSiegeBreaker },
    { name:"stolen palace-guard's uniform", desc:"Fits well enough, if nobody looks twice.", type:"equip", slot:"chest", bonus:{zip:2}, class:'Card Shark', tier:'epic', icon: iconGuardUniform },
    { name:"warded seal, still humming", desc:"Warm to the touch. Getting warmer.", type:"equip", slot:"head", bonus:{hoodoo:2}, class:'Hexpert', tier:'epic', icon: iconWardedSeal },
    ];
 
-/* The three Gnometropolis district guardians — new design that turns
-PALACE_GATE_GEAR (above) from a Bounty Token purchase into a guaranteed
-combat drop, and doubles as the seed of Gnometropolis eventually becoming
-a full town hub (a later, separate task — these three names/flavors were
-picked to plausibly become real buildings then, not generic "boss arena"
-labels). Fought via a direct button in Gnometropolis
-(gnometropolis.js's challengeDistrictGuardian(districtKey)), not a wild
-spawn — but they still carry `zone:"gnometropolis"` so startCombat()'s
-ZONE_DIFFICULTY scaling (combat.js) still applies, same as every other
-Gnometropolis monster gets by just fighting there. A past pass omitted
-this (same "not a wild spawn, so no zone" reasoning trialChampion uses
-above, correctly, since that one fights at a town building with no zone
-of its own to scale by) — but these three fight IN Gnometropolis, so
-leaving it off just meant they were quietly undertuned relative to the
-zone's own regular monsters, not appropriately toned down. Tuned as a
-step up from the Sunless Vault's rare hunts (gnomeKingsCaptain,
-hp:70/atk:7-12/xp:35, also correctly zone-scaled) but short of the real
-gnomeKing (Act 1's true finale, hp:100/atk:11-17/xp:70): these guard the
-gate, they aren't the finale itself. `loot` references the exact
-PALACE_GATE_GEAR entry for the matching class directly — this only
-works because it's written after the array literal above has already
-executed; `const` doesn't allow a true forward reference. winCombat()
-(combat.js) checks each of these three by name and forces
-state.monster.loot through as a guaranteed drop, same tier of guarantee
-as a quest-item. art points at artGarrisonGuardian/
-artRoguesDenEnforcer/artArcaneSanctumGuardian (art.js, same task). */
+/* The three Gnometropolis district guardians — each one a rare encounter
+while exploring its own district (garrison/roguesden/sanctum,
+state.location, reached via travelTo() from the Gnometropolis town
+square, gnometropolis.js/town.js), same "explore, then a % chance per
+adventure to spawn the rare boss instead" pattern gnomeCommander/
+diggerBot/gnomeKingsCaptain already use — see the *Hunt blocks in
+goAdventuring() (combat.js) and the matching *_SPAWN_CHANCE constants
+below. Any class can explore any district (regular monsters, regular
+loot), but a district's own guardian only ever spawns for the matching
+class (state.classTitle check baked into that district's Hunt
+condition) — a Card Shark wandering the Garrison just never meets its
+watch-captain. Defeating one sets a matching state.&lt;district&gt;
+GuardianDefeated flag (winCombat(), combat.js) so it can't be re-farmed
+and unlocks approaching the Palace gate. This turns PALACE_GATE_GEAR
+(above) from a Bounty Token purchase into a guaranteed combat drop.
+
+Each carries `zone:"&lt;its own district&gt;"` so startCombat()'s
+ZONE_DIFFICULTY scaling (combat.js) applies, same as every regular
+monster in that district. A past pass (before Gnometropolis became a
+town hub) omitted `zone` entirely reasoning "not a wild spawn, so no
+zone needed" — true for pool membership, false for the difficulty
+multiplier, which left them quietly undertuned; see gnomeKing's own
+comment above for the fuller story of that bug. Tuned as a step up from
+the Sunless Vault's rare hunts (gnomeKingsCaptain, hp:70/atk:7-12/xp:35,
+also zone-scaled) but short of the real gnomeKing (Act 1's true finale,
+hp:100/atk:11-17/xp:70): these guard the gate, they aren't the finale
+itself. `loot` references the exact PALACE_GATE_GEAR entry for the
+matching class directly — this only works because it's written after
+the array literal above has already executed; `const` doesn't allow a
+true forward reference. winCombat() (combat.js) checks each of these
+three by name and forces state.monster.loot through as a guaranteed
+drop, same tier of guarantee as a quest-item. art points at
+artGarrisonGuardian/artRoguesDenEnforcer/artArcaneSanctumGuardian
+(art.js). */
+const GARRISON_GUARDIAN_SPAWN_CHANCE = 0.05;
+const ROGUESDEN_ENFORCER_SPAWN_CHANCE = 0.05;
+const ARCANE_SANCTUM_GUARDIAN_SPAWN_CHANCE = 0.05;
 const garrisonGuardian = {
-   name:"the Garrison's watch-captain, built like a slammed door", hp:65, atkMin:7, atkMax:11, xp:45, rare:true, zone:"gnometropolis",
+   name:"the Garrison's watch-captain, built like a slammed door", hp:65, atkMin:7, atkMax:11, xp:45, rare:true, zone:"garrison",
    skills:[ { type:'buff', chance:0.20, buffMult:1.6, buffTurns:2, flavor:"braces like a slammed door and hits back twice as hard" } ],
    art: artGarrisonGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Meathead')
 };
@@ -826,12 +851,12 @@ same dodgeChance mechanic casinoChampion uses (applyDamageToMonster(),
 combat.js), fitting a Rogues' Den enforcer who's "already taking side
 bets on you" i.e. never where you'd expect. */
 const roguesDenEnforcer = {
-   name:"the Rogues' Den enforcer, already taking side bets on you", hp:65, atkMin:7, atkMax:11, xp:45, rare:true, zone:"gnometropolis",
+   name:"the Rogues' Den enforcer, already taking side bets on you", hp:65, atkMin:7, atkMax:11, xp:45, rare:true, zone:"roguesden",
    dodgeChance:0.25,
    art: artRoguesDenEnforcer, loot: PALACE_GATE_GEAR.find(g => g.class === 'Card Shark')
 };
 const arcaneSanctumGuardian = {
-   name:"the Arcane Sanctum's warden, muttering an unfinished spell", hp:65, atkMin:7, atkMax:11, xp:45, rare:true, zone:"gnometropolis",
+   name:"the Arcane Sanctum's warden, muttering an unfinished spell", hp:65, atkMin:7, atkMax:11, xp:45, rare:true, zone:"sanctum",
    skills:[ { type:'bolt', chance:0.25, boltMin:12, boltMax:18, flavor:"finally finishes the spell, unleashing a burst of raw arcane energy" } ],
    art: artArcaneSanctumGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Hexpert')
 };

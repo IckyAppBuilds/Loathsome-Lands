@@ -1,5 +1,11 @@
 /* ---------------- Core loop ---------------- */
-const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault', 'gnometropolis'];
+/* 'gnometropolis' itself isn't here anymore -- it's the Act 2 town hub
+now (TOWN_HUBS, town.js), not a directly-explorable zone. Its three
+districts (reached from that town square via travelTo(), gnometropolis.js)
+took its place as the actual adventuring locations; 'palace' is
+deliberately excluded -- it's a single scripted fight (approachPalaceGate(),
+guild.js), not somewhere to wander and roll random encounters. */
+const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault', 'garrison', 'roguesden', 'sanctum'];
 function goAdventuring(){
    if(state.inCombat || !ADVENTURE_ZONES.includes(state.location)) return;
    regenBiscuits();
@@ -31,6 +37,34 @@ const diggerBotHunt = state.location==='sewers' && state.quest4Accepted && !stat
 const vaultCaptainHunt = state.location==='vault' && state.quest6Accepted && !state.quest6Complete && !state.quest6RareDefeated;
    if(vaultCaptainHunt && Math.random() < VAULT_CAPTAIN_SPAWN_CHANCE){
       startCombat(gnomeKingsCaptain);
+      render();
+      return;
+   }
+
+/* Gnometropolis' three district-guardian hunts — same shape as the three
+above, plus a state.classTitle match each of those doesn't need: these
+bosses are class-gated (each drops that class's own PALACE_GATE_GEAR),
+so any class can explore any district, but only the matching class's
+hunt condition ever comes true — a Card Shark wandering the Garrison
+just fights regular monsters there, forever, same as everyone else who
+walked into the wrong door. */
+const garrisonHunt = state.location==='garrison' && state.classTitle==='Meathead' && state.quest7Accepted && !state.quest7Complete && !state.garrisonGuardianDefeated;
+   if(garrisonHunt && Math.random() < GARRISON_GUARDIAN_SPAWN_CHANCE){
+      startCombat(garrisonGuardian);
+      render();
+      return;
+   }
+
+const roguesdenHunt = state.location==='roguesden' && state.classTitle==='Card Shark' && state.quest7Accepted && !state.quest7Complete && !state.roguesDenEnforcerDefeated;
+   if(roguesdenHunt && Math.random() < ROGUESDEN_ENFORCER_SPAWN_CHANCE){
+      startCombat(roguesDenEnforcer);
+      render();
+      return;
+   }
+
+const sanctumHunt = state.location==='sanctum' && state.classTitle==='Hexpert' && state.quest7Accepted && !state.quest7Complete && !state.arcaneSanctumGuardianDefeated;
+   if(sanctumHunt && Math.random() < ARCANE_SANCTUM_GUARDIAN_SPAWN_CHANCE){
+      startCombat(arcaneSanctumGuardian);
       render();
       return;
    }
@@ -562,10 +596,13 @@ clearLog();
    } else if(wasHoodooChampion){
       log(`You defeat ${defeatedName}! ${state.classTrialHoodooPassed ? "A killing blow with a spell — the Hoodoo Doctor's test, passed." : "It dissolves back into the pot, gone for now."} (+${xpGain} XP)`);
    } else if(wasGarrisonGuardian){
+      state.garrisonGuardianDefeated = true;
       log(`You defeat ${defeatedName}! The Garrison falls silent behind you. (+${xpGain} XP)`);
    } else if(wasRoguesDenEnforcer){
+      state.roguesDenEnforcerDefeated = true;
       log(`You defeat ${defeatedName}! Nobody in the Rogues' Den saw where you went. (+${xpGain} XP)`);
    } else if(wasArcaneSanctumGuardian){
+      state.arcaneSanctumGuardianDefeated = true;
       log(`You defeat ${defeatedName}! The Sanctum's wards flicker and go dark. (+${xpGain} XP)`);
    } else {
       log(`You defeat ${defeatedName}! (+${xpGain} XP)`);
@@ -656,7 +693,12 @@ function checkDefeat(){
           : "Everything goes dark. You wake up outside the Inn, patched up but humbled. (-2 Biscuits for the walk of shame)", 'damage');
       state.hp = Math.floor(state.maxHp*0.5);
       if(!devMode) state.adventures = Math.max(0, state.adventures-2);
-      state.location = 'town';
+      /* Whichever town square the player actually calls home (TOWN_HUBS,
+      town.js — 'town'/Gladstone Hollow by default, 'gnometropolis' once
+      that's been reached), not always Gladstone Hollow — a defeat inside
+      a Gnometropolis district should land you back in Gnometropolis, not
+      teleport you across the whole map. */
+      state.location = state.homeTown;
       state.showVictory = false;
       state.victoryMonster = null;
       endCombat();

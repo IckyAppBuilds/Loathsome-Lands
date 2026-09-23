@@ -277,6 +277,27 @@ const QUEST_DEV_STAGES = [
       { label:'Complete (unlocks Gnometropolis)', apply(){ Object.assign(state, { quest6Accepted:true, quest6RareDefeated:true, quest6Complete:true }); } },
       ], detect(){ if(state.quest6Complete) return 3; if(state.quest6Accepted && state.quest6RareDefeated) return 2; if(state.quest6Accepted) return 1; return 0; } },
 
+   /* Requires a claimed classTitle in real play (acceptQuest7(), guild.js)
+   — this dev jump bypasses that gate like every other stage here does,
+   so it's usable even before the 'classquest' stage below is set. Three
+   district guardians (garrisonGuardianDefeated/roguesDenEnforcerDefeated/
+   arcaneSanctumGuardianDefeated, core.js) gate the real Gnome King fight
+   (quest7RareDefeated) the same way quest4/quest5/quest6's single rare
+   spawn gates their own turn-in, just three of them instead of one. */
+   { id:'quest7', label:"Guild: The Gnome King's Court (Act 1 finale)", stages: [
+      { label:'Not started', apply(){ Object.assign(state, { quest7Accepted:false, garrisonGuardianDefeated:false, roguesDenEnforcerDefeated:false, arcaneSanctumGuardianDefeated:false, quest7RareDefeated:false, quest7Complete:false }); } },
+      { label:'Accepted (no district guardians defeated yet)', apply(){ Object.assign(state, { quest7Accepted:true, garrisonGuardianDefeated:false, roguesDenEnforcerDefeated:false, arcaneSanctumGuardianDefeated:false, quest7RareDefeated:false, quest7Complete:false }); } },
+      { label:'All 3 district guardians defeated (palace gear in hand)', apply(){ Object.assign(state, { quest7Accepted:true, garrisonGuardianDefeated:true, roguesDenEnforcerDefeated:true, arcaneSanctumGuardianDefeated:true, quest7RareDefeated:false, quest7Complete:false }); } },
+      { label:'Gnome King defeated (ready to turn in)', apply(){ Object.assign(state, { quest7Accepted:true, garrisonGuardianDefeated:true, roguesDenEnforcerDefeated:true, arcaneSanctumGuardianDefeated:true, quest7RareDefeated:true, quest7Complete:false }); } },
+      { label:'Complete (Act One done)', apply(){ Object.assign(state, { quest7Accepted:true, garrisonGuardianDefeated:true, roguesDenEnforcerDefeated:true, arcaneSanctumGuardianDefeated:true, quest7RareDefeated:true, quest7Complete:true }); } },
+      ], detect(){
+         if(state.quest7Complete) return 4;
+         if(state.quest7RareDefeated) return 3;
+         if(state.quest7Accepted && state.garrisonGuardianDefeated && state.roguesDenEnforcerDefeated && state.arcaneSanctumGuardianDefeated) return 2;
+         if(state.quest7Accepted) return 1;
+         return 0;
+      } },
+
    { id:'classquest', label:"Guild: The Adventurer's Trial (class)", stages: [
       { label:'Not accepted', apply(){ Object.assign(state, { classQuestAccepted:false, classQuestComplete:false, classTitle:null,
          classTrialGuildPassed:false, classTrialCasinoPassed:false, classTrialHoodooPassed:false }); } },

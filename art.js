@@ -43,32 +43,84 @@ function artTinker(){
      return sceneWrap(`<circle cx="50" cy="24" r="12" fill="#e0c49a"/><path d="M36 18 L64 18 L62 24 L38 24 Z" fill="#8a8477"/><rect x="34" y="36" width="32" height="42" fill="#3d5a80"/><circle cx="42" cy="50" r="6" fill="#d1a94e"/><circle cx="42" cy="50" r="2" fill="#2b2b28" stroke="none"/><rect x="54" y="46" width="10" height="10" fill="#b9b3a4"/><line x1="34" y1="40" x2="18" y2="52"/><path d="M18 52 Q10 52 12 44" fill="none" stroke-width="2.5"/><line x1="66" y1="40" x2="80" y2="48"/><line x1="50" y1="78" x2="42" y2="98"/><line x1="50" y1="78" x2="58" y2="98"/>`, 0);
 }
 
+/* Shared town-tile helpers — used by artTownSquare() below and by
+artGnometropolisSquare() (gnometropolis-art.js), extracted here (instead
+of staying as local consts inside artTownSquare()) so a second town
+doesn't need to duplicate ~80 lines of badge/plate SVG that would drift
+out of sync. */
+
 /* buildingIndicators is one object per building tile, keyed by its
-data-action (gaffer/hoodoo/rest/tinker/townlot/shop/guild/fountain/
-casino), each an optional {flag, bounty, trial} — see makeFlag()/
+data-action, each an optional {flag, bounty, trial} — see makeFlag()/
 makeBountyBadge()/makeTrialIcon() below for what each one means. Every
-building calls all three uniformly (bi() below just returns {} for a
-key with nothing set, so each helper's own `!show` guard renders
-nothing) rather than only the buildings that currently use one having
-a slot for it — a future 4th indicator, or a bounty/trial moving to a
-different building, is then just a matter of the render.js caller
-passing that key, not a signature change here. */
+building calls all three uniformly (biGet() just returns {} for a key
+with nothing set, so each helper's own `!show` guard renders nothing)
+rather than only the buildings that currently use one having a slot for
+it — a future 4th indicator, or a bounty/trial moving to a different
+building, is then just a matter of the render.js caller passing that
+key, not a signature change here. */
+function biGet(buildingIndicators, key){ return (buildingIndicators && buildingIndicators[key]) || {}; }
+
+/* Building-upgrade decoration -- layers progressively more small detail
+shapes onto a building's FIXED base art as its real
+state.buildingUpgrades[key] level (0..BUILDING_UPGRADE_MAX, content.js)
+rises 0->3, same additive-overlay principle as makeFlag()/bountyShield/
+innCooldown below (never redraws or removes the base art, only adds on
+top). `layers` is one small SVG-string block per level (index 0 = level
+1's addition, index 1 = level 2's, index 2 = level 3's); concatenating
+the first N gives level N's cumulative decoration. */
+function decorLayers(level, layers){
+   let out = '';
+   for(let i = 0; i < Math.min(level, layers.length); i++) out += layers[i];
+   return out;
+}
+const makeFlag = (flagType) => {
+   if(!flagType) return '';
+   const bg = flagType==='offer' ? '#b5453f' : '#5c8a5c';
+   const symbol = flagType==='offer' ? '!' : '?';
+   return `
+   <g class="quest-flag">
+   <circle cx="50" cy="16" r="9" fill="${bg}" stroke="#2b2b28" stroke-width="3"/>
+   <text x="50" y="21" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-size="12" font-weight="700" fill="#f4efe4" stroke="none">${symbol}</text>
+   </g>`;
+};
+/* Separate from makeFlag()'s quest-! / turn-in-? — a bounty being ready
+isn't a quest state (see isBountyReady(), guild.js). Sits in the opposite
+top corner from makeFlag so both can show on the same tile without
+overlapping. Glow via a soft pulsing halo circle behind a solid shield
+shape, rather than quest-flag's bob, so the two read as distinct kinds
+of "something's ready here." */
+const makeBountyBadge = (show) => !show ? '' : `
+<g class="bounty-ready-shield">
+<circle cx="82" cy="16" r="12" fill="#d1a94e" opacity="0.45"/>
+<path d="M82 7 L91 10.5 L91 17 Q91 25 82 29 Q73 25 73 17 L73 10.5 Z" fill="#3d5a80" stroke="#2b2b28" stroke-width="2.5"/>
+<path d="M78 17.5 L81 20.5 L87 13" fill="none" stroke="#f4efe4" stroke-width="2.5"/>
+</g>`;
+/* A class-trial fight (startClassTrialGuild/Casino/Hoodoo, guild.js) is
+available and not yet passed at this specific building — separate from
+both indicators above, so it gets the third corner (top-left) rather
+than overlapping either. */
+const makeTrialIcon = (show) => !show ? '' : `
+<g class="trial-ready-icon">
+<circle cx="18" cy="16" r="9" fill="#b5453f" stroke="#2b2b28" stroke-width="3"/>
+<line x1="13" y1="11" x2="23" y2="21" stroke="#f4efe4" stroke-width="2.2" stroke-linecap="round"/>
+<line x1="23" y1="11" x2="13" y2="21" stroke="#f4efe4" stroke-width="2.2" stroke-linecap="round"/>
+<line x1="15" y1="13" x2="17.5" y2="10.5" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
+<line x1="21" y1="13" x2="18.5" y2="10.5" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
+</g>`;
+/* One uniform font-size for every building label — was 6-10 depending on
+the building, purely to dodge overflow on longer names ("Tinker's
+Workshop" vs "Casino"), which made otherwise-identical labels read as
+inconsistent from one building to the next. 7 is the largest size that
+still comfortably fits the longest label ("Tinker's Workshop", ~75px
+measured) inside this plate's fixed 88px width — verified across every
+label, not just that one. */
+const plate = (label) => `
+<rect x="6" y="76" width="88" height="18" fill="#f4efe4" stroke="#2b2b28" stroke-width="2"/>
+<text x="50" y="89" text-anchor="middle" class="building-label" fill="#2b2b28" stroke="none">${label}</text>`;
+
 function artTownSquare(buildingIndicators, lotTier, innCooldownText, buildingUpgrades){
-   const bi = (key) => (buildingIndicators && buildingIndicators[key]) || {};
-   /* Building-upgrade decoration -- layers progressively more small
-   detail shapes onto a building's FIXED base art as its real
-   state.buildingUpgrades[key] level (0..BUILDING_UPGRADE_MAX, content.js)
-   rises 0->3, same additive-overlay principle as makeFlag()/bountyShield/
-   innCooldown below (never redraws or removes the base art, only adds on
-   top). `layers` is one small SVG-string block per level (index 0 = level
-   1's addition, index 1 = level 2's, index 2 = level 3's); concatenating
-   the first N gives level N's cumulative decoration. */
+   const bi = (key) => biGet(buildingIndicators, key);
    const bu = buildingUpgrades || {};
-   const decorLayers = (level, layers) => {
-      let out = '';
-      for(let i = 0; i < Math.min(level, layers.length); i++) out += layers[i];
-      return out;
-   };
    const gafferDecor = decorLayers(bu.gaffer || 0, [
       /* lvl1: planter box under the window */
       `<rect x="29" y="67" width="16" height="6" fill="#5f4632"/><circle cx="32" cy="66" r="2" fill="#b5453f" stroke="none"/><circle cx="37" cy="65" r="2" fill="#d1a94e" stroke="none"/><circle cx="42" cy="66" r="2" fill="#b06a97" stroke="none"/>`,
@@ -125,40 +177,6 @@ function artTownSquare(buildingIndicators, lotTier, innCooldownText, buildingUpg
       /* lvl3: gold trim makes it the most lavish building in town */
       `<rect x="18" y="40" width="64" height="26" fill="none" stroke="#d1a94e" stroke-width="2"/><circle cx="50" cy="24" r="3" fill="#d1a94e" stroke="#2b2b28" stroke-width="1.5"/>`
    ]);
-   const makeFlag = (flagType) => {
-      if(!flagType) return '';
-      const bg = flagType==='offer' ? '#b5453f' : '#5c8a5c';
-      const symbol = flagType==='offer' ? '!' : '?';
-      return `
-      <g class="quest-flag">
-      <circle cx="50" cy="16" r="9" fill="${bg}" stroke="#2b2b28" stroke-width="3"/>
-      <text x="50" y="21" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-size="12" font-weight="700" fill="#f4efe4" stroke="none">${symbol}</text>
-      </g>`;
-   };
-   /* Separate from makeFlag()'s quest-! / turn-in-? — a bounty being ready
-   isn't a quest state (see isBountyReady(), guild.js). Sits in the
-   opposite top corner from makeFlag so both can show on the same tile
-   without overlapping. Glow via a soft pulsing halo circle behind a solid
-   shield shape, rather than quest-flag's bob, so the two read as
-   distinct kinds of "something's ready here." */
-   const makeBountyBadge = (show) => !show ? '' : `
-   <g class="bounty-ready-shield">
-   <circle cx="82" cy="16" r="12" fill="#d1a94e" opacity="0.45"/>
-   <path d="M82 7 L91 10.5 L91 17 Q91 25 82 29 Q73 25 73 17 L73 10.5 Z" fill="#3d5a80" stroke="#2b2b28" stroke-width="2.5"/>
-   <path d="M78 17.5 L81 20.5 L87 13" fill="none" stroke="#f4efe4" stroke-width="2.5"/>
-   </g>`;
-   /* A class-trial fight (startClassTrialGuild/Casino/Hoodoo, guild.js) is
-   available and not yet passed at this specific building — separate from
-   both indicators above, so it gets the third corner (top-left) rather
-   than overlapping either. */
-   const makeTrialIcon = (show) => !show ? '' : `
-   <g class="trial-ready-icon">
-   <circle cx="18" cy="16" r="9" fill="#b5453f" stroke="#2b2b28" stroke-width="3"/>
-   <line x1="13" y1="11" x2="23" y2="21" stroke="#f4efe4" stroke-width="2.2" stroke-linecap="round"/>
-   <line x1="23" y1="11" x2="13" y2="21" stroke="#f4efe4" stroke-width="2.2" stroke-linecap="round"/>
-   <line x1="15" y1="13" x2="17.5" y2="10.5" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
-   <line x1="21" y1="13" x2="18.5" y2="10.5" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
-   </g>`;
    /* Inn cooldown overlay — dims the whole tile (unlike the flag/shield
    badges above, which sit on top of a fully-usable building) since
    clicking during cooldown does nothing but log a "not yet" message.
@@ -173,17 +191,6 @@ function artTownSquare(buildingIndicators, lotTier, innCooldownText, buildingUpg
    <line x1="50" y1="46" x2="57" y2="46" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
    <text x="50" y="76" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-size="12" font-weight="700" fill="#f4efe4" stroke="none" id="inn-cooldown-text">${innCooldownText}</text>
    </g>`;
-   /* One uniform font-size for every building label — was 6-10 depending
-   on the building, purely to dodge overflow on longer names ("Tinker's
-   Workshop" vs "Casino"), which made otherwise-identical labels read as
-   inconsistent from one building to the next. 7 is the largest size that
-   still comfortably fits the longest label ("Tinker's Workshop", ~75px
-   measured) inside this plate's fixed 88px width — verified across every
-   label, not just that one. No `fontSize` parameter anymore; every call
-   site below was updated to drop it. */
-   const plate = (label) => `
-   <rect x="6" y="76" width="88" height="18" fill="#f4efe4" stroke="#2b2b28" stroke-width="2"/>
-   <text x="50" y="89" text-anchor="middle" class="building-label" fill="#2b2b28" stroke="none">${label}</text>`;
    return `<svg class="town-scene-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
    <rect x="4" y="4" width="292" height="292" fill="none" stroke="#2b2b28" stroke-width="9" stroke-dasharray="17,4" stroke-linecap="butt" stroke-linejoin="miter"/>
 
@@ -480,14 +487,16 @@ function artArcaneSanctumGuardian(){
 }
 
 /* ---------------- Zone backdrop art ---------------- */
-/* One scene per adventure zone (ZONE_DIFFICULTY, content.js), shown
+/* One scene per Act 1 adventure zone (ZONE_DIFFICULTY, content.js), shown
 between fights in place of artIdle() (see render.js) so each zone has
 its own visual identity rather than reusing the generic player
 stick-figure. Escalates in mood/elaborateness with zone danger:
 Commons (bright, open, harmless) -> Sewers (dark, enclosed) -> Quarry
-(rocky, industrial) -> Vault (ornate, torchlit dark) -> Gnometropolis
-(a real skyline glimpse, the grandest). Same shape vocabulary/palette
-as every other art*() function above -- no text, no gradients. */
+(rocky, industrial) -> Vault (ornate, torchlit dark). Same shape
+vocabulary/palette as every other art*() function above -- no text, no
+gradients. The Act 2 equivalents (Garrison/Rogues' Den/Arcane Sanctum)
+live in gnometropolis-art.js, alongside artGnometropolisSquare() and
+artPalaceGate(). */
 function artZoneCommons(){
    return sceneWrap(`<rect x="0" y="58" width="100" height="42" fill="#5c8a5c"/><path d="M6 58 Q16 48 26 58 Q36 50 46 58 Q56 49 66 58 Q78 50 90 58 Q96 54 100 58 L100 100 L0 100 Z" fill="#5c8a5c"/><path d="M18 58 Q14 44 22 40 Q26 44 22 58 Z" fill="#5c8a5c"/><path d="M76 60 Q71 46 80 42 Q85 47 80 60 Z" fill="#5c8a5c"/><line x1="34" y1="60" x2="30" y2="34"/><line x1="30" y1="34" x2="24" y2="42"/><line x1="30" y1="34" x2="37" y2="40"/><line x1="64" y1="62" x2="70" y2="82"/><path d="M8 24 Q30 12 52 24" fill="none" stroke-width="2.5"/>`, 0);
 }
@@ -499,9 +508,6 @@ function artZoneQuarry(){
 }
 function artZoneVault(){
    return sceneWrap(`<rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.2"/><path d="M20 96 L20 30 Q50 6 80 30 L80 96" fill="none" stroke="#8a8477" stroke-width="7"/><line x1="48" y1="16" x2="52" y2="34"/><rect x="10" y="24" width="10" height="72" fill="#8a8477"/><rect x="80" y="24" width="10" height="72" fill="#8a8477"/><path d="M15 24 Q9 18 15 10 Q21 18 15 24 Z" fill="#d1a94e"/><circle cx="15" cy="8" r="3" fill="#d1a94e" stroke="none"/><circle cx="38" cy="88" r="4" fill="#d1a94e" stroke="none"/><circle cx="58" cy="92" r="3" fill="#d1a94e" stroke="none"/><circle cx="68" cy="86" r="4" fill="#b06a97" stroke="none"/><circle cx="48" cy="90" r="2.4" fill="#d1a94e" stroke="none"/>`, 0);
-}
-function artZoneGnometropolis(){
-   return sceneWrap(`<rect x="0" y="70" width="100" height="30" fill="#2b2b28" opacity="0.12"/><rect x="4" y="46" width="20" height="52" fill="#8a8477"/><rect x="28" y="24" width="24" height="74" fill="#a97c53"/><rect x="56" y="52" width="18" height="46" fill="#8a8477"/><rect x="78" y="36" width="18" height="62" fill="#b06a97"/><path d="M28 24 L40 8 L52 24 Z" fill="#d1a94e"/><line x1="40" y1="8" x2="40" y2="0"/><path d="M40 0 L48 3 L40 6 Z" fill="#b5453f"/><rect x="34" y="34" width="8" height="10" fill="#f4efe4"/><rect x="60" y="60" width="7" height="9" fill="#f4efe4"/><rect x="83" y="44" width="7" height="9" fill="#f4efe4"/><rect x="9" y="56" width="7" height="9" fill="#f4efe4"/>`, 0);
 }
 function artDefeated(monsterArtFn){
    const inner = monsterArtFn();

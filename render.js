@@ -21,14 +21,30 @@ const isTownSquare = state.location === 'town';
   const isSewers = state.location === 'sewers';
   const isQuarry = state.location === 'quarry';
   const isVault = state.location === 'vault';
-  const isGnometropolis = state.location === 'gnometropolis';
+  const isGnometropolis = state.location === 'gnometropolis'; /* the Gnometropolis TOWN SQUARE specifically, not the area as a whole — see inGnometropolisArea below for that */
+  const isGarrison = state.location === 'garrison';
+  const isRoguesden = state.location === 'roguesden';
+  const isSanctum = state.location === 'sanctum';
+  const isPalace = state.location === 'palace';
+  /* Any of the Gnometropolis square + its 3 districts + the palace gate —
+  used where the Map's "you are here" tag/lock state shouldn't go dark
+  just because the player stepped off the square into a district. */
+  const inGnometropolisArea = isGnometropolis || isGarrison || isRoguesden || isSanctum || isPalace;
   const isCasino = state.location === 'casino';
   const isNoticeBoard = state.location === 'noticeboard';
   const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot || isNoticeBoard;
 
 document.getElementById('poptab-text').textContent = state.popTabs;
 
-document.getElementById('zone-title').textContent = isGafferHouse ? "Gaffer Thistlewick's Cottage" : (isShop ? 'The Shop' : (isHoodoo ? 'The Hoodoo Doctor\'s Shack' : (isGuild ? 'The Adventurers\' Guild' : (isTinker ? "Tinker's Workshop" : (isTownLot ? LOT_TIER_NAMES[state.lotTier] : (isCasino ? 'The Casino' : (isNoticeBoard ? 'The Notice Board' : (isTownSquare ? 'Gladstone Hollow' : (isSewers ? 'Dank Sewers' : (isQuarry ? 'The Clockwork Quarry' : (isVault ? 'The Sunless Vault' : (isGnometropolis ? 'Gnometropolis' : 'The Overgrown Commons'))))))))))));
+const ZONE_TITLES = {
+  gaffer: "Gaffer Thistlewick's Cottage", shop: 'The Shop', hoodoo: "The Hoodoo Doctor's Shack",
+  guild: "The Adventurers' Guild", tinker: "Tinker's Workshop", casino: 'The Casino',
+  noticeboard: 'The Notice Board', town: 'Gladstone Hollow', commons: 'The Overgrown Commons',
+  sewers: 'Dank Sewers', quarry: 'The Clockwork Quarry', vault: 'The Sunless Vault',
+  gnometropolis: 'Gnometropolis', garrison: 'The Garrison', roguesden: "The Rogues' Den",
+  sanctum: 'The Arcane Sanctum', palace: 'The Palace Gate',
+};
+document.getElementById('zone-title').textContent = isTownLot ? LOT_TIER_NAMES[state.lotTier] : (ZONE_TITLES[state.location] || 'The Overgrown Commons');
   document.getElementById('ztag-town').style.display = inTownArea ? 'block' : 'none';
   document.getElementById('ztag-commons').style.display = isCommons ? 'block' : 'none';
   /* !state.inCombat matters here specifically for the Guild's own Trial
@@ -129,7 +145,7 @@ const vaultUnlocked = state.quest5Complete;
 const gnometropolisUnlocked = state.quest6Complete;
   document.getElementById('zone-card-gnometropolis').classList.toggle('locked', !gnometropolisUnlocked);
   document.getElementById('ztag-gnometropolis').textContent = gnometropolisUnlocked ? 'You are here' : 'Locked';
-  document.getElementById('ztag-gnometropolis').style.display = gnometropolisUnlocked ? (isGnometropolis ? 'block' : 'none') : 'block';
+  document.getElementById('ztag-gnometropolis').style.display = gnometropolisUnlocked ? (inGnometropolisArea ? 'block' : 'none') : 'block';
 
 const questState = state.questComplete ? 'complete' : (state.questAccepted ? 'active' : 'offer');
   const tinesHeld = countRakeTines();
@@ -166,17 +182,7 @@ const quest7State = state.quest7Complete ? 'complete'
   : (state.quest6Complete && state.classTitle) ? 'offer'
   : 'locked';
   const palaceGateGearItem = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
-  const canApproachPalaceGate = isGnometropolis && !state.inCombat && state.quest7Accepted && !state.quest7RareDefeated;
-  /* Gnometropolis' three districts (gnometropolis.js's
-  challengeDistrictGuardian()) — same visibility window as the palace
-  gate row above, since gearing up for the gate is the whole reason to
-  fight a guardian in the first place. All three buttons render for
-  everyone (reinforces there really are 3 districts here), but only the
-  one matching state.classTitle is ever enabled — see the disabled-with-
-  hint pattern applied to the other two below. */
-  const showDistrictRow = isGnometropolis && !state.inCombat && state.quest7Accepted && !state.quest7RareDefeated;
-  const DISTRICT_CLASS = { garrison:'Meathead', roguesden:'Card Shark', sanctum:'Hexpert' };
-  const DISTRICT_LABELS = { garrison:'Challenge the Garrison', roguesden:"Challenge the Rogues' Den", sanctum:'Challenge the Arcane Sanctum' };
+  const canApproachPalaceGate = isPalace && !state.inCombat && state.quest7Accepted && !state.quest7RareDefeated;
 
 /* 'trials': accepted, but not all three trainers' tests are passed yet.
 'ready': all three passed, waiting on claimClassPath(chosenStat) — see the
@@ -383,17 +389,8 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
     enabled button that opens to an empty list). */
     document.getElementById('cast-btn').disabled = !spells.some(s => s.type==='damage' && state.spellsKnown.includes(s.id));
   }
-  document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || isGnometropolis) && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || isGarrison || isRoguesden || isSanctum) && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('palace-gate-row').style.display = canApproachPalaceGate ? 'flex' : 'none';
-  document.getElementById('district-row').style.display = showDistrictRow ? 'flex' : 'none';
-  if(showDistrictRow){
-    for(const key in DISTRICT_CLASS){
-      const btn = document.getElementById(`district-${key}-btn`);
-      const isMyDistrict = DISTRICT_CLASS[key] === state.classTitle;
-      btn.disabled = !isMyDistrict;
-      btn.textContent = DISTRICT_LABELS[key] + (isMyDistrict ? '' : ' (Wrong door)');
-    }
-  }
   document.getElementById('monster-card').classList.toggle('active', state.inCombat);
   document.getElementById('scene-art').classList.toggle('boss-encounter', !!(state.inCombat && state.monster && state.monster.rare));
 
@@ -481,6 +478,34 @@ if(state.inCombat){
   };
   document.getElementById('scene-art').innerHTML = artTownSquare(buildingIndicators, state.lotTier, innCooldownText, state.buildingUpgrades);
   document.getElementById('victory-banner').style.display = 'none';
+} else if(isGnometropolis){
+  /* One {flag} slot per district tile (artGnometropolisSquare(),
+  gnometropolis-art.js), same buildingIndicators shape as the town
+  square above. flag:'offer' marks the district matching the player's
+  own class while its guardian is still alive (the rare-encounter hunt
+  is live — see the *Hunt blocks in goAdventuring(), combat.js); the
+  Palace tile flags 'turnin' once all the gear's in hand and the gate
+  fight is ready to start. */
+  const gnomeBuildingIndicators = {
+    garrison: { flag: (state.classTitle==='Meathead' && state.quest7Accepted && !state.quest7Complete && !state.garrisonGuardianDefeated) ? 'offer' : null },
+    roguesden: { flag: (state.classTitle==='Card Shark' && state.quest7Accepted && !state.quest7Complete && !state.roguesDenEnforcerDefeated) ? 'offer' : null },
+    sanctum: { flag: (state.classTitle==='Hexpert' && state.quest7Accepted && !state.quest7Complete && !state.arcaneSanctumGuardianDefeated) ? 'offer' : null },
+    palace: { flag: canApproachPalaceGate ? 'turnin' : null },
+  };
+  document.getElementById('scene-art').innerHTML = artGnometropolisSquare(gnomeBuildingIndicators);
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isGarrison){
+  document.getElementById('scene-art').innerHTML = artZoneGarrison();
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isRoguesden){
+  document.getElementById('scene-art').innerHTML = artZoneRoguesden();
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isSanctum){
+  document.getElementById('scene-art').innerHTML = artZoneSanctum();
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isPalace){
+  document.getElementById('scene-art').innerHTML = artPalaceGate();
+  document.getElementById('victory-banner').style.display = 'none';
 } else if(isCommons){
   document.getElementById('scene-art').innerHTML = artZoneCommons();
   document.getElementById('victory-banner').style.display = 'none';
@@ -492,9 +517,6 @@ if(state.inCombat){
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isVault){
   document.getElementById('scene-art').innerHTML = artZoneVault();
-  document.getElementById('victory-banner').style.display = 'none';
-} else if(isGnometropolis){
-  document.getElementById('scene-art').innerHTML = artZoneGnometropolis();
   document.getElementById('victory-banner').style.display = 'none';
 } else {
   document.getElementById('scene-art').innerHTML = artIdle();

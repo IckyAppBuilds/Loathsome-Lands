@@ -132,7 +132,7 @@ function reportGnomeKingKill(){
    state.xp += 70;
    clearLog();
    log("You describe the fight in the throne room in more detail than the guildmaster expected. He's practically speechless. (+50 Pop Tabs, +70 XP)");
-   log("\"Gnometropolis,\" he finally says. \"The whole hidden gnome capital, right under the Vault. It's yours to explore now, if you're brave enough.\" A beat, then his face falls — the throne was already empty. \"The King got away, deeper in. There's clearly more to this than a captain guarding an empty chair.\" Gnometropolis is now open — check the Map.");
+   log("\"Gnometropolis,\" he finally says. \"The whole hidden gnome capital, right under the Vault. It's yours to explore now, if you're brave enough.\" A beat, then his face falls — the throne was already empty. \"The King got away, behind the palace gate at the heart of the city. There's clearly more to this than a captain guarding an empty chair.\" Gnometropolis is now open — check the Map.");
    checkLevelUp();
    render();
    autosave();
@@ -150,7 +150,7 @@ function acceptQuest7(){
    if(state.location !== 'guild' || !state.quest6Complete || !state.classTitle || state.quest7Accepted || state.quest7Complete) return;
    state.quest7Accepted = true;
    clearLog();
-   log("\"The King fled into Gnometropolis proper — behind a palace gate that isn't just going to open for anyone,\" the guildmaster says. \"But the way in is shaped by who you've become. Find the district that matches your path and prove yourself to whoever's guarding it — the gear you'll need is theirs to lose, not anyone's to sell.\"");
+   log("\"The King fled behind the palace gate at the heart of Gnometropolis — it isn't just going to open for anyone,\" the guildmaster says. \"But the way in is shaped by who you've become. Head into the district that matches your path and prove yourself to whoever's guarding it — the gear you'll need is theirs to lose, not anyone's to sell.\"");
    render();
 }
 
@@ -174,18 +174,20 @@ function reportGnomeKingDefeat(){
    autosave();
 }
 
-/* The palace gate itself — triggered from Gnometropolis (state.location),
-not the Guild, even though it lives in this file with the rest of quest 7.
-Requires the exact PALACE_GATE_GEAR item matching state.classTitle to be
-equipped in its slot before the real gnomeKing (content.js) will fight —
-otherwise it's a guaranteed-refusal no-op, same shape as every other
-hard-gated action in this codebase. Since that gear is now a guaranteed
-drop from the matching Gnometropolis district guardian (gnometropolis.js's
-challengeDistrictGuardian(), not a Bounty Token purchase — see that file
-and combat.js's winCombat()), this check itself needed no change: it only
-ever cared whether the item is equipped, never how it was obtained. */
+/* The palace gate itself — triggered from the Palace district
+(state.location === 'palace', reached via travelTo('palace') from the
+Gnometropolis town square once quest7 is accepted), not the Guild, even
+though it lives in this file with the rest of quest 7. Requires the exact
+PALACE_GATE_GEAR item matching state.classTitle to be equipped in its slot
+before the real gnomeKing (content.js) will fight — otherwise it's a
+guaranteed-refusal no-op, same shape as every other hard-gated action in
+this codebase. That gear is a guaranteed drop from the matching district
+guardian (garrisonGuardian/roguesDenEnforcer/arcaneSanctumGuardian — a
+rare encounter while exploring that district, see goAdventuring() in
+combat.js), not a Bounty Token purchase — this check itself doesn't care
+how it was obtained, only whether it's equipped. */
 function approachPalaceGate(){
-   if(state.inCombat !== false || state.location !== 'gnometropolis' || !state.quest7Accepted || state.quest7RareDefeated) return;
+   if(state.inCombat !== false || state.location !== 'palace' || !state.quest7Accepted || state.quest7RareDefeated) return;
    const gearNeeded = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
    if(!gearNeeded || state.equipment[gearNeeded.slot]?.name !== gearNeeded.name){
       clearLog();
@@ -210,13 +212,15 @@ winCombat() above. */
    gnometropolisUnlocked, and ADVENTURE_ZONES above) — a bounty should
    never send the player to hunt in a zone they can't actually reach yet.
    Commons has no gate, same as everywhere else it's treated as the
-   always-available baseline zone. */
+   always-available baseline zone. Gnometropolis itself (the town square)
+   is never a bounty zone — only its 3 explorable districts are, gated the
+   same way the districts themselves are (state.quest7Accepted). */
 function isBountyZoneUnlocked(zone){
    if(zone === 'commons') return true;
    if(zone === 'sewers') return state.quest2Complete;
    if(zone === 'quarry') return state.quest4Complete;
    if(zone === 'vault') return state.quest5Complete;
-   if(zone === 'gnometropolis') return state.quest6Complete;
+   if(zone === 'garrison' || zone === 'roguesden' || zone === 'sanctum') return state.quest7Accepted;
    return false;
 }
 function rollNewBounty(){

@@ -106,6 +106,16 @@ function createDefaultState(){
      quest6RareDefeated: false,
      quest6Complete: false,
      quest7Accepted: false,
+     /* One per Gnometropolis district guardian (garrisonGuardian/
+     roguesDenEnforcer/arcaneSanctumGuardian, content.js) -- each a rare
+     encounter while exploring that district (goAdventuring(), combat.js),
+     gates approaching the Palace gate. Bespoke names rather than a
+     questNRareDefeated-style slot since there's no spare quest number for
+     3 separate sub-bosses under quest7 -- same reasoning commanderDefeated
+     above uses. */
+     garrisonGuardianDefeated: false,
+     roguesDenEnforcerDefeated: false,
+     arcaneSanctumGuardianDefeated: false,
      quest7RareDefeated: false, /* the REAL gnomeKing (content.js) beaten via approachPalaceGate() -- separate from quest6RareDefeated, which is the decoy gnomeKingsCaptain in the Vault */
      quest7Complete: false,
      classQuestAccepted: false,

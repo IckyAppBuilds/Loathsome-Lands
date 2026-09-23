@@ -1,10 +1,10 @@
 /* Every location id that counts as a town square (as opposed to a shop
-interior inside one, or an adventure zone reached from one). Right now
-there's only Gladstone Hollow ('town'), but this is the list a future
-second/third town gets added to — see state.homeTown below and
-hydrateState() in account.js, which use this list to decide where a
-returning player lands on login rather than hardcoding 'town'. */
-const TOWN_HUBS = ['town'];
+interior inside one, or an adventure zone reached from one). Gladstone
+Hollow ('town') plus Gnometropolis ('gnometropolis', the Act 2 hub) —
+this is the list a future third town gets added to — see state.homeTown
+below and hydrateState() in account.js, which use this list to decide
+where a returning player lands on login rather than hardcoding 'town'. */
+const TOWN_HUBS = ['town', 'gnometropolis'];
 
 function restAtInn(){
    if(state.inCombat || state.location !== 'town') return;
@@ -52,6 +52,7 @@ function travelTo(dest){
    if(dest === 'quarry' && !state.quest4Complete) return;
    if(dest === 'vault' && !state.quest5Complete) return;
    if(dest === 'gnometropolis' && !state.quest6Complete) return;
+   if((dest === 'garrison' || dest === 'roguesden' || dest === 'sanctum' || dest === 'palace') && !state.quest7Accepted) return;
    if(dest === 'town'){
       const wasGaffer = state.location === 'gaffer';
       state.location = 'town';
@@ -84,11 +85,38 @@ function travelTo(dest){
       clearLog();
       log("You pry open the sealed door at the bottom of the Quarry and step into the Sunless Vault. It's colder than it should be.");
    } else if(dest === 'gnometropolis'){
+      const cameFromDistrict = state.location==='garrison' || state.location==='roguesden' || state.location==='sanctum' || state.location==='palace';
       state.location = 'gnometropolis';
       state.showVictory = false;
       state.victoryMonster = null;
       clearLog();
-      log("You slip through the passage the Gnome King left undefended and descend into Gnometropolis — the gnomes' hidden capital, alive with clockwork and quiet menace.");
+      log(cameFromDistrict
+          ? "You head back into the square, Gnometropolis's clockwork bustle carrying on around you same as ever."
+          : "You slip through the passage the Gnome King left undefended and descend into Gnometropolis — the gnomes' hidden capital, alive with clockwork and quiet menace. Three districts branch off the square: the Garrison, the Rogues' Den, and the Arcane Sanctum.");
+   } else if(dest === 'garrison'){
+      state.location = 'garrison';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log("You duck under the Garrison's crude portcullis into a torchlit barracks corridor, trophy shields rattling on the walls.");
+   } else if(dest === 'roguesden'){
+      state.location = 'roguesden';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log("You slip past the curtained doorway of the Rogues' Den into a cramped, dim gambling den, thick with pipe smoke and whispers.");
+   } else if(dest === 'sanctum'){
+      state.location = 'sanctum';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log("You step into the Arcane Sanctum, a cluttered study lit by one large rune scored into the floor, still faintly glowing.");
+   } else if(dest === 'palace'){
+      state.location = 'palace';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log("You approach the Gnome King's palace gate, all scavenged gold and gaudy flourish. Somewhere behind it, a throne waits.");
    }
    /* Track the last town square the player actually stood in, separately
    from state.location — shop interiors and adventure zones pass through
