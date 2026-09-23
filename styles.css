@@ -591,6 +591,16 @@ red while under it, same "pay attention" language as .ztag's red. */
 .quest-log-entry .quest-name{ margin-bottom:3px; }
 .quest-log-empty{ font-size:0.8rem; font-style:italic; padding:2px 2px 12px; }
 
+/* Notice board cards (noticeboard.js) — the only quest-log-entry with a
+per-row action button, so it's the only one that needs the text/button
+split into a row instead of stacking full-width. */
+.notice-entry{ display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+.notice-delete-btn{
+  flex:0 0 auto;
+  font-size:0.68rem;
+  padding:4px 9px;
+}
+
 /* ---- Account drawer ---- */
 .acct-status-line{
   font-size:0.8rem;

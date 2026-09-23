@@ -145,11 +145,13 @@ function renderNoticeBoard(){
    } else {
       const myId = acctSession && acctSession.user ? acctSession.user.id : null;
       listEl.innerHTML = noticeBoardMessages.map(n => `
-      <div class="quest-log-entry">
+      <div class="quest-log-entry notice-entry">
+      <div style="flex:1;">
       <div class="quest-name">${escapeHtml(n.username)}</div>
       <div class="quest-desc">${escapeHtml(n.message)}</div>
       <div class="quest-progress">${formatNoticeAge(n.created_at)}</div>
-      ${myId && n.user_id === myId ? `<button class="btn-secondary" style="margin-top:6px;" onclick="deleteNotice(${n.id})">Delete</button>` : ''}
+      </div>
+      ${myId && n.user_id === myId ? `<button class="btn-secondary notice-delete-btn" onclick="deleteNotice(${n.id})">Delete</button>` : ''}
       </div>`).join('');
    }
    const postEl = document.getElementById('noticeboard-post');
