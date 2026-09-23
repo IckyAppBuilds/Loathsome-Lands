@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- Belt-and-suspenders alongside the script/stylesheet ?v= params below:
+those only help once a fresh index.html itself is fetched, so also ask
+the browser (and any CDN in front of it, e.g. GitHub Pages/Fastly) to
+never cache THIS file. A <meta> tag is weaker than a real Cache-Control
+HTTP header (some browsers/CDNs ignore it), so a hard refresh is still
+the reliable fallback if a deploy still looks stale. -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>The Loathsome Lands</title>
 <!-- Cache-busting query param -- bump CACHEBUST (below, and on every
 local script src further down) whenever a deploy changes any local
