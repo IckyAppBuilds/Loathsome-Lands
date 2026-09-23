@@ -71,6 +71,12 @@ function createDefaultState(){
      lotTier: 0, /* the town-square Town Lot (translate(200,100) in artTownSquare()) — 0 = unpurchased "Empty Lot". See LOT_TIER_NAMES/LOT_TIER_COST (content.js) and buyTownLot()/upgradeTownLot() (game.js). Buying tier 1 is what unlocks buildingUpgrades below. */
      buildingUpgrades: {}, /* key = a BUILDING_UPGRADES entry's key (content.js) -> upgrade level, 0..BUILDING_UPGRADE_MAX. Missing keys read as level 0 — see upgradeBuilding()/buildingUpgradeLevel() in game.js. Levels are tracked only for now; they don't change anything about the buildings yet (see content.js comment above BUILDING_UPGRADES). */
      lastRegenAt: Date.now(),
+     /* MP's own passive regen timestamp (regenMp(), economy.js) — same
+     elapsed-real-time-to-a-cap shape as lastRegenAt above (Biscuits) and
+     lastCasinoRegenAt below, kept separate since it ticks against a
+     different cap (state.maxMp, which itself grows with level) at a
+     different rate (MP_REGEN_MS). */
+     lastMpRegenAt: Date.now(),
      level: 1, xp: 0, xpToLevel: 40,
      stats: { beef: 0, zip: 0, grit: 0, hoodoo: 0 },
      statPoints: 0,

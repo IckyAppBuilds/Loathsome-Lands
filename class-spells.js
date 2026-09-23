@@ -81,17 +81,24 @@ function renderClassSkillUpgrade(containerId, classTitle){
    el.innerHTML = html;
 }
 
-/* Character drawer block for casting a known class buff spell outside
-combat (castSpell() itself already allows type:'buff' casts outside a
-fight — see combat.js). Filtered to state.classTitle same as the
-trainers above, so it's empty/hidden for a class-less or off-class
-player. Recasting while already active is allowed (just refreshes
-classBuffFightsLeft back to CLASS_BUFF_FIGHTS) rather than blocked. */
-function renderClassBuffBlock(){
-   const el = document.getElementById('classbuff-block');
+/* Character drawer block for casting any KNOWN non-damage spell —
+'damage' spells need a monster to target and still only show in the
+in-combat Cast menu (renderSpellMenu(), render-character.js); every
+other type (heal/ward/buff/shout) never costs a turn (castSpell(),
+combat.js, only calls monsterRetaliate() for 'damage') so it's fully
+usable from here, mid-fight or not. Not filtered to class-exclusive
+spells only, unlike renderClassSpellList() above — Mending Charm/
+Warding Charm are Hexpert-exclusive now too (content.js), but a
+class-less player could still know Hex Bolt... no, that's 'damage', so
+in practice everyone who reaches this block already has a class, but
+the filter itself is just "non-damage AND known," not "class-exclusive
+AND known," so it stays correct if a future non-class-exclusive
+non-damage spell is ever added. */
+function renderCastableSpellsBlock(){
+   const el = document.getElementById('castable-spells-block');
    if(!el) return;
-   const buffSpells = state.classTitle ? spells.filter(s => s.type==='buff' && s.classRequired===state.classTitle) : [];
-   if(buffSpells.length===0){
+   const castable = spells.filter(s => s.type!=='damage' && state.spellsKnown.includes(s.id));
+   if(castable.length===0){
       el.style.display = 'none';
       el.innerHTML = '';
       return;
@@ -100,12 +107,10 @@ function renderClassBuffBlock(){
    const statusLine = state.classBuffFightsLeft > 0
    ? `<div class="stat-points-note" style="color:var(--green);">Buff active — ${state.classBuffFightsLeft} fight${state.classBuffFightsLeft===1?'':'s'} left.</div>`
      : '';
-   const rows = buffSpells.map(spell=>{
-      const known = state.spellsKnown.includes(spell.id);
+   const rows = castable.map(spell=>{
       const iconSvg = spell.icon ? spell.icon() : '';
-      const canCast = known && state.mp >= spell.mpCost;
-      const btnLabel = known ? `Cast — ${spell.mpCost} MP` : 'Not learned yet';
-      return `<div class="shop-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div><button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">${btnLabel}</button></div></div>`;
+      const canCast = state.mp >= spell.mpCost;
+      return `<div class="shop-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div><button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${spell.mpCost} MP</button></div></div>`;
    }).join('');
-   el.innerHTML = `<div class="block-title">Class Spell</div>${statusLine}${rows}`;
+   el.innerHTML = `<div class="block-title">Spells</div>${statusLine}${rows}`;
 }

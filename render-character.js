@@ -1,8 +1,16 @@
+/* In-combat spell menu (opened via the Cast button) — 'damage' spells
+only. Every other type (heal/ward/shout/buff) doesn't cost a turn
+anymore (castSpell(), combat.js, no longer calls monsterRetaliate() for
+them) and is cast from the Character page instead
+(renderCastableSpellsBlock(), class-spells.js — reachable mid-combat
+too, so this isn't losing access, just moving where non-damage spells
+live). A damage spell is still a real combat action that trades your
+turn for a hit, so it stays here where Attack/Flee live. */
 function renderSpellMenu(){
   const list = document.getElementById('spell-list');
-  const known = spells.filter(s => state.spellsKnown.includes(s.id));
+  const known = spells.filter(s => s.type==='damage' && state.spellsKnown.includes(s.id));
   if(known.length===0){
-    list.innerHTML = '<div class="shop-empty">You don\'t know any spells yet. The Hoodoo Doctor in town might teach you a few.</div>';
+    list.innerHTML = '<div class="shop-empty">You don\'t know any damage spells yet. The Hoodoo Doctor in town might teach you one.</div>';
     return;
   }
   list.innerHTML = '';
@@ -35,7 +43,7 @@ document.getElementById('char-facts').innerHTML = `
 `;
 
 renderStatsBlock();
-  renderClassBuffBlock();
+  renderCastableSpellsBlock();
   renderEquipmentBlock();
   renderRareFindsBlock();
 }

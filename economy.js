@@ -142,6 +142,47 @@ function formatMs(ms){
    return m+':'+String(s).padStart(2,'0');
 }
 
+/* ---------------- MP regeneration ---------------- */
+/* Same elapsed-real-time-to-a-cap shape as regenBiscuits() above, but
+against state.maxMp (which itself grows with level, recomputeMaxStats())
+rather than a fixed number, and deliberately slower — MP was previously
+only restored by resting at the Inn or leveling up, with no passive
+trickle at all. 5 minutes/MP (vs. Biscuits' 3 min each) keeps it a real
+slow trickle, not a substitute for those. */
+const MP_REGEN_MS = 5 * 60 * 1000;
+
+function regenMp(){
+   if(state.mp >= state.maxMp){
+      state.lastMpRegenAt = Date.now();
+      return;
+   }
+   const elapsed = Date.now() - state.lastMpRegenAt;
+   const gained = Math.floor(elapsed / MP_REGEN_MS);
+   if(gained > 0){
+      state.mp = Math.min(state.maxMp, state.mp + gained);
+      state.lastMpRegenAt += gained * MP_REGEN_MS;
+   }
+}
+
+/* Ticks regenMp() and refreshes the top HUD's MP display live, same
+setInterval pattern as updateBiscuitDisplay() below — so MP keeps
+trickling back even while the player sits idle on a screen that never
+triggers a full render(). devMode keeps MP topped off, matching how it
+treats Biscuits/Casino winnings elsewhere. The Character drawer's own
+MP bar (renderCharacterDrawer(), render-character.js) reads state.mp
+directly on its own next real render() — no need to touch it here. */
+function updateMpDisplay(){
+   if(devMode){
+      state.mp = state.maxMp;
+      state.lastMpRegenAt = Date.now();
+   } else {
+      regenMp();
+   }
+   document.getElementById('mp-bar').style.width = (state.mp/state.maxMp*100)+'%';
+   document.getElementById('mp-text').textContent = state.mp+' / '+state.maxMp;
+}
+setInterval(updateMpDisplay, 1000);
+
 /* ---------------- Passive Casino income ("the house's cut") ---------------- */
 /* Same elapsed-real-time-to-a-cap shape as regenBiscuits() above, but
 unlike Biscuits' flat rate, the "ms per Pop Tab" here is derived from

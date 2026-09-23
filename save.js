@@ -124,7 +124,7 @@ function serializeState(){
    claiming a class title would revert it. Fixed alongside the similar
    allItemDefs() gap above. */
 const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
-       lastRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
+       lastRegenAt, lastMpRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
        spellsKnown, questTinesGiven, questAccepted, questComplete, quest2Accepted,
        commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
        quest4Accepted, quest4RareDefeated, quest4Complete,
@@ -138,7 +138,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt, casinoWinnings, lastCasinoRegenAt } = state;
    return {
       hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
-      lastRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
+      lastRegenAt, lastMpRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
       spellsKnown, questTinesGiven, questAccepted, questComplete, quest2Accepted,
       commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
       quest4Accepted, quest4RareDefeated, quest4Complete,

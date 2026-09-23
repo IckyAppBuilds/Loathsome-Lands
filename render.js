@@ -2,9 +2,8 @@
 function render(){
   document.getElementById('hp-bar').style.width = (state.hp/state.maxHp*100)+'%';
   document.getElementById('hp-text').textContent = state.hp+' / '+state.maxHp + (state.shield>0 ? ` (+${state.shield} 🛡)` : '');
-  document.getElementById('mp-bar').style.width = (state.mp/state.maxMp*100)+'%';
-  document.getElementById('mp-text').textContent = state.mp+' / '+state.maxMp;
   document.getElementById('inv-count').textContent = state.inventory.length;
+  updateMpDisplay();
   updateBiscuitDisplay();
 
 document.getElementById('level-text').textContent = state.level;
@@ -377,7 +376,12 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
   document.getElementById('spell-menu').style.display = (state.inCombat && combatSubView==='spells') ? 'block' : 'none';
   if(state.inCombat && combatSubView==='spells') renderSpellMenu();
   if(state.inCombat){
-    document.getElementById('cast-btn').disabled = state.spellsKnown.length===0;
+    /* Matches renderSpellMenu()'s own filter (render-character.js) — the
+    Cast button opens to a damage-spells-only list now, so it should be
+    disabled based on knowing one of THOSE specifically, not any spell
+    at all (a player who only knows Warding Charm shouldn't see an
+    enabled button that opens to an empty list). */
+    document.getElementById('cast-btn').disabled = !spells.some(s => s.type==='damage' && state.spellsKnown.includes(s.id));
   }
   document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || isGnometropolis) && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('palace-gate-row').style.display = canApproachPalaceGate ? 'flex' : 'none';

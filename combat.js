@@ -283,11 +283,16 @@ function closeSpellMenu(){
 function castSpell(id){
    const spell = spells.find(s=>s.id===id);
    if(!spell) return;
-   /* A buff spell has no monster to target, so it's the one type castable
-   outside combat — everything below this still assumes state.monster
-   exists (via monsterRetaliate()/checkDefeat()) for the other 3 types,
-   which is why they still require an active fight. */
-   if(spell.type!=='buff' && !state.inCombat) return;
+   /* Only 'damage' spells need a monster to target — every other type
+   (heal/ward/shout/buff) is castable from the Character page too
+   (renderCastableSpellsBlock(), class-spells.js), not just mid-combat.
+   That's also why only 'damage' calls monsterRetaliate() below: a
+   damage spell is a combat action that costs you your turn the same
+   way a physical Attack does, but heal/ward/shout/buff are meant to be
+   free actions — cast one mid-fight and the monster doesn't get a
+   bonus swing out of it, same as if you'd cast it from the Character
+   page between fights. */
+   if(spell.type==='damage' && !state.inCombat) return;
    if(!state.spellsKnown.includes(id) || state.mp < spell.mpCost) return;
    /* Defense-in-depth: learnSpell() already refuses to teach a buff spell
    to the wrong class, but a crafted castSpell() call could still try to
@@ -336,7 +341,6 @@ if(spell.type==='damage'){
    const before = state.hp;
    state.hp = Math.min(state.maxHp, state.hp+spell.healValue);
    log(`You cast ${spell.name} and patch yourself up. (+${state.hp-before} HP)`);
-   monsterRetaliate();
 } else if(spell.type==='ward'){
    /* Grants a persistent shield (applyDamageToPlayer(), above) instead of
    just softening this one retaliation — Hoodoo-scaled, boosted further
@@ -346,14 +350,9 @@ if(spell.type==='damage'){
    const shieldAmount = 8 + statBonus(eff.hoodoo)*2 + (state.classTitle==='Hexpert' ? state.classSkillLevel*10 : 0);
    state.shield += shieldAmount;
    log(`You cast ${spell.name} — a shimmering barrier settles over you. (+${shieldAmount} Shield)`);
-   monsterRetaliate();
 } else if(spell.type==='buff'){
    state.classBuffFightsLeft = CLASS_BUFF_FIGHTS;
    log(`You cast ${spell.name} — the next ${CLASS_BUFF_FIGHTS} fights are yours.`);
-   /* Only give a mid-fight buff cast the other types' free monster turn
-   when there's actually a fight going — a buff cast outside combat has
-   no monster to retaliate. */
-   if(state.inCombat) monsterRetaliate();
 } else if(spell.type==='shout'){
    /* Meathead-exclusive — a small, mostly-flat shield, NOT scaled off
    statBonus(beef) the way 'ward' scales off Hoodoo. Beef is this class's
@@ -366,7 +365,6 @@ if(spell.type==='damage'){
    const shieldAmount = 5 + state.classSkillLevel*3;
    state.shield += shieldAmount;
    log(`You let out a bone-rattling shout, bracing for whatever's coming. (+${shieldAmount} Shield)`);
-   monsterRetaliate();
 }
 
 if(state.inCombat){
