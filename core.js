@@ -75,7 +75,7 @@ function createDefaultState(){
      elapsed-real-time-to-a-cap shape as lastRegenAt above (Biscuits) and
      lastCasinoRegenAt below, kept separate since it ticks against a
      different cap (state.maxMp, which itself grows with level) at a
-     different rate (MP_REGEN_MS). */
+     different, Hoodoo-scaled rate (mpRegenMs(), economy.js). */
      lastMpRegenAt: Date.now(),
      level: 1, xp: 0, xpToLevel: 40,
      stats: { beef: 0, zip: 0, grit: 0, hoodoo: 0 },

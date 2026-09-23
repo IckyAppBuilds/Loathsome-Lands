@@ -145,22 +145,39 @@ function formatMs(ms){
 /* ---------------- MP regeneration ---------------- */
 /* Same elapsed-real-time-to-a-cap shape as regenBiscuits() above, but
 against state.maxMp (which itself grows with level, recomputeMaxStats())
-rather than a fixed number, and deliberately slower — MP was previously
-only restored by resting at the Inn or leveling up, with no passive
-trickle at all. 5 minutes/MP (vs. Biscuits' 3 min each) keeps it a real
-slow trickle, not a substitute for those. */
-const MP_REGEN_MS = 5 * 60 * 1000;
+rather than a fixed number. MP was previously only restored by resting
+at the Inn or leveling up, with no passive trickle at all.
+
+Base rate is a flat 1 MP/minute at 0 Hoodoo, sped up by Hoodoo investment
+— same "cap + linear off statBonus()" shape missChance/dodgeChance/
+sneakAttackChance (combat.js) already use, rather than a new one-off
+formula. mpRegenSpeedBonus() reads getEffectiveStats() (gear bonuses
+count, same as those combat rolls) so gearing into Hoodoo pays off here
+too, not just spell damage/shield size. Capped at 85% faster (a 6.67x
+speed-up, 9s/MP) so even a maxed-out Hoodoo build never makes MP a
+non-resource, just a much faster-refilling one. */
+const MP_BASE_REGEN_MS = 60 * 1000;
+const MP_REGEN_SPEED_CAP = 0.85;
+const MP_REGEN_SPEED_PER_HOODOO = 0.01;
+function mpRegenSpeedBonus(){
+   const eff = getEffectiveStats();
+   return Math.min(MP_REGEN_SPEED_CAP, statBonus(eff.hoodoo) * MP_REGEN_SPEED_PER_HOODOO);
+}
+function mpRegenMs(){
+   return MP_BASE_REGEN_MS * (1 - mpRegenSpeedBonus());
+}
 
 function regenMp(){
    if(state.mp >= state.maxMp){
       state.lastMpRegenAt = Date.now();
       return;
    }
+   const regenMs = mpRegenMs();
    const elapsed = Date.now() - state.lastMpRegenAt;
-   const gained = Math.floor(elapsed / MP_REGEN_MS);
+   const gained = Math.floor(elapsed / regenMs);
    if(gained > 0){
       state.mp = Math.min(state.maxMp, state.mp + gained);
-      state.lastMpRegenAt += gained * MP_REGEN_MS;
+      state.lastMpRegenAt += gained * regenMs;
    }
 }
 
