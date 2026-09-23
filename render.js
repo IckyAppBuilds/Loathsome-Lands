@@ -405,6 +405,16 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
     document.getElementById('use-btn').disabled = !hasDamageSpell && !hasUsableItem;
   }
   document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || isGarrison || isRoguesden || isSanctum) && !state.inCombat) ? 'flex' : 'none';
+  /* The Palace has no Explore row (it's not an ADVENTURE_ZONES entry —
+  one scripted fight, not somewhere to wander) and palace-gate-row only
+  shows the Approach button while the fight is still pending, so
+  without this there was NO way to leave the Palace screen at all
+  once quest7RareDefeated flips true after beating the real gnomeKing
+  (winCombat() leaves state.location at 'palace' to show the victory
+  banner there) — the player was stuck. Always available at the
+  Palace, win/lose/not-yet-fought alike, same as every other screen's
+  own persistent nav button. */
+  document.getElementById('palace-row').style.display = (isPalace && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('palace-gate-row').style.display = canApproachPalaceGate ? 'flex' : 'none';
   document.getElementById('monster-card').classList.toggle('active', state.inCombat);
   document.getElementById('scene-art').classList.toggle('boss-encounter', !!(state.inCombat && state.monster && state.monster.rare));
