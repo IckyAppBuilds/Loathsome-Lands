@@ -136,7 +136,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
        classBuffFightsLeft,
        activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
-       lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt, casinoWinnings, lastCasinoRegenAt } = state;
+       lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt } = state;
    return {
       hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
       lastRegenAt, lastMpRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
@@ -151,7 +151,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
       classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
       classBuffFightsLeft,
       activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
-      lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt, casinoWinnings, lastCasinoRegenAt,
+      lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
       equipment: Object.fromEntries(
          SLOT_ORDER.map(slot => [slot, serializeItem(state.equipment[slot])])
          ),
@@ -171,9 +171,9 @@ function hydrateState(saved){
    /* Never resume inside a shop interior, an adventure zone, or mid-combat —
    always land back in a town square. Older saves (or a corrupted/unknown
    value) have no valid homeTown, so fall back to Gladstone Hollow ('town').
-   Once a second town exists (added to TOWN_HUBS in game.js), this already
-   sends a returning player back to whichever town they were actually in,
-   not always the original one. */
+   TOWN_HUBS (town.js) now also includes 'gnometropolis' — a player who's
+   rested at the Camp (restAtCamp(), gnometropolis.js) logs back in there
+   instead of always Gladstone Hollow. */
 state.homeTown = TOWN_HUBS.includes(saved.homeTown) ? saved.homeTown : 'town';
    state.location = state.homeTown;
    /* Bounty board + rare-drop collection log — added after this function was
@@ -198,6 +198,9 @@ state.activeBounty = saved.activeBounty || null;
    above. 0 (never rested) is a safe default; it never makes an old save
    artificially cooled-down. */
    state.lastInnRestAt = typeof saved.lastInnRestAt === 'number' ? saved.lastInnRestAt : 0;
+   /* Camp cooldown timestamp — same fallback reasoning as lastInnRestAt
+   directly above. */
+   state.lastCampRestAt = typeof saved.lastCampRestAt === 'number' ? saved.lastCampRestAt : 0;
    /* Passive Casino income — same fallback reasoning as lastInnRestAt
    above. lastCasinoRegenAt defaults to now (not 0) so an old save doesn't
    suddenly compute years of "elapsed time" and hand over a maxed-out cap

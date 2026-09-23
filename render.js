@@ -494,7 +494,11 @@ if(state.inCombat){
     palace: { flag: canApproachPalaceGate ? 'turnin' : null },
     camp: { flag: state.hp < state.maxHp ? 'offer' : null },
   };
-  document.getElementById('scene-art').innerHTML = artGnometropolisSquare(gnomeBuildingIndicators);
+  /* Same cooldown-overlay pattern as the Inn's innCooldownText above,
+  just for restAtCamp()'s CAMP_COOLDOWN_MS (content.js) instead. */
+  const campCooldownLeft = CAMP_COOLDOWN_MS - (Date.now() - state.lastCampRestAt);
+  const campCooldownText = campCooldownLeft > 0 ? formatMs(campCooldownLeft) : null;
+  document.getElementById('scene-art').innerHTML = artGnometropolisSquare(gnomeBuildingIndicators, campCooldownText);
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isGarrison){
   document.getElementById('scene-art').innerHTML = artZoneGarrison();

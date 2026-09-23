@@ -1,7 +1,7 @@
 /* ---------------- Gnometropolis districts ---------------- */
-/* Gnometropolis is the Act 2 town square — not yet in TOWN_HUBS (town.js)
-since it has no Inn/Shop/Hoodoo Doctor/Tinker of its own yet, just three
-explorable districts branching off it: The Garrison (Meathead),
+/* Gnometropolis is the Act 2 town square — no Shop/Hoodoo Doctor/Tinker
+of its own yet, just the Camp (restAtCamp() below) plus three explorable
+districts branching off it: The Garrison (Meathead),
 The Rogues' Den (Card Shark), The Arcane Sanctum (Hexpert), plus the
 Palace itself (no district, one scripted fight — see approachPalaceGate(),
 guild.js). Each district is an ordinary ADVENTURE_ZONES entry (combat.js)
@@ -27,35 +27,54 @@ const DISTRICT_GUARDIANS = {
 
 /* The Camp — a direct action triggered from the town square's own tile
 (data-action="camp", artGnometropolisSquare() in gnometropolis-art.js),
-same "no enter/leave screen, just do the thing" shape restAtInn() (town.js)
-uses for Gladstone Hollow's Inn tile. HP-only, no cooldown — see
-CAMP_REST_HP_PER_BISCUIT (content.js) for why this is deliberately a
-worse deal than the Inn rather than a real substitute for one. */
+same "no enter/leave screen, just do the thing" shape restAtInn()
+(town.js) uses for Gladstone Hollow's Inn tile, and now the same
+mechanics too: flat CAMP_REST_BISCUIT_COST, full HP+MP restore, a
+real-time CAMP_COOLDOWN_MS cooldown (content.js) — just no
+INN_FREE_REST_CHANCE-style upgrade tier, since the Camp isn't part of
+the Town Lot's buildingUpgrades. The one real difference: a successful
+rest here claims Gnometropolis as state.homeTown (unlike just walking
+into the square, see travelTo()'s tail, town.js) — resting is the
+deliberate "I live here now" act, not mere presence. */
 function restAtCamp(){
    if(state.inCombat || state.location !== 'gnometropolis') return;
    regenBiscuits();
-   const hpMissing = state.maxHp - state.hp;
-   if(hpMissing <= 0){
-      clearLog();
-      log("You're already at full health — no need to rest.");
-      render();
-      return;
-   }
-   const biscuitsWanted = Math.ceil(hpMissing / CAMP_REST_HP_PER_BISCUIT);
-   const biscuitsSpent = devMode ? biscuitsWanted : Math.min(biscuitsWanted, state.adventures);
-   if(!devMode && biscuitsSpent <= 0){
-      clearLog();
-      log(`You're out of Biscuits to spend on rest. Next one's ready in ${formatMs(msUntilNextBiscuit())}.`);
-      render();
-      return;
-   }
-   const healed = Math.min(hpMissing, biscuitsSpent * CAMP_REST_HP_PER_BISCUIT);
-   state.hp += healed;
-   if(!devMode) state.adventures -= biscuitsSpent;
    clearLog();
+   const cooldownLeft = CAMP_COOLDOWN_MS - (Date.now() - state.lastCampRestAt);
+   if(cooldownLeft > 0){
+      log(`The campfire's still dying down from your last rest. Back in ${formatMs(cooldownLeft)}.`);
+      render();
+      return;
+   }
+   if(!devMode && state.adventures < CAMP_REST_BISCUIT_COST){
+      log(`You're a few Biscuits short of a proper rest. Next one's ready in ${formatMs(msUntilNextBiscuit())}.`);
+      render();
+      return;
+   }
+   if(!devMode) state.adventures -= CAMP_REST_BISCUIT_COST;
+   state.hp = state.maxHp;
+   state.mp = state.maxMp;
+   state.showVictory = false;
+   state.victoryMonster = null;
+   state.lastCampRestAt = Date.now();
+   state.homeTown = 'gnometropolis';
    log(devMode
-       ? `You warm yourself by the campfire and patch up ${healed} HP. (dev mode — no Biscuit cost)`
-       : `You warm yourself by the campfire and patch up ${healed} HP. (-${biscuitsSpent} Biscuit${biscuitsSpent===1?'':'s'})`);
+       ? "You warm yourself by the campfire and rest up. You feel merely acceptable again. (dev mode — no Biscuit cost)"
+       : `You warm yourself by the campfire and rest up. You feel merely acceptable again. (-${CAMP_REST_BISCUIT_COST} Biscuits)`);
    render();
    autosave();
 }
+
+/* Ticks the Camp's cooldown overlay text (#camp-cooldown-text,
+gnometropolis-art.js) live, same pattern as town.js's
+updateInnCooldownDisplay(). Guarded on the element existing — it's only
+in the DOM while standing in the Gnometropolis square with the
+cooldown actually active. */
+function updateCampCooldownDisplay(){
+   const el = document.getElementById('camp-cooldown-text');
+   if(!el) return;
+   const cooldownLeft = CAMP_COOLDOWN_MS - (Date.now() - state.lastCampRestAt);
+   if(cooldownLeft <= 0){ render(); return; }
+   el.textContent = formatMs(cooldownLeft);
+}
+setInterval(updateCampCooldownDisplay, 1000);

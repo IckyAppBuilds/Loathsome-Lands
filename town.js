@@ -1,15 +1,13 @@
-/* Every location id a returning player can be logged back into as
-"home" — see state.homeTown below and hydrateState() in account.js,
-which use this list to decide where login lands rather than hardcoding
-'town'. Deliberately just Gladstone Hollow for now: Gnometropolis is a
-real town square (artGnometropolisSquare(), gnometropolis-art.js) but
-only has its 4 combat-district buildings so far, no Inn/Shop/Hoodoo
-Doctor/Tinker equivalents — landing a returning (or defeated, see
-checkDefeat(), combat.js) player there with no way to rest or restock
-would be a dead end. Add 'gnometropolis' here once it has enough of its
-own services to function as a real home base; that's the only change
-needed, both call sites below already read from this list. */
-const TOWN_HUBS = ['town'];
+/* Every location id that's a valid state.homeTown value — see
+hydrateState() (save.js), which falls back to 'town' for anything not
+in this list, and isTravelHub()/forceHomeIfBroke() below. Gladstone
+Hollow qualifies just by walking in (see travelTo()'s tail below);
+Gnometropolis only qualifies once the player has actually rested at
+the Camp (restAtCamp(), gnometropolis.js sets state.homeTown itself) —
+merely passing through the square doesn't make it home, same as
+merely passing through Gladstone Hollow's Inn wouldn't if it worked
+the same way. */
+const TOWN_HUBS = ['town', 'gnometropolis'];
 
 function restAtInn(){
    if(state.inCombat || state.location !== 'town') return;
@@ -50,6 +48,39 @@ function restAtInn(){
    }
    render();
 }
+/* Whether `loc` is a free hub to stand in for travel-cost purposes —
+same list as TOWN_HUBS above (both town squares), reused here since
+"a place that doesn't cost Biscuits to leave/enter" and "a place that
+counts as a valid home" happen to be the same set. */
+function isTravelHub(loc){ return TOWN_HUBS.includes(loc); }
+
+/* Biscuit cost of a trip to `dest` — charged only on ENTERING a priced
+zone (ZONE_TRAVEL_COST, content.js). The return trip to a hub (town or
+Gnometropolis's own square) is always free, regardless of how deep the
+player currently is — heading home never costs Biscuits, only heading
+out does. */
+function travelCostFor(dest){ return ZONE_TRAVEL_COST[dest] || 0; }
+
+/* Running out of Biscuits mid-adventure shouldn't require manually
+digging through the Map to get home — since the trip back is free
+anyway (travelCostFor() above), auto-send the player straight to
+state.homeTown instead of leaving them standing in place unable to
+explore further. Called at the top of both travelTo() and
+goAdventuring() (combat.js). Returns whether it fired, so callers know
+to stop. */
+function forceHomeIfBroke(){
+   if(devMode || state.adventures > 0 || isTravelHub(state.location)) return false;
+   clearLog();
+   log("You're flat out of Biscuits, and too worn out to argue about it. You stumble back to town on fumes alone.");
+   state.location = state.homeTown;
+   state.showVictory = false;
+   state.victoryMonster = null;
+   closeAllDrawers();
+   render();
+   autosave();
+   return true;
+}
+
 function travelTo(dest){
    if(state.inCombat) return;
    if(dest === state.location){ closeAllDrawers(); return; }
@@ -57,6 +88,17 @@ function travelTo(dest){
    if(dest === 'quarry' && !state.quest4Complete) return;
    if(dest === 'vault' && !state.quest5Complete) return;
    if(dest === 'gnometropolis' && !state.quest6Complete) return;
+   regenBiscuits();
+   if(forceHomeIfBroke()) return;
+   const cost = travelCostFor(dest);
+   if(!devMode && cost > 0 && state.adventures < cost){
+      clearLog();
+      log(`You don't have enough Biscuits for that trip — need ${cost}, you've got ${state.adventures}. Next one's ready in ${formatMs(msUntilNextBiscuit())}.`);
+      render();
+      return;
+   }
+   if(!devMode && cost > 0) state.adventures -= cost;
+   const costSuffix = cost <= 0 ? '' : (devMode ? ' (dev mode — no Biscuit cost)' : ` (-${cost} Biscuit${cost===1?'':'s'})`);
    /* No quest7Accepted gate on the 4 district/palace destinations below —
    they're only ever reachable by clicking a building tile inside the
    Gnometropolis square (boot.js's data-action dispatch), so standing
@@ -76,74 +118,77 @@ function travelTo(dest){
       state.showVictory = false;
       state.victoryMonster = null;
       clearLog();
-      log(wasGaffer ? "You step back out into Gladstone Hollow." : "You head back into Gladstone Hollow, dirt-streaked and modestly victorious.");
+      log((wasGaffer ? "You step back out into Gladstone Hollow." : "You head back into Gladstone Hollow, dirt-streaked and modestly victorious.") + costSuffix);
    } else if(dest === 'commons'){
       state.location = 'commons';
       state.showVictory = false;
       state.victoryMonster = null;
       clearLog();
-      log("You leave Gladstone Hollow behind and head into the Overgrown Commons.");
+      log("You leave Gladstone Hollow behind and head into the Overgrown Commons." + costSuffix);
    } else if(dest === 'sewers'){
       state.location = 'sewers';
       state.showVictory = false;
       state.victoryMonster = null;
       clearLog();
-      log("You climb down into the Dank Sewers. The air is thick, the walls are slick, and something skitters just out of sight.");
+      log("You climb down into the Dank Sewers. The air is thick, the walls are slick, and something skitters just out of sight." + costSuffix);
    } else if(dest === 'quarry'){
       state.location = 'quarry';
       state.showVictory = false;
       state.victoryMonster = null;
       clearLog();
-      log("You follow the old service tunnel down into the Clockwork Quarry. Something in the dark is still ticking.");
+      log("You follow the old service tunnel down into the Clockwork Quarry. Something in the dark is still ticking." + costSuffix);
    } else if(dest === 'vault'){
       state.location = 'vault';
       state.showVictory = false;
       state.victoryMonster = null;
       clearLog();
-      log("You pry open the sealed door at the bottom of the Quarry and step into the Sunless Vault. It's colder than it should be.");
+      log("You pry open the sealed door at the bottom of the Quarry and step into the Sunless Vault. It's colder than it should be." + costSuffix);
    } else if(dest === 'gnometropolis'){
       const cameFromDistrict = state.location==='garrison' || state.location==='roguesden' || state.location==='sanctum' || state.location==='palace';
       state.location = 'gnometropolis';
       state.showVictory = false;
       state.victoryMonster = null;
       clearLog();
-      log(cameFromDistrict
+      log((cameFromDistrict
           ? "You head back into the square, Gnometropolis's clockwork bustle carrying on around you same as ever."
-          : "You slip through the passage the Gnome King left undefended and descend into Gnometropolis — the gnomes' hidden capital, alive with clockwork and quiet menace. Three districts branch off the square: the Garrison, the Rogues' Den, and the Arcane Sanctum.");
+          : "You slip through the passage the Gnome King left undefended and descend into Gnometropolis — the gnomes' hidden capital, alive with clockwork and quiet menace. Three districts branch off the square: the Garrison, the Rogues' Den, and the Arcane Sanctum.") + costSuffix);
    } else if(dest === 'garrison'){
       state.location = 'garrison';
       state.showVictory = false;
       state.victoryMonster = null;
       clearLog();
-      log("You duck under the Garrison's crude portcullis into a torchlit barracks corridor, trophy shields rattling on the walls.");
+      log("You duck under the Garrison's crude portcullis into a torchlit barracks corridor, trophy shields rattling on the walls." + costSuffix);
    } else if(dest === 'roguesden'){
       state.location = 'roguesden';
       state.showVictory = false;
       state.victoryMonster = null;
       clearLog();
-      log("You slip past the curtained doorway of the Rogues' Den into a cramped, dim gambling den, thick with pipe smoke and whispers.");
+      log("You slip past the curtained doorway of the Rogues' Den into a cramped, dim gambling den, thick with pipe smoke and whispers." + costSuffix);
    } else if(dest === 'sanctum'){
       state.location = 'sanctum';
       state.showVictory = false;
       state.victoryMonster = null;
       clearLog();
-      log("You step into the Arcane Sanctum, a cluttered study lit by one large rune scored into the floor, still faintly glowing.");
+      log("You step into the Arcane Sanctum, a cluttered study lit by one large rune scored into the floor, still faintly glowing." + costSuffix);
    } else if(dest === 'palace'){
       state.location = 'palace';
       state.showVictory = false;
       state.victoryMonster = null;
       clearLog();
-      log("You approach the Gnome King's palace gate, all scavenged gold and gaudy flourish. Somewhere behind it, a throne waits.");
+      log("You approach the Gnome King's palace gate, all scavenged gold and gaudy flourish. Somewhere behind it, a throne waits." + costSuffix);
    }
-   /* Track the last town square the player actually stood in, separately
-   from state.location — shop interiors and adventure zones pass through
-   here too, but only a TOWN_HUBS arrival should update it. This is what
-   login snaps back to (see hydrateState() in account.js), so a future
-   second town doesn't need any new login logic, just an entry here and
-   an addition to TOWN_HUBS. */
-if(TOWN_HUBS.includes(state.location)) state.homeTown = state.location;
+   /* Merely walking into Gladstone Hollow claims it as home; merely
+   walking into the Gnometropolis square deliberately does NOT — that
+   one only becomes home by actually resting at the Camp
+   (restAtCamp(), gnometropolis.js, which sets state.homeTown itself).
+   Hardcoded to 'town' rather than reading TOWN_HUBS here on purpose;
+   TOWN_HUBS is the broader "valid homeTown value" whitelist used by
+   hydrateState() (save.js) and isTravelHub() above, not "auto-claim on
+   arrival." */
+if(state.location === 'town') state.homeTown = 'town';
    closeAllDrawers();
    render();
+   autosave();
 }
 
 function enterGafferHouse(){

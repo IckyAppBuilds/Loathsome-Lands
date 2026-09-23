@@ -170,6 +170,11 @@ function createDefaultState(){
         (content.js), independent of devMode/Biscuits — this is about
         pacing clicks in real time, not the energy economy. */
      lastInnRestAt: 0,
+     /* Same cooldown gate as lastInnRestAt above, but for restAtCamp()
+        (gnometropolis.js) — kept as its own separate timestamp rather
+        than sharing lastInnRestAt so resting at one building doesn't
+        also lock out the other. */
+     lastCampRestAt: 0,
      /* Passive Casino income ("the house's cut") — unlocked once
         buildingUpgrades.casino is at least 1 (CASINO_WINNINGS_CAP[0]=0
         keeps it at zero/inert before that). Accrues off real elapsed time

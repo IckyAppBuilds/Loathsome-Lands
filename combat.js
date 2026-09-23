@@ -9,12 +9,13 @@ const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault', 'garrison', 'ro
 function goAdventuring(){
    if(state.inCombat || !ADVENTURE_ZONES.includes(state.location)) return;
    regenBiscuits();
-   if(!devMode && state.adventures<=0){
-      clearLog();
-      log(`You're out of Biscuits, and spite alone won't carry you any further. The next batch is still in the oven — check back in ${formatMs(msUntilNextBiscuit())}.`);
-      render();
-      return;
-   }
+   /* Every zone now costs Biscuits just to travel to (travelCostFor(),
+   town.js) — hitting 0 while already out here would otherwise leave the
+   player stuck with no way to adventure AND no way to afford the trip
+   home. forceHomeIfBroke() (town.js) sends them back to state.homeTown
+   for free instead, replacing the old "check back later" block that
+   just left them standing in place. */
+   if(forceHomeIfBroke()) return;
    if(!devMode) state.adventures--;
    clearLog();
    state.showVictory = false;

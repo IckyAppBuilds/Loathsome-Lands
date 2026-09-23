@@ -22,8 +22,10 @@ palace/camp) — see render.js's isGnometropolis branch for how these get
 set. Simpler than artTownSquare()'s buildingIndicators (no bounty/trial
 slot; there's no bounty board or class-trial building here) but same
 biGet() shape so a future addition (a bounty board moving here, say) is
-just adding a badge call, not a signature change. */
-function artGnometropolisSquare(buildingIndicators){
+just adding a badge call, not a signature change. campCooldownText
+mirrors artTownSquare()'s innCooldownText param — non-null while
+restAtCamp()'s CAMP_COOLDOWN_MS is still counting down (see render.js). */
+function artGnometropolisSquare(buildingIndicators, campCooldownText){
    const bi = (key) => biGet(buildingIndicators, key);
    /* Small mushroom-cap accent (ellipse-on-a-stalk) — the one recurring
    motif tying the tiles together as "underground gnome capital" without
@@ -34,6 +36,18 @@ function artGnometropolisSquare(buildingIndicators){
    <ellipse cx="0" cy="-3" rx="5" ry="3" fill="#b06a97"/>
    <circle cx="-2" cy="-4" r="1" fill="#d1a94e" stroke="none"/>
    <circle cx="2" cy="-2" r="1" fill="#d1a94e" stroke="none"/>
+   </g>`;
+   /* Same dimming clock-face overlay as artTownSquare()'s innCooldown
+   (art.js) — copied rather than shared since it's a small, self-
+   contained SVG block and the two files don't otherwise share any
+   per-tile overlay helper. */
+   const campCooldown = !campCooldownText ? '' : `
+   <g class="inn-cooldown-overlay">
+   <rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.45"/>
+   <circle cx="50" cy="46" r="15" fill="#3d5a80" stroke="#2b2b28" stroke-width="2.5"/>
+   <line x1="50" y1="46" x2="50" y2="37" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
+   <line x1="50" y1="46" x2="57" y2="46" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
+   <text x="50" y="76" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-size="12" font-weight="700" fill="#f4efe4" stroke="none" id="camp-cooldown-text">${campCooldownText}</text>
    </g>`;
    return `<svg class="town-scene-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
    <rect x="4" y="4" width="292" height="292" fill="none" stroke="#2b2b28" stroke-width="9" stroke-dasharray="17,4" stroke-linecap="butt" stroke-linejoin="miter"/>
@@ -98,6 +112,7 @@ function artGnometropolisSquare(buildingIndicators){
    ${mushroom(14, 26)}
    ${makeFlag(bi('camp').flag)}
    ${plate("The Camp")}
+   ${campCooldown}
    </g>
 
    <g transform="translate(200,100)">

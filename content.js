@@ -340,6 +340,19 @@ used by the Bounty Board (render.js) to spell out where a bounty's
 monster lives without hand-typing zone names in a second place. */
 const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace' };
 
+/* Biscuit cost to travel TO each of these (travelCostFor(), town.js) —
+the further out a zone is, the more it costs, same escalating-by-depth
+idea as ZONE_DIFFICULTY above but for the trip itself, not the fights
+inside it. Charged only on ENTERING one of these keys; the trip back to
+a hub (town/gnometropolis, neither listed here) is always free — see
+travelCostFor(). This is still what gives restAtCamp()
+(gnometropolis.js) a real reason to exist: Biscuits spent resting at
+the Camp are Biscuits you don't have left to spend heading back out.
+Garrison/Rogues' Den/Arcane Sanctum are peers (same distance from the
+Gnometropolis square); the Palace is one step further, same "deepest
+costs most" shape as Vault topping Act 1. */
+const ZONE_TRAVEL_COST = { commons:1, sewers:2, quarry:3, vault:4, garrison:5, roguesden:5, sanctum:5, palace:6 };
+
 /* Shown on each zone's card in the Map drawer (render.js) as a "Recommended
 level" guideline — deliberately advisory, not a hard gate like zone
 unlocks (state.quest2/4/5/6Complete) or gear's own levelReq
@@ -1063,16 +1076,13 @@ or a maxed-out free-rest chance. See restAtInn()/state.lastInnRestAt. */
 const INN_COOLDOWN_MS = 60 * 1000;
 
 /* The Camp (Gnometropolis' town square, gnometropolis.js's restAtCamp())
-— HP-only, no cooldown, no free-rest chance, just a straight exchange
-rate: this many HP restored per Biscuit spent, up to however many
-Biscuits the player has (and always up to full HP). Deliberately a
-worse deal than the Inn's flat INN_REST_BISCUIT_COST for a full HP+MP
-heal — this exists because Gnometropolis has no Inn of its own yet
-(TOWN_HUBS, town.js), not to replace Gladstone Hollow's. The missing
-cooldown is fine specifically because the Biscuit cost itself throttles
-spam — no free lunch to guard against the way Inn's free-rest chance
-needs one. */
-const CAMP_REST_HP_PER_BISCUIT = 10;
+— same shape as the Inn above (flat Biscuit cost, real-time cooldown,
+full HP+MP restore), just no INN_FREE_REST_CHANCE-style upgrade tier
+since the Camp isn't part of the Town Lot's buildingUpgrades system.
+Resting here (not just visiting the square) is what sets
+state.homeTown to 'gnometropolis' — see restAtCamp() itself. */
+const CAMP_REST_BISCUIT_COST = 2;
+const CAMP_COOLDOWN_MS = 60 * 1000;
 
 /* Tinker's Workshop — fractional bonus added to junk sell prices in
 sellItemByName() (game.js). 0.30 at max level = junk sells for 30% more. */
