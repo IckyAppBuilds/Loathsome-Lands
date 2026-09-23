@@ -714,9 +714,9 @@ function checkDefeat(){
    if(state.hp<=0){
       clearLog();
       log(devMode
-          ? "Everything goes dark. You wake up outside the Inn, patched up but humbled. (dev mode — no Biscuit penalty)"
-          : "Everything goes dark. You wake up outside the Inn, patched up but humbled. (-2 Biscuits for the walk of shame)", 'damage');
-      state.hp = Math.floor(state.maxHp*0.5);
+          ? "Everything goes dark. You wake up back in town, every inch of you aching — you should really rest at the Inn. (dev mode — no Biscuit penalty)"
+          : "Everything goes dark. You wake up back in town, every inch of you aching — you should really rest at the Inn. (-2 Biscuits for the walk of shame)", 'damage');
+      state.hp = Math.max(1, Math.floor(state.maxHp*0.1));
       if(!devMode) state.adventures = Math.max(0, state.adventures-2);
       /* Whichever town square the player actually calls home (TOWN_HUBS,
       town.js — 'town'/Gladstone Hollow by default, 'gnometropolis' once
