@@ -1,4 +1,4 @@
-/* In-combat spell+item menu (opened via the Cast button) — 'damage'
+/* In-combat spell+item menu (opened via the Use button) — 'damage'
 spells, plus (new) any held HP/MP/luck consumable. Every other spell
 type (heal/ward/shout/buff) doesn't cost a turn anymore (castSpell(),
 combat.js, no longer calls monsterRetaliate() for them) and is cast

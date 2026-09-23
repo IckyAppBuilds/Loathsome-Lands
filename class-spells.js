@@ -83,7 +83,7 @@ function renderClassSkillUpgrade(containerId, classTitle){
 
 /* Character drawer block for casting any KNOWN non-damage spell —
 'damage' spells need a monster to target and still only show in the
-in-combat Cast menu (renderSpellMenu(), render-character.js); every
+in-combat Use menu (renderSpellMenu(), render-character.js); every
 other type (heal/ward/buff/shout) never costs a turn (castSpell(),
 combat.js, only calls monsterRetaliate() for 'damage') so it's fully
 usable from here, mid-fight or not. Not filtered to class-exclusive

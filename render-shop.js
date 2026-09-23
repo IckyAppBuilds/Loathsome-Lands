@@ -22,7 +22,7 @@ index that stack currently occupies, for a Use/Equip button to target —
 that part is unaffected, only the ordering of the groups is. Shared by
 renderInventory() below and renderSpellMenu()'s consumables section
 (render-character.js), which needs the exact same grouping for its own
-Cast-menu item list. */
+Use-menu item list. */
 function groupInventoryByName(){
   const groups = new Map();
   state.inventory.forEach((item, idx)=>{
@@ -57,12 +57,12 @@ INVENTORY_SECTIONS.forEach(section=>{
     let btn = '';
     if(item.type==='hp' || item.type==='mp' || item.type==='luck'){
       /* useItem() (player-actions.js) refuses mid-combat now — a
-      consumable has to go through the Cast menu instead
+      consumable has to go through the Use menu instead
       (useItemInCombat(), combat.js) so it costs a turn like any other
       combat action. Disable rather than silently no-op so it's clear
       why nothing happens if clicked here during a fight. */
       btn = state.inCombat
-        ? `<button class="btn-secondary" disabled title="Use this from the Cast menu during a fight">Use</button>`
+        ? `<button class="btn-secondary" disabled title="Use this from the Use button during a fight">Use</button>`
         : `<button class="btn-secondary" onclick="useItem(${firstIdx})">Use</button>`;
     } else if(item.type==='equip'){
       /* getGearRequirements() (item-tiers.js) derives both checks from

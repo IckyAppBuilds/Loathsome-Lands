@@ -97,8 +97,8 @@ const roll = Math.random();
    render();
 }
 
-/* Which combat sub-panel is showing: 'main' (Attack/Cast/Flee) or 'spells'
-(the spellbook opened via Cast). Transient UI state, not saved — same
+/* Which combat sub-panel is showing: 'main' (Attack/Use/Flee) or 'spells'
+(the spell+item menu opened via Use). Transient UI state, not saved — same
 convention as devMode. Reset to 'main' whenever combat starts/ends so a
 leftover open spellbook never bleeds into the next fight. */
 let combatSubView = 'main';
@@ -333,7 +333,7 @@ if(!sneakAttackLands) monsterRetaliate();
 /* No longer gated on state.spellsKnown.length — this menu also lists
 usable HP/MP/luck consumables now (renderSpellMenu(), render-character.js),
 so a spell-less player carrying potions still has a reason to open it.
-cast-btn's own disabled state (render.js) covers "nothing to do here
+use-btn's own disabled state (render.js) covers "nothing to do here
 at all" instead. */
 function openSpellMenu(){
    if(!state.inCombat) return;
@@ -347,7 +347,7 @@ function closeSpellMenu(){
 
 /* The in-combat half of item use — mirrors castSpell()'s damage-spell
 branch: costs the turn (one monsterRetaliate() call), same "once per
-turn" rule Attack/Cast already enforce. useItem() (player-actions.js)
+turn" rule Attack/Use already enforce. useItem() (player-actions.js)
 is the free, no-turn-cost version for outside combat; this is the only
 way to use a consumable mid-fight, which is what actually stops a
 player from chain-eating a whole stack of potions in one turn. */

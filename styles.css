@@ -296,7 +296,7 @@ button:disabled{ opacity:0.45; cursor:default; }
   background-image:repeating-linear-gradient(135deg, rgba(244,239,228,0.14) 0px, rgba(244,239,228,0.14) 2px, transparent 2px, transparent 8px);
   color:var(--white);
 }
-.btn-cast{
+.btn-use{
   background-color:var(--magenta);
   background-image:repeating-linear-gradient(135deg, rgba(244,239,228,0.14) 0px, rgba(244,239,228,0.14) 2px, transparent 2px, transparent 8px);
   color:var(--white);

@@ -40,8 +40,8 @@ function applyConsumableEffect(item){
 }
 
 /* Out-of-combat only now — mid-fight, a consumable has to go through
-useItemInCombat() (combat.js, opened via the same Cast menu spells
-use) instead, which costs a turn same as Attack/Cast. Without that
+useItemInCombat() (combat.js, opened via the same Use menu spells
+use) instead, which costs a turn same as Attack/Use. Without that
 split, the Pack drawer let a player chain-eat as many potions as they
 owned in a single turn for free; blocking it here and routing combat
 use through the turn-costing path is what actually enforces "once per
