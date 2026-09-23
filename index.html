@@ -4,7 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>The Loathsome Lands</title>
-<link rel="stylesheet" href="styles.css">
+<!-- Cache-busting query param -- bump CACHEBUST (below, and on every
+local script src further down) whenever a deploy changes any local
+.js/.css file. Without this, a returning player's browser (and a static
+host's CDN, e.g. GitHub Pages) can keep serving an old cached copy of a
+file indefinitely, since none of these are fingerprinted filenames from
+a real build step. -->
+<link rel="stylesheet" href="styles.css?v=20260923">
 </head>
 <body>
 <div id="app">
@@ -376,28 +382,28 @@ after every script has loaded):
   2. boot.js must be LAST -- its final block calls renderGate()/
      startFreshGame() immediately at parse time, so every other global
      it might touch must already exist. See AGENTS.md for the full file map. -->
-<script src="core.js"></script>
-<script src="icons.js"></script>
-<script src="art.js"></script>
-<script src="gnometropolis-art.js"></script>
-<script src="content.js"></script>
-<script src="item-tiers.js"></script>
-<script src="render.js"></script>
-<script src="render-shop.js"></script>
-<script src="render-character.js"></script>
-<script src="class-spells.js"></script>
-<script src="dev-tools.js"></script>
-<script src="auth.js"></script>
-<script src="save.js"></script>
-<script src="player-actions.js"></script>
-<script src="tutorial.js"></script>
-<script src="combat.js"></script>
-<script src="town.js"></script>
-<script src="guild.js"></script>
-<script src="gnometropolis.js"></script>
-<script src="economy.js"></script>
-<script src="noticeboard.js"></script>
-<script src="boot.js"></script>
+<script src="core.js?v=20260923"></script>
+<script src="icons.js?v=20260923"></script>
+<script src="art.js?v=20260923"></script>
+<script src="gnometropolis-art.js?v=20260923"></script>
+<script src="content.js?v=20260923"></script>
+<script src="item-tiers.js?v=20260923"></script>
+<script src="render.js?v=20260923"></script>
+<script src="render-shop.js?v=20260923"></script>
+<script src="render-character.js?v=20260923"></script>
+<script src="class-spells.js?v=20260923"></script>
+<script src="dev-tools.js?v=20260923"></script>
+<script src="auth.js?v=20260923"></script>
+<script src="save.js?v=20260923"></script>
+<script src="player-actions.js?v=20260923"></script>
+<script src="tutorial.js?v=20260923"></script>
+<script src="combat.js?v=20260923"></script>
+<script src="town.js?v=20260923"></script>
+<script src="guild.js?v=20260923"></script>
+<script src="gnometropolis.js?v=20260923"></script>
+<script src="economy.js?v=20260923"></script>
+<script src="noticeboard.js?v=20260923"></script>
+<script src="boot.js?v=20260923"></script>
 </body>
 </html>
 
