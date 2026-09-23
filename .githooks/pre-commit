@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Auto-bumps the cache-busting ?v= query param on every local script/
+# stylesheet tag in index.html whenever a commit touches a tracked
+# .js/.css file (or index.html itself) -- see index.html's own <head>
+# comment for why this exists. Without it, a returning player's browser
+# (or a static host's CDN, e.g. GitHub Pages) can keep serving an old
+# cached copy of a file indefinitely after a deploy, since none of
+# these are fingerprinted filenames from a real build step.
+#
+# Enable once per clone with: git config core.hooksPath .githooks
+set -e
+
+changed=$(git diff --cached --name-only --diff-filter=ACMR)
+
+# Nothing here touches a local .js/.css file or index.html itself -- no
+# cache-relevant change, nothing to bump.
+if ! printf '%s\n' "$changed" | grep -qE '\.(js|css)$|(^|/)index\.html$'; then
+  exit 0
+fi
+
+if [ ! -f index.html ]; then
+  exit 0
+fi
+
+old_version=$(grep -oE '\?v=[^"]+' index.html | head -1 | sed 's/?v=//')
+new_version=$(date +%Y%m%d%H%M%S)
+
+# No existing ?v= param to bump (shouldn't happen, but don't invent one
+# here -- that's a deliberate index.html edit, not this hook's job).
+if [ -z "$old_version" ]; then
+  exit 0
+fi
+
+if [ "$old_version" = "$new_version" ]; then
+  exit 0
+fi
+
+sed -i "s/?v=${old_version}/?v=${new_version}/g" index.html
+git add index.html
+
+echo "pre-commit: bumped index.html cache-bust ${old_version} -> ${new_version}"
