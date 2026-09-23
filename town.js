@@ -1,12 +1,13 @@
 /* Every location id that's a valid state.homeTown value — see
 hydrateState() (save.js), which falls back to 'town' for anything not
-in this list, and isTravelHub()/forceHomeIfBroke() below. Gladstone
-Hollow qualifies just by walking in (see travelTo()'s tail below);
-Gnometropolis only qualifies once the player has actually rested at
-the Camp (restAtCamp(), gnometropolis.js sets state.homeTown itself) —
-merely passing through the square doesn't make it home, same as
-merely passing through Gladstone Hollow's Inn wouldn't if it worked
-the same way. */
+in this list, and isTravelHub()/forceHomeIfBroke() below. Neither hub
+qualifies just by walking in — state.homeTown is "wherever you last
+actually rested," not "wherever you last stood": restAtInn() sets it to
+'town' on a successful rest, restAtCamp() (gnometropolis.js) sets it to
+'gnometropolis' on one. Merely passing through either square (or a
+blocked/cooldown-refused rest attempt) leaves it untouched. This is
+also where a defeated player lands (checkDefeat(), combat.js) — the
+last place you recovered, not just the last place you happened to be. */
 const TOWN_HUBS = ['town', 'gnometropolis'];
 
 function restAtInn(){
@@ -41,12 +42,17 @@ function restAtInn(){
    state.showVictory = false;
    state.victoryMonster = null;
    state.lastInnRestAt = Date.now();
+   /* A successful rest is what claims Gladstone Hollow as home (see
+   TOWN_HUBS's comment above) — mirrors restAtCamp() (gnometropolis.js)
+   setting 'gnometropolis' on its own successful rest. */
+   state.homeTown = 'town';
    if(freeRest){
       log("You duck into the Inn and rest up. You feel merely acceptable again. (free rest — the innkeeper couldn't be bothered to charge you)");
    } else {
       log(`You duck into the Inn and rest up. You feel merely acceptable again. (-${INN_REST_BISCUIT_COST} Biscuits)`);
    }
    render();
+   autosave();
 }
 /* Whether `loc` is a free hub to stand in for travel-cost purposes —
 same list as TOWN_HUBS above (both town squares), reused here since
@@ -195,15 +201,10 @@ function travelTo(dest){
       clearLog();
       log("You approach the Gnome King's palace gate, all scavenged gold and gaudy flourish. Somewhere behind it, a throne waits." + costSuffix);
    }
-   /* Merely walking into Gladstone Hollow claims it as home; merely
-   walking into the Gnometropolis square deliberately does NOT — that
-   one only becomes home by actually resting at the Camp
-   (restAtCamp(), gnometropolis.js, which sets state.homeTown itself).
-   Hardcoded to 'town' rather than reading TOWN_HUBS here on purpose;
-   TOWN_HUBS is the broader "valid homeTown value" whitelist used by
-   hydrateState() (save.js) and isTravelHub() above, not "auto-claim on
-   arrival." */
-if(state.location === 'town') state.homeTown = 'town';
+   /* No homeTown update here anymore — merely walking into either
+   square doesn't claim it as home. restAtInn() sets 'town' and
+   restAtCamp() (gnometropolis.js) sets 'gnometropolis', each only on
+   an actual successful rest (see TOWN_HUBS's comment above). */
    closeAllDrawers();
    render();
    autosave();
