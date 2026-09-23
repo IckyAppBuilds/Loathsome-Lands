@@ -176,17 +176,29 @@ const VAULT_CAPTAIN_SPAWN_CHANCE = 0.05;
 right: he was never the one fought in the Sunless Vault (that was always
 his captain, gnomeKingsCaptain above, covering his retreat). He's holed
 up in Gnometropolis itself now, behind the palace gate, and is reached
-only through the new quest 7 (guild.js, separate task), via one of three
-class-specific gear-gated approaches — Meathead brute force, Card Shark
-disguise, or Hexpert magic — resolved by a not-yet-written
-approachPalaceGate() function (guild.js or combat.js, separate mechanics
-task; referenced by name now so that task knows what to add). Because
-he's no longer a wild zone spawn he carries no `zone` and needs no
-SPAWN_CHANCE constant of its own, same reasoning as trialChampion below.
-Buffed to exceed trialChampion (currently the toughest fight in the
-game, hp:95/atk:9-14/xp:50) since he's now the true Act 1 finale, not a
-mid-quest rare hunt. rare:true/loot:null/art unchanged from before (his
-art already exists and needs no touching). */
+only through quest 7 (guild.js), via one of three class-specific
+gear-gated approaches — Meathead brute force, Card Shark disguise, or
+Hexpert magic — resolved by approachPalaceGate() (guild.js).
+Buffed to exceed trialChampion (the Guild's own class-trial boss,
+hp:95/atk:11-17/xp:50) since he's meant to be the true Act 1 finale, not
+a mid-quest rare hunt. rare:true/loot:null/art unchanged from before
+(his art already exists and needs no touching).
+
+`zone:"gnometropolis"` restored — a past pass removed it reasoning "he's
+no longer a wild zone spawn, so he needs no zone" (true for whether he's
+in the random encounter pool, monsters[] never included him either way
+— but startCombat()'s ZONE_DIFFICULTY scaling (combat.js) keys off this
+SAME field, and that part of the reasoning didn't hold: every other
+Gnometropolis monster gets scaled 2.3x by fighting there, but he
+didn't, so his "buffed" 105 raw hp was actually LOWER, post-scaling,
+than gnomeKingsCaptain's own 70-base Vault fight (133 real hp — that one
+correctly kept its zone:"vault"). The result: by the level a player
+realistically reaches the palace gate (having already cleared
+Gnometropolis's own 2.3x-scaled trash and a district guardian), the
+"hardest fight in the game" was costing under 10% HP and ending in 3
+turns — confirmed by simulation, this is what made it feel too easy.
+Same fix applied to garrisonGuardian/roguesDenEnforcer/
+arcaneSanctumGuardian below, which had the identical gap. */
 /* hp trimmed from the original 120 to 105 to compensate for adding two
 skills at once (below) — the Act 1 finale should still clearly be the
 hardest fight in the game on the strength of its mechanics, not by
@@ -194,7 +206,7 @@ stacking a skills[] kit on top of already being the highest raw hp/atk.
 No sustain (unlike hoodooChampion) — he's meant to be rushed down before
 his own buff+bolt combo snowballs, not out-attritioned. */
 const gnomeKing = {
-   name:"the gnome king, throned in scavenged gold", hp:105, atkMin:12, atkMax:18, xp:70, rare:true,
+   name:"the gnome king, throned in scavenged gold", hp:100, atkMin:11, atkMax:17, xp:70, rare:true, zone:"gnometropolis",
    skills:[
       { type:'buff', chance:0.15, buffMult:1.7, buffTurns:3, flavor:"rallies the last of his gnomes for one final push" },
       { type:'bolt', chance:0.20, boltMin:14, boltMax:20, flavor:"hurls a scavenged treasure-shard, crackling with stolen magic" },
@@ -222,7 +234,9 @@ gimmick instead, deliberately: */
 
 /* Guild tier (Meathead test) — the straightforward slugfest. Hits harder
 than anything else in the game up to Act 1's real finale (gnomeKing,
-hp:120/atk:12-18) — no other trick, just raw power, matching the class
+hp:100/atk:11-17 template, scaled up further by ZONE_DIFFICULTY.
+gnometropolis since he fights there and this one doesn't fight in any
+zone at all) — no other trick, just raw power, matching the class
 fantasy. */
 const trialChampion = {
    name:"the Guild's Trial Examiner, unbeaten and unimpressed", hp:95, atkMin:11, atkMax:17, xp:50, rare:true,
@@ -783,20 +797,27 @@ a full town hub (a later, separate task — these three names/flavors were
 picked to plausibly become real buildings then, not generic "boss arena"
 labels). Fought via a direct button in Gnometropolis
 (gnometropolis.js's challengeDistrictGuardian(districtKey)), not a wild
-spawn, so — same as trialChampion above — no `zone`/SPAWN_CHANCE of its
-own. Tuned as a step up from the Sunless Vault's rare hunts
-(gnomeKingsCaptain, hp:70/atk:7-12/xp:35) but short of the real gnomeKing
-(Act 1's true finale, hp:120/atk:12-18/xp:70): these guard the gate, they
-aren't the finale itself. `loot` references the exact PALACE_GATE_GEAR
-entry for the matching class directly — this only works because it's
-written after the array literal above has already executed; `const`
-doesn't allow a true forward reference. winCombat() (combat.js) checks
-each of these three by name and forces state.monster.loot through as a
-guaranteed drop, same tier of guarantee as a quest-item. art points at
-artGarrisonGuardian/artRoguesDenEnforcer/artArcaneSanctumGuardian
-(art.js, same task). */
+spawn — but they still carry `zone:"gnometropolis"` so startCombat()'s
+ZONE_DIFFICULTY scaling (combat.js) still applies, same as every other
+Gnometropolis monster gets by just fighting there. A past pass omitted
+this (same "not a wild spawn, so no zone" reasoning trialChampion uses
+above, correctly, since that one fights at a town building with no zone
+of its own to scale by) — but these three fight IN Gnometropolis, so
+leaving it off just meant they were quietly undertuned relative to the
+zone's own regular monsters, not appropriately toned down. Tuned as a
+step up from the Sunless Vault's rare hunts (gnomeKingsCaptain,
+hp:70/atk:7-12/xp:35, also correctly zone-scaled) but short of the real
+gnomeKing (Act 1's true finale, hp:100/atk:11-17/xp:70): these guard the
+gate, they aren't the finale itself. `loot` references the exact
+PALACE_GATE_GEAR entry for the matching class directly — this only
+works because it's written after the array literal above has already
+executed; `const` doesn't allow a true forward reference. winCombat()
+(combat.js) checks each of these three by name and forces
+state.monster.loot through as a guaranteed drop, same tier of guarantee
+as a quest-item. art points at artGarrisonGuardian/
+artRoguesDenEnforcer/artArcaneSanctumGuardian (art.js, same task). */
 const garrisonGuardian = {
-   name:"the Garrison's watch-captain, built like a slammed door", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
+   name:"the Garrison's watch-captain, built like a slammed door", hp:65, atkMin:7, atkMax:11, xp:45, rare:true, zone:"gnometropolis",
    skills:[ { type:'buff', chance:0.20, buffMult:1.6, buffTurns:2, flavor:"braces like a slammed door and hits back twice as hard" } ],
    art: artGarrisonGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Meathead')
 };
@@ -805,12 +826,12 @@ same dodgeChance mechanic casinoChampion uses (applyDamageToMonster(),
 combat.js), fitting a Rogues' Den enforcer who's "already taking side
 bets on you" i.e. never where you'd expect. */
 const roguesDenEnforcer = {
-   name:"the Rogues' Den enforcer, already taking side bets on you", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
+   name:"the Rogues' Den enforcer, already taking side bets on you", hp:65, atkMin:7, atkMax:11, xp:45, rare:true, zone:"gnometropolis",
    dodgeChance:0.25,
    art: artRoguesDenEnforcer, loot: PALACE_GATE_GEAR.find(g => g.class === 'Card Shark')
 };
 const arcaneSanctumGuardian = {
-   name:"the Arcane Sanctum's warden, muttering an unfinished spell", hp:85, atkMin:9, atkMax:13, xp:45, rare:true,
+   name:"the Arcane Sanctum's warden, muttering an unfinished spell", hp:65, atkMin:7, atkMax:11, xp:45, rare:true, zone:"gnometropolis",
    skills:[ { type:'bolt', chance:0.25, boltMin:12, boltMax:18, flavor:"finally finishes the spell, unleashing a burst of raw arcane energy" } ],
    art: artArcaneSanctumGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Hexpert')
 };
