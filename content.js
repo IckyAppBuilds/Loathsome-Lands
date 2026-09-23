@@ -791,7 +791,15 @@ all three share ONE level counter, state.classSkillLevel (core.js), rather
 than three separate counters. Same [0, tier1, tier2, tier3] convention as
 the rest of this file (index = level, 0 = no bonus). */
 const MEATHEAD_DAMAGE_BONUS = [0, 0.15, 0.30, 0.45]; /* fractional bonus to combat damage */
-const CARD_SHARK_PAYOUT_BONUS = [0, 0.5, 1.0, 1.5]; /* added directly to the Casino's win payout multiplier (flat 2x in gambleCasino(), game.js) */
+/* Chance per Attack (playerAttack(), combat.js) to land a second full
+swing in the same turn — a flat 1% per level, deliberately modest since
+it's a chance at ENTIRELY FREE extra damage every turn of every fight,
+not a one-time payout multiplier like the old Casino-payout version of
+this skill. Was CARD_SHARK_PAYOUT_BONUS (a Casino win-payout bonus) —
+replaced because a Card Shark's capstone skill only mattering at the
+Casino, not in combat, felt off next to Meathead/Hexpert's both being
+combat bonuses. */
+const CARD_SHARK_DOUBLE_ATTACK_CHANCE = [0, 0.01, 0.02, 0.03];
 const HEXPERT_SPELL_DMG_BONUS = [0, 3, 6, 9]; /* flat bonus added to spell damage */
 /* Cost to go from `level` to `level+1` for the shared class-skill counter
 above — quadratic, same style as buildingUpgradeCost() below: 150/600/1350

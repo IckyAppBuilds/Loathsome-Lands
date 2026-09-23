@@ -21,12 +21,11 @@ function gambleCasino(amount){
    state.popTabs -= amount;
    clearLog();
    if(Math.random() < CASINO_WIN_CHANCE + CASINO_WIN_BONUS[state.buildingUpgrades.casino || 0]){
-      /* Flat 2x payout multiplier, same as before the Card Shark skill
-      existed — the skill's bonus stacks on TOP of it rather than replacing
-      it, so a level-0 Card Shark (or anyone else) still gets exactly 2x. */
-      let payoutMult = 2;
-      if(state.classTitle === 'Card Shark') payoutMult += CARD_SHARK_PAYOUT_BONUS[state.classSkillLevel];
-      const winnings = Math.round(amount * payoutMult);
+      /* Flat 2x payout multiplier for everyone, Card Shark included — the
+      class skill no longer touches gambling (it's a combat double-attack
+      chance now, CARD_SHARK_DOUBLE_ATTACK_CHANCE/playerAttack(), content.js/
+      combat.js), so there's nothing left to stack on top of this. */
+      const winnings = Math.round(amount * 2);
       state.popTabs += winnings;
       log(`${casinoWinLines[Math.floor(Math.random()*casinoWinLines.length)]} (+${winnings} Pop Tabs)`);
    } else {
@@ -376,9 +375,10 @@ clearLog();
 
 /* Levels the shared class-skill counter (state.classSkillLevel, core.js) that
 backs whichever combat bonus the player's chosen class unlocks
-(MEATHEAD_DAMAGE_BONUS/CARD_SHARK_PAYOUT_BONUS/HEXPERT_SPELL_DMG_BONUS,
-content.js) — see those bonuses applied in playerAttack()/gambleCasino()/
-castSpell() respectively. Purchasable only at the building matching the
+(MEATHEAD_DAMAGE_BONUS/CARD_SHARK_DOUBLE_ATTACK_CHANCE/HEXPERT_SPELL_DMG_BONUS,
+content.js) — see those bonuses applied in playerAttack() (both Meathead's
+and Card Shark's) and castSpell() (Hexpert's) respectively. Purchasable
+only at the building matching the
 player's class, same 0..3 index range as the bonus arrays (mirrors
 BUILDING_UPGRADE_MAX's capping style), and only one copy of the counter
 exists since a player only ever has one active class at a time. Gated on

@@ -298,6 +298,31 @@ function playerAttack(){
       }
    }
 
+   /* Card Shark's class skill: a flat per-level chance
+   (CARD_SHARK_DOUBLE_ATTACK_CHANCE, content.js) to get a second full
+   swing in the same turn — rolled once per Attack, independent of
+   whether the first swing above hit/missed/dodged. The second swing
+   skips the missChance/sneak-attack rolls above (it's a bonus swing on
+   top of the turn that already happened, not a second independent
+   turn) but still rolls the monster's own dodge via
+   applyDamageToMonster(). Only ONE monster retaliation happens for the
+   whole turn either way — see the `if(!sneakAttackLands)` line below,
+   unchanged and still gating on the FIRST swing's sneak-attack roll
+   only, same "landing it denies retaliation" rule as before. */
+   if(state.classTitle === 'Card Shark' && Math.random() < CARD_SHARK_DOUBLE_ATTACK_CHANCE[state.classSkillLevel]){
+      const dmg2 = randInt(3,7) + (state.level-1) + statBonus(eff.beef);
+      const { dodged: dodged2 } = applyDamageToMonster(dmg2, false);
+      if(dodged2){
+         log(`Quick as a card trick, you come back around for a second swing with ${weaponName} — ${state.monster.name} slips out of the way again.`);
+      } else {
+         log(`Quick as a card trick, you swing ${weaponName} again for ${dmg2} damage.`);
+         if(state.monster.hp<=0){
+            winCombat();
+            return;
+         }
+      }
+   }
+
 if(!sneakAttackLands) monsterRetaliate();
    checkDefeat();
    render();

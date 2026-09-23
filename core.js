@@ -138,8 +138,8 @@ function createDefaultState(){
           the killing blow specifically with a cast spell (the Hexpert test).
         classSkillLevel is the single shared level counter for whichever
         class-skill the chosen classTitle unlocks (MEATHEAD_DAMAGE_BONUS/
-        CARD_SHARK_PAYOUT_BONUS/HEXPERT_SPELL_DMG_BONUS, content.js) — see
-        classSkillCost() there. */
+        CARD_SHARK_DOUBLE_ATTACK_CHANCE/HEXPERT_SPELL_DMG_BONUS, content.js)
+        — see classSkillCost() there. */
      classTrialGuildPassed: false,
      classTrialCasinoPassed: false,
      classTrialHoodooPassed: false,

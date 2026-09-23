@@ -38,12 +38,12 @@ the exact same "level-indexed array, format(v) turns one entry into a
 one-line string" way those do. */
 const CLASS_SKILL_INFO = {
    'Meathead': v => `+${Math.round(v*100)}% melee damage`,
-   'Card Shark': v => `+${Math.round(v*100)}% casino payouts`,
+   'Card Shark': v => `${Math.round(v*100)}% chance to attack twice in one turn`,
    'Hexpert': v => `+${v} spell damage`,
 };
 const CLASS_SKILL_VALUES = {
    'Meathead': MEATHEAD_DAMAGE_BONUS,
-   'Card Shark': CARD_SHARK_PAYOUT_BONUS,
+   'Card Shark': CARD_SHARK_DOUBLE_ATTACK_CHANCE,
    'Hexpert': HEXPERT_SPELL_DMG_BONUS,
 };
 
