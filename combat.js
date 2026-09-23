@@ -330,13 +330,36 @@ if(!sneakAttackLands) monsterRetaliate();
 }
 
 /* ---------------- Spells ---------------- */
+/* No longer gated on state.spellsKnown.length — this menu also lists
+usable HP/MP/luck consumables now (renderSpellMenu(), render-character.js),
+so a spell-less player carrying potions still has a reason to open it.
+cast-btn's own disabled state (render.js) covers "nothing to do here
+at all" instead. */
 function openSpellMenu(){
-   if(!state.inCombat || state.spellsKnown.length===0) return;
+   if(!state.inCombat) return;
    combatSubView = 'spells';
    render();
 }
 function closeSpellMenu(){
    combatSubView = 'main';
+   render();
+}
+
+/* The in-combat half of item use — mirrors castSpell()'s damage-spell
+branch: costs the turn (one monsterRetaliate() call), same "once per
+turn" rule Attack/Cast already enforce. useItem() (player-actions.js)
+is the free, no-turn-cost version for outside combat; this is the only
+way to use a consumable mid-fight, which is what actually stops a
+player from chain-eating a whole stack of potions in one turn. */
+function useItemInCombat(idx){
+   if(!state.inCombat) return;
+   const item = state.inventory[idx];
+   if(!item || !['hp','mp','luck'].includes(item.type)) return;
+   applyConsumableEffect(item);
+   state.inventory.splice(idx,1);
+   combatSubView = 'main';
+   monsterRetaliate();
+   checkDefeat();
    render();
 }
 

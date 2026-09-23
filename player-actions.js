@@ -21,8 +21,11 @@ function closeAllDrawers(){
    document.getElementById('backdrop').classList.remove('show');
 }
 
-function useItem(idx){
-   const item = state.inventory[idx];
+/* Shared by useItem() (out of combat, below) and useItemInCombat()
+(combat.js) — just the HP/MP/luck effect itself, no turn/render/splice
+handling, since the two callers need different rules around that (see
+useItem()'s own comment). */
+function applyConsumableEffect(item){
    if(item.type==='hp'){
       state.hp = Math.min(state.maxHp, state.hp+item.value);
       log(`You eat ${item.name}. Solid choice. (+${item.value} HP)`);
@@ -34,6 +37,20 @@ function useItem(idx){
       state.mp = Math.min(state.maxMp, state.mp+item.mpValue);
       log(`You tuck ${item.name} behind your ear for luck. (+${item.hpValue} HP, +${item.mpValue} MP)`);
    }
+}
+
+/* Out-of-combat only now — mid-fight, a consumable has to go through
+useItemInCombat() (combat.js, opened via the same Cast menu spells
+use) instead, which costs a turn same as Attack/Cast. Without that
+split, the Pack drawer let a player chain-eat as many potions as they
+owned in a single turn for free; blocking it here and routing combat
+use through the turn-costing path is what actually enforces "once per
+turn." Outside combat there's still no cooldown at all — free to use
+as many as you like between fights. */
+function useItem(idx){
+   if(state.inCombat) return;
+   const item = state.inventory[idx];
+   applyConsumableEffect(item);
    state.inventory.splice(idx,1);
    render();
 }

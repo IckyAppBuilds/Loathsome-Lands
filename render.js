@@ -395,12 +395,14 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
   document.getElementById('spell-menu').style.display = (state.inCombat && combatSubView==='spells') ? 'block' : 'none';
   if(state.inCombat && combatSubView==='spells') renderSpellMenu();
   if(state.inCombat){
-    /* Matches renderSpellMenu()'s own filter (render-character.js) — the
-    Cast button opens to a damage-spells-only list now, so it should be
-    disabled based on knowing one of THOSE specifically, not any spell
-    at all (a player who only knows Warding Charm shouldn't see an
-    enabled button that opens to an empty list). */
-    document.getElementById('cast-btn').disabled = !spells.some(s => s.type==='damage' && state.spellsKnown.includes(s.id));
+    /* Matches renderSpellMenu()'s own contents (render-character.js) —
+    the Cast menu now lists damage spells AND usable HP/MP/luck
+    consumables, so the button should only disable when there's
+    genuinely neither (a player who only knows Warding Charm but is
+    carrying a potion still has a reason to open it). */
+    const hasDamageSpell = spells.some(s => s.type==='damage' && state.spellsKnown.includes(s.id));
+    const hasUsableItem = state.inventory.some(it => ['hp','mp','luck'].includes(it.type));
+    document.getElementById('cast-btn').disabled = !hasDamageSpell && !hasUsableItem;
   }
   document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || isGarrison || isRoguesden || isSanctum) && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('palace-gate-row').style.display = canApproachPalaceGate ? 'flex' : 'none';

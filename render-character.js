@@ -1,27 +1,50 @@
-/* In-combat spell menu (opened via the Cast button) — 'damage' spells
-only. Every other type (heal/ward/shout/buff) doesn't cost a turn
-anymore (castSpell(), combat.js, no longer calls monsterRetaliate() for
-them) and is cast from the Character page instead
-(renderCastableSpellsBlock(), class-spells.js — reachable mid-combat
-too, so this isn't losing access, just moving where non-damage spells
-live). A damage spell is still a real combat action that trades your
-turn for a hit, so it stays here where Attack/Flee live. */
+/* In-combat spell+item menu (opened via the Cast button) — 'damage'
+spells, plus (new) any held HP/MP/luck consumable. Every other spell
+type (heal/ward/shout/buff) doesn't cost a turn anymore (castSpell(),
+combat.js, no longer calls monsterRetaliate() for them) and is cast
+from the Character page instead (renderCastableSpellsBlock(),
+class-spells.js — reachable mid-combat too, so this isn't losing
+access, just moving where non-damage spells live). A damage spell (or
+now, using an item — useItemInCombat(), combat.js) is still a real
+combat action that trades your turn for its effect, so both live here
+alongside Attack/Flee, not on the free-action Character page. */
 function renderSpellMenu(){
   const list = document.getElementById('spell-list');
+  list.innerHTML = '';
   const known = spells.filter(s => s.type==='damage' && state.spellsKnown.includes(s.id));
   if(known.length===0){
     list.innerHTML = '<div class="shop-empty">You don\'t know any damage spells yet. The Hoodoo Doctor in town might teach you one.</div>';
-    return;
+  } else {
+    known.forEach(spell=>{
+      const div = document.createElement('div');
+      div.className = 'shop-item';
+      const iconSvg = spell.icon ? spell.icon() : '';
+      const canCast = state.mp >= spell.mpCost;
+      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div><button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${spell.mpCost} MP</button></div>`;
+      list.appendChild(div);
+    });
   }
-  list.innerHTML = '';
-  known.forEach(spell=>{
-    const div = document.createElement('div');
-    div.className = 'shop-item';
-    const iconSvg = spell.icon ? spell.icon() : '';
-    const canCast = state.mp >= spell.mpCost;
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div><button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${spell.mpCost} MP</button></div>`;
-    list.appendChild(div);
-  });
+
+  /* Consumables — same grouping groupInventoryByName() (render-shop.js)
+  uses for the Pack drawer, so a stack of potions shows as one row with
+  a ×count badge instead of one row per copy. Using one here costs the
+  turn (useItemInCombat(), combat.js), which is the whole point of
+  moving item use into this menu — see that function's own comment. */
+  const itemGroups = groupInventoryByName().filter(g => ['hp','mp','luck'].includes(g.item.type));
+  if(itemGroups.length > 0){
+    const header = document.createElement('div');
+    header.className = 'shop-section-title';
+    header.textContent = 'Use an Item';
+    list.appendChild(header);
+    itemGroups.forEach(({item, count, firstIdx})=>{
+      const div = document.createElement('div');
+      div.className = 'shop-item';
+      const iconSvg = item.icon ? item.icon() : '';
+      const qtyBadge = count>1 ? ` <span class="qty-badge">×${count}</span>` : '';
+      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${item.name}${qtyBadge}</div><div class="desc">${item.desc}</div><button class="btn-secondary" onclick="useItemInCombat(${firstIdx})">Use</button></div>`;
+      list.appendChild(div);
+    });
+  }
 }
 
 function renderCharacterDrawer(){

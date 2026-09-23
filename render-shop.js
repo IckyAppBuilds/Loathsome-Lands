@@ -9,6 +9,31 @@ const INVENTORY_SECTIONS = [
   { types:['junk'], title:'Loot' },
   ];
 
+/* Groups state.inventory by item name (one entry per distinct item,
+carrying how many and the first index that name occupies), sorted by
+name rather than raw array position. Array position isn't stable:
+using one potion out of a stack splices that exact slot out, and
+equipping a new item pushes the piece it replaces onto the end of the
+array — so grouping straight off array order used to make the whole
+list visually reshuffle every time you used or equipped something.
+Sorting by what the item IS instead of where it currently sits means a
+given item always lands in the same spot. firstIdx is still whatever
+index that stack currently occupies, for a Use/Equip button to target —
+that part is unaffected, only the ordering of the groups is. Shared by
+renderInventory() below and renderSpellMenu()'s consumables section
+(render-character.js), which needs the exact same grouping for its own
+Cast-menu item list. */
+function groupInventoryByName(){
+  const groups = new Map();
+  state.inventory.forEach((item, idx)=>{
+    if(!groups.has(item.name)){
+      groups.set(item.name, { item, count:0, firstIdx:idx });
+    }
+    groups.get(item.name).count++;
+  });
+  return [...groups.values()].sort((a,b)=>a.item.name.localeCompare(b.item.name));
+}
+
 function renderInventory(){
   const list = document.getElementById('inv-list');
   if(state.inventory.length===0){
@@ -17,25 +42,7 @@ function renderInventory(){
   }
   list.innerHTML = '';
 
-const groups = new Map();
-  state.inventory.forEach((item, idx)=>{
-    if(!groups.has(item.name)){
-      groups.set(item.name, { item, count:0, firstIdx:idx });
-    }
-    groups.get(item.name).count++;
-  });
-
-/* Display order is (fixed type bucket, then name) rather than raw
-  state.inventory position. Array position isn't stable: using one
-  potion out of a stack splices that exact slot out, and equipping a
-  new item pushes the piece it replaces onto the end of the array — so
-  grouping straight off array order used to make the whole list
-  visually reshuffle every time you used or equipped something. Sorting
-  by what the item IS instead of where it currently sits means a given
-  item always lands in the same spot. firstIdx is still whatever index
-  that stack currently occupies, for the Use/Equip button below — that
-  part is unaffected, only the ordering of the groups is. */
-const sorted = [...groups.values()].sort((a,b)=>a.item.name.localeCompare(b.item.name));
+const sorted = groupInventoryByName();
 
 INVENTORY_SECTIONS.forEach(section=>{
   const entries = sorted.filter(g => section.types.includes(g.item.type));
@@ -49,7 +56,14 @@ INVENTORY_SECTIONS.forEach(section=>{
     div.className='inv-item';
     let btn = '';
     if(item.type==='hp' || item.type==='mp' || item.type==='luck'){
-      btn = `<button class="btn-secondary" onclick="useItem(${firstIdx})">Use</button>`;
+      /* useItem() (player-actions.js) refuses mid-combat now — a
+      consumable has to go through the Cast menu instead
+      (useItemInCombat(), combat.js) so it costs a turn like any other
+      combat action. Disable rather than silently no-op so it's clear
+      why nothing happens if clicked here during a fight. */
+      btn = state.inCombat
+        ? `<button class="btn-secondary" disabled title="Use this from the Cast menu during a fight">Use</button>`
+        : `<button class="btn-secondary" onclick="useItem(${firstIdx})">Use</button>`;
     } else if(item.type==='equip'){
       /* getGearRequirements() (item-tiers.js) derives both checks from
       the item's own bonus — same requirement equipItem() (player-
