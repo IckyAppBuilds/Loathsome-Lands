@@ -1,10 +1,15 @@
-/* Every location id that counts as a town square (as opposed to a shop
-interior inside one, or an adventure zone reached from one). Gladstone
-Hollow ('town') plus Gnometropolis ('gnometropolis', the Act 2 hub) —
-this is the list a future third town gets added to — see state.homeTown
-below and hydrateState() in account.js, which use this list to decide
-where a returning player lands on login rather than hardcoding 'town'. */
-const TOWN_HUBS = ['town', 'gnometropolis'];
+/* Every location id a returning player can be logged back into as
+"home" — see state.homeTown below and hydrateState() in account.js,
+which use this list to decide where login lands rather than hardcoding
+'town'. Deliberately just Gladstone Hollow for now: Gnometropolis is a
+real town square (artGnometropolisSquare(), gnometropolis-art.js) but
+only has its 4 combat-district buildings so far, no Inn/Shop/Hoodoo
+Doctor/Tinker equivalents — landing a returning (or defeated, see
+checkDefeat(), combat.js) player there with no way to rest or restock
+would be a dead end. Add 'gnometropolis' here once it has enough of its
+own services to function as a real home base; that's the only change
+needed, both call sites below already read from this list. */
+const TOWN_HUBS = ['town'];
 
 function restAtInn(){
    if(state.inCombat || state.location !== 'town') return;

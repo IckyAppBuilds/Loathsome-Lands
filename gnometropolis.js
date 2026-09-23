@@ -1,6 +1,7 @@
 /* ---------------- Gnometropolis districts ---------------- */
-/* Gnometropolis is the Act 2 town hub (TOWN_HUBS, town.js) — a town square
-with three explorable districts branching off it: The Garrison (Meathead),
+/* Gnometropolis is the Act 2 town square — not yet in TOWN_HUBS (town.js)
+since it has no Inn/Shop/Hoodoo Doctor/Tinker of its own yet, just three
+explorable districts branching off it: The Garrison (Meathead),
 The Rogues' Den (Card Shark), The Arcane Sanctum (Hexpert), plus the
 Palace itself (no district, one scripted fight — see approachPalaceGate(),
 guild.js). Each district is an ordinary ADVENTURE_ZONES entry (combat.js)
