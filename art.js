@@ -486,6 +486,27 @@ function artArcaneSanctumGuardian(){
    return sceneWrap(`<circle cx="50" cy="54" r="42" fill="#b06a97" opacity="0.28"/><path d="M50 4 L34 30 L66 30 Z" fill="#b06a97"/><circle cx="50" cy="42" r="12" fill="#e0c49a"/><circle cx="45" cy="41" r="2" fill="#d1a94e" stroke="none"/><circle cx="55" cy="41" r="2" fill="#d1a94e" stroke="none"/><path d="M30 54 Q50 46 70 54 L64 94 Q50 99 36 94 Z" fill="#b06a97"/><line x1="30" y1="58" x2="12" y2="70"/><circle cx="12" cy="76" r="9" fill="none" stroke-width="2.5" opacity="0.6"/><circle cx="12" cy="76" r="4" fill="#d1a94e" stroke="none"/><line x1="70" y1="58" x2="86" y2="66"/><line x1="50" y1="94" x2="42" y2="99"/><line x1="50" y1="94" x2="58" y2="99"/>`, 0);
 }
 
+/* Regular (non-rare) Gnometropolis district monsters, rounding the
+Garrison/Arcane Sanctum/Rogues' Den rosters out to 3 apiece alongside
+the existing gnomeGuard/gnomeVizier/burrowWorm/feralAutomaton above —
+same plain-doodle weight as those, no aura circle (that's reserved for
+rare spawns, see the district guardians above). */
+function artGnomeDrillSergeant(){
+   return sceneWrap(`<path d="M50 10 L34 30 L66 30 Z" fill="#5f4632"/><circle cx="50" cy="42" r="12" fill="#e0c49a"/><rect x="34" y="54" width="32" height="26" fill="#8a8477"/><line x1="40" y1="58" x2="60" y2="58"/><line x1="40" y1="64" x2="60" y2="64"/><line x1="66" y1="58" x2="82" y2="46"/><line x1="82" y1="46" x2="82" y2="26"/><path d="M82 28 L94 32 L82 36 Z" fill="#b5453f"/><line x1="50" y1="80" x2="40" y2="98"/><line x1="50" y1="80" x2="60" y2="98"/>`, 0);
+}
+function artGnomeSiegeCrew(){
+   return sceneWrap(`<rect x="14" y="70" width="40" height="8" fill="#5f4632"/><rect x="18" y="40" width="6" height="30" fill="#8a5a3a"/><rect x="44" y="40" width="6" height="30" fill="#8a5a3a"/><line x1="21" y1="42" x2="47" y2="66"/><path d="M47 66 L60 50 L54 60 Z" fill="#8a8477"/><circle cx="70" cy="60" r="11" fill="#e0c49a"/><path d="M62 52 L78 52 L70 42 Z" fill="#8a8477"/><line x1="70" y1="71" x2="64" y2="90"/><line x1="70" y1="71" x2="78" y2="90"/>`, -1);
+}
+function artHexWeaver(){
+   return sceneWrap(`<path d="M50 12 L38 32 L62 32 Z" fill="#b06a97"/><circle cx="50" cy="44" r="11" fill="#e0c49a"/><path d="M36 56 Q50 48 64 56 L60 92 Q50 98 40 92 Z" fill="#b06a97"/><path d="M64 56 Q76 50 72 38" fill="none" stroke-width="2.5"/><circle cx="72" cy="36" r="4" fill="#d1a94e" stroke="none"/><circle cx="78" cy="30" r="2.4" fill="#d1a94e" stroke="none"/><line x1="50" y1="92" x2="42" y2="99"/><line x1="50" y1="92" x2="58" y2="99"/>`, 1);
+}
+function artGnomeFamiliar(){
+   return sceneWrap(`<ellipse cx="50" cy="60" rx="22" ry="18" fill="#3d5a80"/><circle cx="40" cy="48" r="4" fill="#d1a94e" stroke="none"/><circle cx="60" cy="48" r="4" fill="#d1a94e" stroke="none"/><path d="M30 52 Q20 44 24 32" fill="none" stroke-width="2.5"/><path d="M70 52 Q80 44 76 32" fill="none" stroke-width="2.5"/><path d="M36 74 Q50 82 64 74" fill="none" stroke-width="2.5"/>`, -2);
+}
+function artGnomePickpocket(){
+   return sceneWrap(`<path d="M50 8 Q64 14 60 30 L40 30 Q36 14 50 8 Z" fill="#2b2b28"/><rect x="40" y="26" width="20" height="6" fill="#2b2b28" stroke="none"/><circle cx="50" cy="38" r="10" fill="#e0c49a"/><path d="M34 48 Q50 40 66 48 L62 86 Q50 92 38 86 Z" fill="#2b2b28"/><line x1="34" y1="52" x2="18" y2="60"/><path d="M18 60 L10 54 M18 60 L14 68" stroke-width="2.5"/><line x1="66" y1="52" x2="80" y2="46"/><line x1="50" y1="86" x2="42" y2="99"/><line x1="50" y1="86" x2="58" y2="99"/>`, 0);
+}
+
 /* ---------------- Zone backdrop art ---------------- */
 /* One scene per Act 1 adventure zone (ZONE_DIFFICULTY, content.js), shown
 between fights in place of artIdle() (see render.js) so each zone has

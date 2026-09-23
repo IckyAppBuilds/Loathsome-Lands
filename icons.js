@@ -242,6 +242,42 @@ function iconWardedSeal(){
      return iconWrap(`<circle cx="30" cy="30" r="16" fill="#b06a97"/><path d="M30 16 L36 30 L30 44 L24 30 Z" fill="#f4efe4" stroke="none"/>`);
 }
 
+/* Gnometropolis district monsters (content.js) — one loot/gearDrop icon
+per new monster added to round the Garrison/Rogues' Den/Arcane Sanctum
+rosters out to 3 apiece (garrisonGuardian/roguesDenEnforcer/
+arcaneSanctumGuardian's own rareDrop/gearDrop icons already existed;
+these are for the new regular monsters standing alongside them). */
+function iconDrillRoster(){
+     return iconWrap(`<rect x="14" y="10" width="32" height="42" fill="#f4efe4"/><rect x="22" y="6" width="16" height="8" fill="#8a8477"/><line x1="20" y1="22" x2="40" y2="22"/><line x1="20" y1="30" x2="40" y2="30"/><line x1="20" y1="38" x2="34" y2="38"/>`);
+}
+function iconBannerLance(){
+     return iconWrap(`<line x1="30" y1="52" x2="30" y2="8"/><path d="M30 10 L48 16 L30 22 Z" fill="#b5453f"/>`);
+}
+function iconCatapultPeg(){
+     return iconWrap(`<path d="M20 10 L40 10 L34 50 L26 50 Z" fill="#8a5a3a"/><line x1="24" y1="20" x2="36" y2="20"/>`);
+}
+function iconScorchedGreaves(){
+     return iconWrap(`<path d="M18 8 L38 8 L38 34 Q46 38 44 50 L16 50 L16 34 Z" fill="#8a8477"/><line x1="22" y1="16" x2="30" y2="24"/><line x1="30" y1="14" x2="24" y2="22"/>`);
+}
+function iconSpellbookPage(){
+     return iconWrap(`<path d="M12 12 Q30 4 48 12 L46 46 Q30 54 14 46 Z" fill="#f4efe4"/><circle cx="30" cy="30" r="6" fill="none" stroke="#b06a97" stroke-width="3"/>`);
+}
+function iconScorchRobe(){
+     return iconWrap(`<path d="M22 8 L38 8 L44 50 L16 50 Z" fill="#b06a97"/><circle cx="30" cy="34" r="5" fill="#2b2b28" opacity="0.4" stroke="none"/>`);
+}
+function iconFeatherScale(){
+     return iconWrap(`<path d="M30 8 Q42 20 34 44 Q30 50 26 44 Q18 20 30 8 Z" fill="#3d5a80"/><line x1="30" y1="12" x2="30" y2="42"/>`);
+}
+function iconWardedSlippers(){
+     return iconWrap(`<path d="M14 40 Q14 26 30 26 Q46 26 46 40 Q46 48 30 48 Q14 48 14 40 Z" fill="#b06a97"/><circle cx="30" cy="36" r="5" fill="#d1a94e" stroke="none"/>`);
+}
+function iconCoinPurse(){
+     return iconWrap(`<path d="M18 26 Q18 14 30 14 Q42 14 42 26 L42 44 Q42 52 30 52 Q18 52 18 44 Z" fill="#5f4632"/><line x1="20" y1="26" x2="40" y2="26"/>`);
+}
+function iconCutpurseLeggings(){
+     return iconWrap(`<path d="M20 8 L40 8 L40 30 L46 50 L36 50 L30 32 L24 50 L14 50 L20 30 Z" fill="#2b2b28"/>`);
+}
+
 /* Class-exclusive buff spells (content.js's spells[], classRequired) —
 one icon per class, same fixed palette as everything above. */
 function iconAdrenalineRush(){

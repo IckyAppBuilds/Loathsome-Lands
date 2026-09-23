@@ -119,6 +119,35 @@ const monsters = [
     art: artFeralAutomaton, loot:{name:"scorched servo joint", desc:"Still twitches, if you're not careful.", type:"junk", sell:11, icon:iconServoJoint},
     rareDrop:{name:"the automaton's still-warm power cell", desc:"Hums like it's not entirely done working yet.", type:"junk", sell:34, icon:iconFigurine},
     gearDrop:{name:"automaton's salvaged headplate of the Tortoise", desc:"Still sparks a little when it rains.", type:"equip", slot:"head", bonus:{grit:3}, tier:'common', icon:iconGuardHelm} },
+   /* Rounds the Garrison/Rogues' Den/Arcane Sanctum rosters out to 3
+   regular monsters apiece (they launched with just 1/2/1) so each
+   district has its own proper set instead of feeling like a rare-hunt
+   waiting room. Same hp/atk/xp band as the 4 above (34-46/5-11/19-26),
+   gearDrop slot picked to cover a different slot than each district's
+   existing monster (weapon/boots for Garrison alongside its chest;
+   chest/boots for Sanctum alongside its weapon; legs for Rogues' Den
+   alongside its boots/head) so a full clear of a district doesn't just
+   hand back 3 copies of the same slot. */
+   { name:"a gnome drill sergeant, all bark and boot-camp", hp:40, atkMin:5, atkMax:9, xp:22, zone:"garrison",
+    art: artGnomeDrillSergeant, loot:{name:"sergeant's dog-eared drill roster", desc:"Every recruit's name, and a demerit next to most of them.", type:"junk", sell:9, icon:iconDrillRoster},
+    rareDrop:{name:"the sergeant's secret medal stash, garrison edition", desc:"Every one of them self-awarded. Some things never change.", type:"junk", sell:31, icon:iconFigurine},
+    gearDrop:{name:"sergeant's barked-order banner-lance of the Badger", desc:"Doubles as a pointer for yelling at recruits.", type:"equip", slot:"weapon", bonus:{beef:3}, tier:'common', icon:iconBannerLance} },
+   { name:"a gnome siege-crew, operating a catapult built for one", hp:48, atkMin:7, atkMax:11, xp:25, zone:"garrison",
+    art: artGnomeSiegeCrew, loot:{name:"splintered catapult peg", desc:"Load-bearing, allegedly.", type:"junk", sell:11, icon:iconCatapultPeg},
+    rareDrop:{name:"the siege-crew's lucky firing pin", desc:"Pulled from a shot that somehow landed exactly right.", type:"luck", hpValue:20, mpValue:10, icon:iconClover},
+    gearDrop:{name:"siege-crew's scorched greaves of the Weasel", desc:"Singed. Still faster than running barefoot.", type:"equip", slot:"boots", bonus:{zip:3}, tier:'common', icon:iconScorchedGreaves} },
+   { name:"an apprentice hex-weaver, sparks flying every wrong direction", hp:36, atkMin:5, atkMax:9, xp:20, zone:"sanctum",
+    art: artHexWeaver, loot:{name:"singed spellbook page", desc:"The diagram is half-right. That's the problem.", type:"junk", sell:9, icon:iconSpellbookPage},
+    rareDrop:{name:"hex-weaver's stabilized spark, bottled", desc:"Finally behaving itself, for once.", type:"luck", hpValue:19, mpValue:10, icon:iconClover},
+    gearDrop:{name:"apprentice's scorch-marked robe-plating of the Tortoise", desc:"Fire-proofed the hard way, one mistake at a time.", type:"equip", slot:"chest", bonus:{grit:3}, tier:'common', icon:iconScorchRobe} },
+   { name:"a gnome familiar, three sizes too ambitious", hp:32, atkMin:5, atkMax:8, xp:19, zone:"sanctum",
+    art: artGnomeFamiliar, loot:{name:"familiar's shed feather-scale", desc:"Not quite a feather. Not quite a scale either.", type:"junk", sell:8, icon:iconFeatherScale},
+    rareDrop:{name:"the familiar's uncanny premonition, bottled", desc:"It saw this coming. It always does.", type:"luck", hpValue:19, mpValue:9, icon:iconClover},
+    gearDrop:{name:"familiar-warded slippers of the Weasel", desc:"Land softer than they have any right to.", type:"equip", slot:"boots", bonus:{zip:3}, tier:'common', icon:iconWardedSlippers} },
+   { name:"a masked gnome pickpocket, light-fingered and lighter-footed", hp:42, atkMin:6, atkMax:10, xp:24, zone:"roguesden",
+    art: artGnomePickpocket, loot:{name:"pilfered coin purse, mostly empty", desc:"Somebody's definitely going to notice this is missing.", type:"junk", sell:10, icon:iconCoinPurse},
+    rareDrop:{name:"the pickpocket's lucky lifted button", desc:"Not sure whose coat this came off of. Not asking.", type:"luck", hpValue:20, mpValue:10, icon:iconClover},
+    gearDrop:{name:"pickpocket's cutpurse leggings of the Weasel", desc:"Built for running, mostly away.", type:"equip", slot:"legs", bonus:{zip:3}, tier:'common', icon:iconCutpurseLeggings} },
    ];
 
 /* Every named boss below (gnomeCommander through arcaneSanctumGuardian)
