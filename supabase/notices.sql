@@ -37,17 +37,28 @@ create policy "Users can insert their own notices"
    with check (auth.uid() = user_id);
 
 -- Deliberately no update policy for the authenticated/anon roles — players
--- can't edit a posted notice. Moderation of a LIVE notice is still just
--- deleting the row directly in the Supabase table editor (service_role,
--- bypasses RLS) rather than an in-game moderation UI.
+-- can't edit a posted notice, only delete and repost. Moderation of
+-- someone ELSE's still-live notice is still just deleting the row
+-- directly in the Supabase table editor (service_role, bypasses RLS).
 --
--- Deleting a STALE notice (24h+ old) is allowed for anyone, signed in or
--- not — loadNotices() (noticeboard.js) fires this delete every time a
--- player opens the board, which is what actually keeps the board tidy
--- (see the removed pg_cron job below for why the old approach didn't).
--- The `using` clause is the entire safety net: it only ever matches rows
--- already past the cutoff, so this can't be used to delete someone else's
--- live notice no matter who calls it.
+-- Two delete policies, either one sufficient (Postgres RLS OR's every
+-- matching policy for the operation together):
+--
+-- 1. A user can delete their own notice any time, live or stale —
+--    deleteNotice() (noticeboard.js), the per-row "Delete" button shown
+--    only on a notice the signed-in player themselves posted.
+create policy "Users can delete their own notices"
+   on public.notices for delete
+   using (auth.uid() = user_id);
+-- 2. A STALE notice (24h+ old) can be deleted by anyone, signed in or
+--    not — loadNotices() (noticeboard.js) fires this delete every time a
+--    player opens the board, which is what actually keeps the board tidy
+--    (see the removed pg_cron job below for why the old approach
+--    didn't). The `using` clause is the entire safety net: it only ever
+--    matches rows already past the cutoff, so this specific policy can't
+--    be used to delete someone else's still-live notice no matter who
+--    calls it — that protection is this policy's alone, not weakened by
+--    policy 1 existing alongside it.
 create policy "Stale notices can be deleted by anyone"
    on public.notices for delete
    using (created_at < now() - interval '24 hours');

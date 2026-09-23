@@ -51,7 +51,7 @@ async function loadNotices(){
    visit rather than blocking the read on it. */
    await sb.from('notices').delete().lt('created_at', new Date(Date.now() - NOTICE_MAX_AGE_MS).toISOString());
    const { data, error } = await sb.from('notices')
-      .select('username, message, created_at')
+      .select('id, user_id, username, message, created_at')
       .order('created_at', { ascending: false })
       .limit(20);
    noticeBoardLoading = false;
@@ -100,6 +100,25 @@ async function postNotice(){
    loadNotices();
 }
 
+/* Deletes a notice the signed-in player posted themselves — the "Delete"
+button renderNoticeBoard() below only ever shows on a notice whose
+user_id matches acctSession's own id, but the real gate is the "Users
+can delete their own notices" RLS policy (notices.sql): auth.uid() must
+equal the row's user_id, so this can't be used on anyone else's notice
+even via a crafted call. Optimistically drops it from the local list
+immediately rather than waiting on a full loadNotices() round trip. */
+async function deleteNotice(id){
+   if(!sb || !acctSession) return;
+   const { error } = await sb.from('notices').delete().eq('id', id);
+   if(error){
+      const statusEl = document.getElementById('noticeboard-status');
+      if(statusEl) statusEl.textContent = `Couldn't delete: ${error.message}`;
+      return;
+   }
+   noticeBoardMessages = noticeBoardMessages.filter(n => n.id !== id);
+   renderNoticeBoard();
+}
+
 /* Short relative age ("just now"/"N min ago"/"N hr ago") for a notice's
 created_at, shown next to the poster's name — matches the mental model
 the board's own 24h cleanup (loadNotices()) already sets up ("how
@@ -124,11 +143,13 @@ function renderNoticeBoard(){
    } else if(noticeBoardMessages.length === 0){
       listEl.innerHTML = '<div class="quest-desc">Nothing pinned up yet. Be the first.</div>';
    } else {
+      const myId = acctSession && acctSession.user ? acctSession.user.id : null;
       listEl.innerHTML = noticeBoardMessages.map(n => `
       <div class="quest-log-entry">
       <div class="quest-name">${escapeHtml(n.username)}</div>
       <div class="quest-desc">${escapeHtml(n.message)}</div>
       <div class="quest-progress">${formatNoticeAge(n.created_at)}</div>
+      ${myId && n.user_id === myId ? `<button class="btn-secondary" style="margin-top:6px;" onclick="deleteNotice(${n.id})">Delete</button>` : ''}
       </div>`).join('');
    }
    const postEl = document.getElementById('noticeboard-post');
