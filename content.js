@@ -542,6 +542,11 @@ with tier the same way price/bonus magnitude already does. */
 const shopGearItems = [
    { name:"rake tine repurposed as a shank", desc:"Sharper than it has any right to be.", type:"equip", slot:"weapon", bonus:{beef:1}, price:12, tier:'common', icon: iconRakeShank },
    { name:"wand-shaped stick, allegedly magic", desc:"The gnome who sold it swore up and down.", type:"equip", slot:"weapon", bonus:{hoodoo:1}, price:12, tier:'common', icon: iconWandStick },
+   /* Card Shark's own weapon line — Zip-primary, same price/tier as the
+   Beef/Hoodoo weapons above it. Weapon slot gets a third entry at every
+   tier from here on (see shopGearItemsTier2/3/4 below), rounding out
+   all three classes' own weapon type instead of just Meathead/Hexpert's. */
+   { name:"a deck shanked into a makeshift blade", desc:"Every card's an ace, if you throw it right.", type:"equip", slot:"weapon", bonus:{zip:1}, price:12, tier:'common', icon: iconCardShank },
    { name:"dented pot-lid helmet", desc:"Rings like a bell if you get hit. You get used to it.", type:"equip", slot:"head", bonus:{grit:1}, price:10, tier:'common', icon: iconPotLid },
    { name:"patched burlap vest", desc:"Itchy. Surprisingly sturdy.", type:"equip", slot:"chest", bonus:{grit:1}, price:12, tier:'common', icon: iconVest },
    { name:"shin guards whittled from a fence post", desc:"Splintery, but they hold.", type:"equip", slot:"legs", bonus:{zip:1}, price:10, tier:'common', icon: iconShinGuard },
@@ -581,12 +586,13 @@ const GEAR_BASE_UNIT = 10;
 one — tier 1 has 1 stat, tier 2 has 2, tier 3 (below) has 3, each
 secondary stat worth +1 regardless of the primary's own value. Picked
 per item to fit its own flavor rather than a mechanical rotation.
-Weapon slot gets two entries, same as shopGearItems' tier-1 weapons —
-one Beef-primary, one Hoodoo-primary — so both a melee and a
-spellcasting build have their own weapon at every tier, not just tier 1. */
+Weapon slot gets three entries, same as shopGearItems' tier-1 weapons —
+Beef-, Hoodoo-, and Zip-primary — so a melee, spellcasting, or Card
+Shark build each have their own weapon at every tier, not just tier 1. */
 const shopGearItemsTier2 = [
    { name:"scepter looted from the vizier's chambers", desc:"Still radiates a faint, smug authority.", type:"equip", slot:"weapon", bonus:{hoodoo:2, grit:1}, price:40, tier:'uncommon', icon: iconVizierScepter },
    { name:"guard-captain's confiscated cleaver", desc:"Standard issue, before it wasn't standard issue anymore.", type:"equip", slot:"weapon", bonus:{beef:2, zip:1}, price:38, tier:'uncommon', icon: iconGuardCleaver },
+   { name:"loaded dice on a length of chain", desc:"Comes up snake eyes for whoever's on the other end.", type:"equip", slot:"weapon", bonus:{zip:2, hoodoo:1}, price:40, tier:'uncommon', icon: iconDiceFlail },
    { name:"guard-captain's dented helm", desc:"Reinforced. Dented anyway.", type:"equip", slot:"head", bonus:{grit:2, beef:1}, price:38, tier:'uncommon', icon: iconGuardHelm },
    { name:"clockwork-plated chestpiece", desc:"Ticks faintly whenever your heart rate spikes.", type:"equip", slot:"chest", bonus:{grit:2, hoodoo:1}, price:42, tier:'uncommon', icon: iconClockworkPlate },
    { name:"burrow-worm hide greaves", desc:"Flexible enough to squeeze through a tunnel-worm's old digs.", type:"equip", slot:"legs", bonus:{zip:2, grit:1}, price:36, tier:'uncommon', icon: iconBurrowGreaves },
@@ -636,11 +642,12 @@ Gnometropolis-loot theming. Priced per the GEAR_BASE_UNIT quadratic scheme
 above shopGearItemsTier2 — ~9x GEAR_BASE_UNIT, same per-tier scale factor
 applied to every item so the tier's internal price spread is unchanged. */
 /* Tier 3 adds a third stat on top of tier 2's two — same +1-per-secondary
-convention, just one more of them. Same two-weapons pattern as tier 1/2
-below — one Beef-primary, one Hoodoo-primary. */
+convention, just one more of them. Same three-weapons pattern as tier
+1/2 — Beef-, Hoodoo-, and Zip-primary. */
 const shopGearItemsTier3 = [
    { name:"heirloom hoodoo rod, mostly legitimate", desc:"The provenance is fuzzy. The results aren't.", type:"equip", slot:"weapon", bonus:{hoodoo:3, grit:1, zip:1}, price:100, tier:'rare', icon: iconHeirloomRod },
    { name:"heirloom war-cleaver, mostly legitimate", desc:"Family heirloom. Allegedly.", type:"equip", slot:"weapon", bonus:{beef:3, zip:1, grit:1}, price:95, tier:'rare', icon: iconHeirloomCleaver },
+   { name:"an ace-tipped blade, palmed from the deck", desc:"Nobody notices a card missing until it's too late.", type:"equip", slot:"weapon", bonus:{zip:3, hoodoo:1, beef:1}, price:95, tier:'rare', icon: iconAceBlade },
    { name:"champion's dented crown, repurposed", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{grit:3, hoodoo:1, beef:1}, price:85, tier:'rare', icon: iconChampionCrown },
    { name:"reinforced adventurer's cuirass", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{grit:3, beef:1, zip:1}, price:95, tier:'rare', icon: iconAdventurerCuirass },
    { name:"tailored pair of quick-step trousers", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{zip:3, grit:1, hoodoo:1}, price:80, tier:'rare', icon: iconQuickstepTrousers },
@@ -659,13 +666,14 @@ internal spread across slots carries forward unchanged. Palace-themed
 (stolen/repurposed royal trappings) rather than Gnometropolis-loot or
 premium-boutique like tiers 2/3 — this is the Shop's own top-shelf stock,
 sourced from wherever the Shop gets away with sourcing it. Same
-two-weapons pattern as every tier before it — one Beef-primary, one
-Hoodoo-primary — though at this tier both necessarily touch all 4 stats
-(primary+3 secondaries, and there are only 4 stats total), same as
+three-weapons pattern as every tier before it — Beef-, Hoodoo-, and
+Zip-primary — though at this tier all three necessarily touch all 4
+stats (primary+3 secondaries, and there are only 4 stats total), same as
 every other slot here; only which stat is primary still tells them apart. */
 const shopGearItemsTier4 = [
    { name:"scepter reforged from the throne room's own gold", desc:"Melted down and reshaped before the guards even noticed it was gone.", type:"equip", slot:"weapon", bonus:{hoodoo:4, beef:1, zip:1, grit:1}, price:180, tier:'epic', icon: iconThroneScepter },
    { name:"headsman's axe, liberated from the throne room", desc:"The guards really should've kept a closer eye on the ceremonial weapons rack.", type:"equip", slot:"weapon", bonus:{beef:4, zip:1, grit:1, hoodoo:1}, price:175, tier:'epic', icon: iconThroneAxe },
+   { name:"a royal flush, fanned into a killing blow", desc:"The house doesn't usually lose this hand.", type:"equip", slot:"weapon", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, price:170, tier:'epic', icon: iconRoyalFlushBlade },
    { name:"crown stripped from the throne itself", desc:"Too big. You've stuffed it with rags to make it fit.", type:"equip", slot:"head", bonus:{grit:4, hoodoo:1, beef:1, zip:1}, price:150, tier:'epic', icon: iconStolenCrown },
    { name:"plate forged in the palace's own furnace", desc:"Still warm, if you believe the gnome who sold it to you.", type:"equip", slot:"chest", bonus:{grit:4, hoodoo:1, beef:1, zip:1}, price:170, tier:'epic', icon: iconPalaceForgedPlate },
    { name:"greaves stitched from a guard captain's dress uniform", desc:"Ceremonial. Somehow still holds up in a real fight.", type:"equip", slot:"legs", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, price:140, tier:'epic', icon: iconDressGreaves },
@@ -902,11 +910,19 @@ const garrisonGuardian = {
 /* Evasive rather than tanky/bursty like its two counterparts above —
 same dodgeChance mechanic casinoChampion uses (applyDamageToMonster(),
 combat.js), fitting a Rogues' Den enforcer who's "already taking side
-bets on you" i.e. never where you'd expect. */
+bets on you" i.e. never where you'd expect. Only one of the three
+guardians to also carry a gearDrop, on top of its guaranteed `loot` —
+winCombat()'s gearRoll (combat.js) is entirely independent of the
+guaranteed-drop machinery `isDistrictGuardianKill` gates, so this is
+just a normal chance-based bonus, same as any regular monster's. Zip-
+primary, matching the Card Shark's own weapon line
+(shopGearItems/Tier2/3/4 above) — the enforcer's version of the same
+idea rather than a copy of any specific shop tier. */
 const roguesDenEnforcer = {
    name:"the Rogues' Den enforcer, already taking side bets on you", hp:65, atkMin:7, atkMax:11, xp:45, rare:true, zone:"roguesden",
    dodgeChance:0.25,
-   art: artRoguesDenEnforcer, loot: PALACE_GATE_GEAR.find(g => g.class === 'Card Shark')
+   art: artRoguesDenEnforcer, loot: PALACE_GATE_GEAR.find(g => g.class === 'Card Shark'),
+   gearDrop:{name:"the enforcer's own marked deck, edges filed sharp", desc:"Every card's a threat, if you know how to throw it.", type:"equip", slot:"weapon", bonus:{zip:1}, tier:'common', icon: iconCheatersDeck}
 };
 const arcaneSanctumGuardian = {
    name:"the Arcane Sanctum's warden, muttering an unfinished spell", hp:65, atkMin:7, atkMax:11, xp:45, rare:true, zone:"sanctum",

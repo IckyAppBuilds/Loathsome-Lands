@@ -278,6 +278,28 @@ function iconCutpurseLeggings(){
      return iconWrap(`<path d="M20 8 L40 8 L40 30 L46 50 L36 50 L30 32 L24 50 L14 50 L20 30 Z" fill="#2b2b28"/>`);
 }
 
+/* Card Shark's zip weapon line (content.js's shopGearItems/Tier2/3/4 and
+roguesDenEnforcer's gearDrop) — one per tier plus the monster-drop
+version, escalating from a shanked card through a full fanned-and-
+gilded flush, same "one visual idea, dressed up more per tier" pattern
+MEATHEAD_DAMAGE_BONUS-style weapon icons don't really have (those reuse
+across tiers) but the class-titled gear (PALACE_GATE_GEAR) already does. */
+function iconCardShank(){
+     return iconWrap(`<rect x="16" y="8" width="22" height="34" rx="2" fill="#f4efe4" transform="rotate(-10 27 25)"/><path d="M30 34 L46 50 L40 56 L28 40 Z" fill="#2b2b28"/><circle cx="23" cy="18" r="2" fill="#b5453f" stroke="none"/>`);
+}
+function iconDiceFlail(){
+     return iconWrap(`<line x1="14" y1="50" x2="30" y2="30" stroke-width="3"/><rect x="30" y="14" width="18" height="18" fill="#b06a97" transform="rotate(-12 39 23)"/><circle cx="35" cy="18" r="1.6" fill="#f4efe4" stroke="none"/><circle cx="41" cy="24" r="1.6" fill="#f4efe4" stroke="none"/><circle cx="43" cy="16" r="1.6" fill="#f4efe4" stroke="none"/>`);
+}
+function iconAceBlade(){
+     return iconWrap(`<rect x="14" y="6" width="24" height="36" rx="2" fill="#f4efe4" transform="rotate(-8 26 24)"/><path d="M28 38 L50 54 L44 60 L24 44 Z" fill="#8a8477"/><circle cx="22" cy="18" r="2.2" fill="#2b2b28" stroke="none"/>`);
+}
+function iconRoyalFlushBlade(){
+     return iconWrap(`<path d="M10 30 L20 10 L30 30 L20 26 Z" fill="#f4efe4" transform="rotate(-15 20 20)"/><path d="M20 30 L30 10 L40 30 L30 26 Z" fill="#f4efe4"/><path d="M30 30 L40 10 L50 30 L40 26 Z" fill="#f4efe4" transform="rotate(15 40 20)"/><path d="M30 30 L44 52 L38 58 L26 38 Z" fill="#d1a94e"/>`);
+}
+function iconCheatersDeck(){
+     return iconWrap(`<rect x="14" y="12" width="22" height="32" fill="#3d5a80" transform="rotate(-6 25 28)"/><rect x="18" y="8" width="22" height="32" fill="#f4efe4" transform="rotate(4 29 24)"/><path d="M40 26 L52 42 L46 48 L34 32 Z" fill="#2b2b28"/>`);
+}
+
 /* Class-exclusive buff spells (content.js's spells[], classRequired) —
 one icon per class, same fixed palette as everything above. */
 function iconAdrenalineRush(){
