@@ -36,11 +36,21 @@ create policy "Users can insert their own notices"
    on public.notices for insert
    with check (auth.uid() = user_id);
 
--- Deliberately no update/delete policy for the authenticated/anon roles —
--- players can't edit or remove a posted notice. Moderation for now is
--- just deleting a row directly in the Supabase table editor (that runs as
--- service_role, which bypasses RLS entirely) rather than building an
--- in-game moderation UI before this actually needs one.
+-- Deliberately no update policy for the authenticated/anon roles — players
+-- can't edit a posted notice. Moderation of a LIVE notice is still just
+-- deleting the row directly in the Supabase table editor (service_role,
+-- bypasses RLS) rather than an in-game moderation UI.
+--
+-- Deleting a STALE notice (24h+ old) is allowed for anyone, signed in or
+-- not — loadNotices() (noticeboard.js) fires this delete every time a
+-- player opens the board, which is what actually keeps the board tidy
+-- (see the removed pg_cron job below for why the old approach didn't).
+-- The `using` clause is the entire safety net: it only ever matches rows
+-- already past the cutoff, so this can't be used to delete someone else's
+-- live notice no matter who calls it.
+create policy "Stale notices can be deleted by anyone"
+   on public.notices for delete
+   using (created_at < now() - interval '24 hours');
 
 -- Real per-user rate limit: raises and aborts the insert if this user
 -- already has a notice newer than 10 minutes. Runs server-side as a
@@ -64,19 +74,16 @@ create trigger notices_rate_limit
    before insert on public.notices
    for each row execute function public.enforce_notice_rate_limit();
 
--- Daily wipe, 4am server (database) time -- "a janitor comes and cleans
--- it." pg_cron schedules run against the database's own TimeZone setting,
--- which is UTC by default on Supabase and not something most projects
--- change, so in practice this is 4am UTC. Requires the pg_cron extension
--- (Database -> Extensions -> enable "pg_cron" in the dashboard, or the
--- `create extension` line below if your role has permission to run it
--- directly -- on hosted Supabase this usually needs the dashboard toggle
--- instead, since pg_cron enablement is one of the few things not always
--- exposed to the SQL editor's default role).
-create extension if not exists pg_cron;
-
-select cron.schedule(
-   'wipe-notice-board-daily',
-   '0 4 * * *',
-   $$ delete from public.notices; $$
-);
+-- A previous version of this file scheduled a daily pg_cron wipe here
+-- instead. Dropped: pg_cron needs its extension manually toggled on in
+-- the Supabase dashboard (Database -> Extensions) before `cron.schedule`
+-- does anything, so on a project where that toggle was never flipped the
+-- job silently never ran — "auto remove" quietly stopped working with no
+-- error anywhere. Replaced with the DELETE policy above, which
+-- loadNotices() (noticeboard.js) exercises every time a player opens the
+-- board — no extension, no schedule, nothing that can silently not-run.
+--
+-- If you already ran the old version of this file on a live project, the
+-- job is still scheduled there (re-running this file doesn't remove it)
+-- — clean it up once with:
+--   select cron.unschedule('wipe-notice-board-daily');

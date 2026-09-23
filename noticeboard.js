@@ -28,11 +28,28 @@ function leaveNoticeBoard(){
    render();
 }
 
+/* How long a notice sticks around — anything older gets swept on the next
+board visit (see the delete below). Matches the "Stale notices can be
+deleted by anyone" RLS policy's own cutoff (supabase/notices.sql); keep
+the two in sync if this ever changes, since the client can't delete a
+notice the policy doesn't also consider stale. */
+const NOTICE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
 async function loadNotices(){
    if(!sb) return;
    noticeBoardLoading = true;
    noticeBoardError = null;
    renderNoticeBoard();
+   /* Best-effort cleanup on every visit — replaces a previous pg_cron
+   daily wipe (supabase/notices.sql) that needed its extension manually
+   enabled in the Supabase dashboard and silently never ran otherwise.
+   Result/error intentionally ignored: the RLS policy only allows this
+   to touch rows already past the cutoff no matter who calls it, so
+   there's nothing to check for and nothing unsafe about firing it from
+   every client, guest or not — if it fails for some other reason (a
+   network hiccup), the board still loads and just tries again next
+   visit rather than blocking the read on it. */
+   await sb.from('notices').delete().lt('created_at', new Date(Date.now() - NOTICE_MAX_AGE_MS).toISOString());
    const { data, error } = await sb.from('notices')
       .select('username, message, created_at')
       .order('created_at', { ascending: false })
