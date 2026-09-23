@@ -24,3 +24,38 @@ const DISTRICT_GUARDIANS = {
    roguesden: { class:'Card Shark', guardian: roguesDenEnforcer,     label:"The Rogues' Den" },
    sanctum:   { class:'Hexpert',    guardian: arcaneSanctumGuardian, label:'The Arcane Sanctum' },
 };
+
+/* The Camp — a direct action triggered from the town square's own tile
+(data-action="camp", artGnometropolisSquare() in gnometropolis-art.js),
+same "no enter/leave screen, just do the thing" shape restAtInn() (town.js)
+uses for Gladstone Hollow's Inn tile. HP-only, no cooldown — see
+CAMP_REST_HP_PER_BISCUIT (content.js) for why this is deliberately a
+worse deal than the Inn rather than a real substitute for one. */
+function restAtCamp(){
+   if(state.inCombat || state.location !== 'gnometropolis') return;
+   regenBiscuits();
+   const hpMissing = state.maxHp - state.hp;
+   if(hpMissing <= 0){
+      clearLog();
+      log("You're already at full health — no need to rest.");
+      render();
+      return;
+   }
+   const biscuitsWanted = Math.ceil(hpMissing / CAMP_REST_HP_PER_BISCUIT);
+   const biscuitsSpent = devMode ? biscuitsWanted : Math.min(biscuitsWanted, state.adventures);
+   if(!devMode && biscuitsSpent <= 0){
+      clearLog();
+      log(`You're out of Biscuits to spend on rest. Next one's ready in ${formatMs(msUntilNextBiscuit())}.`);
+      render();
+      return;
+   }
+   const healed = Math.min(hpMissing, biscuitsSpent * CAMP_REST_HP_PER_BISCUIT);
+   state.hp += healed;
+   if(!devMode) state.adventures -= biscuitsSpent;
+   clearLog();
+   log(devMode
+       ? `You warm yourself by the campfire and patch up ${healed} HP. (dev mode — no Biscuit cost)`
+       : `You warm yourself by the campfire and patch up ${healed} HP. (-${biscuitsSpent} Biscuit${biscuitsSpent===1?'':'s'})`);
+   render();
+   autosave();
+}

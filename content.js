@@ -1062,6 +1062,18 @@ stops one-click infinite resting even with unlimited Biscuits (devMode)
 or a maxed-out free-rest chance. See restAtInn()/state.lastInnRestAt. */
 const INN_COOLDOWN_MS = 60 * 1000;
 
+/* The Camp (Gnometropolis' town square, gnometropolis.js's restAtCamp())
+— HP-only, no cooldown, no free-rest chance, just a straight exchange
+rate: this many HP restored per Biscuit spent, up to however many
+Biscuits the player has (and always up to full HP). Deliberately a
+worse deal than the Inn's flat INN_REST_BISCUIT_COST for a full HP+MP
+heal — this exists because Gnometropolis has no Inn of its own yet
+(TOWN_HUBS, town.js), not to replace Gladstone Hollow's. The missing
+cooldown is fine specifically because the Biscuit cost itself throttles
+spam — no free lunch to guard against the way Inn's free-rest chance
+needs one. */
+const CAMP_REST_HP_PER_BISCUIT = 10;
+
 /* Tinker's Workshop — fractional bonus added to junk sell prices in
 sellItemByName() (game.js). 0.30 at max level = junk sells for 30% more. */
 const TINKER_SELL_BONUS = [0, 0.10, 0.20, 0.30];

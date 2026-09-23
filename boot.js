@@ -27,6 +27,7 @@ document.getElementById('scene-art').addEventListener('click', function(e){
    else if(action === 'roguesden') travelTo('roguesden');
    else if(action === 'sanctum') travelTo('sanctum');
    else if(action === 'palace') travelTo('palace');
+   else if(action === 'camp') restAtCamp();
 });
 
 /* Seed a brand-new run: starter gear (equipped) and a couple of starter

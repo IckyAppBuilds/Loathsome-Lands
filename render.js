@@ -479,18 +479,20 @@ if(state.inCombat){
   document.getElementById('scene-art').innerHTML = artTownSquare(buildingIndicators, state.lotTier, innCooldownText, state.buildingUpgrades);
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isGnometropolis){
-  /* One {flag} slot per district tile (artGnometropolisSquare(),
+  /* One {flag} slot per real building tile (artGnometropolisSquare(),
   gnometropolis-art.js), same buildingIndicators shape as the town
   square above. flag:'offer' marks the district matching the player's
   own class while its guardian is still alive (the rare-encounter hunt
   is live — see the *Hunt blocks in goAdventuring(), combat.js); the
   Palace tile flags 'turnin' once all the gear's in hand and the gate
-  fight is ready to start. */
+  fight is ready to start; the Camp flags 'offer' whenever the player
+  isn't at full HP, nudging toward restAtCamp() (gnometropolis.js). */
   const gnomeBuildingIndicators = {
     garrison: { flag: (state.classTitle==='Meathead' && state.quest7Accepted && !state.quest7Complete && !state.garrisonGuardianDefeated) ? 'offer' : null },
     roguesden: { flag: (state.classTitle==='Card Shark' && state.quest7Accepted && !state.quest7Complete && !state.roguesDenEnforcerDefeated) ? 'offer' : null },
     sanctum: { flag: (state.classTitle==='Hexpert' && state.quest7Accepted && !state.quest7Complete && !state.arcaneSanctumGuardianDefeated) ? 'offer' : null },
     palace: { flag: canApproachPalaceGate ? 'turnin' : null },
+    camp: { flag: state.hp < state.maxHp ? 'offer' : null },
   };
   document.getElementById('scene-art').innerHTML = artGnometropolisSquare(gnomeBuildingIndicators);
   document.getElementById('victory-banner').style.display = 'none';

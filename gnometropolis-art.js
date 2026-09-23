@@ -17,17 +17,17 @@ leans into scrap-metal grey/tan and mushroom magenta/yellow rather than
 Gladstone Hollow's cottage-warm red/yellow — Gnometropolis is a capital
 built out of repurposed junk, not a village. */
 
-/* One {flag} slot per district tile (garrison/roguesden/sanctum/palace)
-— see render.js's isGnometropolis branch for how these get set. Simpler
-than artTownSquare()'s buildingIndicators (no bounty/trial slot; there's
-no bounty board or class-trial building here) but same biGet() shape so
-a future addition (a bounty board moving here, say) is just adding a
-badge call, not a signature change. */
+/* One {flag} slot per real building tile (garrison/roguesden/sanctum/
+palace/camp) — see render.js's isGnometropolis branch for how these get
+set. Simpler than artTownSquare()'s buildingIndicators (no bounty/trial
+slot; there's no bounty board or class-trial building here) but same
+biGet() shape so a future addition (a bounty board moving here, say) is
+just adding a badge call, not a signature change. */
 function artGnometropolisSquare(buildingIndicators){
    const bi = (key) => biGet(buildingIndicators, key);
    /* Small mushroom-cap accent (ellipse-on-a-stalk) — the one recurring
-   motif tying all 4 tiles together as "underground gnome capital"
-   without needing a literal cave backdrop on every tile. */
+   motif tying the tiles together as "underground gnome capital" without
+   needing a literal cave backdrop on every one. */
    const mushroom = (x, y) => `
    <g transform="translate(${x},${y})">
    <line x1="0" y1="7" x2="0" y2="0" stroke-width="2"/>
@@ -35,8 +35,8 @@ function artGnometropolisSquare(buildingIndicators){
    <circle cx="-2" cy="-4" r="1" fill="#d1a94e" stroke="none"/>
    <circle cx="2" cy="-2" r="1" fill="#d1a94e" stroke="none"/>
    </g>`;
-   return `<svg class="town-scene-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <rect x="4" y="4" width="192" height="192" fill="none" stroke="#2b2b28" stroke-width="9" stroke-dasharray="17,4" stroke-linecap="butt" stroke-linejoin="miter"/>
+   return `<svg class="town-scene-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <rect x="4" y="4" width="292" height="292" fill="none" stroke="#2b2b28" stroke-width="9" stroke-dasharray="17,4" stroke-linecap="butt" stroke-linejoin="miter"/>
 
    <g transform="translate(0,0)" class="building-hit" data-action="garrison">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
@@ -51,7 +51,30 @@ function artGnometropolisSquare(buildingIndicators){
    ${plate("The Garrison")}
    </g>
 
-   <g transform="translate(100,0)" class="building-hit" data-action="roguesden">
+   <g transform="translate(100,0)" class="building-hit" data-action="palace">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <path d="M16 46 L50 16 L84 46 Z" fill="#d1a94e"/>
+   <rect x="24" y="46" width="52" height="30" fill="#a97c53"/>
+   <path d="M38 76 L38 54 Q50 44 62 54 L62 76 Z" fill="#2b2b28"/>
+   <path d="M42 50 L46 42 L50 48 L54 42 L58 50 Z" fill="#d1a94e"/>
+   ${mushroom(90, 20)}
+   ${makeFlag(bi('palace').flag)}
+   ${plate("The Palace")}
+   </g>
+
+   <g transform="translate(200,0)" class="building-hit" data-action="sanctum">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <path d="M40 18 L50 4 L60 18 Z" fill="#b06a97"/>
+   <rect x="38" y="18" width="24" height="48" fill="#3d5a80"/>
+   <circle cx="50" cy="66" r="16" fill="#d1a94e" opacity="0.3"/>
+   <circle cx="50" cy="66" r="9" fill="none" stroke-width="2" opacity="0.6"/>
+   <circle cx="50" cy="66" r="3.5" fill="#d1a94e" stroke="none"/>
+   ${mushroom(14, 20)}
+   ${makeFlag(bi('sanctum').flag)}
+   ${plate("The Arcane Sanctum")}
+   </g>
+
+   <g transform="translate(0,100)" class="building-hit" data-action="roguesden">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
    <path d="M16 46 L48 24 L84 42 L80 70 Q50 82 20 70 Z" fill="#2b2b28"/>
    <path d="M38 46 Q50 42 62 46 L60 74 Q50 80 40 74 Z" fill="#b06a97"/>
@@ -64,27 +87,49 @@ function artGnometropolisSquare(buildingIndicators){
    ${plate("The Rogues' Den")}
    </g>
 
-   <g transform="translate(0,100)" class="building-hit" data-action="sanctum">
+   <g transform="translate(100,100)" class="building-hit" data-action="camp">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
-   <path d="M40 18 L50 4 L60 18 Z" fill="#b06a97"/>
-   <rect x="38" y="18" width="24" height="48" fill="#3d5a80"/>
-   <circle cx="50" cy="66" r="16" fill="#d1a94e" opacity="0.3"/>
-   <circle cx="50" cy="66" r="9" fill="none" stroke-width="2" opacity="0.6"/>
-   <circle cx="50" cy="66" r="3.5" fill="#d1a94e" stroke="none"/>
-   ${mushroom(14, 20)}
-   ${makeFlag(bi('sanctum').flag)}
-   ${plate("The Arcane Sanctum")}
+   <path d="M30 82 L50 48 L70 82 Z" fill="#5f4632"/>
+   <rect x="42" y="70" width="16" height="12" fill="#2b2b28" stroke="none"/>
+   <ellipse cx="76" cy="86" rx="14" ry="5" fill="#8a5a3a"/>
+   <circle cx="76" cy="78" r="8" fill="#b5453f"/>
+   <path d="M72 74 Q76 64 80 74" fill="none" stroke="#d1a94e" stroke-width="2.5"/>
+   <circle cx="76" cy="76" r="3" fill="#d1a94e" stroke="none"/>
+   ${mushroom(14, 26)}
+   ${makeFlag(bi('camp').flag)}
+   ${plate("The Camp")}
    </g>
 
-   <g transform="translate(100,100)" class="building-hit" data-action="palace">
+   <g transform="translate(200,100)">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
-   <path d="M16 46 L50 16 L84 46 Z" fill="#d1a94e"/>
-   <rect x="24" y="46" width="52" height="30" fill="#a97c53"/>
-   <path d="M38 76 L38 54 Q50 44 62 54 L62 76 Z" fill="#2b2b28"/>
-   <path d="M42 50 L46 42 L50 48 L54 42 L58 50 Z" fill="#d1a94e"/>
-   ${mushroom(90, 20)}
-   ${makeFlag(bi('palace').flag)}
-   ${plate("The Palace")}
+   <path d="M10 80 L30 50 L50 65 L65 40 L90 80 Z" fill="#8a8477"/>
+   <path d="M20 80 L35 60 L45 72 L60 55 L75 80 Z" fill="#b9b3a4"/>
+   <line x1="30" y1="70" x2="36" y2="62"/>
+   <line x1="55" y1="68" x2="61" y2="60"/>
+   </g>
+
+   <g transform="translate(0,200)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <rect x="20" y="55" width="26" height="8" fill="#3d5a80" transform="rotate(-12 33 59)"/>
+   <rect x="45" y="60" width="30" height="7" fill="#8a5a3a" transform="rotate(8 60 63)"/>
+   <circle cx="35" cy="72" r="10" fill="#b9b3a4"/>
+   <circle cx="35" cy="72" r="3" fill="#2b2b28" stroke="none"/>
+   <rect x="55" y="68" width="18" height="18" fill="#5f4632" transform="rotate(-5 64 77)"/>
+   </g>
+
+   <g transform="translate(100,200)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <line x1="35" y1="80" x2="35" y2="60" stroke-width="3"/><ellipse cx="35" cy="55" rx="14" ry="8" fill="#b06a97"/><circle cx="30" cy="52" r="2" fill="#d1a94e" stroke="none"/><circle cx="40" cy="50" r="2" fill="#d1a94e" stroke="none"/>
+   <line x1="62" y1="82" x2="62" y2="66" stroke-width="2.5"/><ellipse cx="62" cy="62" rx="10" ry="6" fill="#b06a97"/><circle cx="59" cy="60" r="1.6" fill="#d1a94e" stroke="none"/>
+   <line x1="78" y1="80" x2="78" y2="70" stroke-width="2"/><ellipse cx="78" cy="67" rx="7" ry="4" fill="#b06a97"/>
+   </g>
+
+   <g transform="translate(200,200)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <rect x="20" y="46" width="60" height="10" fill="#8a5a3a"/>
+   <rect x="26" y="56" width="48" height="26" fill="#5f4632"/>
+   <line x1="30" y1="60" x2="70" y2="78"/><line x1="70" y1="60" x2="30" y2="78"/>
+   <rect x="46" y="40" width="8" height="10" fill="#8a5a3a"/>
    </g>
    </svg>`;
 }
