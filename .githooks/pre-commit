@@ -22,7 +22,14 @@ if [ ! -f index.html ]; then
   exit 0
 fi
 
-old_version=$(grep -oE '\?v=[^"]+' index.html | head -1 | sed 's/?v=//')
+# Numeric only (\?v=[0-9]+), and anchored to a real src/href attribute
+# value (?v=... immediately followed by a closing quote) -- the file's
+# own explanatory comments mention this same query param by name in
+# prose, and an earlier version of this hook matched that prose text
+# instead of a real tag, silently corrupting a comment and never
+# actually bumping anything. Never loosen this back to matching any
+# non-quote text.
+old_version=$(grep -oE '\?v=[0-9]+"' index.html | head -1 | sed -E 's/\?v=([0-9]+)"/\1/')
 new_version=$(date +%Y%m%d%H%M%S)
 
 # No existing ?v= param to bump (shouldn't happen, but don't invent one
