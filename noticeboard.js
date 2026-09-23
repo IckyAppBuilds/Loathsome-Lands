@@ -100,6 +100,20 @@ async function postNotice(){
    loadNotices();
 }
 
+/* Short relative age ("just now"/"N min ago"/"N hr ago") for a notice's
+created_at, shown next to the poster's name — matches the mental model
+the board's own 24h cleanup (loadNotices()) already sets up ("how
+stale is this"), rather than an absolute clock time that'd need the
+reader to do that math themselves. */
+function formatNoticeAge(createdAt){
+   const ms = Date.now() - new Date(createdAt).getTime();
+   const min = Math.floor(ms / 60000);
+   if(min < 1) return 'just now';
+   if(min < 60) return `${min} min ago`;
+   const hr = Math.floor(min / 60);
+   return `${hr} hr${hr===1?'':'s'} ago`;
+}
+
 function renderNoticeBoard(){
    const listEl = document.getElementById('noticeboard-list');
    if(!listEl) return;
@@ -114,6 +128,7 @@ function renderNoticeBoard(){
       <div class="quest-log-entry">
       <div class="quest-name">${escapeHtml(n.username)}</div>
       <div class="quest-desc">${escapeHtml(n.message)}</div>
+      <div class="quest-progress">${formatNoticeAge(n.created_at)}</div>
       </div>`).join('');
    }
    const postEl = document.getElementById('noticeboard-post');
