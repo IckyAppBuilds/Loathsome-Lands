@@ -354,7 +354,7 @@ if(isGafferHouse){
   } else if(quest7State==='active'){
     const quest7GearName = palaceGateGearItem ? palaceGateGearItem.name : 'the right gear';
     document.getElementById('quest-name').textContent = "Quest: The Gnome King's Court";
-    document.getElementById('quest-desc').textContent = `Defeat your district's guardian in Gnometropolis to claim ${quest7GearName}, equip it, then use the palace gate to face the real Gnome King.`;
+    document.getElementById('quest-desc').textContent = `Defeat your district's guardian in Gnometropolis to claim ${quest7GearName}, equip it, then approach the palace gate. Five guards stand between you and the throne room — clear them all, then face the real Gnome King.`;
     document.getElementById('quest-progress').textContent = 'Not yet confronted the King.';
   } else if(quest7State==='ready'){
     document.getElementById('quest-name').textContent = "Quest: The Gnome King's Court";
@@ -416,6 +416,16 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
   own persistent nav button. */
   document.getElementById('palace-row').style.display = (isPalace && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('palace-gate-row').style.display = canApproachPalaceGate ? 'flex' : 'none';
+  /* Button text tracks palaceGauntletProgress (guild.js) through the
+  5-guard gauntlet — same button, re-clicked to advance one step at a
+  time, so it needs to say which step comes next. */
+  if(canApproachPalaceGate){
+    document.getElementById('palace-gate-btn').textContent = palaceGauntletProgress === 0
+      ? 'Approach the Palace Gate'
+      : palaceGauntletProgress < PALACE_GUARDS.length
+        ? `Face the Next Guard (${palaceGauntletProgress+1}/${PALACE_GUARDS.length})`
+        : 'Confront the Gnome King';
+  }
   document.getElementById('monster-card').classList.toggle('active', state.inCombat);
   document.getElementById('scene-art').classList.toggle('boss-encounter', !!(state.inCombat && state.monster && state.monster.rare));
 

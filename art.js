@@ -436,6 +436,25 @@ from the real King in both stats and menace. */
 function artGnomeKingsCaptain(){
    return sceneWrap(`<circle cx="50" cy="54" r="40" fill="#b5453f" opacity="0.22"/><path d="M50 8 L30 42 L70 42 Z" fill="#8a8477"/><circle cx="50" cy="54" r="13" fill="#e0c49a"/><rect x="32" y="66" width="36" height="26" fill="#b9b3a4"/><ellipse cx="20" cy="80" rx="10" ry="14" fill="#5f4632"/><line x1="68" y1="70" x2="82" y2="78"/><line x1="50" y1="92" x2="40" y2="99"/><line x1="50" y1="92" x2="60" y2="99"/>`, 0);
 }
+/* The palace gauntlet (palaceGuard1-5, content.js) — five unique
+silhouettes with a gently widening aura (r36->44) matching their own
+escalating stats, so the gauntlet visually ramps up toward artGnomeKing
+below the same way its numbers do. */
+function artPalaceGuard1(){
+   return sceneWrap(`<circle cx="50" cy="54" r="36" fill="#8a8477" opacity="0.2"/><path d="M50 10 L32 40 L68 40 Z" fill="#8a8477"/><circle cx="50" cy="52" r="12" fill="#e0c49a"/><rect x="34" y="64" width="32" height="24" fill="#b9b3a4"/><line x1="76" y1="30" x2="76" y2="90"/><path d="M70 30 L82 30 L76 18 Z" fill="#b9b3a4"/><line x1="50" y1="88" x2="40" y2="99"/><line x1="50" y1="88" x2="60" y2="99"/>`, 0);
+}
+function artPalaceGuard2(){
+   return sceneWrap(`<circle cx="50" cy="54" r="38" fill="#3d5a80" opacity="0.22"/><path d="M36 20 Q50 8 64 20 L60 40 L40 40 Z" fill="#b06a97"/><circle cx="50" cy="50" r="12" fill="#e0c49a"/><path d="M32 62 Q50 54 68 62 L64 92 Q50 98 36 92 Z" fill="#b06a97"/><circle cx="50" cy="72" r="10" fill="none" stroke-width="2.5" opacity="0.7"/><circle cx="50" cy="72" r="4" fill="#d1a94e" stroke="none"/><line x1="50" y1="92" x2="42" y2="99"/><line x1="50" y1="92" x2="58" y2="99"/>`, 0);
+}
+function artPalaceGuard3(){
+   return sceneWrap(`<circle cx="50" cy="54" r="40" fill="#d1a94e" opacity="0.22"/><path d="M40 18 L60 18 L56 32 L44 32 Z" fill="#2b2b28"/><circle cx="50" cy="42" r="12" fill="#e0c49a"/><rect x="44" y="52" width="12" height="6" fill="#b5453f" stroke="none"/><path d="M32 58 Q50 50 68 58 L64 94 Q50 99 36 94 Z" fill="#2b2b28"/><line x1="32" y1="62" x2="18" y2="70"/><line x1="18" y1="70" x2="20" y2="60"/><line x1="68" y1="62" x2="82" y2="70"/><line x1="82" y1="70" x2="80" y2="60"/><line x1="50" y1="94" x2="42" y2="99"/><line x1="50" y1="94" x2="58" y2="99"/>`, 0);
+}
+function artPalaceGuard4(){
+   return sceneWrap(`<circle cx="50" cy="54" r="44" fill="#b5453f" opacity="0.26"/><path d="M50 6 L28 38 L72 38 Z" fill="#8a8477"/><circle cx="50" cy="50" r="14" fill="#e0c49a"/><rect x="30" y="64" width="40" height="28" fill="#b9b3a4"/><rect x="34" y="68" width="10" height="20" fill="#8a8477"/><rect x="56" y="68" width="10" height="20" fill="#8a8477"/><line x1="72" y1="60" x2="92" y2="46"/><path d="M88 40 L98 44 L92 52 Z" fill="#d1a94e"/><line x1="28" y1="60" x2="10" y2="70"/><line x1="50" y1="92" x2="40" y2="99"/><line x1="50" y1="92" x2="60" y2="99"/>`, 0);
+}
+function artPalaceGuard5(){
+   return sceneWrap(`<circle cx="50" cy="54" r="38" fill="#2b2b28" opacity="0.3"/><path d="M50 8 Q68 22 62 44 L38 44 Q32 22 50 8 Z" fill="#2b2b28" opacity="0.85"/><circle cx="50" cy="46" r="11" fill="#e0c49a" opacity="0.7"/><path d="M30 52 Q50 44 70 52 L64 94 Q50 99 36 94 Z" fill="#2b2b28" opacity="0.85"/><line x1="30" y1="56" x2="12" y2="66" opacity="0.6"/><line x1="70" y1="56" x2="88" y2="66" opacity="0.6"/><circle cx="12" cy="66" r="5" fill="none" stroke-width="2" opacity="0.4"/><circle cx="88" cy="66" r="5" fill="none" stroke-width="2" opacity="0.4"/><line x1="50" y1="94" x2="42" y2="99" opacity="0.85"/><line x1="50" y1="94" x2="58" y2="99" opacity="0.85"/>`, 0);
+}
 /* Boss pass (rare:true, content.js) — biggest of the two gnome bosses:
 a wider red aura disc than artGnomeCommander's, and a cape/robe/crown
 that pushes almost to the viewBox edges. */

@@ -123,6 +123,11 @@ function travelTo(dest){
    }
    if(!devMode && cost > 0) state.adventures -= cost;
    const costSuffix = cost <= 0 ? '' : (devMode ? ' (dev mode — no Biscuit cost)' : ` (-${cost} Biscuit${cost===1?'':'s'})`);
+   /* Every earlier check above either returns or commits — reaching here
+   means this trip is definitely happening, so leaving the Palace gauntlet
+   mid-run (any destination at all, not just back to Gnometropolis)
+   resets its progress. resetPalaceGauntlet() (guild.js). */
+   if(state.location === 'palace') resetPalaceGauntlet();
    /* No quest7Accepted gate on the 4 district/palace destinations below —
    they're only ever reachable by clicking a building tile inside the
    Gnometropolis square (boot.js's data-action dispatch), so standing

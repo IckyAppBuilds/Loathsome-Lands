@@ -234,6 +234,62 @@ the same 2.3 the old shared gnometropolis entry did, so this is a pure
 rename, not a balance change. Same fix (zone restored, now to their own
 district) applied to garrisonGuardian/roguesDenEnforcer/
 arcaneSanctumGuardian below, which had the identical gap. */
+/* The palace gauntlet — five unique named guards, fought in a fixed
+order before the King himself, one approachPalaceGate() (guild.js) click
+at a time. `palaceGauntletProgress` (guild.js, a plain transient
+variable like combatSubView — never saved) tracks how many are down;
+leaving the Palace for any reason (travelTo() away from it, town.js, or
+a defeat via checkDefeat(), combat.js) resets it to 0 via
+resetPalaceGauntlet() — this is meant to be cleared in one committed
+run, not chipped away at across separate visits. All five share
+`zone:"palace"` for the same ZONE_DIFFICULTY 2.3x scaling gnomeKing
+himself gets (see his own comment above for why that field matters),
+and `loot:null` like every other named story boss (gnomeCommander/
+diggerBot/gnomeKingsCaptain/the Trial champions) — no farmable drops,
+this is a one-shot narrative gauntlet, not a repeatable hunt.
+
+Deliberately tuned WEAKER, hp-for-hp, than a standalone rare like
+garrisonGuardian (hp:65) or gnomeKingsCaptain (hp:70) — a player fights
+all five back-to-back with no auto-heal between them (same "damage
+carries over between fights" rule every zone already uses), so treat
+these five as one long fight against the King in disguise, not five
+separate boss fights stacked on top of each other. Escalates gently
+(hp 45->80, atk 6-10->9-14) so the run has a real arc without front-
+loading all the risk into guard one. Each gets one signature mechanic,
+same skills[] dispatcher every other named boss uses (monsterRetaliate(),
+combat.js) — a plain warm-up, a healer, a self-buffer, a double-threat
+buffer/bolter, and a hard-to-hit evasive finisher, in that order, so the
+gauntlet's own difficulty curve mirrors gnomeKing's own buff+bolt kit
+by the time you reach him. */
+const palaceGuard1 = {
+   name:"the outer gate sentinel, first line of a crumbling watch", hp:45, atkMin:6, atkMax:10, xp:25, rare:true, zone:"palace",
+   art: artPalaceGuard1, loot:null
+};
+const palaceGuard2 = {
+   name:"the inner ward-keeper, humming with old wards", hp:55, atkMin:7, atkMax:11, xp:30, rare:true, zone:"palace",
+   skills:[ { type:'heal', chance:0.20, healMin:8, healMax:14, flavor:"leans on an old ward and stitches herself back together" } ],
+   art: artPalaceGuard2, loot:null
+};
+const palaceGuard3 = {
+   name:"the throne room usher, unnervingly polite", hp:65, atkMin:8, atkMax:12, xp:35, rare:true, zone:"palace",
+   skills:[ { type:'buff', chance:0.20, buffMult:1.5, buffTurns:2, flavor:"straightens his collar and gets, somehow, more intense" } ],
+   art: artPalaceGuard3, loot:null
+};
+const palaceGuard4 = {
+   name:"the King's champion, undefeated and insufferable about it", hp:80, atkMin:9, atkMax:14, xp:45, rare:true, zone:"palace",
+   skills:[
+      { type:'buff', chance:0.18, buffMult:1.6, buffTurns:2, flavor:"warms up with a few showboating practice swings" },
+      { type:'bolt', chance:0.15, boltMin:10, boltMax:16, flavor:"hurls a trophy javelin clean across the throne room" },
+   ],
+   art: artPalaceGuard4, loot:null
+};
+const palaceGuard5 = {
+   name:"the King's own shadow, never quite where you last saw it", hp:70, atkMin:10, atkMax:15, xp:50, rare:true, zone:"palace",
+   dodgeChance:0.30,
+   art: artPalaceGuard5, loot:null
+};
+const PALACE_GUARDS = [palaceGuard1, palaceGuard2, palaceGuard3, palaceGuard4, palaceGuard5];
+
 /* hp trimmed from the original 120 to 105 to compensate for adding two
 skills at once (below) — the Act 1 finale should still clearly be the
 hardest fight in the game on the strength of its mechanics, not by

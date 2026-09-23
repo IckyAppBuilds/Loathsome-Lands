@@ -560,6 +560,12 @@ function winCombat(){
    const wasGarrisonGuardian = !!state.monster.rare && state.monster.name === garrisonGuardian.name;
    const wasRoguesDenEnforcer = !!state.monster.rare && state.monster.name === roguesDenEnforcer.name;
    const wasArcaneSanctumGuardian = !!state.monster.rare && state.monster.name === arcaneSanctumGuardian.name;
+   /* Which of the 5 palace gauntlet guards (PALACE_GUARDS, content.js)
+   this was, if any — -1 when it wasn't one of them. Used below to both
+   log a distinct "guards left" message and advance
+   palaceGauntletProgress (guild.js) exactly once per guard kill. */
+   const palaceGuardIndex = !!state.monster.rare ? PALACE_GUARDS.findIndex(g => g.name === state.monster.name) : -1;
+   const wasPalaceGuard = palaceGuardIndex !== -1;
    /* Rake tines are a quest item (key:'rakeTine') and the feral lawn gnome's
    ONLY loot entry — so without this gate they'd drop via the generic 70%
    roll below even before the quest is accepted or after it's turned in,
@@ -653,6 +659,16 @@ clearLog();
    } else if(wasArcaneSanctumGuardian){
       state.arcaneSanctumGuardianDefeated = true;
       log(`You defeat ${defeatedName}! The Sanctum's wards flicker and go dark. (+${xpGain} XP)`);
+   } else if(wasPalaceGuard){
+      /* Advances the gauntlet exactly once per guard kill — guild.js's
+      approachPalaceGate() reads this same variable to decide whether the
+      next click faces PALACE_GUARDS[palaceGauntletProgress] or, once
+      it reaches PALACE_GUARDS.length, the King himself. */
+      palaceGauntletProgress++;
+      const guardsLeft = PALACE_GUARDS.length - palaceGauntletProgress;
+      log(guardsLeft > 0
+          ? `You defeat ${defeatedName}! ${guardsLeft} guard${guardsLeft===1?'':'s'} between you and the throne. (+${xpGain} XP)`
+          : `You defeat ${defeatedName}! The throne room stands empty ahead — nothing left between you and the King. (+${xpGain} XP)`);
    } else {
       log(`You defeat ${defeatedName}! (+${xpGain} XP)`);
    }
@@ -742,6 +758,10 @@ function checkDefeat(){
           : "Everything goes dark. You wake up back in town, every inch of you aching — you should really rest at the Inn. (-2 Biscuits for the walk of shame)", 'damage');
       state.hp = Math.max(1, Math.floor(state.maxHp*0.1));
       if(!devMode) state.adventures = Math.max(0, state.adventures-2);
+      /* A defeat inside the Palace gauntlet counts as "leaving the
+      Palace" same as any other exit — resetPalaceGauntlet() (guild.js)
+      before state.location changes below, while it's still 'palace'. */
+      if(state.location === 'palace') resetPalaceGauntlet();
       /* Whichever town square the player actually calls home (TOWN_HUBS,
       town.js — 'town'/Gladstone Hollow by default, 'gnometropolis' once
       that's been reached), not always Gladstone Hollow — a defeat inside

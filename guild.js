@@ -173,30 +173,59 @@ function reportGnomeKingDefeat(){
    autosave();
 }
 
+/* How many of PALACE_GUARDS (content.js) are down in the CURRENT
+uninterrupted gauntlet attempt — a plain transient variable, never
+saved, same convention combatSubView (combat.js) uses for UI/session
+state that shouldn't survive a reload. Reset to 0 by
+resetPalaceGauntlet() below, called from travelTo() (town.js, leaving
+the Palace for anywhere else) and checkDefeat() (combat.js, a defeat
+that sends the player away from the Palace) — the only two ways
+state.location ever changes away from 'palace'. Not resetting on a mere
+page reload needs no special handling: hydrateState() (save.js) always
+restores state.location to state.homeTown, which can never be 'palace',
+so a reload already counts as "leaving" without this variable's help. */
+let palaceGauntletProgress = 0;
+function resetPalaceGauntlet(){ palaceGauntletProgress = 0; }
+
 /* The palace gate itself — triggered from the Palace district
 (state.location === 'palace', reached via travelTo('palace') from the
 Gnometropolis town square once quest7 is accepted), not the Guild, even
 though it lives in this file with the rest of quest 7. Requires the exact
 PALACE_GATE_GEAR item matching state.classTitle to be equipped in its slot
-before the real gnomeKing (content.js) will fight — otherwise it's a
-guaranteed-refusal no-op, same shape as every other hard-gated action in
-this codebase. That gear is a guaranteed drop from the matching district
-guardian (garrisonGuardian/roguesDenEnforcer/arcaneSanctumGuardian — a
-rare encounter while exploring that district, see goAdventuring() in
+before the gauntlet will even start — otherwise it's a guaranteed-refusal
+no-op, same shape as every other hard-gated action in this codebase. That
+gear is a guaranteed drop from the matching district guardian
+(garrisonGuardian/roguesDenEnforcer/arcaneSanctumGuardian — a rare
+encounter while exploring that district, see goAdventuring() in
 combat.js), not a Bounty Token purchase — this check itself doesn't care
-how it was obtained, only whether it's equipped. */
+how it was obtained, only whether it's equipped.
+
+Only checked once, when palaceGauntletProgress is still 0 — once the
+gauntlet is under way, re-clicking to face the next guard (or the King
+himself) never re-checks it. A player who unequips the gear mid-run is
+an edge case not worth guarding against here. Each click advances
+exactly one step: PALACE_GUARDS[palaceGauntletProgress] while there's
+still a guard left, gnomeKing once all five are down —
+winCombat()'s wasPalaceGuard branch (combat.js) is what actually
+increments palaceGauntletProgress on a win. */
 function approachPalaceGate(){
    if(state.inCombat !== false || state.location !== 'palace' || !state.quest7Accepted || state.quest7RareDefeated) return;
-   const gearNeeded = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
-   if(!gearNeeded || state.equipment[gearNeeded.slot]?.name !== gearNeeded.name){
-      clearLog();
-      log(gearNeeded
-          ? `You can't just walk up to the palace gate like this. You need ${gearNeeded.name} equipped in your ${SLOT_LABELS[gearNeeded.slot] || gearNeeded.slot} slot first.`
-          : "Something's wrong — there's no known approach for your class. (Report this.)");
-      render();
-      return;
+   if(palaceGauntletProgress === 0){
+      const gearNeeded = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
+      if(!gearNeeded || state.equipment[gearNeeded.slot]?.name !== gearNeeded.name){
+         clearLog();
+         log(gearNeeded
+             ? `You can't just walk up to the palace gate like this. You need ${gearNeeded.name} equipped in your ${SLOT_LABELS[gearNeeded.slot] || gearNeeded.slot} slot first.`
+             : "Something's wrong — there's no known approach for your class. (Report this.)");
+         render();
+         return;
+      }
    }
-   startCombat(gnomeKing);
+   if(palaceGauntletProgress < PALACE_GUARDS.length){
+      startCombat(PALACE_GUARDS[palaceGauntletProgress]);
+   } else {
+      startCombat(gnomeKing);
+   }
    render();
 }
 
