@@ -127,6 +127,19 @@ Object.keys(ZONE_LEVEL_RECOMMENDATION).forEach(zone => {
   el.style.color = state.level >= rec.min ? 'var(--tan)' : 'var(--red)';
 });
 
+/* Biscuit cost of the trip to each priced Map card (ZONE_TRAVEL_COST,
+content.js) — shown up front so the price is known before clicking, not
+just after (travelTo()'s own log line, town.js, still shows it too).
+Districts/palace have no card of their own here (only reachable from
+inside the Gnometropolis square, see isGnometropolisArea(), town.js),
+so there's nothing to show for them. */
+Object.keys(ZONE_TRAVEL_COST).forEach(zone => {
+  const el = document.getElementById(`zcost-${zone}`);
+  if(!el) return;
+  const cost = ZONE_TRAVEL_COST[zone];
+  el.textContent = `Costs ${cost} Biscuit${cost===1?'':'s'} to travel here`;
+});
+
 const sewersUnlocked = state.quest2Complete;
   document.getElementById('zone-card-sewers').classList.toggle('locked', !sewersUnlocked);
   document.getElementById('ztag-sewers').textContent = sewersUnlocked ? 'You are here' : 'Locked';

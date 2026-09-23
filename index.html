@@ -19,7 +19,7 @@ local script src further down) whenever a deploy changes any local
 host's CDN, e.g. GitHub Pages) can keep serving an old cached copy of a
 file indefinitely, since none of these are fingerprinted filenames from
 a real build step. -->
-<link rel="stylesheet" href="styles.css?v=20260923h">
+<link rel="stylesheet" href="styles.css?v=20260923i">
 </head>
 <body>
 <div id="app">
@@ -289,30 +289,35 @@ a real build step. -->
 <div class="zname">The Overgrown Commons</div>
 <div class="zdesc">A patchy stretch of park that's been quietly overrun by garden gnomes — feral ones, mounted ones, ones with whistles and delusions of rank. Nobody official has noticed yet.</div>
 <div class="zlevel" id="zlevel-commons"></div>
+<div class="ztravelcost" id="zcost-commons"></div>
 <span class="ztag" id="ztag-commons">You are here</span>
 </div>
 <div class="zone-card travel-card" id="zone-card-sewers" onclick="travelTo('sewers')">
 <div class="zname">Dank Sewers</div>
 <div class="zdesc">A rat-run maze beneath Gladstone Hollow. Nobody thought to check it until the guild ran out of gnomes to worry about. Tougher fights than the Commons, and it smells worse.</div>
 <div class="zlevel" id="zlevel-sewers"></div>
+<div class="ztravelcost" id="zcost-sewers"></div>
 <span class="ztag" id="ztag-sewers">Locked</span>
 </div>
 <div class="zone-card travel-card locked" id="zone-card-quarry" onclick="travelTo('quarry')">
 <div class="zname">The Clockwork Quarry</div>
 <div class="zdesc">A sealed service tunnel behind the sewers, full of old gnome machinery still grinding along on its own. Whatever built it isn't answering questions.</div>
 <div class="zlevel" id="zlevel-quarry"></div>
+<div class="ztravelcost" id="zcost-quarry"></div>
 <span class="ztag" id="ztag-quarry">Locked</span>
 </div>
 <div class="zone-card travel-card locked" id="zone-card-vault" onclick="travelTo('vault')">
 <div class="zname">The Sunless Vault</div>
 <div class="zdesc">Something sealed beneath the Quarry floor. Older, quieter, and considerably better guarded than anything else you've found so far.</div>
 <div class="zlevel" id="zlevel-vault"></div>
+<div class="ztravelcost" id="zcost-vault"></div>
 <span class="ztag" id="ztag-vault">Locked</span>
 </div>
 <div class="zone-card travel-card locked" id="zone-card-gnometropolis" onclick="travelTo('gnometropolis')">
 <div class="zname">Gnometropolis</div>
 <div class="zdesc">The gnomes' hidden capital, sealed away beneath the Vault — a proper town square with three districts to explore: the Garrison, the Rogues' Den, and the Arcane Sanctum.</div>
 <div class="zlevel" id="zlevel-gnometropolis"></div>
+<div class="ztravelcost" id="zcost-gnometropolis"></div>
 <span class="ztag" id="ztag-gnometropolis">Locked</span>
 </div>
 </div>
@@ -391,28 +396,28 @@ after every script has loaded):
   2. boot.js must be LAST -- its final block calls renderGate()/
      startFreshGame() immediately at parse time, so every other global
      it might touch must already exist. See AGENTS.md for the full file map. -->
-<script src="core.js?v=20260923h"></script>
-<script src="icons.js?v=20260923h"></script>
-<script src="art.js?v=20260923h"></script>
-<script src="gnometropolis-art.js?v=20260923h"></script>
-<script src="content.js?v=20260923h"></script>
-<script src="item-tiers.js?v=20260923h"></script>
-<script src="render.js?v=20260923h"></script>
-<script src="render-shop.js?v=20260923h"></script>
-<script src="render-character.js?v=20260923h"></script>
-<script src="class-spells.js?v=20260923h"></script>
-<script src="dev-tools.js?v=20260923h"></script>
-<script src="auth.js?v=20260923h"></script>
-<script src="save.js?v=20260923h"></script>
-<script src="player-actions.js?v=20260923h"></script>
-<script src="tutorial.js?v=20260923h"></script>
-<script src="combat.js?v=20260923h"></script>
-<script src="town.js?v=20260923h"></script>
-<script src="guild.js?v=20260923h"></script>
-<script src="gnometropolis.js?v=20260923h"></script>
-<script src="economy.js?v=20260923h"></script>
-<script src="noticeboard.js?v=20260923h"></script>
-<script src="boot.js?v=20260923h"></script>
+<script src="core.js?v=20260923i"></script>
+<script src="icons.js?v=20260923i"></script>
+<script src="art.js?v=20260923i"></script>
+<script src="gnometropolis-art.js?v=20260923i"></script>
+<script src="content.js?v=20260923i"></script>
+<script src="item-tiers.js?v=20260923i"></script>
+<script src="render.js?v=20260923i"></script>
+<script src="render-shop.js?v=20260923i"></script>
+<script src="render-character.js?v=20260923i"></script>
+<script src="class-spells.js?v=20260923i"></script>
+<script src="dev-tools.js?v=20260923i"></script>
+<script src="auth.js?v=20260923i"></script>
+<script src="save.js?v=20260923i"></script>
+<script src="player-actions.js?v=20260923i"></script>
+<script src="tutorial.js?v=20260923i"></script>
+<script src="combat.js?v=20260923i"></script>
+<script src="town.js?v=20260923i"></script>
+<script src="guild.js?v=20260923i"></script>
+<script src="gnometropolis.js?v=20260923i"></script>
+<script src="economy.js?v=20260923i"></script>
+<script src="noticeboard.js?v=20260923i"></script>
+<script src="boot.js?v=20260923i"></script>
 </body>
 </html>
 

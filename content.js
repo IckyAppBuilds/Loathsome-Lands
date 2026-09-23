@@ -343,15 +343,18 @@ const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers',
 /* Biscuit cost to travel TO each of these (travelCostFor(), town.js) —
 the further out a zone is, the more it costs, same escalating-by-depth
 idea as ZONE_DIFFICULTY above but for the trip itself, not the fights
-inside it. Charged only on ENTERING one of these keys; the trip back to
-a hub (town/gnometropolis, neither listed here) is always free — see
-travelCostFor(). This is still what gives restAtCamp()
-(gnometropolis.js) a real reason to exist: Biscuits spent resting at
-the Camp are Biscuits you don't have left to spend heading back out.
-Garrison/Rogues' Den/Arcane Sanctum are peers (same distance from the
-Gnometropolis square); the Palace is one step further, same "deepest
-costs most" shape as Vault topping Act 1. */
-const ZONE_TRAVEL_COST = { commons:1, sewers:2, quarry:3, vault:4, garrison:5, roguesden:5, sanctum:5, palace:6 };
+inside it. Charged only on ENTERING one of these keys from OUTSIDE the
+Gnometropolis area (isGnometropolisArea(), town.js); the trip back to
+a hub, and any move within the Gnometropolis area (square<->district),
+is always free — see travelCostFor(). Gnometropolis itself is the only
+paywall for the whole Act 2 area: garrison/roguesden/sanctum/palace are
+deliberately NOT listed here, since they're only ever reached from
+inside the square you already paid to enter. This is still what gives
+restAtCamp() (gnometropolis.js) a real reason to exist: Biscuits spent
+resting at the Camp are Biscuits you don't have left for the next trip
+out. Gnometropolis sits one step past Vault, same "deepest costs most"
+shape as the rest of this table. */
+const ZONE_TRAVEL_COST = { commons:1, sewers:2, quarry:3, vault:4, gnometropolis:5 };
 
 /* Shown on each zone's card in the Map drawer (render.js) as a "Recommended
 level" guideline — deliberately advisory, not a hard gate like zone

@@ -54,12 +54,30 @@ same list as TOWN_HUBS above (both town squares), reused here since
 counts as a valid home" happen to be the same set. */
 function isTravelHub(loc){ return TOWN_HUBS.includes(loc); }
 
-/* Biscuit cost of a trip to `dest` — charged only on ENTERING a priced
-zone (ZONE_TRAVEL_COST, content.js). The return trip to a hub (town or
-Gnometropolis's own square) is always free, regardless of how deep the
-player currently is — heading home never costs Biscuits, only heading
-out does. */
-function travelCostFor(dest){ return ZONE_TRAVEL_COST[dest] || 0; }
+/* The Gnometropolis square plus its 4 buildings — once the player has
+paid to get into the square (ZONE_TRAVEL_COST.gnometropolis, content.js),
+moving around anywhere inside this whole area is free, including back
+out to the square from a district. Districts are only ever reachable
+by clicking a tile inside the square in the first place (boot.js's
+data-action dispatch), so a player can never even ATTEMPT to enter one
+without already being inside the area. */
+function isGnometropolisArea(loc){
+   return loc==='gnometropolis' || loc==='garrison' || loc==='roguesden' || loc==='sanctum' || loc==='palace';
+}
+
+/* Biscuit cost of a trip to `dest`. Gnometropolis itself is the only
+paywall for the whole Act 2 area (see isGnometropolisArea() above) —
+entering it from outside costs ZONE_TRAVEL_COST.gnometropolis, but
+entering a district (already inside the area) or leaving one back to
+the square is free. Every other priced destination (ZONE_TRAVEL_COST,
+content.js) is charged on ENTERING it regardless of origin; the return
+trip to a hub is always free — heading home never costs Biscuits, only
+heading out does. */
+function travelCostFor(dest){
+   if(dest === 'gnometropolis') return isGnometropolisArea(state.location) ? 0 : (ZONE_TRAVEL_COST.gnometropolis || 0);
+   if(isGnometropolisArea(dest)) return 0;
+   return ZONE_TRAVEL_COST[dest] || 0;
+}
 
 /* Running out of Biscuits mid-adventure shouldn't require manually
 digging through the Map to get home — since the trip back is free

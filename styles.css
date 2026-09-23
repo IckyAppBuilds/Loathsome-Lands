@@ -488,6 +488,11 @@ on a white button. */
 color set per-card in render.js: tan while at/above the recommendation,
 red while under it, same "pay attention" language as .ztag's red. */
 .zone-card .zlevel{ font-size:0.68rem; font-weight:700; margin-top:5px; }
+/* Travel cost (ZONE_TRAVEL_COST, content.js) — shown up front on each
+zone card so the Biscuit price of a trip is known before clicking, not
+just after (travelTo()'s own log line, town.js, still shows it too for
+the same reason zlevel doesn't replace ztag). */
+.zone-card .ztravelcost{ font-size:0.68rem; font-weight:700; margin-top:3px; color:var(--tan); }
 
 .char-portrait{
   display:flex;
