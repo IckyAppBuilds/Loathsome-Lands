@@ -155,19 +155,18 @@ Object.keys(ZONE_LEVEL_RECOMMENDATION).forEach(zone => {
 });
 
 /* Biscuit cost of the trip to each priced Map card — reads travelCostFor()
-(town.js), not ZONE_TRAVEL_COST (content.js) directly, so the price shown
-here always reflects where the character actually CURRENTLY resides:
-Gnometropolis/Mudroot Warren (hub squares) are only priced from outside
-their own hub's area — standing anywhere inside one already (its square
-or any of its districts) makes re-entering it free, and the card needs
-to say so instead of quoting the flat table price no matter where you're
-standing. Commons/Sewers/Quarry/Vault aren't hub squares, so their cost
-never varies by current location — travelCostFor() just returns their
-flat ZONE_TRAVEL_COST either way. Districts/palace have no card of their
-own here (only reachable from inside the Gnometropolis/Mudroot Warren
-square, see hubKeyForLocation(), hubs.js), so there's nothing to show for
-them. */
-Object.keys(ZONE_TRAVEL_COST).forEach(zone => {
+(town.js), which prices every one of these by DISTANCE from wherever the
+character actually CURRENTLY resides on the Map's main chain (ZONE_ORDER,
+content.js), not a flat per-destination price: one step over costs 1
+Biscuit no matter which two zones that step is between (Gnometropolis ->
+Mudroot Warren costs the same as Commons -> Sewers), and standing
+anywhere already inside a hub's own area (its square, any of its
+districts, or any of its plain buildings — HUB_TOWNS, hubs.js) makes
+re-entering that hub free. 'town' has no card of its own here — heading
+home is always free, so there's nothing to price. Districts/palace also
+have no card of their own (only reachable from inside the Gnometropolis/
+Mudroot Warren square), so there's nothing to show for them either. */
+ZONE_ORDER.filter(zone => zone !== 'town').forEach(zone => {
   const el = document.getElementById(`zcost-${zone}`);
   if(!el) return;
   const cost = travelCostFor(zone);

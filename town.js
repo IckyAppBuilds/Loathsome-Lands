@@ -62,23 +62,34 @@ same list as TOWN_HUBS above (both town squares), reused here since
 counts as a valid home" happen to be the same set. */
 function isTravelHub(loc){ return TOWN_HUBS.includes(loc); }
 
-/* Biscuit cost of a trip to `dest`. Each hub square (HUB_TOWNS, hubs.js)
-is the only paywall for its whole area — entering one from outside
-costs ZONE_TRAVEL_COST[that hub's key], but entering one of its
-districts (already inside the area, per isHubArea()) or leaving one
-back to its own square is free. Every other priced destination
-(ZONE_TRAVEL_COST, content.js — the Act 1 zones) is charged on
-ENTERING it regardless of origin; the return trip to a hub is always
-free — heading home never costs Biscuits, only heading out does. */
+/* Where `loc` sits on the Map's main chain (ZONE_ORDER, content.js) for
+travel-DISTANCE purposes — a hub square (town/gnometropolis/
+mudrootwarren) is its own position; anything else in HUB_TOWNS's own
+list for that hub (a district or a plain building interior) collapses
+to that same hub's position, since standing in one counts as standing
+at that hub as far as "how far is the trip" is concerned. -1 for
+anywhere not on the chain at all (shouldn't happen for anywhere
+travelCostFor() below is actually called from). */
+function chainIndex(loc){
+   const hubKey = hubKeyForLocation(loc);
+   return ZONE_ORDER.indexOf(hubKey !== null ? hubKey : loc);
+}
+
+/* Biscuit cost of a trip to `dest`, priced by DISTANCE from wherever the
+player currently is (chainIndex() above) — one step over costs 1
+Biscuit, two costs 2, and so on, the same whichever direction or which
+two points on the chain it's between (see ZONE_ORDER's own comment,
+content.js). Two things stay flat regardless of distance: 'town' is
+always free to head to — heading home never costs Biscuits, only
+heading out does (see forceHomeIfBroke()'s own comment below) — and
+entering one of a hub's own districts (or leaving one back to its
+square) is free as long as the player's already inside that hub's
+area, same as it's always been. */
 function travelCostFor(dest){
+   if(dest === 'town') return 0;
    const destHubKey = hubKeyForLocation(dest);
-   if(destHubKey === null) return ZONE_TRAVEL_COST[dest] || 0;
-   if(dest !== destHubKey) return 0; // a district — only reachable from inside its own hub already
-   /* Free only when already inside THIS SAME hub's area (e.g. leaving
-   a Gnometropolis district back to the Gnometropolis square) — being
-   inside some OTHER hub (Gladstone Hollow counts as one too, per
-   HUB_TOWNS) must not give a free pass into a different one. */
-   return hubKeyForLocation(state.location) === destHubKey ? 0 : (ZONE_TRAVEL_COST[dest] || 0);
+   if(destHubKey !== null && dest !== destHubKey) return 0; // a district — only reachable from inside its own hub already
+   return Math.abs(chainIndex(dest) - chainIndex(state.location));
 }
 
 /* Running out of Biscuits mid-adventure shouldn't require manually

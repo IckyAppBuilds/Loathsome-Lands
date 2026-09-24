@@ -1,24 +1,25 @@
 /* ---------------- Town hub registry ---------------- */
 /* One entry per persistent town hub, keyed by its own state.location
-value, mapped to the list of district location keys reached ONLY from
-inside that hub's square (never directly from the Map/another hub).
-Gladstone Hollow has none — Act 1's adventure zones are reached
-straight from the Map, not from inside the square. Gnometropolis's four
-(garrison/roguesden/sanctum/palace) are the first real case.
+value, mapped to the list of every OTHER location reached only from
+inside that hub's square (never directly from the Map/another hub) —
+both its explorable "districts" (garrison/roguesden/sanctum/palace/
+rootcellar/mudflats) and its plain building interiors (gaffer/shop/
+hoodoo/guild/tinker/casino/townlot/noticeboard for town; gnomeguild/
+gnomeshop/gnometownlot for gnometropolis). Both kinds belong here for
+the same reason: standing in any of them still counts as "inside this
+hub's area" for travelCostFor()'s (town.js) distance calculation —
+opening the Map from inside the Shop and clicking another zone should
+price that trip from Gladstone Hollow's own position, not treat 'shop'
+as some unrelated place with no position on the chain at all.
 
 Generalizes what was Gnometropolis-specific logic (isGnometropolisArea()/
 travelCostFor() used to hardcode exactly one hub, town.js) so a second
 hub town — Act 2's planned Gnometropolis-as-home-base upgrade, and
 whatever comes after it — is "add one entry here," not "copy-paste and
-rename three functions." Behavior-preserving as of this pass: no
-gameplay change, just where the knowledge lives. Deliberately doesn't
-duplicate ZONE_TRAVEL_COST's own per-hub-square price (content.js) —
-that stays the single source of truth for what entering a hub square
-from outside costs; this registry only needs to know WHICH locations
-belong to WHICH hub. */
+rename three functions." */
 const HUB_TOWNS = {
-   town: [],
-   gnometropolis: ['garrison', 'roguesden', 'sanctum', 'palace'],
+   town: ['gaffer', 'shop', 'hoodoo', 'guild', 'tinker', 'casino', 'townlot', 'noticeboard'],
+   gnometropolis: ['garrison', 'roguesden', 'sanctum', 'palace', 'gnomeguild', 'gnomeshop', 'gnometownlot'],
    /* Act 2 Part 2's first Mole People area. 'mudflats' is deliberately
    still listed even though it's not enterable until tunnelWardenDefeated
    (quest9, guild.js) — this registry is about which hub a location

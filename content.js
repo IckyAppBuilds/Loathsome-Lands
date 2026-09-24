@@ -400,22 +400,22 @@ used by the Bounty Board (render.js) to spell out where a bounty's
 monster lives without hand-typing zone names in a second place. */
 const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace', rootcellar:'the Root Cellar', mudflats:'the Mudflats' };
 
-/* Biscuit cost to travel TO each of these (travelCostFor(), town.js) —
-the further out a zone is, the more it costs, same escalating-by-depth
-idea as ZONE_DIFFICULTY above but for the trip itself, not the fights
-inside it. Charged only on ENTERING one of these keys from OUTSIDE its
-hub's area (isHubArea(), hubs.js) — for keys that are a hub square
-themselves (currently just 'gnometropolis'); the trip back to a hub,
-and any move within a hub's area (square<->district), is always free —
-see travelCostFor(). A hub square is the only paywall for its whole
-area: garrison/roguesden/sanctum/palace are deliberately NOT listed
-here, since they're only ever reached from inside the square you
-already paid to enter. This is still what gives
-restAtCamp() (gnometropolis.js) a real reason to exist: Biscuits spent
-resting at the Camp are Biscuits you don't have left for the next trip
-out. Gnometropolis sits one step past Vault, same "deepest costs most"
-shape as the rest of this table. */
-const ZONE_TRAVEL_COST = { commons:1, sewers:2, quarry:3, vault:4, gnometropolis:5, mudrootwarren:8 };
+/* The Map's main chain, Gladstone Hollow through to Mudroot Warren, in
+travel order — travelCostFor() (town.js) prices a trip by the DISTANCE
+between the player's current position in this chain and the
+destination's, not a flat per-destination price: one step over costs 1
+Biscuit, two steps costs 2, and so on, no matter which end of the chain
+you're actually starting from (so Gnometropolis -> Mudroot Warren costs
+the same 1 Biscuit as Commons -> Sewers, both being one step apart).
+Districts (garrison/roguesden/sanctum/palace/rootcellar/mudflats) and
+the Burrow aren't listed — they aren't Map destinations of their own,
+and collapse to their own hub's position here (see chainIndex(),
+town.js) since standing in one counts as standing at that hub for
+distance purposes. 'town' itself is a special case travelCostFor()
+always prices at 0 regardless of distance — the trip home is always
+free (see forceHomeIfBroke()'s own comment, town.js), same as any move
+within a hub's own area (square<->district) already was. */
+const ZONE_ORDER = ['town', 'commons', 'sewers', 'quarry', 'vault', 'gnometropolis', 'mudrootwarren'];
 
 /* Shown on each zone's card in the Map drawer (render.js) as a "Recommended
 level" guideline — deliberately advisory, not a hard gate like zone
