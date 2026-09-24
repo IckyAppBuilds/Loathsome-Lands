@@ -289,11 +289,11 @@ function buildSellSection(sellFn){
 renderShop() above, just reading from getAvailableGnomeShopItems()
 (act2-shop.js) and gated on the Shop's OWN Town Lot building level
 (state.gnomeBuildingUpgrades.gnomeshop) instead of Gladstone's. Groups
-by act2Tier (act2-shop.js) rather than the `tier` field renderShop()
-uses for its own food/gear sections — every item here shares
-tier:'legendary' for its color, so grouping by THAT would collapse all
-four tiers into one section; act2Tier exists purely so this grouping
-has something to key off. */
+by act2Tier (act2-shop.js) rather than the `tier` field's own value
+directly — act2Tier is a stable 1-4 sort order independent of which
+rarity color a given tier happens to use (see the header's own color
+line below, and act2-shop.js's comment on why `tier` restarts at
+common/black instead of staying fixed at legendary/gold). */
 function renderGnomeShop(){
   const list = document.getElementById('gnomeshop-list');
   if(!list) return;
@@ -326,7 +326,11 @@ function renderGnomeShop(){
       if(tierItems.length===0) return;
       const header = document.createElement('div');
       header.className = 'shop-section-title';
-      header.style.color = ITEM_TIER_COLORS.legendary;
+      /* Each act2Tier's own rarity color (item-tiers.js) — restarts at
+      common/black for Tier 1, same ramp Gladstone's own renderShop()
+      uses, now that these items no longer all share tier:'legendary'
+      (act2-shop.js's own comment explains why that changed). */
+      header.style.color = ITEM_TIER_COLORS[tierItems[0].tier];
       header.textContent = `${ACT2_TIER_LABEL[tierNum]} ${gnomeShopTab === 'food' ? 'Provisions' : 'Relics'}`;
       section.appendChild(header);
       tierItems.forEach(def => section.appendChild(renderShopItemRow(def, 'buyGnomeShopItemByName')));
