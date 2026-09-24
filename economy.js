@@ -165,6 +165,18 @@ function formatMs(ms){
    return m+':'+String(s).padStart(2,'0');
 }
 
+/* Display-only formatting for a Pop Tabs amount — anything under 1000
+still just prints as-is; 1000+ collapses to one decimal + "K" (1000 ->
+"1.0K", 12345 -> "12.3K") so the header's fixed-width Pop Tabs counter
+(#poptab-text, index.html) doesn't overflow once a run's stash gets
+into the thousands. Only ever used for what gets shown on screen —
+every actual balance check/spend still reads state.popTabs itself, not
+this string. */
+function formatMoney(n){
+   if(n < 1000) return String(n);
+   return (n/1000).toFixed(1)+'K';
+}
+
 /* ---------------- MP regeneration ---------------- */
 /* Same elapsed-real-time-to-a-cap shape as regenBiscuits() above, but
 against state.maxMp (which itself grows with level, recomputeMaxStats())

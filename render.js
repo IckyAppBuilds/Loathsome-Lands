@@ -45,7 +45,7 @@ const isTownSquare = state.location === 'town';
   const isNoticeBoard = state.location === 'noticeboard';
   const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot || isNoticeBoard;
 
-document.getElementById('poptab-text').textContent = state.popTabs;
+document.getElementById('poptab-text').textContent = formatMoney(state.popTabs);
 
 const ZONE_TITLES = {
   gaffer: "Gaffer Thistlewick's Cottage", shop: 'The Shop', hoodoo: "The Hoodoo Doctor's Shack",
