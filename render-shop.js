@@ -502,3 +502,54 @@ html += '<div class="shop-section-title" style="margin-top:10px;">Upgrade Town B
   });
   el.innerHTML = html;
 }
+
+/* Act 2's own Town Lot (Gnometropolis) — mirrors renderTownLot() above
+exactly, reading state.gnomeLotTier/state.gnomeBuildingUpgrades and
+GNOME_LOT_TIER_NAMES/GNOME_LOT_TIER_COST/GNOME_LOT_TIER_MAX/
+GNOME_BUILDING_UPGRADES/GNOME_BUILDING_UPGRADE_MAX/gnomeBuildingUpgradeCost()
+(content.js) instead. buildingEffectDesc() (above) is shared as-is —
+it already no-ops for a key with no BUILDING_EFFECT_INFO entry, which
+is every Gnometropolis building for now (see that content.js section's
+own comment on why nothing's wired mechanically yet). */
+function renderGnomeTownLot(){
+  const el = document.getElementById('gnometownlot-list');
+  if(!el) return;
+  if(state.gnomeLotTier === 0){
+    const cost = GNOME_LOT_TIER_COST[1];
+    const canAfford = state.popTabs >= cost;
+    el.innerHTML = `
+    <div class="shop-section-title">Empty Vault</div>
+    <div class="shop-item"><div style="flex:1;"><div class="name">Buy the Vault</div><div class="desc">Clear it out and claim it. Owning it is what lets you start investing in the rest of Gnometropolis.</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyGnomeTownLot()">Buy — ${cost} Pop Tabs</button></div></div>
+    `;
+    return;
+  }
+
+let html = '<div class="shop-section-title">Your Vault</div>';
+  if(state.gnomeLotTier < GNOME_LOT_TIER_MAX){
+    const next = state.gnomeLotTier + 1;
+    const cost = GNOME_LOT_TIER_COST[next];
+    const canAfford = state.popTabs >= cost;
+    html += `<div class="shop-item"><div style="flex:1;"><div class="name">${GNOME_LOT_TIER_NAMES[state.gnomeLotTier]} <span class="qty-badge">→ ${GNOME_LOT_TIER_NAMES[next]}</span></div><div class="desc">Upgrade the vault itself — cosmetic for now.</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="upgradeGnomeTownLot()">Upgrade — ${cost} Pop Tabs</button></div></div>`;
+  } else {
+    html += `<div class="shop-empty">${GNOME_LOT_TIER_NAMES[state.gnomeLotTier]} — fully built up.</div>`;
+  }
+
+html += '<div class="shop-section-title" style="margin-top:10px;">Upgrade Gnometropolis</div>';
+  html += '<div class="quest-desc" style="margin:0 0 8px;">Spend Pop Tabs to raise a building\'s level — a building can never out-level the vault itself, so upgrading the vault is what unlocks each building\'s next tier. Cosmetic for now.</div>';
+  GNOME_BUILDING_UPGRADES.forEach(b=>{
+    const level = state.gnomeBuildingUpgrades[b.key] || 0;
+    const effectDesc = buildingEffectDesc(b.key, level);
+    if(level >= GNOME_BUILDING_UPGRADE_MAX){
+      html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Fully upgraded.</div>${effectDesc}</div></div>`;
+      return;
+    }
+    if(level >= state.gnomeLotTier){
+      html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Requires the vault itself at ${GNOME_LOT_TIER_NAMES[level+1]} first.</div>${effectDesc}<button class="btn-secondary" disabled>Locked</button></div></div>`;
+      return;
+    }
+    const cost = gnomeBuildingUpgradeCost(level);
+    const canAfford = state.popTabs >= cost;
+    html += `<div class="shop-item"><div style="flex:1;"><div class="name">${b.name} <span class="qty-badge">Lv.${level}</span></div><div class="desc">Raise to level ${level+1}.</div>${effectDesc}<button class="btn-secondary" ${canAfford?'':'disabled'} onclick="upgradeGnomeBuilding('${b.key}')">Upgrade — ${cost} Pop Tabs</button></div></div>`;
+  });
+  el.innerHTML = html;
+}

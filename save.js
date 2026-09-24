@@ -136,7 +136,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
        classBuffFightsLeft,
        activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
-       lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt } = state;
+       lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt } = state;
    return {
       hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
       lastRegenAt, lastMpRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
@@ -151,7 +151,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
       classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
       classBuffFightsLeft,
       activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
-      lotTier, buildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
+      lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
       equipment: Object.fromEntries(
          SLOT_ORDER.map(slot => [slot, serializeItem(state.equipment[slot])])
          ),
@@ -191,6 +191,11 @@ state.activeBounty = saved.activeBounty || null;
    predate these fields sane defaults rather than leaving them undefined. */
    state.lotTier = (typeof saved.lotTier === 'number' && saved.lotTier >= 0) ? saved.lotTier : 0;
    state.buildingUpgrades = (saved.buildingUpgrades && typeof saved.buildingUpgrades === 'object') ? saved.buildingUpgrades : {};
+   /* Gnometropolis's own Town Lot — same fallback reasoning as
+   lotTier/buildingUpgrades directly above, for a save from before this
+   pair existed. */
+   state.gnomeLotTier = (typeof saved.gnomeLotTier === 'number' && saved.gnomeLotTier >= 0) ? saved.gnomeLotTier : 0;
+   state.gnomeBuildingUpgrades = (saved.gnomeBuildingUpgrades && typeof saved.gnomeBuildingUpgrades === 'object') ? saved.gnomeBuildingUpgrades : {};
    /* Stat-reset potion purchase counter — added after this function was
    first written, same fallback reasoning as lotTier/buildingUpgrades. */
    state.statResetsBrewed = typeof saved.statResetsBrewed === 'number' ? saved.statResetsBrewed : 0;

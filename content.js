@@ -1195,3 +1195,42 @@ derives each level's actual "ms per Pop Tab" from this at regen time. */
 const CASINO_WINNINGS_CAP = [0, 100, 200, 350];
 const CASINO_WINNINGS_BASE_RATE_MS = 3 * 60 * 1000; /* 1 Pop Tab per 3 min at level 1 */
 const CASINO_WINNINGS_FULL_MS = CASINO_WINNINGS_CAP[1] * CASINO_WINNINGS_BASE_RATE_MS;
+
+/* ---------------- Town Lot (Gnometropolis) ---------------- */
+/* Act 2's own version of the Town Lot above — same buy-then-upgrade
+shape (buyGnomeTownLot()/upgradeGnomeBuilding(), gnometropolis.js), but
+deliberately kept as a fully separate state slot (state.gnomeLotTier/
+state.gnomeBuildingUpgrades, core.js) rather than reusing
+state.lotTier/state.buildingUpgrades with a hub-keyed lookup — the Act
+2 plan flagged that as the "properly generalized" version of this
+system, but doing it for real means touching every existing Gladstone
+Town Lot reference (a real risk to an already-shipped, well-tested
+Act 1 feature) for the sake of a SECOND town, when the win only shows
+up at a third. Revisit if/when a third town actually needs this.
+
+Only 3 buildings get a slot here — the Camp, the new Guild, and the new
+Shop — not the three districts (garrison/roguesden/sanctum) or the
+Palace, since those aren't services yet (still ADVENTURE_ZONES
+exploration / a one-time boss gate, not buildings you'd "upgrade" the
+way a shop or inn levels up). Add them once the Act 2 plan's deferred
+class-area conversion actually happens.
+
+Like Gladstone's own BUILDING_UPGRADES when it first shipped, none of
+these three levels do anything mechanical yet — this is the same
+"data layer first, wire the effects later" pass Act 1's own Town Lot
+went through (see that section's own comment above). buildingEffectDesc()
+(render-shop.js) already no-ops gracefully for a key with no
+BUILDING_EFFECT_INFO entry, so shipping the cosmetic shell now and
+wiring real bonuses later needs no further plumbing changes. */
+const GNOME_LOT_TIER_NAMES = ['Empty Vault', 'Reclaimed Vault', 'Reclaimed Vault (Reinforced)', 'The Regent\'s Hall'];
+const GNOME_LOT_TIER_COST = [0, 300, 1200, 2700];
+const GNOME_LOT_TIER_MAX = GNOME_LOT_TIER_COST.length - 1;
+const GNOME_BUILDING_UPGRADES = [
+   { key:'camp', name:'The Camp' },
+   { key:'gnomeguild', name:'The Guild' },
+   { key:'gnomeshop', name:'The Shop' },
+   ];
+const GNOME_BUILDING_UPGRADE_MAX = 3;
+/* Same quadratic shape as buildingUpgradeCost() above, scaled up to
+match the Gnometropolis Town Lot's own steeper price curve: 300/1200/2700. */
+function gnomeBuildingUpgradeCost(level){ return 300 * (level+1) * (level+1); }

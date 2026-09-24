@@ -95,4 +95,67 @@ function leaveGnomeShop(){
    clearLog();
    render();
 }
+
+/* ---------------- Gnometropolis's own Town Lot ---------------- */
+/* Mirrors buyTownLot()/upgradeTownLot()/upgradeBuilding() (town.js)
+exactly, reading/writing state.gnomeLotTier/state.gnomeBuildingUpgrades
+and GNOME_LOT_TIER_COST/GNOME_BUILDING_UPGRADES/gnomeBuildingUpgradeCost()
+(content.js) instead of their Gladstone equivalents — see that
+content.js section's own comment for why this is a separate parallel
+system rather than one generalized, hub-keyed one. Same gate as the
+Guild/Shop above: only reachable once quest7Complete. */
+function enterGnomeTownLot(){
+   if(state.inCombat || state.location !== 'gnometropolis' || !state.quest7Complete) return;
+   state.location = 'gnometownlot';
+   clearLog();
+   log(state.gnomeLotTier === 0
+       ? "A shuttered stall sits empty at the edge of the square. Could be something, if you cleared it out."
+       : "You step into your reclaimed vault. There's always something more to build.");
+   render();
+}
+function leaveGnomeTownLot(){
+   if(state.inCombat || state.location !== 'gnometownlot') return;
+   state.location = 'gnometropolis';
+   clearLog();
+   render();
+}
+function buyGnomeTownLot(){
+   if(state.location !== 'gnometownlot' || state.gnomeLotTier !== 0) return;
+   const cost = GNOME_LOT_TIER_COST[1];
+   if(state.popTabs < cost) return;
+   state.popTabs -= cost;
+   state.gnomeLotTier = 1;
+   clearLog();
+   log(`You buy the shuttered stall for ${cost} Pop Tabs and start clearing it out.`);
+   render();
+   autosave();
+}
+function upgradeGnomeTownLot(){
+   if(state.location !== 'gnometownlot' || state.gnomeLotTier < 1 || state.gnomeLotTier >= GNOME_LOT_TIER_MAX) return;
+   const next = state.gnomeLotTier + 1;
+   const cost = GNOME_LOT_TIER_COST[next];
+   if(state.popTabs < cost) return;
+   state.popTabs -= cost;
+   state.gnomeLotTier = next;
+   clearLog();
+   log(`You upgrade the vault to ${GNOME_LOT_TIER_NAMES[next]} for ${cost} Pop Tabs.`);
+   render();
+   autosave();
+}
+function upgradeGnomeBuilding(key){
+   if(state.location !== 'gnometownlot' || state.gnomeLotTier < 1) return;
+   const info = GNOME_BUILDING_UPGRADES.find(b => b.key === key);
+   if(!info) return;
+   const level = state.gnomeBuildingUpgrades[key] || 0;
+   if(level >= GNOME_BUILDING_UPGRADE_MAX) return;
+   if(level >= state.gnomeLotTier) return;
+   const cost = gnomeBuildingUpgradeCost(level);
+   if(state.popTabs < cost) return;
+   state.popTabs -= cost;
+   state.gnomeBuildingUpgrades[key] = level + 1;
+   clearLog();
+   log(`You invest ${cost} Pop Tabs into ${info.name}, raising it to level ${level+1}.`);
+   render();
+   autosave();
+}
 setInterval(updateCampCooldownDisplay, 1000);

@@ -18,14 +18,16 @@ Gladstone Hollow's cottage-warm red/yellow — Gnometropolis is a capital
 built out of repurposed junk, not a village. */
 
 /* One {flag} slot per real building tile (garrison/roguesden/sanctum/
-palace/camp/gnomeguild/gnomeshop) — see render.js's isGnometropolis branch for how
-these get set. Simpler than artTownSquare()'s buildingIndicators (no
-trial slot — there's no class-trial building here) but same biGet()
-shape so a future addition is just adding a badge call, not a signature
-change. campCooldownText mirrors artTownSquare()'s innCooldownText
-param — non-null while restAtCamp()'s CAMP_COOLDOWN_MS is still
-counting down (see render.js). */
-function artGnometropolisSquare(buildingIndicators, campCooldownText){
+palace/camp/gnomeguild/gnomeshop/gnometownlot) — see render.js's
+isGnometropolis branch for how these get set. Simpler than
+artTownSquare()'s buildingIndicators (no trial slot — there's no
+class-trial building here) but same biGet() shape so a future addition
+is just adding a badge call, not a signature change. campCooldownText
+mirrors artTownSquare()'s innCooldownText param — non-null while
+restAtCamp()'s CAMP_COOLDOWN_MS is still counting down (see render.js).
+gnomeLotTier drives the Town Lot tile's own 4-stage art, same idea as
+artTownSquare()'s lotTier param but for state.gnomeLotTier instead. */
+function artGnometropolisSquare(buildingIndicators, campCooldownText, gnomeLotTier){
    const bi = (key) => biGet(buildingIndicators, key);
    /* Small mushroom-cap accent (ellipse-on-a-stalk) — the one recurring
    motif tying the tiles together as "underground gnome capital" without
@@ -145,12 +147,29 @@ function artGnometropolisSquare(buildingIndicators, campCooldownText){
    <line x1="78" y1="80" x2="78" y2="70" stroke-width="2"/><ellipse cx="78" cy="67" rx="7" ry="4" fill="#b06a97"/>
    </g>
 
-   <g transform="translate(200,200)">
+   <g transform="translate(200,200)" class="building-hit" data-action="gnometownlot">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   ${gnomeLotTier===0 ? `
+   <rect x="20" y="46" width="60" height="10" fill="#8a5a3a" stroke-dasharray="5,4"/>
+   <rect x="26" y="56" width="48" height="26" fill="#5f4632" stroke-dasharray="5,4"/>
+   <line x1="30" y1="60" x2="70" y2="78"/><line x1="70" y1="60" x2="30" y2="78"/>
+   ` : gnomeLotTier===1 ? `
    <rect x="20" y="46" width="60" height="10" fill="#8a5a3a"/>
    <rect x="26" y="56" width="48" height="26" fill="#5f4632"/>
-   <line x1="30" y1="60" x2="70" y2="78"/><line x1="70" y1="60" x2="30" y2="78"/>
    <rect x="46" y="40" width="8" height="10" fill="#8a5a3a"/>
+   ` : gnomeLotTier===2 ? `
+   <path d="M16 50 L50 26 L84 50 Z" fill="#d1a94e"/>
+   <rect x="20" y="50" width="60" height="34" fill="#8a8477"/>
+   <rect x="42" y="60" width="16" height="24" fill="#5f4632"/>
+   ` : `
+   <path d="M12 46 L50 14 L88 46 Z" fill="#d1a94e"/>
+   <rect x="18" y="46" width="64" height="38" fill="#b9b3a4"/>
+   <rect x="42" y="56" width="16" height="28" fill="#5f4632"/>
+   <rect x="26" y="52" width="8" height="8" fill="#f4efe4"/>
+   <rect x="66" y="52" width="8" height="8" fill="#f4efe4"/>
+   `}
+   ${makeFlag(bi('gnometownlot').flag)}
+   ${plate(gnomeLotTier===0 ? 'Shuttered Stall' : (gnomeLotTier>=3 ? "The Regent's Hall" : 'Reclaimed Vault'))}
    </g>
    </svg>`;
 }

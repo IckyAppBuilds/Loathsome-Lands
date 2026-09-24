@@ -70,6 +70,12 @@ function createDefaultState(){
   bountyTokens: 0, /* earned only from the Bounty Board (see BOUNTY_TEMPLATES/claimBounty) — a separate currency from Pop Tabs, meant for a future gear exchange. Not spendable anywhere yet. */
      lotTier: 0, /* the town-square Town Lot (translate(200,100) in artTownSquare()) — 0 = unpurchased "Empty Lot". See LOT_TIER_NAMES/LOT_TIER_COST (content.js) and buyTownLot()/upgradeTownLot() (game.js). Buying tier 1 is what unlocks buildingUpgrades below. */
      buildingUpgrades: {}, /* key = a BUILDING_UPGRADES entry's key (content.js) -> upgrade level, 0..BUILDING_UPGRADE_MAX. Missing keys read as level 0 — see upgradeBuilding()/buildingUpgradeLevel() in game.js. Levels are tracked only for now; they don't change anything about the buildings yet (see content.js comment above BUILDING_UPGRADES). */
+     /* Act 2's own Town Lot, at the Gnometropolis square — same shape as
+     lotTier/buildingUpgrades above, deliberately kept as a fully
+     separate pair rather than generalizing both into one hub-keyed
+     system yet (see GNOME_LOT_TIER_NAMES's own comment, content.js). */
+     gnomeLotTier: 0,
+     gnomeBuildingUpgrades: {},
      lastRegenAt: Date.now(),
      /* MP's own passive regen timestamp (regenMp(), economy.js) — same
      elapsed-real-time-to-a-cap shape as lastRegenAt above (Biscuits) and

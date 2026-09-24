@@ -28,10 +28,12 @@ const isTownSquare = state.location === 'town';
   const isPalace = state.location === 'palace';
   const isGnomeGuild = state.location === 'gnomeguild'; /* Act 2: the Guild's new home, reachable once quest7Complete — enterGnomeGuild(), guild.js */
   const isGnomeShop = state.location === 'gnomeshop'; /* Act 2: the new Shop, same quest7Complete gate — enterGnomeShop(), gnometropolis.js */
+  const isGnomeTownLot = state.location === 'gnometownlot'; /* Act 2: Gnometropolis's own Town Lot, same quest7Complete gate — enterGnomeTownLot(), gnometropolis.js */
   /* Any of the Gnometropolis square + its 3 districts + the palace gate
-  + the new Guild/Shop — used where the Map's "you are here" tag/lock
-  state shouldn't go dark just because the player stepped off the square. */
-  const inGnometropolisArea = isGnometropolis || isGarrison || isRoguesden || isSanctum || isPalace || isGnomeGuild || isGnomeShop;
+  + the new Guild/Shop/Town Lot — used where the Map's "you are here"
+  tag/lock state shouldn't go dark just because the player stepped off
+  the square. */
+  const inGnometropolisArea = isGnometropolis || isGarrison || isRoguesden || isSanctum || isPalace || isGnomeGuild || isGnomeShop || isGnomeTownLot;
   const isCasino = state.location === 'casino';
   const isNoticeBoard = state.location === 'noticeboard';
   const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot || isNoticeBoard;
@@ -45,9 +47,9 @@ const ZONE_TITLES = {
   sewers: 'Dank Sewers', quarry: 'The Clockwork Quarry', vault: 'The Sunless Vault',
   gnometropolis: 'Gnometropolis', garrison: 'The Garrison', roguesden: "The Rogues' Den",
   sanctum: 'The Arcane Sanctum', palace: 'The Palace Gate', gnomeguild: 'The Guild',
-  gnomeshop: 'The Shop',
+  gnomeshop: 'The Shop', gnometownlot: 'The Vault',
 };
-document.getElementById('zone-title').textContent = isTownLot ? LOT_TIER_NAMES[state.lotTier] : (ZONE_TITLES[state.location] || 'The Overgrown Commons');
+document.getElementById('zone-title').textContent = isTownLot ? LOT_TIER_NAMES[state.lotTier] : (isGnomeTownLot ? GNOME_LOT_TIER_NAMES[state.gnomeLotTier] : (ZONE_TITLES[state.location] || 'The Overgrown Commons'));
   document.getElementById('ztag-town').style.display = inTownArea ? 'block' : 'none';
   document.getElementById('ztag-commons').style.display = isCommons ? 'block' : 'none';
   /* !state.inCombat matters here specifically for the Guild's own Trial
@@ -97,6 +99,10 @@ document.getElementById('guild-spell-list').style.display = (isGuild && !state.i
 document.getElementById('townlot-row').style.display = (isTownLot && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('townlot-list').style.display = isTownLot ? 'block' : 'none';
   if(isTownLot) renderTownLot();
+
+document.getElementById('gnometownlot-row').style.display = (isGnomeTownLot && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('gnometownlot-list').style.display = isGnomeTownLot ? 'block' : 'none';
+  if(isGnomeTownLot) renderGnomeTownLot();
 
 document.getElementById('casino-bet-row').style.display = (isCasino && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('casino-row').style.display = (isCasino && !state.inCombat) ? 'flex' : 'none';
@@ -562,12 +568,13 @@ if(state.inCombat){
     camp: { flag: state.hp < state.maxHp ? 'offer' : null },
     gnomeguild: { flag: quest8State==='offer' ? 'offer' : (quest8State==='active' ? 'turnin' : null) },
     gnomeshop: {},
+    gnometownlot: {},
   };
   /* Same cooldown-overlay pattern as the Inn's innCooldownText above,
   just for restAtCamp()'s CAMP_COOLDOWN_MS (content.js) instead. */
   const campCooldownLeft = CAMP_COOLDOWN_MS - (Date.now() - state.lastCampRestAt);
   const campCooldownText = campCooldownLeft > 0 ? formatMs(campCooldownLeft) : null;
-  document.getElementById('scene-art').innerHTML = artGnometropolisSquare(gnomeBuildingIndicators, campCooldownText);
+  document.getElementById('scene-art').innerHTML = artGnometropolisSquare(gnomeBuildingIndicators, campCooldownText, state.gnomeLotTier);
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isGnomeGuild){
   /* Reuses artGuildmaster() (art.js) — same guildmaster, new office,
