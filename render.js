@@ -154,17 +154,24 @@ Object.keys(ZONE_LEVEL_RECOMMENDATION).forEach(zone => {
   el.style.color = state.level >= rec.min ? 'var(--tan)' : 'var(--red)';
 });
 
-/* Biscuit cost of the trip to each priced Map card (ZONE_TRAVEL_COST,
-content.js) — shown up front so the price is known before clicking, not
-just after (travelTo()'s own log line, town.js, still shows it too).
-Districts/palace have no card of their own here (only reachable from
-inside the Gnometropolis square, see isGnometropolisArea(), town.js),
-so there's nothing to show for them. */
+/* Biscuit cost of the trip to each priced Map card — reads travelCostFor()
+(town.js), not ZONE_TRAVEL_COST (content.js) directly, so the price shown
+here always reflects where the character actually CURRENTLY resides:
+Gnometropolis/Mudroot Warren (hub squares) are only priced from outside
+their own hub's area — standing anywhere inside one already (its square
+or any of its districts) makes re-entering it free, and the card needs
+to say so instead of quoting the flat table price no matter where you're
+standing. Commons/Sewers/Quarry/Vault aren't hub squares, so their cost
+never varies by current location — travelCostFor() just returns their
+flat ZONE_TRAVEL_COST either way. Districts/palace have no card of their
+own here (only reachable from inside the Gnometropolis/Mudroot Warren
+square, see hubKeyForLocation(), hubs.js), so there's nothing to show for
+them. */
 Object.keys(ZONE_TRAVEL_COST).forEach(zone => {
   const el = document.getElementById(`zcost-${zone}`);
   if(!el) return;
-  const cost = ZONE_TRAVEL_COST[zone];
-  el.textContent = `Costs ${cost} Biscuit${cost===1?'':'s'} to travel here`;
+  const cost = travelCostFor(zone);
+  el.textContent = cost <= 0 ? "You're already in the area — free to enter" : `Costs ${cost} Biscuit${cost===1?'':'s'} to travel here`;
 });
 
 const sewersUnlocked = state.quest2Complete;
