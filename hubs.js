@@ -19,6 +19,13 @@ belong to WHICH hub. */
 const HUB_TOWNS = {
    town: [],
    gnometropolis: ['garrison', 'roguesden', 'sanctum', 'palace'],
+   /* Act 2 Part 2's first Mole People area. 'mudflats' is deliberately
+   still listed even though it's not enterable until tunnelWardenDefeated
+   (quest9, guild.js) — this registry is about which hub a location
+   BELONGS to for travel-cost/area purposes, not whether it's currently
+   reachable; that gating lives in travelTo() (town.js) same as every
+   other quest-gated destination already does. */
+   mudrootwarren: ['rootcellar', 'mudflats'],
 };
 
 /* Which hub (by key) `loc` belongs to — either a hub square itself, or

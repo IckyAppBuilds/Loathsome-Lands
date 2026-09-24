@@ -108,6 +108,12 @@ function travelTo(dest){
    if(dest === 'quarry' && !state.quest4Complete) return;
    if(dest === 'vault' && !state.quest5Complete) return;
    if(dest === 'gnometropolis' && !state.quest6Complete) return;
+   if(dest === 'mudrootwarren' && !state.quest9Accepted) return;
+   /* Defense-in-depth, same as the district-entry comment below — the
+   Mudflats tile itself isn't clickable in artMudrootWarrenSquare()
+   (mudroot-art.js) until tunnelWardenDefeated, so this gate should
+   never actually trigger through normal play. */
+   if(dest === 'mudflats' && !state.tunnelWardenDefeated) return;
    regenBiscuits();
    if(forceHomeIfBroke()) return;
    const cost = travelCostFor(dest);
@@ -201,6 +207,27 @@ function travelTo(dest){
       state.victoryMonster = null;
       clearLog();
       log("You approach the Gnome King's palace gate, all scavenged gold and gaudy flourish. Somewhere behind it, a throne waits." + costSuffix);
+   } else if(dest === 'mudrootwarren'){
+      const cameFromDistrict = state.location==='rootcellar' || state.location==='mudflats' || state.location==='burrow';
+      state.location = 'mudrootwarren';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log((cameFromDistrict
+          ? "You climb back up into the Warren's entry chamber, root-tangled dark pressing in on every side."
+          : "You drop down through the passage under the throne room and into the dark. Somewhere close, something is already listening.") + costSuffix);
+   } else if(dest === 'rootcellar'){
+      state.location = 'rootcellar';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log("You duck into a low, root-choked cellar, the air thick with turned earth." + costSuffix);
+   } else if(dest === 'mudflats'){
+      state.location = 'mudflats';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log("You push past what's left of the tunnel warden's blockade and out into a wide, sunken mudflat, dark water pooling between the reeds." + costSuffix);
    }
    /* No homeTown update here anymore — merely walking into either
    square doesn't claim it as home. restAtInn() sets 'town' and

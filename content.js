@@ -389,12 +389,16 @@ adventure zone and became its own town hub with 3 explorable districts
 the same 2.3 value the old shared zone used, since a player only ever
 needs to clear ONE district (their own class's) rather than all three,
 so there's no reason to differentiate difficulty between them. */
-const ZONE_DIFFICULTY = { commons:1, sewers:1.15, quarry:1.55, vault:1.9, garrison:2.3, roguesden:2.3, sanctum:2.3, palace:2.3 };
+/* rootcellar/mudflats (Act 2 Part 2's first Mole People area) sit one
+step past Gnometropolis's own districts — Mudflats a further step past
+Root Cellar, since the two are meant to be fought in that order (see
+tunnelWardenHunt/warrenScoutHunt, combat.js). */
+const ZONE_DIFFICULTY = { commons:1, sewers:1.15, quarry:1.55, vault:1.9, garrison:2.3, roguesden:2.3, sanctum:2.3, palace:2.3, rootcellar:2.6, mudflats:2.9 };
 
 /* Display names for each adventure zone, keyed by state.location/zone id —
 used by the Bounty Board (render.js) to spell out where a bounty's
 monster lives without hand-typing zone names in a second place. */
-const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace' };
+const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace', rootcellar:'the Root Cellar', mudflats:'the Mudflats' };
 
 /* Biscuit cost to travel TO each of these (travelCostFor(), town.js) —
 the further out a zone is, the more it costs, same escalating-by-depth
@@ -411,7 +415,7 @@ restAtCamp() (gnometropolis.js) a real reason to exist: Biscuits spent
 resting at the Camp are Biscuits you don't have left for the next trip
 out. Gnometropolis sits one step past Vault, same "deepest costs most"
 shape as the rest of this table. */
-const ZONE_TRAVEL_COST = { commons:1, sewers:2, quarry:3, vault:4, gnometropolis:5 };
+const ZONE_TRAVEL_COST = { commons:1, sewers:2, quarry:3, vault:4, gnometropolis:5, mudrootwarren:8 };
 
 /* Shown on each zone's card in the Map drawer (render.js) as a "Recommended
 level" guideline — deliberately advisory, not a hard gate like zone
@@ -452,6 +456,7 @@ const ZONE_LEVEL_RECOMMENDATION = {
    quarry: { min:6, max:9 },
    vault: { min:7, max:10 },
    gnometropolis: { min:10 },
+   mudrootwarren: { min:16 },
 };
 
 /* Chance, per kill, that a monster's own rareDrop (defined per entry in
@@ -1159,6 +1164,13 @@ Resting here (not just visiting the square) is what sets
 state.homeTown to 'gnometropolis' — see restAtCamp() itself. */
 const CAMP_REST_BISCUIT_COST = 2;
 const CAMP_COOLDOWN_MS = 60 * 1000;
+
+/* The Burrow (Mudroot Warren's own rest tile, restAtBurrow() —
+mudroot.js) — same shape as the Camp above, one step pricier since
+Mudroot Warren sits one step past Gnometropolis. Resting here sets
+state.homeTown to 'mudrootwarren'. */
+const BURROW_REST_BISCUIT_COST = 3;
+const BURROW_COOLDOWN_MS = 60 * 1000;
 
 /* Tinker's Workshop — fractional bonus added to junk sell prices in
 sellItemByName() (game.js). 0.30 at max level = junk sells for 30% more. */

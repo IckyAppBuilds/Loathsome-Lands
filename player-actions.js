@@ -1,6 +1,19 @@
 /* ---------------- Drawers (Inventory / Map / Character / Quests / Account) ---------------- */
 const DRAWER_IDS = { inv:'inv-drawer', map:'map-drawer', character:'character-drawer', quests:'quest-log-drawer', account:'account-drawer' };
 
+/* Which half of the Map drawer is showing: 'act1' | 'act2'. UI-only,
+same convention as shopTab (render-shop.js) — not part of `state`, not
+saved, always reopens on 'act1' since toggleDrawer() below doesn't
+reset it itself (matches shopTab resetting via enterShop() instead —
+there's no single "enter the Map" function to hook, so this just
+starts at a sane default and stays wherever the player left it for the
+rest of the session). */
+let mapTab = 'act1';
+function setMapTab(tab){
+   mapTab = tab;
+   render();
+}
+
 function toggleDrawer(which){
    const targetId = DRAWER_IDS[which];
    const wasOpen = document.getElementById(targetId).classList.contains('open');

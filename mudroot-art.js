@@ -1,0 +1,143 @@
+/* ---------------- Mudroot Warren art (Act 2 Part 2, first Mole People hub) ---------------- */
+/* New concern, new file — same convention as gnometropolis-art.js.
+Loads after art.js/gnometropolis-art.js (index.html) so it can reuse
+makeFlag()/plate()/biGet() (art.js) and sceneWrap() (art.js) without
+re-authoring any of it a third time.
+
+Only 3 of the 9 tiles are real buildings for this first area, per the
+user's own request ("a 3x3 area with a couple of combat zones"): Root
+Cellar and Mudflats (the two combat districts) plus the Burrow (the
+rest tile). The rest are decorative filler — no data-action, no plate()
+label — same as Gnometropolis's own remaining filler tile. One filler
+(a root-wrapped, chained-shut door) is a deliberate foreshadow of a
+future boss gate; it's otherwise inert.
+
+Mudflats is the one tile with a real visual gate on it: it renders as
+a second real building ONLY once `tunnelWardenDefeated` is true,
+otherwise it renders as a collapsed, dirt-packed tunnel mouth — same
+inert-filler treatment as the rest, no plate, no data-action — so
+there's nothing on screen marking it as "a door that opens later,"
+just a tile that quietly becomes a different tile. travelTo() (town.js)
+gates the actual destination the same way, independently, so a player
+can't reach it early by clicking around either. */
+function artMudrootWarrenSquare(buildingIndicators, burrowCooldownText, mudflatsRevealed){
+   const bi = (key) => biGet(buildingIndicators, key);
+   /* A small root-tangle accent, this area's answer to
+   gnometropolis-art.js's mushroom() — ties the filler tiles together as
+   "claimed-by-something-that-digs" without needing a full backdrop on
+   each one. */
+   const roots = (x, y) => `
+   <g transform="translate(${x},${y})">
+   <path d="M0 0 Q-6 8 -2 16 M0 0 Q6 6 4 15 M0 0 Q0 10 3 18" stroke="#5f4632" stroke-width="2.5" fill="none"/>
+   </g>`;
+   const burrowCooldown = !burrowCooldownText ? '' : `
+   <g class="inn-cooldown-overlay">
+   <rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.45"/>
+   <circle cx="50" cy="46" r="15" fill="#3d5a80" stroke="#2b2b28" stroke-width="2.5"/>
+   <line x1="50" y1="46" x2="50" y2="37" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
+   <line x1="50" y1="46" x2="57" y2="46" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
+   <text x="50" y="76" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-size="12" font-weight="700" fill="#f4efe4" stroke="none" id="burrow-cooldown-text">${burrowCooldownText}</text>
+   </g>`;
+   const mudflatsTile = mudflatsRevealed ? `
+   <g transform="translate(100,0)" class="building-hit" data-action="mudflats">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <ellipse cx="50" cy="66" rx="42" ry="20" fill="#5f4632"/>
+   <ellipse cx="34" cy="62" rx="10" ry="4" fill="#3d5a80" opacity="0.6"/>
+   <ellipse cx="64" cy="70" rx="8" ry="3" fill="#3d5a80" opacity="0.6"/>
+   <path d="M20 44 Q24 32 20 20" stroke="#5c8a5c" stroke-width="3" fill="none"/>
+   <path d="M76 40 Q80 28 78 16" stroke="#5c8a5c" stroke-width="3" fill="none"/>
+   <path d="M40 78 L34 88 M46 80 L44 90 M54 80 L58 90" stroke="#2b2b28" stroke-width="2.5"/>
+   ${makeFlag(bi('mudflats').flag)}
+   ${plate("The Mudflats")}
+   </g>` : `
+   <g transform="translate(100,0)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <ellipse cx="50" cy="70" rx="36" ry="16" fill="#5f4632"/>
+   <path d="M50 70 Q50 40 50 20" stroke="#2b2b28" stroke-width="10" stroke-dasharray="1,0" opacity="0.5"/>
+   <ellipse cx="50" cy="52" rx="20" ry="26" fill="#2b2b28" opacity="0.85"/>
+   ${roots(30, 30)}${roots(68, 34)}
+   </g>`;
+   return `<svg class="town-scene-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <rect x="4" y="4" width="292" height="292" fill="none" stroke="#2b2b28" stroke-width="9" stroke-dasharray="17,4" stroke-linecap="butt" stroke-linejoin="miter"/>
+
+   <g transform="translate(0,0)" class="building-hit" data-action="rootcellar">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <path d="M14 82 L14 46 Q50 26 86 46 L86 82 Z" fill="#5f4632"/>
+   <line x1="20" y1="50" x2="20" y2="80"/><line x1="34" y1="46" x2="34" y2="80"/><line x1="50" y1="44" x2="50" y2="80"/><line x1="66" y1="46" x2="66" y2="80"/><line x1="80" y1="50" x2="80" y2="80"/>
+   <path d="M40 82 Q42 68 36 58" stroke="#8a5a3a" stroke-width="3" fill="none"/>
+   <path d="M62 82 Q60 66 68 56" stroke="#8a5a3a" stroke-width="3" fill="none"/>
+   <circle cx="50" cy="64" r="3" fill="#b5453f"/><circle cx="46" cy="70" r="3" fill="#b5453f"/><circle cx="54" cy="70" r="3" fill="#b5453f"/>
+   ${roots(12, 20)}
+   ${makeFlag(bi('rootcellar').flag)}
+   ${plate("The Root Cellar")}
+   </g>
+
+   ${mudflatsTile}
+
+   <g transform="translate(200,0)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <rect x="30" y="30" width="40" height="56" fill="#2b2b28"/>
+   <line x1="36" y1="36" x2="64" y2="80"/><line x1="64" y1="36" x2="36" y2="80"/>
+   <path d="M30 40 Q22 46 26 56 M70 44 Q78 50 74 60 M34 66 Q26 72 30 82 M66 70 Q74 76 70 86" stroke="#5f4632" stroke-width="3" fill="none"/>
+   <circle cx="50" cy="58" r="5" fill="#8a8477" stroke="#2b2b28" stroke-width="2"/>
+   </g>
+
+   <g transform="translate(0,100)" class="building-hit" data-action="burrow">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <ellipse cx="46" cy="70" rx="30" ry="22" fill="#2b2b28"/>
+   <ellipse cx="46" cy="70" rx="20" ry="14" fill="#5f4632"/>
+   <circle cx="72" cy="60" r="9" fill="#b5453f"/>
+   <path d="M68 54 Q72 44 76 54" fill="none" stroke="#d1a94e" stroke-width="2.5"/>
+   <circle cx="72" cy="58" r="3" fill="#d1a94e" stroke="none"/>
+   ${roots(20, 30)}
+   ${makeFlag(bi('burrow').flag)}
+   ${plate("The Burrow")}
+   ${burrowCooldown}
+   </g>
+
+   <g transform="translate(100,100)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   ${roots(30, 40)}${roots(50, 60)}${roots(70, 44)}
+   <ellipse cx="50" cy="80" rx="30" ry="8" fill="#5f4632" opacity="0.6"/>
+   </g>
+
+   <g transform="translate(200,100)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <ellipse cx="40" cy="70" rx="16" ry="10" fill="#b06a97"/><circle cx="34" cy="66" r="2" fill="#d1a94e" stroke="none"/><circle cx="46" cy="64" r="2" fill="#d1a94e" stroke="none"/>
+   <ellipse cx="66" cy="78" rx="10" ry="6" fill="#b06a97"/>
+   ${roots(20, 50)}
+   </g>
+
+   <g transform="translate(0,200)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <path d="M14 60 Q50 40 86 60 L82 82 Q50 92 18 82 Z" fill="#8a8477" opacity="0.6"/>
+   ${roots(50, 30)}
+   </g>
+
+   <g transform="translate(100,200)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <ellipse cx="50" cy="76" rx="22" ry="9" fill="#5f4632" opacity="0.7"/>
+   ${roots(30, 50)}${roots(66, 52)}
+   </g>
+
+   <g transform="translate(200,200)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <ellipse cx="36" cy="72" rx="12" ry="7" fill="#b06a97"/><circle cx="32" cy="68" r="1.6" fill="#d1a94e" stroke="none"/>
+   <ellipse cx="58" cy="80" rx="9" ry="5" fill="#b06a97"/>
+   ${roots(70, 40)}
+   </g>
+   </svg>`;
+}
+
+/* ---------------- Mudroot Warren district backdrops ---------------- */
+/* Same role as artZoneGarrison()/etc. (gnometropolis-art.js) — shown
+between fights while exploring. Root Cellar reads as cramped/underground;
+Mudflats reads as open, wet, and exposed — a visual step further from
+"town" than anything Act 1 or Gnometropolis's own districts show, since
+this is meant to feel like genuinely hostile, unclaimed territory. */
+function artZoneRootCellar(){
+   return sceneWrap(`<rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.35"/><path d="M0 100 L0 40 Q50 14 100 40 L100 100" fill="none" stroke="#5f4632" stroke-width="6"/><line x1="14" y1="30" x2="14" y2="100"/><line x1="34" y1="20" x2="34" y2="100"/><line x1="50" y1="16" x2="50" y2="100"/><line x1="66" y1="20" x2="66" y2="100"/><line x1="86" y1="30" x2="86" y2="100"/><path d="M20 100 Q26 80 18 62 M80 100 Q74 78 82 58" stroke="#8a5a3a" stroke-width="3" fill="none"/>`, 0);
+}
+function artZoneMudflats(){
+   return sceneWrap(`<rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.2"/><ellipse cx="50" cy="78" rx="56" ry="20" fill="#5f4632"/><ellipse cx="30" cy="72" rx="12" ry="4" fill="#3d5a80" opacity="0.55"/><ellipse cx="68" cy="80" rx="10" ry="4" fill="#3d5a80" opacity="0.55"/><path d="M14 50 Q18 34 12 18 M86 46 Q82 30 88 14 M50 52 Q54 36 48 20" stroke="#5c8a5c" stroke-width="3" fill="none"/><circle cx="20" cy="94" r="2.4" fill="#2b2b28" stroke="none"/><circle cx="30" cy="96" r="2.4" fill="#2b2b28" stroke="none"/><circle cx="72" cy="95" r="2.4" fill="#2b2b28" stroke="none"/>`, 0);
+}

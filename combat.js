@@ -5,7 +5,7 @@ districts (reached from that town square via travelTo(), gnometropolis.js)
 took its place as the actual adventuring locations; 'palace' is
 deliberately excluded -- it's a single scripted fight (approachPalaceGate(),
 guild.js), not somewhere to wander and roll random encounters. */
-const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault', 'garrison', 'roguesden', 'sanctum'];
+const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault', 'garrison', 'roguesden', 'sanctum', 'rootcellar', 'mudflats'];
 function goAdventuring(){
    if(state.inCombat || !ADVENTURE_ZONES.includes(state.location)) return;
    regenBiscuits();
@@ -66,6 +66,28 @@ const roguesdenHunt = state.location==='roguesden' && state.classTitle==='Card S
 const sanctumHunt = state.location==='sanctum' && state.classTitle==='Hexpert' && state.quest7Accepted && !state.quest7Complete && !state.arcaneSanctumGuardianDefeated;
    if(sanctumHunt && Math.random() < ARCANE_SANCTUM_GUARDIAN_SPAWN_CHANCE){
       startCombat(arcaneSanctumGuardian);
+      render();
+      return;
+   }
+
+/* Quest 9's two-stage rare hunt, spanning two different Mudroot Warren
+districts — the multi-zone shape the user asked for, not a single-zone
+rare hunt like every Act 1 quest. warrenScoutHunt can never actually
+fire before tunnelWardenDefeated flips true, since state.location can't
+even BE 'mudflats' until then (travelTo(), town.js, plus the tile
+itself not being clickable — artMudrootWarrenSquare(), mudroot-art.js)
+— the !state.tunnelWardenDefeated exclusion below is defense-in-depth,
+not the real gate. */
+const tunnelWardenHunt = state.location==='rootcellar' && state.quest9Accepted && !state.quest9Complete && !state.tunnelWardenDefeated;
+   if(tunnelWardenHunt && Math.random() < TUNNEL_WARDEN_SPAWN_CHANCE){
+      startCombat(tunnelWarden);
+      render();
+      return;
+   }
+
+const warrenScoutHunt = state.location==='mudflats' && state.quest9Accepted && !state.quest9Complete && state.tunnelWardenDefeated && !state.warrenScoutDefeated;
+   if(warrenScoutHunt && Math.random() < WARREN_SCOUT_SPAWN_CHANCE){
+      startCombat(warrenScout);
       render();
       return;
    }
@@ -560,6 +582,8 @@ function winCombat(){
    const wasGarrisonGuardian = !!state.monster.rare && state.monster.name === garrisonGuardian.name;
    const wasRoguesDenEnforcer = !!state.monster.rare && state.monster.name === roguesDenEnforcer.name;
    const wasArcaneSanctumGuardian = !!state.monster.rare && state.monster.name === arcaneSanctumGuardian.name;
+   const wasTunnelWarden = !!state.monster.rare && state.monster.name === tunnelWarden.name;
+   const wasWarrenScout = !!state.monster.rare && state.monster.name === warrenScout.name;
    /* Which of the 5 palace gauntlet guards (PALACE_GUARDS, content.js)
    this was, if any — -1 when it wasn't one of them. Used below to both
    log a distinct "guards left" message and advance
@@ -659,6 +683,12 @@ clearLog();
    } else if(wasArcaneSanctumGuardian){
       state.arcaneSanctumGuardianDefeated = true;
       log(`You defeat ${defeatedName}! The Sanctum's wards flicker and go dark. (+${xpGain} XP)`);
+   } else if(wasTunnelWarden){
+      state.tunnelWardenDefeated = true;
+      log(`You defeat ${defeatedName}! Something further in goes very quiet, like it just noticed you're still coming. (+${xpGain} XP)`);
+   } else if(wasWarrenScout){
+      state.warrenScoutDefeated = true;
+      log(`You defeat ${defeatedName}! Whatever it was watching for, it isn't reporting back now. (+${xpGain} XP)`);
    } else if(wasPalaceGuard){
       /* Advances the gauntlet exactly once per guard kill — guild.js's
       approachPalaceGate() reads this same variable to decide whether the

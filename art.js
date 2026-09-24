@@ -526,6 +526,37 @@ function artGnomePickpocket(){
    return sceneWrap(`<path d="M50 8 Q64 14 60 30 L40 30 Q36 14 50 8 Z" fill="#2b2b28"/><rect x="40" y="26" width="20" height="6" fill="#2b2b28" stroke="none"/><circle cx="50" cy="38" r="10" fill="#e0c49a"/><path d="M34 48 Q50 40 66 48 L62 86 Q50 92 38 86 Z" fill="#2b2b28"/><line x1="34" y1="52" x2="18" y2="60"/><path d="M18 60 L10 54 M18 60 L14 68" stroke-width="2.5"/><line x1="66" y1="52" x2="80" y2="46"/><line x1="50" y1="86" x2="42" y2="99"/><line x1="50" y1="86" x2="58" y2="99"/>`, 0);
 }
 
+/* ---------------- Mudroot Warren monster art (Act 2 Part 2) ---------------- */
+/* mudroot-content.js's 6 regulars + 2 rare hunts (tunnelWarden/
+warrenScout) — kept here rather than a new file, following this
+session's own established precedent of centralizing ALL monster art in
+art.js regardless of which zone/file the monster's own data lives in
+(palaceGuard1-5 did the same). */
+function artTunnelMole(){
+   return sceneWrap(`<ellipse cx="50" cy="62" rx="26" ry="20" fill="#5f4632"/><ellipse cx="50" cy="46" rx="14" ry="11" fill="#5f4632"/><path d="M40 42 Q36 34 30 36" fill="none" stroke-width="3"/><path d="M60 42 Q64 34 70 36" fill="none" stroke-width="3"/><path d="M42 76 L36 90 M50 78 L48 92 M58 76 L64 90" stroke-width="3.5"/>`, 0);
+}
+function artRootGrub(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="30" ry="22" fill="#5c8a5c"/><ellipse cx="50" cy="66" rx="30" ry="22" fill="#d1a94e" opacity="0.25"/><circle cx="36" cy="52" r="2" fill="#2b2b28" stroke="none"/><circle cx="64" cy="52" r="2" fill="#2b2b28" stroke="none"/><path d="M20 66 Q10 60 12 50 M80 66 Q90 60 88 50" fill="none" stroke-width="2.5"/>`, 0);
+}
+function artMoleSapper(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="24" ry="19" fill="#5f4632"/><ellipse cx="50" cy="48" rx="12" ry="10" fill="#5f4632"/><rect x="66" y="54" width="18" height="20" fill="#8a5a3a" transform="rotate(12 75 64)"/><path d="M42 44 Q38 36 32 38" fill="none" stroke-width="3"/><path d="M58 44 Q62 36 68 38" fill="none" stroke-width="3"/><line x1="42" y1="80" x2="38" y2="92"/><line x1="58" y1="80" x2="62" y2="92"/>`, 0);
+}
+function artMudflatLeech(){
+   return sceneWrap(`<ellipse cx="50" cy="60" rx="20" ry="34" fill="#3d5a80"/><ellipse cx="50" cy="60" rx="20" ry="34" fill="#5f4632" opacity="0.35"/><circle cx="50" cy="32" r="4" fill="#2b2b28" stroke="none"/><path d="M50 90 Q40 80 50 70 Q60 80 50 90 Z" fill="#2b2b28" opacity="0.5"/>`, -4);
+}
+function artMoleScout(){
+   return sceneWrap(`<ellipse cx="50" cy="62" rx="22" ry="18" fill="#5f4632"/><ellipse cx="50" cy="46" rx="12" ry="10" fill="#5f4632"/><path d="M40 40 L46 48 M56 40 L54 48 M46 48 L54 48" stroke="#2b2b28" stroke-width="2.5"/><path d="M42 44 Q38 36 32 38" fill="none" stroke-width="3"/><path d="M58 44 Q62 36 68 38" fill="none" stroke-width="3"/><line x1="42" y1="78" x2="36" y2="92"/><line x1="58" y1="78" x2="64" y2="92"/>`, 0);
+}
+function artBurrowHound(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="28" ry="18" fill="#2b2b28"/><ellipse cx="26" cy="54" rx="12" ry="10" fill="#2b2b28"/><path d="M16 48 L10 38 M20 46 L18 34" stroke-width="3"/><path d="M22 60 L36 58 M22 66 L38 66 M22 72 L36 70" stroke="#f4efe4" stroke-width="2.5"/><line x1="70" y1="78" x2="76" y2="90"/><line x1="58" y1="80" x2="60" y2="92"/>`, 0);
+}
+function artTunnelWarden(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="34" ry="24" fill="#5f4632"/><ellipse cx="50" cy="64" rx="34" ry="24" fill="#8a5a3a" opacity="0.3"/><ellipse cx="50" cy="42" rx="16" ry="13" fill="#5f4632"/><path d="M38 36 Q32 26 24 28" fill="none" stroke-width="3.5"/><path d="M62 36 Q68 26 76 28" fill="none" stroke-width="3.5"/><path d="M40 80 L32 96 M50 82 L48 98 M60 80 L68 96" stroke-width="4"/>`, 0);
+}
+function artWarrenScout(){
+   return sceneWrap(`<ellipse cx="50" cy="60" rx="24" ry="20" fill="#5f4632"/><ellipse cx="50" cy="42" rx="13" ry="11" fill="#5f4632"/><path d="M38 36 L44 44 M62 36 L56 44 M44 44 L56 44" stroke="#2b2b28" stroke-width="2.5"/><path d="M40 38 Q35 28 27 30" fill="none" stroke-width="3"/><path d="M60 38 Q65 28 73 30" fill="none" stroke-width="3"/><path d="M20 62 Q10 58 12 46 M80 62 Q90 58 88 46" fill="none" stroke-width="2.5"/><line x1="40" y1="76" x2="34" y2="92"/><line x1="60" y1="76" x2="66" y2="92"/>`, 0);
+}
+
 /* ---------------- Zone backdrop art ---------------- */
 /* One scene per Act 1 adventure zone (ZONE_DIFFICULTY, content.js), shown
 between fights in place of artIdle() (see render.js) so each zone has

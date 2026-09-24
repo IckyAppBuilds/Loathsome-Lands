@@ -34,6 +34,13 @@ const isTownSquare = state.location === 'town';
   tag/lock state shouldn't go dark just because the player stepped off
   the square. */
   const inGnometropolisArea = isGnometropolis || isGarrison || isRoguesden || isSanctum || isPalace || isGnomeGuild || isGnomeShop || isGnomeTownLot;
+  const isMudrootWarren = state.location === 'mudrootwarren'; /* Act 2 Part 2: the Mole People hub square — enters via travelTo(), town.js */
+  const isRootCellar = state.location === 'rootcellar';
+  const isMudflats = state.location === 'mudflats';
+  const isBurrow = state.location === 'burrow';
+  /* Mirrors inGnometropolisArea above — the Mudroot Warren square + its
+  two (so far) districts + its rest tile. */
+  const inMudrootWarrenArea = isMudrootWarren || isRootCellar || isMudflats || isBurrow;
   const isCasino = state.location === 'casino';
   const isNoticeBoard = state.location === 'noticeboard';
   const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot || isNoticeBoard;
@@ -48,6 +55,8 @@ const ZONE_TITLES = {
   gnometropolis: 'Gnometropolis', garrison: 'The Garrison', roguesden: "The Rogues' Den",
   sanctum: 'The Arcane Sanctum', palace: 'The Palace Gate', gnomeguild: 'The Guild',
   gnomeshop: 'The Shop', gnometownlot: 'The Vault',
+  mudrootwarren: 'Mudroot Warren', rootcellar: 'The Root Cellar', mudflats: 'The Mudflats',
+  burrow: 'The Burrow',
 };
 document.getElementById('zone-title').textContent = isTownLot ? LOT_TIER_NAMES[state.lotTier] : (isGnomeTownLot ? GNOME_LOT_TIER_NAMES[state.gnomeLotTier] : (ZONE_TITLES[state.location] || 'The Overgrown Commons'));
   document.getElementById('ztag-town').style.display = inTownArea ? 'block' : 'none';
@@ -178,6 +187,20 @@ const gnometropolisUnlocked = state.quest6Complete;
   document.getElementById('ztag-gnometropolis').textContent = gnometropolisUnlocked ? 'You are here' : 'Locked';
   document.getElementById('ztag-gnometropolis').style.display = gnometropolisUnlocked ? (inGnometropolisArea ? 'block' : 'none') : 'block';
 
+const mudrootwarrenUnlocked = state.quest9Accepted;
+  document.getElementById('zone-card-mudrootwarren').classList.toggle('locked', !mudrootwarrenUnlocked);
+  document.getElementById('ztag-mudrootwarren').textContent = mudrootwarrenUnlocked ? 'You are here' : 'Locked';
+  document.getElementById('ztag-mudrootwarren').style.display = mudrootwarrenUnlocked ? (inMudrootWarrenArea ? 'block' : 'none') : 'block';
+
+/* Map drawer's Act 1/Act 2 tab split (mapTab, player-actions.js) — pure
+UI state, mirrors shopTab's own active/inactive button-class toggle. */
+document.getElementById('map-tab-act1-btn').classList.toggle('btn-primary', mapTab==='act1');
+  document.getElementById('map-tab-act1-btn').classList.toggle('btn-secondary', mapTab!=='act1');
+  document.getElementById('map-tab-act2-btn').classList.toggle('btn-primary', mapTab==='act2');
+  document.getElementById('map-tab-act2-btn').classList.toggle('btn-secondary', mapTab!=='act2');
+  document.getElementById('map-act1-cards').style.display = mapTab==='act1' ? '' : 'none';
+  document.getElementById('map-act2-cards').style.display = mapTab==='act2' ? '' : 'none';
+
 const questState = state.questComplete ? 'complete' : (state.questAccepted ? 'active' : 'offer');
   const tinesHeld = countRakeTines();
   const tinesStillNeeded = QUEST_TINES_NEEDED - state.questTinesGiven;
@@ -218,6 +241,21 @@ const quest7State = state.quest7Complete ? 'complete'
 /* Quest 8, "New Digs" — Act 2's opener, offered/turned in at the new
 Gnometropolis Guild (enterGnomeGuild(), guild.js) once quest7Complete. */
 const quest8State = state.quest8Complete ? 'complete' : (state.quest8Accepted ? 'active' : (state.quest7Complete ? 'offer' : 'locked'));
+
+/* Quest 9, Act 2's first multi-stage quest — offered once quest8Complete,
+its two combat stages span two different Mudroot Warren districts
+(Root Cellar then Mudflats, see tunnelWardenHunt/warrenScoutHunt in
+goAdventuring(), combat.js) with no explicit zone name ever spelled out
+in its own text below (deliberate — "no quest markers", per the user's
+own instruction). 'stage1'/'stage2' are separate states (not folded
+into a single 'active') purely so the quest-box text below can change
+once tunnelWardenDefeated flips, without needing a second flag to know
+which vague paragraph to show. */
+const quest9State = state.quest9Complete ? 'complete'
+  : state.warrenScoutDefeated ? 'ready'
+  : state.tunnelWardenDefeated ? 'stage2'
+  : state.quest9Accepted ? 'stage1'
+  : (state.quest8Complete ? 'offer' : 'locked');
 
 /* 'trials': accepted, but not all three trainers' tests are passed yet.
 'ready': all three passed, waiting on claimClassPath(chosenStat) — see the
@@ -302,6 +340,9 @@ document.getElementById('gnomeguild-row').style.display = (isGnomeGuild && !stat
   document.getElementById('accept-quest8-btn').style.display = quest8State==='offer' ? '' : 'none';
   document.getElementById('report-quest8-btn').style.display = quest8State==='active' ? '' : 'none';
   document.getElementById('report-quest8-btn').classList.toggle('btn-ready', quest8State==='active');
+  document.getElementById('accept-quest9-btn').style.display = quest9State==='offer' ? '' : 'none';
+  document.getElementById('report-quest9-btn').style.display = quest9State==='ready' ? '' : 'none';
+  document.getElementById('report-quest9-btn').classList.toggle('btn-ready', quest9State==='ready');
 
 document.getElementById('accept-quest3-btn').style.display = quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = quest3State==='active' ? '' : 'none';
@@ -343,7 +384,8 @@ const guildQuestBoxNeeded = quest2State==='offer' || quest2State==='active'
 document.getElementById('quest-box').style.display = (!state.inCombat && (
   (isGafferHouse && (questState==='offer' || questState==='active'))
   || (isGuild && guildQuestBoxNeeded)
-  || (isGnomeGuild && (quest8State==='offer' || quest8State==='active'))
+  || (isGnomeGuild && (quest8State==='offer' || quest8State==='active'
+      || quest9State==='offer' || quest9State==='stage1' || quest9State==='stage2' || quest9State==='ready'))
   || (isHoodoo && (quest3State==='offer' || quest3State==='active'))
   || (isTinker && (quest4State==='offer' || quest4State==='active' || quest5State==='offer' || quest5State==='active'))
 )) ? 'block' : 'none';
@@ -398,6 +440,22 @@ if(isGafferHouse){
     document.getElementById('quest-name').textContent = 'Quest: New Digs';
     document.getElementById('quest-desc').textContent = "Sign the ledger and make it official.";
     document.getElementById('quest-progress').textContent = 'Ready to sign.';
+  } else if(quest9State==='offer'){
+    document.getElementById('quest-name').textContent = 'Quest available: What the Throne Room Opened';
+    document.getElementById('quest-desc').textContent = "The guildmaster's found something in paperwork older than the palace itself — a sealed passage, cracked open by the fight with the Gnome King. Something's been living down there a very long time, and it isn't happy about the light. Go find out what — and watch yourself down there.";
+    document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+  } else if(quest9State==='stage1'){
+    document.getElementById('quest-name').textContent = 'Quest: What the Throne Room Opened';
+    document.getElementById('quest-desc').textContent = "Whatever's down there isn't going to introduce itself. Keep going.";
+    document.getElementById('quest-progress').textContent = "It hasn't shown itself yet.";
+  } else if(quest9State==='stage2'){
+    document.getElementById('quest-name').textContent = 'Quest: What the Throne Room Opened';
+    document.getElementById('quest-desc').textContent = "You've gone further than anyone in living memory — and further than whatever you just fought expected. There's more ahead. Don't stop now.";
+    document.getElementById('quest-progress').textContent = 'Something further in noticed you coming.';
+  } else if(quest9State==='ready'){
+    document.getElementById('quest-name').textContent = 'Quest: What the Throne Room Opened';
+    document.getElementById('quest-desc').textContent = "You've seen enough to know this isn't an empty hole in the ground. Head back and tell the guildmaster what you found.";
+    document.getElementById('quest-progress').textContent = 'Ready to report.';
   }
 } else if(isHoodoo){
   if(quest3State==='offer'){
@@ -566,7 +624,10 @@ if(state.inCombat){
     sanctum: { flag: (state.classTitle==='Hexpert' && state.quest7Accepted && !state.quest7Complete && !state.arcaneSanctumGuardianDefeated) ? 'offer' : null },
     palace: { flag: canApproachPalaceGate ? 'turnin' : null },
     camp: { flag: state.hp < state.maxHp ? 'offer' : null },
-    gnomeguild: { flag: quest8State==='offer' ? 'offer' : (quest8State==='active' ? 'turnin' : null) },
+    /* Combined with quest9's own offer/ready states — this tile is
+    "something to do at the Guild," not a marker for where quest9's
+    combat stages actually are (those show no flag anywhere). */
+    gnomeguild: { flag: (quest8State==='offer' || quest9State==='offer') ? 'offer' : ((quest8State==='active' || quest9State==='ready') ? 'turnin' : null) },
     gnomeshop: {},
     gnometownlot: {},
   };
@@ -575,6 +636,27 @@ if(state.inCombat){
   const campCooldownLeft = CAMP_COOLDOWN_MS - (Date.now() - state.lastCampRestAt);
   const campCooldownText = campCooldownLeft > 0 ? formatMs(campCooldownLeft) : null;
   document.getElementById('scene-art').innerHTML = artGnometropolisSquare(gnomeBuildingIndicators, campCooldownText, state.gnomeLotTier);
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isMudrootWarren){
+  /* Mirrors gnomeBuildingIndicators above. Mudflats gets NO flag ever —
+  a flag here would be exactly the kind of quest marker the user asked
+  not to have; the district's own tile art (artMudrootWarrenSquare(),
+  mudroot-art.js) is the only thing that changes once tunnelWardenDefeated,
+  and even that's a reveal, not a pointer. */
+  const mudrootBuildingIndicators = {
+    rootcellar: {},
+    mudflats: {},
+    burrow: { flag: state.hp < state.maxHp ? 'offer' : null },
+  };
+  const burrowCooldownLeft = BURROW_COOLDOWN_MS - (Date.now() - state.lastBurrowRestAt);
+  const burrowCooldownText = burrowCooldownLeft > 0 ? formatMs(burrowCooldownLeft) : null;
+  document.getElementById('scene-art').innerHTML = artMudrootWarrenSquare(mudrootBuildingIndicators, burrowCooldownText, state.tunnelWardenDefeated);
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isRootCellar){
+  document.getElementById('scene-art').innerHTML = artZoneRootCellar();
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isMudflats){
+  document.getElementById('scene-art').innerHTML = artZoneMudflats();
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isGnomeGuild){
   /* Reuses artGuildmaster() (art.js) — same guildmaster, new office,

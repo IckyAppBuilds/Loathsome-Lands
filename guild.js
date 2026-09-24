@@ -239,6 +239,35 @@ function reportQuest8(){
    autosave();
 }
 
+/* Quest 9, "What the Throne Room Opened" — Act 2's first multi-stage
+quest, its two combat stages spanning two different Mudroot Warren
+districts (see quest9State, render.js, and tunnelWardenHunt/
+warrenScoutHunt, combat.js). Deliberately vague throughout, per the
+user's own "no quest markers" instruction — no zone ever gets named
+here, on purpose; travelTo() (town.js) unlocking `mudrootwarren` the
+moment this is accepted is the ONLY thing that actually points anywhere,
+and even that's just "a new place exists on the Map," not "go to X." */
+function acceptQuest9(){
+   if(state.location !== 'gnomeguild' || !state.quest8Complete || state.quest9Accepted || state.quest9Complete) return;
+   state.quest9Accepted = true;
+   clearLog();
+   log("\"Don't go in loud,\" the guildmaster says, already regretting sending you. \"Just go find out what's down there. And watch yourself.\"");
+   render();
+   autosave();
+}
+function reportQuest9(){
+   if(state.location !== 'gnomeguild' || !state.quest9Accepted || state.quest9Complete || !state.warrenScoutDefeated) return;
+   state.quest9Complete = true;
+   state.popTabs += 90;
+   state.xp += 70;
+   clearLog();
+   log("You lay it all out for the guildmaster — what you found, what you fought, how far down it went. (+90 Pop Tabs, +70 XP)");
+   log("The guildmaster doesn't look reassured. \"That's not a den. That's an outpost. Which means there's more of them, and something they're all listening to. We're not done here.\"");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
 /* How many of PALACE_GUARDS (content.js) are down in the CURRENT
 uninterrupted gauntlet attempt — a plain transient variable, never
 saved, same convention combatSubView (combat.js) uses for UI/session

@@ -130,6 +130,17 @@ function createDefaultState(){
      objective yet), not a typo -- see acceptQuest8()'s own comment. */
      quest8Accepted: false,
      quest8Complete: false,
+     /* Act 2's first multi-stage quest, "What the Throne Room Opened" —
+     offered at the new Guild once quest8Complete. Stage 1 is
+     tunnelWardenDefeated (fought in the Root Cellar), stage 2 is
+     warrenScoutDefeated (fought in the Mudflats, only reachable once
+     stage 1 clears) — see quest9State (render.js) for how these combine
+     into one progression, and tunnelWardenHunt/warrenScoutHunt
+     (combat.js) for the actual encounters. */
+     quest9Accepted: false,
+     quest9Complete: false,
+     tunnelWardenDefeated: false,
+     warrenScoutDefeated: false,
      classQuestAccepted: false,
      classQuestComplete: false,
      classTitle: null,
@@ -187,6 +198,10 @@ function createDefaultState(){
         than sharing lastInnRestAt so resting at one building doesn't
         also lock out the other. */
      lastCampRestAt: 0,
+     /* Same cooldown gate again, but for restAtBurrow() (mudroot.js) — its
+     own separate timestamp for the same reason lastCampRestAt is its own
+     separate timestamp from lastInnRestAt. */
+     lastBurrowRestAt: 0,
      /* Passive Casino income ("the house's cut") — unlocked once
         buildingUpgrades.casino is at least 1 (CASINO_WINNINGS_CAP[0]=0
         keeps it at zero/inert before that). Accrues off real elapsed time
