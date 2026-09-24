@@ -3,11 +3,14 @@ const DRAWER_IDS = { inv:'inv-drawer', map:'map-drawer', character:'character-dr
 
 /* Which half of the Map drawer is showing: 'act1' | 'act2'. UI-only,
 same convention as shopTab (render-shop.js) — not part of `state`, not
-saved, always reopens on 'act1' since toggleDrawer() below doesn't
-reset it itself (matches shopTab resetting via enterShop() instead —
-there's no single "enter the Map" function to hook, so this just
-starts at a sane default and stays wherever the player left it for the
-rest of the session). */
+saved. Defaulted fresh every time the drawer actually OPENS (below, in
+toggleDrawer()) rather than staying fixed at 'act1' forever — a player
+currently standing anywhere in Gnometropolis or Mudroot Warren's own
+area (hubKeyForLocation(), hubs.js) almost certainly wants the Act 2
+tab, not Act 1's now-irrelevant Gladstone Hollow zones. Manually
+clicking the other tab still works as normal for the rest of that
+same "drawer open" session — this only resets the STARTING tab each
+time it's freshly opened, same as shopTab resetting via enterShop(). */
 let mapTab = 'act1';
 function setMapTab(tab){
    mapTab = tab;
@@ -23,6 +26,11 @@ function toggleDrawer(which){
       if(which==='character') renderCharacterDrawer();
       if(which==='quests') renderQuestLogDrawer();
       if(which==='account') renderAccountTab();
+      if(which==='map'){
+         const inAct2Area = ['gnometropolis', 'mudrootwarren'].includes(hubKeyForLocation(state.location));
+         mapTab = inAct2Area ? 'act2' : 'act1';
+         render();
+      }
    }
 }
 function openDrawer(id){

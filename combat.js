@@ -802,12 +802,34 @@ function endCombat(){
    if(state.classBuffFightsLeft > 0) state.classBuffFightsLeft--;
 }
 
+/* Where a defeat's own wake-up line (checkDefeat() below) says the
+player lands, and which building it points them at to rest — keyed by
+state.homeTown, same set of values TOWN_HUBS (hubs.js) allows. Every
+key here needs a matching HP/MP recovery building for the line to make
+sense; 'mudrootwarren' isn't currently reachable as a real homeTown
+value (nothing sets it — the Bureau replaced the only rest tile that
+hub ever had), but it's included anyway so this stays correct if that
+ever changes rather than silently falling back to the Gladstone Hollow
+line for a home in a completely different part of the map. */
+const DEFEAT_WAKE_UP_LOCATION = {
+   town: { place:'Gladstone Hollow', restBuilding:'the Inn' },
+   gnometropolis: { place:'Gnometropolis', restBuilding:'the Camp' },
+   mudrootwarren: { place:'Mudroot Warren', restBuilding:'the Camp back in Gnometropolis' },
+};
+
 function checkDefeat(){
    if(state.hp<=0){
       clearLog();
+      /* The wake-up line used to always say "back in town... rest at
+      the Inn" no matter what — wrong the moment state.homeTown (below)
+      is actually 'gnometropolis' (there's no Inn there, only the
+      Camp). Keyed the same way DEFEAT_WAKE_UP_LOCATION resolves
+      homeTown to an actual place/rest-building pair, so the text
+      always matches where the teleport below is really sending them. */
+      const wakeUp = DEFEAT_WAKE_UP_LOCATION[state.homeTown] || DEFEAT_WAKE_UP_LOCATION.town;
       log(devMode
-          ? "Everything goes dark. You wake up back in town, every inch of you aching — you should really rest at the Inn. (dev mode — no Biscuit penalty)"
-          : "Everything goes dark. You wake up back in town, every inch of you aching — you should really rest at the Inn. (-2 Biscuits for the walk of shame)", 'damage');
+          ? `Everything goes dark. You wake up back in ${wakeUp.place}, every inch of you aching — you should really rest at ${wakeUp.restBuilding}. (dev mode — no Biscuit penalty)`
+          : `Everything goes dark. You wake up back in ${wakeUp.place}, every inch of you aching — you should really rest at ${wakeUp.restBuilding}. (-2 Biscuits for the walk of shame)`, 'damage');
       state.hp = Math.max(1, Math.floor(state.maxHp*0.1));
       if(!devMode) state.adventures = Math.max(0, state.adventures-2);
       /* A defeat inside the Palace gauntlet counts as "leaving the
