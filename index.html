@@ -21,7 +21,7 @@ file itself, so this no longer needs doing by hand. Without it, a
 returning player's browser (and a static host's CDN, e.g. GitHub Pages)
 could keep serving an old cached copy of a file indefinitely, since
 none of these are fingerprinted filenames from a real build step. -->
-<link rel="stylesheet" href="styles.css?v=20260923204333">
+<link rel="stylesheet" href="styles.css?v=20260923205438">
 </head>
 <body>
 <div id="app">
@@ -145,6 +145,7 @@ none of these are fingerprinted filenames from a real build step. -->
 <div class="quest-desc" id="noticeboard-guest-hint" style="display:none;">Playing as a guest — register a free account from the Account tab to pin your own notice. Anyone can still read the board.</div>
 
 <div id="shop-list"></div>
+<div id="gnomeshop-list"></div>
 <div id="hoodoo-list"></div>
 <div id="hoodoo-class-spell-list"></div>
 <div id="hoodoo-classskill-block"></div>
@@ -193,6 +194,9 @@ none of these are fingerprinted filenames from a real build step. -->
 </div>
 <div class="btn-row" id="shop-row" style="display:none;">
 <button class="btn-secondary" onclick="leaveShop()">Leave</button>
+</div>
+<div class="btn-row" id="gnomeshop-row" style="display:none;">
+<button class="btn-secondary" onclick="leaveGnomeShop()">Leave</button>
 </div>
 <div class="btn-row" id="hoodoo-row" style="display:none;">
 <button class="btn-primary" id="accept-quest3-btn" onclick="acceptQuest3()" style="display:none;">Accept: A Proper Potion</button>
@@ -406,29 +410,30 @@ after every script has loaded):
   2. boot.js must be LAST -- its final block calls renderGate()/
      startFreshGame() immediately at parse time, so every other global
      it might touch must already exist. See AGENTS.md for the full file map. -->
-<script src="core.js?v=20260923204333"></script>
-<script src="icons.js?v=20260923204333"></script>
-<script src="art.js?v=20260923204333"></script>
-<script src="gnometropolis-art.js?v=20260923204333"></script>
-<script src="content.js?v=20260923204333"></script>
-<script src="item-tiers.js?v=20260923204333"></script>
-<script src="render.js?v=20260923204333"></script>
-<script src="render-shop.js?v=20260923204333"></script>
-<script src="render-character.js?v=20260923204333"></script>
-<script src="class-spells.js?v=20260923204333"></script>
-<script src="dev-tools.js?v=20260923204333"></script>
-<script src="auth.js?v=20260923204333"></script>
-<script src="save.js?v=20260923204333"></script>
-<script src="player-actions.js?v=20260923204333"></script>
-<script src="tutorial.js?v=20260923204333"></script>
-<script src="hubs.js?v=20260923204333"></script>
-<script src="combat.js?v=20260923204333"></script>
-<script src="town.js?v=20260923204333"></script>
-<script src="guild.js?v=20260923204333"></script>
-<script src="gnometropolis.js?v=20260923204333"></script>
-<script src="economy.js?v=20260923204333"></script>
-<script src="noticeboard.js?v=20260923204333"></script>
-<script src="boot.js?v=20260923204333"></script>
+<script src="core.js?v=20260923205438"></script>
+<script src="icons.js?v=20260923205438"></script>
+<script src="art.js?v=20260923205438"></script>
+<script src="gnometropolis-art.js?v=20260923205438"></script>
+<script src="content.js?v=20260923205438"></script>
+<script src="act2-shop.js?v=20260923205438"></script>
+<script src="item-tiers.js?v=20260923205438"></script>
+<script src="render.js?v=20260923205438"></script>
+<script src="render-shop.js?v=20260923205438"></script>
+<script src="render-character.js?v=20260923205438"></script>
+<script src="class-spells.js?v=20260923205438"></script>
+<script src="dev-tools.js?v=20260923205438"></script>
+<script src="auth.js?v=20260923205438"></script>
+<script src="save.js?v=20260923205438"></script>
+<script src="player-actions.js?v=20260923205438"></script>
+<script src="tutorial.js?v=20260923205438"></script>
+<script src="hubs.js?v=20260923205438"></script>
+<script src="combat.js?v=20260923205438"></script>
+<script src="town.js?v=20260923205438"></script>
+<script src="guild.js?v=20260923205438"></script>
+<script src="gnometropolis.js?v=20260923205438"></script>
+<script src="economy.js?v=20260923205438"></script>
+<script src="noticeboard.js?v=20260923205438"></script>
+<script src="boot.js?v=20260923205438"></script>
 </body>
 </html>
 

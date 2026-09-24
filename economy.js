@@ -103,6 +103,29 @@ function buyItemByName(name){
    render();
 }
 
+/* Act 2 Shop equivalent of buyItemByName() above — same shape, reads
+from getAvailableGnomeShopItems() (act2-shop.js) and gates on
+state.location === 'gnomeshop' instead. Kept as its own function rather
+than adding a branch to buyItemByName() so neither shop's own item
+lookup/gate can ever leak into the other. rollShopGearStats() (this
+file) works unchanged on either catalog — it only cares about a def's
+own `.bonus`, not which shop it came from. */
+function buyGnomeShopItemByName(name){
+   if(state.location !== 'gnomeshop') return;
+   const def = getAvailableGnomeShopItems().find(i=>i.name===name);
+   if(!def || state.popTabs < def.price) return;
+   state.popTabs -= def.price;
+   const item = rollShopGearStats(def);
+   state.inventory.push(item);
+   lastPurchase = { name: item.name, tier: item.tier, at: Date.now() };
+   clearLog();
+   const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
+   ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
+     : '';
+   log(`You buy ${item.name} for ${def.price} Pop Tabs.${bonusText}`);
+   render();
+}
+
 function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
 /* ---------------- Biscuit regeneration ---------------- */

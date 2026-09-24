@@ -128,7 +128,8 @@ passed. Long enough to register as feedback, short enough that flipping
 back to this tab later never replays it. */
 const PURCHASE_FLASH_MS = 1200;
 
-function renderShopItemRow(def){
+function renderShopItemRow(def, buyFn){
+  buyFn = buyFn || 'buyItemByName'; /* the Act 2 Shop (renderGnomeShop(), below) passes 'buyGnomeShopItemByName' instead */
   const div = document.createElement('div');
   const justBought = lastPurchase && lastPurchase.name===def.name
     && (def.type!=='equip' || lastPurchase.tier===def.tier)
@@ -167,7 +168,7 @@ function renderShopItemRow(def){
   the player isn't surprised when equipItem() (player-actions.js) later
   refuses it. */
   const reqText = def.type==='equip' ? gearRequirementText(def) : '';
-  div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(def)}${slotTag}${ownedTag}</div><div class="desc">${def.desc}${bonusTag}${reqText} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="buyItemByName('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
+  div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(def)}${slotTag}${ownedTag}</div><div class="desc">${def.desc}${bonusTag}${reqText} (${def.price} Pop Tabs)</div><button class="btn-secondary" ${canAfford?'':'disabled'} onclick="${buyFn}('${def.name.replace(/'/g,"\\'")}')">Buy — ${def.price} Pop Tabs</button></div>`;
   return div;
 }
 
@@ -256,6 +257,31 @@ if(sellable.length===0){
   });
 }
   shopList.appendChild(sellSection);
+}
+
+/* Act 2 Shop (Gnometropolis) — simpler than renderShop() above on
+purpose: gear only, no Food/Sell tabs (selling still works fine back
+at Gladstone's own Shop; nothing lost by not duplicating it here), no
+tab row at all since there's only one thing to show. Groups by
+act2Tier (act2-shop.js) rather than the `tier` field renderShop() uses
+above — every item here shares tier:'legendary' for its color, so
+grouping by THAT would collapse all four tiers into one section. */
+function renderGnomeShop(){
+  const list = document.getElementById('gnomeshop-list');
+  if(!list) return;
+  list.innerHTML = '';
+  const items = getAvailableGnomeShopItems();
+  const ACT2_TIER_LABEL = { 1:'Tier 1', 2:'Tier 2', 3:'Tier 3', 4:'Tier 4' };
+  [1,2,3,4].forEach(tierNum => {
+    const tierItems = items.filter(def => def.act2Tier === tierNum);
+    if(tierItems.length===0) return;
+    const header = document.createElement('div');
+    header.className = 'shop-section-title';
+    header.style.color = ITEM_TIER_COLORS.legendary;
+    header.textContent = `${ACT2_TIER_LABEL[tierNum]} Relics`;
+    list.appendChild(header);
+    tierItems.forEach(def => list.appendChild(renderShopItemRow(def, 'buyGnomeShopItemByName')));
+  });
 }
 
 /* Repeatable content, rendered as its own section below the Guild's

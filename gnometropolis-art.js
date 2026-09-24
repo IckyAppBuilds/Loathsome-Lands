@@ -18,7 +18,7 @@ Gladstone Hollow's cottage-warm red/yellow — Gnometropolis is a capital
 built out of repurposed junk, not a village. */
 
 /* One {flag} slot per real building tile (garrison/roguesden/sanctum/
-palace/camp/gnomeguild) — see render.js's isGnometropolis branch for how
+palace/camp/gnomeguild/gnomeshop) — see render.js's isGnometropolis branch for how
 these get set. Simpler than artTownSquare()'s buildingIndicators (no
 trial slot — there's no class-trial building here) but same biGet()
 shape so a future addition is just adding a badge call, not a signature
@@ -126,13 +126,16 @@ function artGnometropolisSquare(buildingIndicators, campCooldownText){
    ${plate("The Guild")}
    </g>
 
-   <g transform="translate(0,200)">
+   <g transform="translate(0,200)" class="building-hit" data-action="gnomeshop">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
-   <rect x="20" y="55" width="26" height="8" fill="#3d5a80" transform="rotate(-12 33 59)"/>
-   <rect x="45" y="60" width="30" height="7" fill="#8a5a3a" transform="rotate(8 60 63)"/>
-   <circle cx="35" cy="72" r="10" fill="#b9b3a4"/>
-   <circle cx="35" cy="72" r="3" fill="#2b2b28" stroke="none"/>
-   <rect x="55" y="68" width="18" height="18" fill="#5f4632" transform="rotate(-5 64 77)"/>
+   <path d="M16 50 L50 26 L84 50 Z" fill="#d1a94e"/>
+   <rect x="20" y="50" width="60" height="34" fill="#8a8477"/>
+   <rect x="30" y="58" width="14" height="14" fill="#5f4632"/>
+   <rect x="56" y="58" width="14" height="14" fill="#5f4632"/>
+   <circle cx="37" cy="65" r="2" fill="#d1a94e" stroke="none"/>
+   <circle cx="63" cy="65" r="2" fill="#d1a94e" stroke="none"/>
+   ${makeFlag(bi('gnomeshop').flag)}
+   ${plate("The Shop")}
    </g>
 
    <g transform="translate(100,200)">

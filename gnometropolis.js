@@ -77,4 +77,22 @@ function updateCampCooldownDisplay(){
    if(cooldownLeft <= 0){ render(); return; }
    el.textContent = formatMs(cooldownLeft);
 }
+
+/* The Act 2 Shop — new building tile in the square, only open once
+quest7Complete (same gate the new Guild uses, guild.js). Reuses the
+enter/leave pair shape every other building in the game follows.
+renderGnomeShop() (render-shop.js) does the actual listing. */
+function enterGnomeShop(){
+   if(state.inCombat || state.location !== 'gnometropolis' || !state.quest7Complete) return;
+   state.location = 'gnomeshop';
+   clearLog();
+   log("You step into a converted vault, now stacked with plundered gear no one's left to claim.");
+   render();
+}
+function leaveGnomeShop(){
+   if(state.inCombat || state.location !== 'gnomeshop') return;
+   state.location = 'gnometropolis';
+   clearLog();
+   render();
+}
 setInterval(updateCampCooldownDisplay, 1000);

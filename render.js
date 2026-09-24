@@ -27,10 +27,11 @@ const isTownSquare = state.location === 'town';
   const isSanctum = state.location === 'sanctum';
   const isPalace = state.location === 'palace';
   const isGnomeGuild = state.location === 'gnomeguild'; /* Act 2: the Guild's new home, reachable once quest7Complete — enterGnomeGuild(), guild.js */
+  const isGnomeShop = state.location === 'gnomeshop'; /* Act 2: the new Shop, same quest7Complete gate — enterGnomeShop(), gnometropolis.js */
   /* Any of the Gnometropolis square + its 3 districts + the palace gate
-  + the new Guild — used where the Map's "you are here" tag/lock state
-  shouldn't go dark just because the player stepped off the square. */
-  const inGnometropolisArea = isGnometropolis || isGarrison || isRoguesden || isSanctum || isPalace || isGnomeGuild;
+  + the new Guild/Shop — used where the Map's "you are here" tag/lock
+  state shouldn't go dark just because the player stepped off the square. */
+  const inGnometropolisArea = isGnometropolis || isGarrison || isRoguesden || isSanctum || isPalace || isGnomeGuild || isGnomeShop;
   const isCasino = state.location === 'casino';
   const isNoticeBoard = state.location === 'noticeboard';
   const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot || isNoticeBoard;
@@ -44,6 +45,7 @@ const ZONE_TITLES = {
   sewers: 'Dank Sewers', quarry: 'The Clockwork Quarry', vault: 'The Sunless Vault',
   gnometropolis: 'Gnometropolis', garrison: 'The Garrison', roguesden: "The Rogues' Den",
   sanctum: 'The Arcane Sanctum', palace: 'The Palace Gate', gnomeguild: 'The Guild',
+  gnomeshop: 'The Shop',
 };
 document.getElementById('zone-title').textContent = isTownLot ? LOT_TIER_NAMES[state.lotTier] : (ZONE_TITLES[state.location] || 'The Overgrown Commons');
   document.getElementById('ztag-town').style.display = inTownArea ? 'block' : 'none';
@@ -69,6 +71,10 @@ document.getElementById('zone-title').textContent = isTownLot ? LOT_TIER_NAMES[s
   document.getElementById('shop-row').style.display = (isShop && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('shop-list').style.display = isShop ? 'block' : 'none';
   if(isShop) renderShop();
+
+document.getElementById('gnomeshop-row').style.display = (isGnomeShop && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('gnomeshop-list').style.display = isGnomeShop ? 'block' : 'none';
+  if(isGnomeShop) renderGnomeShop();
 
 document.getElementById('hoodoo-row').style.display = (isHoodoo && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('hoodoo-list').style.display = (isHoodoo && !state.inCombat) ? 'block' : 'none';
@@ -555,6 +561,7 @@ if(state.inCombat){
     palace: { flag: canApproachPalaceGate ? 'turnin' : null },
     camp: { flag: state.hp < state.maxHp ? 'offer' : null },
     gnomeguild: { flag: quest8State==='offer' ? 'offer' : (quest8State==='active' ? 'turnin' : null) },
+    gnomeshop: {},
   };
   /* Same cooldown-overlay pattern as the Inn's innCooldownText above,
   just for restAtCamp()'s CAMP_COOLDOWN_MS (content.js) instead. */
@@ -567,6 +574,12 @@ if(state.inCombat){
   no new art needed for a building that's otherwise plain quest-box/
   bounty-box UI like Gladstone's own Guild. */
   document.getElementById('scene-art').innerHTML = artGuildmaster();
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isGnomeShop){
+  /* Reuses artShopkeeper() (art.js) — same shopkeeper archetype, no new
+  art needed for what's otherwise plain shop-list UI (renderGnomeShop(),
+  render-shop.js). */
+  document.getElementById('scene-art').innerHTML = artShopkeeper();
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isGarrison){
   document.getElementById('scene-art').innerHTML = artZoneGarrison();

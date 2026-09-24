@@ -29,6 +29,7 @@ document.getElementById('scene-art').addEventListener('click', function(e){
    else if(action === 'palace') travelTo('palace');
    else if(action === 'camp') restAtCamp();
    else if(action === 'gnomeguild') enterGnomeGuild();
+   else if(action === 'gnomeshop') enterGnomeShop();
 });
 
 /* Seed a brand-new run: starter gear (equipped) and a couple of starter
