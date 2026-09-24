@@ -31,6 +31,17 @@ const HUB_TOWNS = {
    mudrootwarren: ['rootcellar', 'mudflats', 'bureau'],
 };
 
+/* Which of HUB_TOWNS's keys are proper TOWN hubs — a real home base with
+its own Shop/Guild/rest option — as opposed to an "adventure hub" like
+mudrootwarren, which is hub-SHAPED (a square plus districts, same
+free-to-roam-once-inside rules) but has no Shop/Guild/rest tile of its
+own and was never meant to double as anywhere to actually live. Read
+by travelCostFor()'s (town.js) hub-to-hub free-travel rule — per
+explicit correction, free hub-to-hub travel is a town-hub-to-town-hub
+thing only; reaching or leaving an adventure hub still costs Biscuits
+like any other expedition, even between two hubs. */
+const TOWN_HUB_KEYS = ['town', 'gnometropolis'];
+
 /* Which hub (by key) `loc` belongs to — either a hub square itself, or
 one of its districts. null if `loc` isn't part of any hub (an Act 1
 adventure zone, a Gladstone building interior, etc.). */
