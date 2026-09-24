@@ -315,3 +315,16 @@ function iconShout(){
      return iconWrap(`<path d="M18 20 Q30 8 42 20 L42 40 Q30 52 18 40 Z" fill="#b5453f"/><path d="M46 16 Q56 24 46 32" fill="none" stroke-width="3"/><path d="M48 10 Q62 24 48 38" fill="none" stroke-width="2.5"/>`);
 }
 
+/* Act 2's own class spells (content.js's spells[], learnLocation) — same
+fixed palette as the 3 above, one icon apiece so each reads as distinct
+from its class's Act 1 spell in a shared list. */
+function iconStubbornRecovery(){
+     return iconWrap(`<circle cx="30" cy="30" r="16" fill="#b5453f"/><path d="M20 30 L26 36 L40 20" fill="none" stroke="#f4efe4" stroke-width="4"/>`);
+}
+function iconSmokeScreen(){
+     return iconWrap(`<circle cx="22" cy="34" r="10" fill="#8a8477" opacity="0.6"/><circle cx="34" cy="26" r="12" fill="#8a8477" opacity="0.5"/><circle cx="40" cy="40" r="8" fill="#8a8477" opacity="0.55"/><circle cx="30" cy="34" r="4" fill="#2b2b28" stroke="none"/>`);
+}
+function iconArcaneLance(){
+     return iconWrap(`<path d="M30 6 L34 40 L30 54 L26 40 Z" fill="#3d5a80"/><path d="M22 16 L30 6 L38 16" fill="none" stroke="#d1a94e" stroke-width="3"/><circle cx="30" cy="40" r="3" fill="#d1a94e" stroke="none"/>`);
+}
+

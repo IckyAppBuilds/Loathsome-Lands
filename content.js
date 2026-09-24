@@ -778,6 +778,20 @@ Charm and Warding Charm are Hexpert-exclusive now, same shape as the
 change to CLASS_SPELL_LOCATION needed, just who's allowed to learn
 them there).
 
+`learnLocation`, where present, overrides CLASS_SPELL_LOCATION's default
+building for that class — used by the 3 Act 2 spells below (stubbornrecovery/
+smokescreen/arcanelance) so they're taught at each class's new Gnometropolis
+building (garrison/roguesden/sanctum) instead of that class's original
+Act 1 trainer, without changing where the ORIGINAL 6 spells above are
+still taught. renderClassSpellList() (class-spells.js) filters on this
+same effective location too, so a building's list only ever shows spells
+actually learnable there, never a spell that would silently refuse when
+clicked from the wrong building. Each of the 3 fills in the one spell
+TYPE its class didn't already have — Meathead had no heal, Card Shark
+had no ward, Hexpert had no class-exclusive damage spell (Hex Bolt is
+everyone's) — rather than doubling up on a type/mechanic each class
+already owns.
+
 'shout' (Meathead's, below) is its own type — same "grant a shield"
 shape as 'ward' above, but small and mostly flat rather than
 stat-scaled: Beef is already this class's damage stat (playerAttack()'s
@@ -798,6 +812,12 @@ const spells = [
    { id:'adrenalinerush', name:'Adrenaline Rush', desc:"Floods your muscles with borrowed strength — hits harder than usual for your next few fights, not just this one.", type:'buff', mpCost:10, price:250, classRequired:'Meathead', icon: iconAdrenalineRush },
    { id:'loadeddice', name:'Loaded Dice', desc:"Tips the odds your way for a while — your opening strike is guaranteed to catch the next few fights' targets off guard.", type:'buff', mpCost:10, price:250, classRequired:'Card Shark', icon: iconLoadedDice },
    { id:'arcanefocus', name:'Arcane Focus', desc:"Sharpens your Hoodoo to a fine point for a while — your spells bite harder for the next few fights.", type:'buff', mpCost:10, price:250, classRequired:'Hexpert', icon: iconArcaneFocus },
+   /* Act 2's own trainers (Garrison/Rogues' Den/Arcane Sanctum,
+   Gnometropolis) — see the comment above spells[] for why these three
+   and not another copy of an existing type. */
+   { id:'stubbornrecovery', name:'Stubborn Recovery', desc:"You refuse to go down like that. Grit your teeth, shake it off, and keep going.", type:'heal', healValue:35, mpCost:8, price:300, classRequired:'Meathead', learnLocation:'garrison', icon: iconStubbornRecovery },
+   { id:'smokescreen', name:'Smoke Screen', desc:"Kick up a cloud of grit and vanish into it just long enough for whatever's coming to second-guess itself.", type:'ward', mpCost:6, price:300, classRequired:'Card Shark', learnLocation:'roguesden', icon: iconSmokeScreen },
+   { id:'arcanelance', name:'Arcane Lance', desc:"No flourish, no misdirection — just a thin, precise lance of raw arcane force.", type:'damage', dmgMin:14, dmgMax:22, mpCost:8, price:350, classRequired:'Hexpert', learnLocation:'sanctum', icon: iconArcaneLance },
    ];
 /* How many upcoming fights a class buff spell's effect lasts, set into
 state.classBuffFightsLeft on cast and ticked down once per completed

@@ -130,6 +130,41 @@ document.getElementById('casino-spell-list').style.display = (isCasino && !state
     document.getElementById('casino-classskill-block').style.display = 'none';
   }
 
+/* Act 2's own class trainers — Garrison/Rogues' Den/Arcane Sanctum, each
+now teaching that class's Act 2 spell (learnLocation, content.js)
+alongside the existing class-skill upgrade, same as every Act 1 trainer
+above. Unlike the Casino (a betting room AND a trainer at once), these
+three stop being adventure zones the moment they finish being one —
+once quest7Complete, CLASS_AREA_ZONES (combat.js) takes goAdventuring()
+away from them and explore-row below stops showing here, so the
+trainer is the ONLY thing left on screen; before that, this block sits
+alongside the same explore-row/random-encounter loop every other
+adventure zone has, since quest7's own objective is fighting each
+district's class-gated guardian here. */
+document.getElementById('garrison-spell-list').style.display = (isGarrison && !state.inCombat) ? 'block' : 'none';
+  if(isGarrison && !state.inCombat){
+    renderClassSpellList('garrison-spell-list', 'Meathead');
+    renderClassSkillUpgrade('garrison-classskill-block', 'Meathead');
+  } else {
+    document.getElementById('garrison-classskill-block').style.display = 'none';
+  }
+
+document.getElementById('roguesden-spell-list').style.display = (isRoguesden && !state.inCombat) ? 'block' : 'none';
+  if(isRoguesden && !state.inCombat){
+    renderClassSpellList('roguesden-spell-list', 'Card Shark');
+    renderClassSkillUpgrade('roguesden-classskill-block', 'Card Shark');
+  } else {
+    document.getElementById('roguesden-classskill-block').style.display = 'none';
+  }
+
+document.getElementById('sanctum-spell-list').style.display = (isSanctum && !state.inCombat) ? 'block' : 'none';
+  if(isSanctum && !state.inCombat){
+    renderClassSpellList('sanctum-spell-list', 'Hexpert');
+    renderClassSkillUpgrade('sanctum-classskill-block', 'Hexpert');
+  } else {
+    document.getElementById('sanctum-classskill-block').style.display = 'none';
+  }
+
 document.getElementById('noticeboard-row').style.display = (isNoticeBoard && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('noticeboard-hint').style.display = isNoticeBoard ? 'block' : 'none';
   document.getElementById('noticeboard-list').style.display = isNoticeBoard ? 'block' : 'none';
@@ -506,7 +541,15 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
     const hasUsableItem = state.inventory.some(it => ['hp','mp','luck'].includes(it.type));
     document.getElementById('use-btn').disabled = !hasDamageSpell && !hasUsableItem;
   }
-  document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || isGarrison || isRoguesden || isSanctum) && !state.inCombat) ? 'flex' : 'none';
+  /* Garrison/Rogues' Den/Arcane Sanctum only get the Adventure! loop
+  (CLASS_AREA_ZONES, combat.js) before quest7Complete — once converted,
+  class-area-row below takes over as their only navigation, since
+  explore-row (with its own "Return to Map" button baked in) is the
+  ONLY thing that gave any of these screens a way back to the Map. */
+  const inUnconvertedClassArea = (isGarrison || isRoguesden || isSanctum) && !state.quest7Complete;
+  const inConvertedClassArea = (isGarrison || isRoguesden || isSanctum) && state.quest7Complete;
+  document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || inUnconvertedClassArea) && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('class-area-row').style.display = (inConvertedClassArea && !state.inCombat) ? 'flex' : 'none';
   /* The Palace has no Explore row (it's not an ADVENTURE_ZONES entry —
   one scripted fight, not somewhere to wander) and palace-gate-row only
   shows the Approach button while the fight is still pending, so

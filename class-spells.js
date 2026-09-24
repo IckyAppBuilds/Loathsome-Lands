@@ -1,15 +1,20 @@
 /* ---------------- Class-exclusive spell trainers ---------------- */
-/* Shared by the Guild ('Meathead'), Casino ('Card Shark'), and Hoodoo
-Doctor's ('Hexpert') screens — each trainer teaches only the spells[]
-entries (content.js) whose classRequired matches its own class, and any
-future classRequired spell shows up here automatically with no further
-wiring: just add it to spells[] and it appears at the right trainer,
-hidden from the other two classes. Mirrors renderHoodooShop()'s row
+/* Shared by every class trainer building — the Guild/Casino/Hoodoo
+Doctor's (Act 1) and the Garrison/Rogues' Den/Arcane Sanctum (Act 2,
+Gnometropolis) — each teaches only the spells[] entries (content.js)
+whose classRequired matches its own class AND whose effective learn
+location (learnLocation, or CLASS_SPELL_LOCATION's default — same
+resolution learnSpell() uses, combat.js) is THIS building specifically,
+so a class's Act 1 trainer never lists its Act 2 spell (or vice versa)
+— any future classRequired spell shows up at the right trainer
+automatically with no further wiring: just add it to spells[] and it
+appears there, hidden everywhere else. Mirrors renderHoodooShop()'s row
 markup (render-shop.js) so all class-spell listings look identical. */
 function renderClassSpellList(containerId, classTitle){
    const el = document.getElementById(containerId);
    if(!el) return;
-   const list = spells.filter(s => s.classRequired === classTitle);
+   const list = spells.filter(s => s.classRequired === classTitle
+      && (s.learnLocation || CLASS_SPELL_LOCATION[classTitle]) === state.location);
    if(state.classTitle !== classTitle || list.length===0){
       el.style.display = 'none';
       el.innerHTML = '';

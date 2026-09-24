@@ -6,8 +6,23 @@ took its place as the actual adventuring locations; 'palace' is
 deliberately excluded -- it's a single scripted fight (approachPalaceGate(),
 guild.js), not somewhere to wander and roll random encounters. */
 const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault', 'garrison', 'roguesden', 'sanctum', 'rootcellar', 'mudflats'];
+
+/* Garrison/Rogues' Den/Arcane Sanctum's exploration role is temporary —
+before quest7Complete they're real adventure zones (each district's
+own class-gated guardian hunt, garrisonHunt/roguesdenHunt/sanctumHunt
+below, is quest7's own actual objective), but once quest7Complete
+they've fully converted into pure class-trainer buildings (Stubborn
+Recovery/Smoke Screen/Arcane Lance, content.js's spells[], taught via
+renderClassSpellList(), render.js) — same building, no more random
+encounters, matching the Act 2 plan's own "Sequencing note" (now that
+Mudroot Warren exists to take over the exploration role these three
+used to fill). Checked in goAdventuring() below AND in render.js's own
+explore-row visibility, so a player can't trigger one without seeing
+the other. */
+const CLASS_AREA_ZONES = ['garrison', 'roguesden', 'sanctum'];
 function goAdventuring(){
    if(state.inCombat || !ADVENTURE_ZONES.includes(state.location)) return;
+   if(state.quest7Complete && CLASS_AREA_ZONES.includes(state.location)) return;
    regenBiscuits();
    /* Every zone now costs Biscuits just to travel to (travelCostFor(),
    town.js) — hitting 0 while already out here would otherwise leave the
@@ -485,19 +500,26 @@ if(state.inCombat){
 }
 }
 
-/* Which town building teaches a given class's buff spell — same
+/* Which town building teaches a given class's Act 1 buff spell — same
 class->building mapping as levelUpClassSkill()'s atRightBuilding check
 (guild.js), mirrored here rather than invented separately. The 4 original
 spells (no classRequired) have no entry here and fall back to 'hoodoo'
-below, unchanged from before this spell type existed. */
+below, unchanged from before this spell type existed. A spell's own
+`learnLocation` (content.js's spells[] — the 3 Act 2 spells) overrides
+this default, so the same class can have spells taught in two different
+buildings (its Act 1 trainer here, its Act 2 trainer in Gnometropolis)
+without this map needing to become a list. */
 const CLASS_SPELL_LOCATION = { 'Meathead':'guild', 'Card Shark':'casino', 'Hexpert':'hoodoo' };
-/* Flavor for the "who taught you this" log line — keyed the same way. */
-const CLASS_SPELL_TRAINER = { 'Meathead':'The Guild', 'Card Shark':'The Casino', 'Hexpert':'The Hoodoo Doctor' };
+/* Flavor for the "who taught you this" log line — keyed by the actual
+resolved location (not classRequired) so the Act 2 trainers get their
+own line instead of misreporting "The Guild" while standing in the
+Garrison. */
+const CLASS_SPELL_TRAINER = { guild:'The Guild', casino:'The Casino', hoodoo:'The Hoodoo Doctor', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum' };
 
 function learnSpell(id){
    const spell = spells.find(s=>s.id===id);
    if(!spell || state.spellsKnown.includes(id)) return;
-   const requiredLocation = spell.classRequired ? CLASS_SPELL_LOCATION[spell.classRequired] : 'hoodoo';
+   const requiredLocation = spell.learnLocation || (spell.classRequired ? CLASS_SPELL_LOCATION[spell.classRequired] : 'hoodoo');
    if(state.location !== requiredLocation) return;
    /* A class buff spell can only be learned by its own class — someone
    could otherwise reach this via a crafted call even though the UI only
@@ -516,7 +538,7 @@ function learnSpell(id){
    state.popTabs -= price;
    state.spellsKnown.push(id);
    clearLog();
-   log(`${CLASS_SPELL_TRAINER[spell.classRequired] || 'The Hoodoo Doctor'} teaches you ${spell.name}. (-${price} Pop Tabs)`);
+   log(`${CLASS_SPELL_TRAINER[requiredLocation] || 'The Hoodoo Doctor'} teaches you ${spell.name}. (-${price} Pop Tabs)`);
    render();
 }
 function playerFlee(){
