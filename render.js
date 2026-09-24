@@ -37,10 +37,14 @@ const isTownSquare = state.location === 'town';
   const isMudrootWarren = state.location === 'mudrootwarren'; /* Act 2 Part 2: the Mole People hub square — enters via travelTo(), town.js */
   const isRootCellar = state.location === 'rootcellar';
   const isMudflats = state.location === 'mudflats';
-  const isBurrow = state.location === 'burrow';
+  const isBureau = state.location === 'bureau'; /* business moles — Mudroot Warren's third combat district, same shape as Root Cellar */
   /* Mirrors inGnometropolisArea above — the Mudroot Warren square + its
-  two (so far) districts + its rest tile. */
-  const inMudrootWarrenArea = isMudrootWarren || isRootCellar || isMudflats || isBurrow;
+  three districts. All three are real combat zones (per the user's own
+  "multiple combat zones, not a combat zone and a recovery zone"
+  instruction) — there's no rest tile here at all; resting happens at
+  Gnometropolis's Camp instead, one Biscuit away (travelCostFor(),
+  town.js). */
+  const inMudrootWarrenArea = isMudrootWarren || isRootCellar || isMudflats || isBureau;
   const isCasino = state.location === 'casino';
   const isNoticeBoard = state.location === 'noticeboard';
   const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot || isNoticeBoard;
@@ -56,7 +60,7 @@ const ZONE_TITLES = {
   sanctum: 'The Arcane Sanctum', palace: 'The Palace Gate', gnomeguild: 'The Guild',
   gnomeshop: 'The Shop', gnometownlot: 'The Vault',
   mudrootwarren: 'Mudroot Warren', rootcellar: 'The Root Cellar', mudflats: 'The Mudflats',
-  burrow: 'The Burrow',
+  bureau: 'The Bureau',
 };
 document.getElementById('zone-title').textContent = isTownLot ? LOT_TIER_NAMES[state.lotTier] : (isGnomeTownLot ? GNOME_LOT_TIER_NAMES[state.gnomeLotTier] : (ZONE_TITLES[state.location] || 'The Overgrown Commons'));
   document.getElementById('ztag-town').style.display = inTownArea ? 'block' : 'none';
@@ -548,7 +552,7 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
   ONLY thing that gave any of these screens a way back to the Map. */
   const inUnconvertedClassArea = (isGarrison || isRoguesden || isSanctum) && !state.quest7Complete;
   const inConvertedClassArea = (isGarrison || isRoguesden || isSanctum) && state.quest7Complete;
-  document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || inUnconvertedClassArea) && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('explore-row').style.display = ((isCommons || isSewers || isQuarry || isVault || isRootCellar || isMudflats || isBureau || inUnconvertedClassArea) && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('class-area-row').style.display = (inConvertedClassArea && !state.inCombat) ? 'flex' : 'none';
   /* The Palace has no Explore row (it's not an ADVENTURE_ZONES entry —
   one scripted fight, not somewhere to wander) and palace-gate-row only
@@ -687,25 +691,29 @@ if(state.inCombat){
   document.getElementById('scene-art').innerHTML = artGnometropolisSquare(gnomeBuildingIndicators, campCooldownText, state.gnomeLotTier);
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isMudrootWarren){
-  /* Mirrors gnomeBuildingIndicators above. Mudflats gets NO flag ever —
+  /* Mirrors gnomeBuildingIndicators above. No flag on any of the three —
   a flag here would be exactly the kind of quest marker the user asked
   not to have; the district's own tile art (artMudrootWarrenSquare(),
   mudroot-art.js) is the only thing that changes once tunnelWardenDefeated,
-  and even that's a reveal, not a pointer. */
+  and even that's a reveal, not a pointer. All three districts are real
+  combat zones (Root Cellar/Mudflats/Bureau) — there's no rest tile in
+  this hub at all, per the user's own "multiple combat zones, not a
+  combat zone and a recovery zone" instruction. */
   const mudrootBuildingIndicators = {
     rootcellar: {},
     mudflats: {},
-    burrow: { flag: state.hp < state.maxHp ? 'offer' : null },
+    bureau: {},
   };
-  const burrowCooldownLeft = BURROW_COOLDOWN_MS - (Date.now() - state.lastBurrowRestAt);
-  const burrowCooldownText = burrowCooldownLeft > 0 ? formatMs(burrowCooldownLeft) : null;
-  document.getElementById('scene-art').innerHTML = artMudrootWarrenSquare(mudrootBuildingIndicators, burrowCooldownText, state.tunnelWardenDefeated);
+  document.getElementById('scene-art').innerHTML = artMudrootWarrenSquare(mudrootBuildingIndicators, state.tunnelWardenDefeated);
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isRootCellar){
   document.getElementById('scene-art').innerHTML = artZoneRootCellar();
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isMudflats){
   document.getElementById('scene-art').innerHTML = artZoneMudflats();
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isBureau){
+  document.getElementById('scene-art').innerHTML = artZoneBureau();
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isGnomeGuild){
   /* Reuses artGuildmaster() (art.js) — same guildmaster, new office,

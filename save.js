@@ -137,7 +137,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
        classBuffFightsLeft,
        activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
-       lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, lastBurrowRestAt, casinoWinnings, lastCasinoRegenAt } = state;
+       lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt } = state;
    return {
       hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
       lastRegenAt, lastMpRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
@@ -153,7 +153,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
       classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
       classBuffFightsLeft,
       activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
-      lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, lastBurrowRestAt, casinoWinnings, lastCasinoRegenAt,
+      lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
       equipment: Object.fromEntries(
          SLOT_ORDER.map(slot => [slot, serializeItem(state.equipment[slot])])
          ),
@@ -208,9 +208,6 @@ state.activeBounty = saved.activeBounty || null;
    /* Camp cooldown timestamp — same fallback reasoning as lastInnRestAt
    directly above. */
    state.lastCampRestAt = typeof saved.lastCampRestAt === 'number' ? saved.lastCampRestAt : 0;
-   /* Burrow cooldown timestamp — same fallback reasoning as lastCampRestAt
-   directly above. */
-   state.lastBurrowRestAt = typeof saved.lastBurrowRestAt === 'number' ? saved.lastBurrowRestAt : 0;
    /* Passive Casino income — same fallback reasoning as lastInnRestAt
    above. lastCasinoRegenAt defaults to now (not 0) so an old save doesn't
    suddenly compute years of "elapsed time" and hand over a maxed-out cap

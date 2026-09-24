@@ -4,13 +4,15 @@ Loads after art.js/gnometropolis-art.js (index.html) so it can reuse
 makeFlag()/plate()/biGet() (art.js) and sceneWrap() (art.js) without
 re-authoring any of it a third time.
 
-Only 3 of the 9 tiles are real buildings for this first area, per the
-user's own request ("a 3x3 area with a couple of combat zones"): Root
-Cellar and Mudflats (the two combat districts) plus the Burrow (the
-rest tile). The rest are decorative filler — no data-action, no plate()
-label — same as Gnometropolis's own remaining filler tile. One filler
-(a root-wrapped, chained-shut door) is a deliberate foreshadow of a
-future boss gate; it's otherwise inert.
+3 of the 9 tiles are real buildings for this first area — Root Cellar,
+Mudflats, and the Bureau — all three real combat districts, per the
+user's own explicit correction ("multiple combat zones, not a combat
+zone and a recovery zone"). There is no rest tile in this hub at all;
+resting happens at Gnometropolis's Camp instead, one Biscuit away
+(ZONE_ORDER, content.js). The rest of the 9 are decorative filler — no
+data-action, no plate() label — same as Gnometropolis's own remaining
+filler tile. One filler (a root-wrapped, chained-shut door) is a
+deliberate foreshadow of a future boss gate; it's otherwise inert.
 
 Mudflats is the one tile with a real visual gate on it: it renders as
 a second real building ONLY once `tunnelWardenDefeated` is true,
@@ -19,8 +21,10 @@ inert-filler treatment as the rest, no plate, no data-action — so
 there's nothing on screen marking it as "a door that opens later,"
 just a tile that quietly becomes a different tile. travelTo() (town.js)
 gates the actual destination the same way, independently, so a player
-can't reach it early by clicking around either. */
-function artMudrootWarrenSquare(buildingIndicators, burrowCooldownText, mudflatsRevealed){
+can't reach it early by clicking around either. The Bureau has no such
+gate — it's available from the start, a parallel option alongside Root
+Cellar rather than a further step in that same sequence. */
+function artMudrootWarrenSquare(buildingIndicators, mudflatsRevealed){
    const bi = (key) => biGet(buildingIndicators, key);
    /* A small root-tangle accent, this area's answer to
    gnometropolis-art.js's mushroom() — ties the filler tiles together as
@@ -29,14 +33,6 @@ function artMudrootWarrenSquare(buildingIndicators, burrowCooldownText, mudflats
    const roots = (x, y) => `
    <g transform="translate(${x},${y})">
    <path d="M0 0 Q-6 8 -2 16 M0 0 Q6 6 4 15 M0 0 Q0 10 3 18" stroke="#5f4632" stroke-width="2.5" fill="none"/>
-   </g>`;
-   const burrowCooldown = !burrowCooldownText ? '' : `
-   <g class="inn-cooldown-overlay">
-   <rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.45"/>
-   <circle cx="50" cy="46" r="15" fill="#3d5a80" stroke="#2b2b28" stroke-width="2.5"/>
-   <line x1="50" y1="46" x2="50" y2="37" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
-   <line x1="50" y1="46" x2="57" y2="46" stroke="#f4efe4" stroke-width="2" stroke-linecap="round"/>
-   <text x="50" y="76" text-anchor="middle" font-family="Verdana, Arial, sans-serif" font-size="12" font-weight="700" fill="#f4efe4" stroke="none" id="burrow-cooldown-text">${burrowCooldownText}</text>
    </g>`;
    const mudflatsTile = mudflatsRevealed ? `
    <g transform="translate(100,0)" class="building-hit" data-action="mudflats">
@@ -82,17 +78,16 @@ function artMudrootWarrenSquare(buildingIndicators, burrowCooldownText, mudflats
    <circle cx="50" cy="58" r="5" fill="#8a8477" stroke="#2b2b28" stroke-width="2"/>
    </g>
 
-   <g transform="translate(0,100)" class="building-hit" data-action="burrow">
+   <g transform="translate(0,100)" class="building-hit" data-action="bureau">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
-   <ellipse cx="46" cy="70" rx="30" ry="22" fill="#2b2b28"/>
-   <ellipse cx="46" cy="70" rx="20" ry="14" fill="#5f4632"/>
-   <circle cx="72" cy="60" r="9" fill="#b5453f"/>
-   <path d="M68 54 Q72 44 76 54" fill="none" stroke="#d1a94e" stroke-width="2.5"/>
-   <circle cx="72" cy="58" r="3" fill="#d1a94e" stroke="none"/>
-   ${roots(20, 30)}
-   ${makeFlag(bi('burrow').flag)}
-   ${plate("The Burrow")}
-   ${burrowCooldown}
+   <path d="M14 46 L50 26 L86 46 L86 82 L14 82 Z" fill="#8a5a3a"/>
+   <rect x="30" y="52" width="14" height="14" fill="#f4efe4"/>
+   <rect x="56" y="52" width="14" height="14" fill="#f4efe4"/>
+   <rect x="24" y="70" width="52" height="12" fill="#5f4632"/>
+   <rect x="46" y="18" width="8" height="10" fill="#8a5a3a"/>
+   ${roots(10, 22)}
+   ${makeFlag(bi('bureau').flag)}
+   ${plate("The Bureau")}
    </g>
 
    <g transform="translate(100,100)">
@@ -140,4 +135,11 @@ function artZoneRootCellar(){
 }
 function artZoneMudflats(){
    return sceneWrap(`<rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.2"/><ellipse cx="50" cy="78" rx="56" ry="20" fill="#5f4632"/><ellipse cx="30" cy="72" rx="12" ry="4" fill="#3d5a80" opacity="0.55"/><ellipse cx="68" cy="80" rx="10" ry="4" fill="#3d5a80" opacity="0.55"/><path d="M14 50 Q18 34 12 18 M86 46 Q82 30 88 14 M50 52 Q54 36 48 20" stroke="#5c8a5c" stroke-width="3" fill="none"/><circle cx="20" cy="94" r="2.4" fill="#2b2b28" stroke="none"/><circle cx="30" cy="96" r="2.4" fill="#2b2b28" stroke="none"/><circle cx="72" cy="95" r="2.4" fill="#2b2b28" stroke="none"/>`, 0);
+}
+/* The Bureau reads as cramped-office rather than underground-tunnel —
+filing cabinets and a counter instead of roots and dirt, the one
+Mudroot Warren backdrop that isn't visibly a burrow, matching its own
+"business moles" theme. */
+function artZoneBureau(){
+   return sceneWrap(`<rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.1"/><rect x="4" y="20" width="18" height="70" fill="#8a5a3a"/><line x1="4" y1="38" x2="22" y2="38"/><line x1="4" y1="56" x2="22" y2="56"/><line x1="4" y1="74" x2="22" y2="74"/><rect x="78" y="14" width="18" height="76" fill="#8a5a3a"/><line x1="78" y1="32" x2="96" y2="32"/><line x1="78" y1="50" x2="96" y2="50"/><line x1="78" y1="68" x2="96" y2="68"/><rect x="34" y="66" width="32" height="24" fill="#5f4632"/><rect x="42" y="50" width="16" height="16" fill="#f4efe4"/>`, 0);
 }

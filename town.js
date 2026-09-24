@@ -219,7 +219,7 @@ function travelTo(dest){
       clearLog();
       log("You approach the Gnome King's palace gate, all scavenged gold and gaudy flourish. Somewhere behind it, a throne waits." + costSuffix);
    } else if(dest === 'mudrootwarren'){
-      const cameFromDistrict = state.location==='rootcellar' || state.location==='mudflats' || state.location==='burrow';
+      const cameFromDistrict = state.location==='rootcellar' || state.location==='mudflats' || state.location==='bureau';
       state.location = 'mudrootwarren';
       state.showVictory = false;
       state.victoryMonster = null;
@@ -239,6 +239,12 @@ function travelTo(dest){
       state.victoryMonster = null;
       clearLog();
       log("You push past what's left of the tunnel warden's blockade and out into a wide, sunken mudflat, dark water pooling between the reeds." + costSuffix);
+   } else if(dest === 'bureau'){
+      state.location = 'bureau';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log("You step into a cramped office stacked floor to ceiling with paperwork no one asked for. Something behind the counter is already reaching for a stamp." + costSuffix);
    }
    /* No homeTown update here anymore — merely walking into either
    square doesn't claim it as home. restAtInn() sets 'town' and

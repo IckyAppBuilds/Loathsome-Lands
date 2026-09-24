@@ -389,16 +389,19 @@ adventure zone and became its own town hub with 3 explorable districts
 the same 2.3 value the old shared zone used, since a player only ever
 needs to clear ONE district (their own class's) rather than all three,
 so there's no reason to differentiate difficulty between them. */
-/* rootcellar/mudflats (Act 2 Part 2's first Mole People area) sit one
-step past Gnometropolis's own districts — Mudflats a further step past
-Root Cellar, since the two are meant to be fought in that order (see
-tunnelWardenHunt/warrenScoutHunt, combat.js). */
-const ZONE_DIFFICULTY = { commons:1, sewers:1.15, quarry:1.55, vault:1.9, garrison:2.3, roguesden:2.3, sanctum:2.3, palace:2.3, rootcellar:2.6, mudflats:2.9 };
+/* rootcellar/mudflats/bureau (Act 2 Part 2's first Mole People area) sit
+one step past Gnometropolis's own districts — Mudflats a further step
+past Root Cellar, since those two are meant to be fought in that order
+(see tunnelWardenHunt/warrenScoutHunt, combat.js). Bureau is a parallel
+third district, not part of that sequence — same tier as Root Cellar,
+available the moment quest9Accepted like Root Cellar is, its own
+monsters just business moles instead of tunnel moles. */
+const ZONE_DIFFICULTY = { commons:1, sewers:1.15, quarry:1.55, vault:1.9, garrison:2.3, roguesden:2.3, sanctum:2.3, palace:2.3, rootcellar:2.6, bureau:2.6, mudflats:2.9 };
 
 /* Display names for each adventure zone, keyed by state.location/zone id —
 used by the Bounty Board (render.js) to spell out where a bounty's
 monster lives without hand-typing zone names in a second place. */
-const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace', rootcellar:'the Root Cellar', mudflats:'the Mudflats' };
+const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace', rootcellar:'the Root Cellar', mudflats:'the Mudflats', bureau:'the Bureau' };
 
 /* The Map's main chain, Gladstone Hollow through to Mudroot Warren, in
 travel order — travelCostFor() (town.js) prices a trip by the DISTANCE
@@ -407,9 +410,9 @@ destination's, not a flat per-destination price: one step over costs 1
 Biscuit, two steps costs 2, and so on, no matter which end of the chain
 you're actually starting from (so Gnometropolis -> Mudroot Warren costs
 the same 1 Biscuit as Commons -> Sewers, both being one step apart).
-Districts (garrison/roguesden/sanctum/palace/rootcellar/mudflats) and
-the Burrow aren't listed — they aren't Map destinations of their own,
-and collapse to their own hub's position here (see chainIndex(),
+Districts (garrison/roguesden/sanctum/palace/rootcellar/mudflats/bureau)
+aren't listed — they aren't Map destinations of their own, and collapse
+to their own hub's position here (see chainIndex(),
 town.js) since standing in one counts as standing at that hub for
 distance purposes. 'town' itself is a special case travelCostFor()
 always prices at 0 regardless of distance — the trip home is always
@@ -1184,13 +1187,6 @@ Resting here (not just visiting the square) is what sets
 state.homeTown to 'gnometropolis' — see restAtCamp() itself. */
 const CAMP_REST_BISCUIT_COST = 2;
 const CAMP_COOLDOWN_MS = 60 * 1000;
-
-/* The Burrow (Mudroot Warren's own rest tile, restAtBurrow() —
-mudroot.js) — same shape as the Camp above, one step pricier since
-Mudroot Warren sits one step past Gnometropolis. Resting here sets
-state.homeTown to 'mudrootwarren'. */
-const BURROW_REST_BISCUIT_COST = 3;
-const BURROW_COOLDOWN_MS = 60 * 1000;
 
 /* Tinker's Workshop — fractional bonus added to junk sell prices in
 sellItemByName() (game.js). 0.30 at max level = junk sells for 30% more. */

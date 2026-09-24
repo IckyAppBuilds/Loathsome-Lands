@@ -198,10 +198,6 @@ function createDefaultState(){
         than sharing lastInnRestAt so resting at one building doesn't
         also lock out the other. */
      lastCampRestAt: 0,
-     /* Same cooldown gate again, but for restAtBurrow() (mudroot.js) — its
-     own separate timestamp for the same reason lastCampRestAt is its own
-     separate timestamp from lastInnRestAt. */
-     lastBurrowRestAt: 0,
      /* Passive Casino income ("the house's cut") — unlocked once
         buildingUpgrades.casino is at least 1 (CASINO_WINNINGS_CAP[0]=0
         keeps it at zero/inert before that). Accrues off real elapsed time

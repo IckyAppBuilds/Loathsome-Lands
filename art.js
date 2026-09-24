@@ -557,6 +557,19 @@ function artWarrenScout(){
    return sceneWrap(`<ellipse cx="50" cy="60" rx="24" ry="20" fill="#5f4632"/><ellipse cx="50" cy="42" rx="13" ry="11" fill="#5f4632"/><path d="M38 36 L44 44 M62 36 L56 44 M44 44 L56 44" stroke="#2b2b28" stroke-width="2.5"/><path d="M40 38 Q35 28 27 30" fill="none" stroke-width="3"/><path d="M60 38 Q65 28 73 30" fill="none" stroke-width="3"/><path d="M20 62 Q10 58 12 46 M80 62 Q90 58 88 46" fill="none" stroke-width="2.5"/><line x1="40" y1="76" x2="34" y2="92"/><line x1="60" y1="76" x2="66" y2="92"/>`, 0);
 }
 
+/* The Bureau's business moles (mudroot-content.js) — same mole
+silhouette vocabulary as the 6 above, dressed in office trappings
+(spectacles, a stack of papers, a stamp) instead of tunnel gear. */
+function artMoleClerk(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="24" ry="18" fill="#5f4632"/><ellipse cx="50" cy="46" rx="13" ry="11" fill="#5f4632"/><path d="M42 42 Q38 34 32 36" fill="none" stroke-width="3"/><path d="M58 42 Q62 34 68 36" fill="none" stroke-width="3"/><rect x="66" y="54" width="18" height="22" fill="#f4efe4" stroke="#2b2b28" stroke-width="2" transform="rotate(6 75 65)"/><line x1="70" y1="60" x2="80" y2="62" stroke-width="1.6"/><line x1="70" y1="66" x2="80" y2="68" stroke-width="1.6"/>`, 0);
+}
+function artMoleAuditor(){
+   return sceneWrap(`<ellipse cx="50" cy="62" rx="24" ry="19" fill="#5f4632"/><ellipse cx="50" cy="44" rx="13" ry="11" fill="#5f4632"/><circle cx="43" cy="44" r="5" fill="none" stroke="#2b2b28" stroke-width="2.5"/><circle cx="57" cy="44" r="5" fill="none" stroke="#2b2b28" stroke-width="2.5"/><line x1="48" y1="44" x2="52" y2="44" stroke-width="2"/><path d="M40 78 L34 92 M60 78 L66 92" stroke-width="3.5"/>`, 0);
+}
+function artMoleNotary(){
+   return sceneWrap(`<ellipse cx="46" cy="64" rx="24" ry="18" fill="#5f4632"/><ellipse cx="46" cy="46" rx="13" ry="11" fill="#5f4632"/><path d="M38 42 Q34 34 28 36" fill="none" stroke-width="3"/><path d="M54 42 Q58 34 64 36" fill="none" stroke-width="3"/><rect x="68" y="46" width="14" height="14" fill="#b5453f" transform="rotate(-10 75 53)"/><line x1="75" y1="60" x2="75" y2="72" stroke-width="3"/>`, 0);
+}
+
 /* ---------------- Zone backdrop art ---------------- */
 /* One scene per Act 1 adventure zone (ZONE_DIFFICULTY, content.js), shown
 between fights in place of artIdle() (see render.js) so each zone has

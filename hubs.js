@@ -20,13 +20,15 @@ rename three functions." */
 const HUB_TOWNS = {
    town: ['gaffer', 'shop', 'hoodoo', 'guild', 'tinker', 'casino', 'townlot', 'noticeboard'],
    gnometropolis: ['garrison', 'roguesden', 'sanctum', 'palace', 'gnomeguild', 'gnomeshop', 'gnometownlot'],
-   /* Act 2 Part 2's first Mole People area. 'mudflats' is deliberately
-   still listed even though it's not enterable until tunnelWardenDefeated
-   (quest9, guild.js) — this registry is about which hub a location
-   BELONGS to for travel-cost/area purposes, not whether it's currently
-   reachable; that gating lives in travelTo() (town.js) same as every
-   other quest-gated destination already does. */
-   mudrootwarren: ['rootcellar', 'mudflats'],
+   /* Act 2 Part 2's first Mole People area — three real combat districts
+   (no rest tile; resting happens at Gnometropolis's Camp instead,
+   one Biscuit away). 'mudflats' is deliberately still listed even
+   though it's not enterable until tunnelWardenDefeated (quest9,
+   guild.js) — this registry is about which hub a location BELONGS to
+   for travel-cost/area purposes, not whether it's currently reachable;
+   that gating lives in travelTo() (town.js) same as every other
+   quest-gated destination already does. */
+   mudrootwarren: ['rootcellar', 'mudflats', 'bureau'],
 };
 
 /* Which hub (by key) `loc` belongs to — either a hub square itself, or

@@ -33,7 +33,7 @@ document.getElementById('scene-art').addEventListener('click', function(e){
    else if(action === 'gnometownlot') enterGnomeTownLot();
    else if(action === 'rootcellar') travelTo('rootcellar');
    else if(action === 'mudflats') travelTo('mudflats');
-   else if(action === 'burrow') restAtBurrow();
+   else if(action === 'bureau') travelTo('bureau');
 });
 
 /* Seed a brand-new run: starter gear (equipped) and a couple of starter
