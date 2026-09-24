@@ -121,6 +121,17 @@ function setShopTab(tab){
   renderShop();
 }
 
+/* Same UI-only role as shopTab above, but for the Act 2 Shop
+(Gnometropolis) — its own separate variable so switching tabs in one
+shop never affects the other's, reset to 'food' on enterGnomeShop()
+(gnometropolis.js). */
+let gnomeShopTab = 'food';
+
+function setGnomeShopTab(tab){
+  gnomeShopTab = tab;
+  renderGnomeShop();
+}
+
 /* How long a shop row keeps flashing its "just bought" animation after a
 purchase — checked against lastPurchase.at (economy.js) rather than
 cleared by a timer, so it just stops matching once enough real time has
@@ -218,7 +229,22 @@ if(shopTab === 'food' || shopTab === 'gear'){
   return;
 }
 
-const sellSection = document.createElement('div');
+  shopList.appendChild(buildSellSection());
+}
+
+/* Shared by renderShop() and renderGnomeShop() below — selling is a
+single generic system (getItemSellValue(), item-tiers.js, reading
+straight off whatever's actually in state.inventory) with nothing
+shop-specific about it, so both Shops show literally the same Sell
+pane rather than each maintaining its own copy. sellFn defaults to
+Gladstone's sellItemByName(); the Act 2 Shop doesn't need its own
+separate sell function the way it needed its own buy function (selling
+doesn't touch either shop's own catalog, only the Pack), so unlike
+renderShopItemRow()'s buyFn param this one has no real second caller
+yet — kept as a param anyway so that stays true if it ever needs one. */
+function buildSellSection(sellFn){
+  sellFn = sellFn || 'sellItemByName';
+  const sellSection = document.createElement('div');
   sellSection.innerHTML = '<div class="shop-section-title">Sell Your Junk</div>';
   /* Equip/consumable items are always sellable now — getItemSellValue()
   (item-tiers.js) derives a price from tier/bonus or tier/heal-value, so
@@ -227,9 +253,10 @@ const sellSection = document.createElement('div');
   const sellable = state.inventory.filter(it => it.type==='equip' || it.type==='hp' || it.type==='mp' || it.type==='luck'
     || (it.sell && (it.type==='junk' || isQuestItemSellable(it))));
 
-if(sellable.length===0){
-  sellSection.innerHTML += '<div class="shop-empty">Nothing in your pack worth selling. Bring back some gnome junk.</div>';
-} else {
+  if(sellable.length===0){
+    sellSection.innerHTML += '<div class="shop-empty">Nothing in your pack worth selling. Bring back some gnome junk.</div>';
+    return sellSection;
+  }
   const groups = new Map();
   sellable.forEach(item=>{
     /* Equip items group by name+tier, not name alone — the same drop
@@ -252,36 +279,60 @@ if(sellable.length===0){
     const unitSell = getItemSellValue(item);
     const total = unitSell * count;
     const tierArg = item.type==='equip' ? `, '${item.tier}'` : '';
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)} <span class="qty-badge">×${count}</span></div><div class="desc">${item.desc} (${unitSell} Pop Tab${unitSell>1?'s':''} each)</div><button class="btn-secondary" onclick="sellItemByName('${item.name.replace(/'/g,"\\'")}'${tierArg})">Sell All — ${total} Pop Tabs</button></div>`;
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)} <span class="qty-badge">×${count}</span></div><div class="desc">${item.desc} (${unitSell} Pop Tab${unitSell>1?'s':''} each)</div><button class="btn-secondary" onclick="${sellFn}('${item.name.replace(/'/g,"\\'")}'${tierArg})">Sell All — ${total} Pop Tabs</button></div>`;
     sellSection.appendChild(div);
   });
-}
-  shopList.appendChild(sellSection);
+  return sellSection;
 }
 
-/* Act 2 Shop (Gnometropolis) — simpler than renderShop() above on
-purpose: gear only, no Food/Sell tabs (selling still works fine back
-at Gladstone's own Shop; nothing lost by not duplicating it here), no
-tab row at all since there's only one thing to show. Groups by
-act2Tier (act2-shop.js) rather than the `tier` field renderShop() uses
-above — every item here shares tier:'legendary' for its color, so
-grouping by THAT would collapse all four tiers into one section. */
+/* Act 2 Shop (Gnometropolis) — same Food/Gear/Sell tab shape as
+renderShop() above, just reading from getAvailableGnomeShopItems()
+(act2-shop.js) and gated on the Shop's OWN Town Lot building level
+(state.gnomeBuildingUpgrades.gnomeshop) instead of Gladstone's. Groups
+by act2Tier (act2-shop.js) rather than the `tier` field renderShop()
+uses for its own food/gear sections — every item here shares
+tier:'legendary' for its color, so grouping by THAT would collapse all
+four tiers into one section; act2Tier exists purely so this grouping
+has something to key off. */
 function renderGnomeShop(){
   const list = document.getElementById('gnomeshop-list');
   if(!list) return;
   list.innerHTML = '';
-  const items = getAvailableGnomeShopItems();
-  const ACT2_TIER_LABEL = { 1:'Tier 1', 2:'Tier 2', 3:'Tier 3', 4:'Tier 4' };
-  [1,2,3,4].forEach(tierNum => {
-    const tierItems = items.filter(def => def.act2Tier === tierNum);
-    if(tierItems.length===0) return;
-    const header = document.createElement('div');
-    header.className = 'shop-section-title';
-    header.style.color = ITEM_TIER_COLORS.legendary;
-    header.textContent = `${ACT2_TIER_LABEL[tierNum]} Relics`;
-    list.appendChild(header);
-    tierItems.forEach(def => list.appendChild(renderShopItemRow(def, 'buyGnomeShopItemByName')));
+
+  const tabRow = document.createElement('div');
+  tabRow.className = 'btn-row';
+  [['food','Food'], ['gear','Gear'], ['sell','Sell']].forEach(([id, label])=>{
+    const btn = document.createElement('button');
+    btn.className = gnomeShopTab === id ? 'btn-primary' : 'btn-secondary';
+    btn.textContent = label;
+    btn.onclick = () => setGnomeShopTab(id);
+    tabRow.appendChild(btn);
   });
+  list.appendChild(tabRow);
+
+  if(gnomeShopTab === 'sell'){
+    list.appendChild(buildSellSection());
+    return;
+  }
+
+  const items = getAvailableGnomeShopItems().filter(def => def.type === (gnomeShopTab === 'food' ? 'hp' : 'equip'));
+  const section = document.createElement('div');
+  if(items.length === 0){
+    section.innerHTML = `<div class="shop-section-title">${gnomeShopTab === 'food' ? 'Food For Sale' : 'Gear For Sale'}</div><div class="shop-empty">Nothing here yet. Upgrading the Shop (Town Lot) brings in better stock.</div>`;
+  } else {
+    const ACT2_TIER_LABEL = { 1:'Tier 1', 2:'Tier 2', 3:'Tier 3', 4:'Tier 4' };
+    [1,2,3,4].forEach(tierNum => {
+      const tierItems = items.filter(def => def.act2Tier === tierNum);
+      if(tierItems.length===0) return;
+      const header = document.createElement('div');
+      header.className = 'shop-section-title';
+      header.style.color = ITEM_TIER_COLORS.legendary;
+      header.textContent = `${ACT2_TIER_LABEL[tierNum]} ${gnomeShopTab === 'food' ? 'Provisions' : 'Relics'}`;
+      section.appendChild(header);
+      tierItems.forEach(def => section.appendChild(renderShopItemRow(def, 'buyGnomeShopItemByName')));
+    });
+  }
+  list.appendChild(section);
 }
 
 /* Repeatable content, rendered as its own section below the Guild's

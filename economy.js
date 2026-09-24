@@ -16,7 +16,12 @@ copy of the same-named drop into one sale at the wrong combined price.
 Junk/quest items never vary by tier, so their callers omit it and every
 same-named copy sells together same as before. */
 function sellItemByName(name, tier){
-   if(state.location !== 'shop') return;
+   /* Both Shops sell off the same Pack, through the same button
+   (buildSellSection(), render-shop.js) — no reason for the Act 2 Shop
+   to need its own separate sell function the way it needed its own buy
+   function (buyGnomeShopItemByName() reads a different catalog; selling
+   never touches either shop's own catalog at all). */
+   if(state.location !== 'shop' && state.location !== 'gnomeshop') return;
    const idxList = [];
    state.inventory.forEach((it,i)=>{
       if(it.name !== name) return;

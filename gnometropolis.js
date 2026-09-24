@@ -85,6 +85,7 @@ renderGnomeShop() (render-shop.js) does the actual listing. */
 function enterGnomeShop(){
    if(state.inCombat || state.location !== 'gnometropolis' || !state.quest7Complete) return;
    state.location = 'gnomeshop';
+   gnomeShopTab = 'food'; /* always open on the Food tab — see render-shop.js */
    clearLog();
    log("You step into a converted vault, now stacked with plundered gear no one's left to claim.");
    render();

@@ -74,10 +74,44 @@ const act2GearItemsTier4 = [
    { name:"the steward's boots, and everything that came with them", desc:"He left in a hurry. Didn't take much.", type:"equip", slot:"boots", bonus:{zip:16, grit:1, hoodoo:1, beef:1}, price:2500, tier:'legendary', act2Tier:4, icon: iconStewardBoots },
    ];
 
-/* All 4 tiers are available the moment the Shop opens (quest7Complete)
-— no buildingUpgrades-style level-gating like Gladstone's own Shop
-uses, since Gnometropolis has no Town Lot of its own yet to drive that
-gate off. Revisit once it does. */
+/* Food — same 1.6x value-per-Pop-Tab ratio Gladstone's own healItems/
+shopFoodItemsTier2/3 (content.js) use (144/90 = 1.6, 352/220 = 1.6), just
+restarted at a higher base the same way the gear ladder above does:
+Tier 1 alone already clears Gladstone's own strongest food (the tin of
+hoarded biscuit crumbs, 72 HP for 45 Pop Tabs). Reuses existing food
+icons rather than authoring new ones (iconBiscuitTin/iconJerky), same
+"nothing here is unique enough to need a brand-new SVG" reasoning
+act2-shop.js's own gear comment above already uses. */
+const act2FoodItemsTier1 = [
+   { name:"a preserved royal ration, somehow still edible", desc:"Restores a large amount of HP. Nobody's asking how old it is.", type:"hp", value:144, price:90, tier:'legendary', act2Tier:1, icon: iconBiscuitTin },
+   ];
+const act2FoodItemsTier2 = [
+   { name:"a jar of hoarded palace honey", desc:"Restores a huge amount of HP, and is worth more than the jar it's in.", type:"hp", value:352, price:220, tier:'legendary', act2Tier:2, icon: iconJerky },
+   ];
+
+/* Level gates for the Shop's own Town Lot building (state.gnomeBuildingUpgrades.gnomeshop,
+0..GNOME_BUILDING_UPGRADE_MAX — content.js) — same role as Gladstone's
+SHOP_LEVEL_GEAR_TIER2/3/4/SHOP_LEVEL_FOOD_TIER2 (content.js) for
+state.buildingUpgrades.shop, just its own named constants since this is
+a separate building/progression track that happens to share the same
+0-3 level range. This is what actually gives the Shop's own upgrade a
+gameplay effect for the first time — previously gnomeshop's level was
+purely cosmetic (see GNOME_BUILDING_UPGRADES's own comment, content.js). */
+const ACT2_SHOP_LEVEL_FOOD_TIER2 = 1;
+const ACT2_SHOP_LEVEL_GEAR_TIER2 = 1;
+const ACT2_SHOP_LEVEL_GEAR_TIER3 = 2;
+const ACT2_SHOP_LEVEL_GEAR_TIER4 = 3;
+
+/* Mirrors getAvailableShopItems() (economy.js) exactly: Tier 1 (gear AND
+food) is always available the moment the Shop opens (quest7Complete);
+everything past that is additive, gated on the Shop's own upgrade
+level, and nothing already unlocked is ever taken away. */
 function getAvailableGnomeShopItems(){
-   return [...act2GearItemsTier1, ...act2GearItemsTier2, ...act2GearItemsTier3, ...act2GearItemsTier4];
+   const shopLevel = state.gnomeBuildingUpgrades.gnomeshop || 0;
+   let items = [...act2FoodItemsTier1, ...act2GearItemsTier1];
+   if(shopLevel >= ACT2_SHOP_LEVEL_FOOD_TIER2) items = items.concat(act2FoodItemsTier2);
+   if(shopLevel >= ACT2_SHOP_LEVEL_GEAR_TIER2) items = items.concat(act2GearItemsTier2);
+   if(shopLevel >= ACT2_SHOP_LEVEL_GEAR_TIER3) items = items.concat(act2GearItemsTier3);
+   if(shopLevel >= ACT2_SHOP_LEVEL_GEAR_TIER4) items = items.concat(act2GearItemsTier4);
+   return items;
 }
