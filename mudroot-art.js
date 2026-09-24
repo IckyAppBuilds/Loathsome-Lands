@@ -11,8 +11,7 @@ zone and a recovery zone"). There is no rest tile in this hub at all;
 resting happens at Gnometropolis's Camp instead, one Biscuit away
 (ZONE_ORDER, content.js). The rest of the 9 are decorative filler — no
 data-action, no plate() label — same as Gnometropolis's own remaining
-filler tile. One filler (a root-wrapped, chained-shut door) is a
-deliberate foreshadow of a future boss gate; it's otherwise inert.
+filler tile.
 
 Mudflats is the one tile with a real visual gate on it: it renders as
 a second real building ONLY once `tunnelWardenDefeated` is true,
@@ -23,8 +22,16 @@ just a tile that quietly becomes a different tile. travelTo() (town.js)
 gates the actual destination the same way, independently, so a player
 can't reach it early by clicking around either. The Bureau has no such
 gate — it's available from the start, a parallel option alongside Root
-Cellar rather than a further step in that same sequence. */
-function artMudrootWarrenSquare(buildingIndicators, mudflatsRevealed){
+Cellar rather than a further step in that same sequence.
+
+The root-wrapped, chained-shut door (translate(200,0)) was a deliberate
+foreshadow of a future boss gate — it's now quest10's own gateway to
+the Warren's Ear, one hub deeper: it becomes a real clickable tile
+(data-action="warrensear") once `warrensEarUnlocked` is true (that's
+`state.quest10Path` being set, either rare hunt found first — see
+warrensear-content.js), same reveal-not-marker treatment as Mudflats
+above; travelTo() gates the real destination independently. */
+function artMudrootWarrenSquare(buildingIndicators, mudflatsRevealed, warrensEarUnlocked){
    const bi = (key) => biGet(buildingIndicators, key);
    /* A small root-tangle accent, this area's answer to
    gnometropolis-art.js's mushroom() — ties the filler tiles together as
@@ -70,13 +77,21 @@ function artMudrootWarrenSquare(buildingIndicators, mudflatsRevealed){
 
    ${mudflatsTile}
 
+   ${warrensEarUnlocked ? `
+   <g transform="translate(200,0)" class="building-hit" data-action="warrensear">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <rect x="30" y="26" width="40" height="60" fill="#8a5a3a"/>
+   <line x1="36" y1="32" x2="36" y2="80" stroke-width="2"/><line x1="50" y1="30" x2="50" y2="82" stroke-width="2"/><line x1="64" y1="32" x2="64" y2="80" stroke-width="2"/>
+   <circle cx="50" cy="58" r="5" fill="#d1a94e" stroke="#2b2b28" stroke-width="2"/>
+   ${plate("The Warren's Ear")}
+   </g>` : `
    <g transform="translate(200,0)">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
    <rect x="30" y="30" width="40" height="56" fill="#2b2b28"/>
    <line x1="36" y1="36" x2="64" y2="80"/><line x1="64" y1="36" x2="36" y2="80"/>
    <path d="M30 40 Q22 46 26 56 M70 44 Q78 50 74 60 M34 66 Q26 72 30 82 M66 70 Q74 76 70 86" stroke="#5f4632" stroke-width="3" fill="none"/>
    <circle cx="50" cy="58" r="5" fill="#8a8477" stroke="#2b2b28" stroke-width="2"/>
-   </g>
+   </g>`}
 
    <g transform="translate(0,100)" class="building-hit" data-action="bureau">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>

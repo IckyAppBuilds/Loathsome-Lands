@@ -400,13 +400,19 @@ past Root Cellar, since those two are meant to be fought in that order
 (see tunnelWardenHunt/warrenScoutHunt, combat.js). Bureau is a parallel
 third district, not part of that sequence — same tier as Root Cellar,
 available the moment quest9Accepted like Root Cellar is, its own
-monsters just business moles instead of tunnel moles. */
-const ZONE_DIFFICULTY = { commons:1, sewers:1.15, quarry:1.55, vault:1.9, garrison:2.3, roguesden:2.3, sanctum:2.3, palace:2.3, rootcellar:2.6, bureau:2.6, mudflats:2.9 };
+monsters just business moles instead of tunnel moles. choir/ledgervault
+(The Warren's Ear, quest10 — warrensear-content.js) sit one step past
+those three: a second adventure hub, deeper in the same warren system,
+reached through Mudroot Warren's own sealed root-door once quest10Path
+is set. Same parallel-districts shape as rootcellar/bureau — Choir and
+the Ledger Vault are alternate CHOICES (quest10's own branching), not a
+sequence, so they share one tier. */
+const ZONE_DIFFICULTY = { commons:1, sewers:1.15, quarry:1.55, vault:1.9, garrison:2.3, roguesden:2.3, sanctum:2.3, palace:2.3, rootcellar:2.6, bureau:2.6, mudflats:2.9, choir:3.2, ledgervault:3.2 };
 
 /* Display names for each adventure zone, keyed by state.location/zone id —
 used by the Bounty Board (render.js) to spell out where a bounty's
 monster lives without hand-typing zone names in a second place. */
-const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace', rootcellar:'the Root Cellar', mudflats:'the Mudflats', bureau:'the Bureau' };
+const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace', rootcellar:'the Root Cellar', mudflats:'the Mudflats', bureau:'the Bureau', choir:'the Choir', ledgervault:'the Ledger Vault' };
 
 /* The Map's main chain, Gladstone Hollow through to Mudroot Warren, in
 travel order — travelCostFor() (town.js) prices a trip by the DISTANCE
@@ -423,7 +429,7 @@ distance purposes. 'town' itself is a special case travelCostFor()
 always prices at 0 regardless of distance — the trip home is always
 free (see forceHomeIfBroke()'s own comment, town.js), same as any move
 within a hub's own area (square<->district) already was. */
-const ZONE_ORDER = ['town', 'commons', 'sewers', 'quarry', 'vault', 'gnometropolis', 'mudrootwarren'];
+const ZONE_ORDER = ['town', 'commons', 'sewers', 'quarry', 'vault', 'gnometropolis', 'mudrootwarren', 'warrensear'];
 
 /* Shown on each zone's card in the Map drawer (render.js) as a "Recommended
 level" guideline — deliberately advisory, not a hard gate like zone
@@ -465,6 +471,7 @@ const ZONE_LEVEL_RECOMMENDATION = {
    vault: { min:7, max:10 },
    gnometropolis: { min:10 },
    mudrootwarren: { min:16 },
+   warrensear: { min:20 },
 };
 
 /* Chance, per kill, that a monster's own rareDrop (defined per entry in

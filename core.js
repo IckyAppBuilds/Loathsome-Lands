@@ -141,6 +141,22 @@ function createDefaultState(){
      quest9Complete: false,
      tunnelWardenDefeated: false,
      warrenScoutDefeated: false,
+     /* Quest 10, "Whatever's Listening" — offered once quest9Complete.
+     Its two rare hunts (tunnelMoleInformant in the Root Cellar,
+     seniorClerk in the Bureau — tunnelMoleInformantHunt/seniorClerkHunt,
+     combat.js) run in PARALLEL, not in sequence like quest9's own two
+     stages: whichever is defeated first sets quest10Path ('informant'
+     or 'ledger', winCombat(), combat.js), unlocking the Warren's Ear
+     (a second adventure hub, one step past Mudroot Warren) and
+     revealing that district there immediately; the other rare hunt
+     stays available afterward so the OTHER district can still be
+     revealed later too, purely as an optional bonus — see
+     warrensear-content.js's own comment. */
+     quest10Accepted: false,
+     quest10Complete: false,
+     quest10Path: null,
+     tunnelMoleInformantDefeated: false,
+     seniorClerkDefeated: false,
      classQuestAccepted: false,
      classQuestComplete: false,
      classTitle: null,

@@ -1,14 +1,15 @@
 # The Loathsome Lands — file map
 
 A single-page browser RPG. No build step, no bundler, no modules — plain
-HTML/CSS/`<script>` tags, all globals. 28 JS files load in a specific
+HTML/CSS/`<script>` tags, all globals. 30 JS files load in a specific
 order (see `index.html`'s `<script>` block, which documents this inline
 too):
 
 ```
 supabase (CDN)
 -> core.js -> icons.js -> art.js -> gnometropolis-art.js -> mudroot-art.js
--> content.js -> mudroot-content.js -> act2-shop.js -> item-tiers.js
+-> warrensear-art.js -> content.js -> mudroot-content.js
+-> warrensear-content.js -> act2-shop.js -> item-tiers.js
 -> render.js -> render-shop.js -> render-character.js -> class-spells.js
 -> dev-tools.js -> auth.js -> save.js -> player-actions.js -> tutorial.js
 -> hubs.js -> combat.js -> town.js -> casino.js -> class-trial.js
@@ -142,20 +143,37 @@ Touch this file when: changing the Gnometropolis square's own building
 layout/decoration, or its three district backdrops.
 
 ## mudroot-art.js — Act 2 Part 2 (Mudroot Warren) art
-`artMudrootWarrenSquare(buildingIndicators, mudflatsRevealed)` — the
-3x3 Mudroot Warren square (Root Cellar/Mudflats/Bureau — all three real
-combat districts, no rest tile in this hub at all; resting happens at
-Gnometropolis's Camp instead). The Mudflats tile renders as a second
-real building ONLY once `tunnelWardenDefeated` is true, otherwise as
-an inert collapsed-tunnel filler (no data-action, no plate label) —
-deliberately not a marker pointing at "a door that opens later," just
-a tile that quietly becomes a different tile once quest9's own first
-stage clears. Also the three district backdrops
+`artMudrootWarrenSquare(buildingIndicators, mudflatsRevealed,
+warrensEarUnlocked)` — the 3x3 Mudroot Warren square (Root Cellar/
+Mudflats/Bureau — all three real combat districts, no rest tile in
+this hub at all; resting happens at Gnometropolis's Camp instead). The
+Mudflats tile renders as a second real building ONLY once
+`tunnelWardenDefeated` is true, otherwise as an inert collapsed-tunnel
+filler (no data-action, no plate label) — deliberately not a marker
+pointing at "a door that opens later," just a tile that quietly
+becomes a different tile once quest9's own first stage clears. The
+root-wrapped, chained-shut door tile works the same way for quest10:
+once `warrensEarUnlocked` (`state.quest10Path` being set) it becomes a
+real clickable tile into the Warren's Ear (warrensear-art.js), one hub
+deeper. Also the three district backdrops
 (`artZoneRootCellar`/`artZoneMudflats`/`artZoneBureau`). Same
 shared-helper-reuse convention as gnometropolis-art.js above.
 
 Touch this file when: changing the Mudroot Warren square's own
 layout/reveal logic, or its three district backdrops.
+
+## warrensear-art.js — The Warren's Ear art (Act 2, quest10)
+`artWarrensEarSquare(choirRevealed, ledgerVaultRevealed)` — a tighter
+2-tile hub (no rest tile, no third district — nothing else here yet)
+one step past Mudroot Warren. Both tiles are real combat districts but
+each renders as an inert filler (no data-action, no plate label) until
+its OWN rare hunt is cleared (`tunnelMoleInformant`/`seniorClerk`,
+warrensear-content.js) — same reveal-not-marker mechanism Mudflats
+already uses. Also the two district backdrops (`artZoneChoir`/
+`artZoneLedgerVault`). Loads after art.js/mudroot-art.js.
+
+Touch this file when: changing the Warren's Ear square's own
+layout/reveal logic, or its two district backdrops.
 
 ## content.js — game data tables
 `monsters[]` (per-zone, each with its own optional `rareDrop` AND
@@ -219,6 +237,33 @@ concern, new file" convention rather than growing content.js (already
 
 Touch this file when: adding/rebalancing a Mudroot Warren monster, or
 extending quest9's own rare-hunt mechanics.
+
+Also introduced `makeBountyTemplate(m)`, extracted from content.js's own
+`BOUNTY_TEMPLATES` construction so a later-loading file (this one, and
+now warrensear-content.js) can generate its own zones' bounty templates
+the same way — `BOUNTY_TEMPLATES` itself is a one-time snapshot taken
+at content.js parse time, before either of these files' own
+`monsters.push()` ever runs, so without this a new zone's monsters
+would silently never get a bounty template at all.
+
+## warrensear-content.js — The Warren's Ear (Act 2, quest10) monster data
+`warrensEarMonsters` (the Choir's 3 + the Ledger Vault's 3 regulars —
+same shape as mudroot-content.js's own monsters, `.push()`ed onto
+`monsters`/`BOUNTY_TEMPLATES` the same way), quest10's own two rare
+hunt targets (`tunnelMoleInformant` in the Root Cellar,
+`seniorClerk` in the Bureau — spawned by
+`tunnelMoleInformantHunt`/`seniorClerkHunt` in `goAdventuring()`,
+combat.js). Unlike quest9's `tunnelWarden`/`warrenScout` (a SEQUENCE —
+each stage gates the next), these two run in PARALLEL: whichever is
+defeated FIRST sets `state.quest10Path`, unlocking the Warren's Ear and
+revealing that district immediately (the other stays available
+afterward too, so the second district can still be revealed later as
+an optional bonus). Also extends `noncombatEvents`/`hazardEvents` with
+`choir`/`ledgervault` entries. Loads after content.js/mudroot-content.js/
+warrensear-art.js/icons.js.
+
+Touch this file when: adding/rebalancing a Warren's Ear monster, or
+extending quest10's own branching-path mechanics.
 
 ## act2-shop.js — Act 2 Shop (Gnometropolis) gear + food ladder
 `act2GearItemsTier1/2/3/4` and `act2FoodItemsTier1/2` — a structurally
@@ -484,15 +529,25 @@ flow.
   gnometropolis.js instead), `resetPalaceGauntlet`.
 - **Guild (Act 2, Gnometropolis)**: `enterGnomeGuild`/`leaveGnomeGuild`,
   quest8 "New Digs" (`acceptQuest8`/`reportQuest8` — a formality quest,
-  no combat objective) and quest9 "What the Throne Room Opened"
+  no combat objective), quest9 "What the Throne Room Opened"
   (`acceptQuest9`/`reportQuest9` — Act 2's first MULTI-stage quest,
   spanning Root Cellar then Mudflats, deliberately marker-free text
   throughout; see `quest9State`, render.js, and
   `tunnelWardenHunt`/`warrenScoutHunt`, combat.js, for the actual
-  encounters).
+  encounters), and quest10 "Whatever's Listening"
+  (`acceptQuest10`/`reportQuest10` — Act 2's first quest with a real
+  downstream CONSEQUENCE: two rare hunts run in PARALLEL rather than in
+  sequence, and whichever is found first sets `state.quest10Path`,
+  which decides which of the Warren's Ear's two districts opens first
+  — see `quest10State`, render.js, and
+  `tunnelMoleInformantHunt`/`seniorClerkHunt`, combat.js).
 - **Bounty Board**: `isBountyZoneUnlocked`/`rollNewBounty`/
   `checkBountyDayReset`/`ensureActiveBounty`/`isBountyReady`/
-  `formatBountyTimeLeft`/`claimBounty`/`updateBountyTimerDisplay`.
+  `formatBountyTimeLeft`/`claimBounty`/`updateBountyTimerDisplay`. Its
+  own zone pool has moved twice now — Act 1 zones, then Garrison/
+  Rogues' Den/Arcane Sanctum as an interim pool, now Mudroot Warren's
+  own districts (`rootcellar`/`mudflats`/`bureau`) once quest7Complete
+  — `isBountyZoneUnlocked()` is the single place that pool is defined.
 
 Quest 6 ("The Gnome King's Throne") is a retcon setup for quest 7: you
 fight `gnomeKingsCaptain` in the Vault, not the real King — he's

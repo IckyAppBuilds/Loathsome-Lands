@@ -136,6 +136,15 @@ function travelTo(dest){
    (mudroot-art.js) until tunnelWardenDefeated, so this gate should
    never actually trigger through normal play. */
    if(dest === 'mudflats' && !state.tunnelWardenDefeated) return;
+   /* The Warren's Ear (quest10) — unlocked the moment EITHER of
+   quest10's two rare hunts is found first (state.quest10Path gets set
+   either way, see winCombat(), combat.js), same "the door quietly
+   becomes real" gate the tile's own art uses (mudroot-art.js). Choir/
+   the Ledger Vault each need their OWN rare hunt cleared independently
+   — reaching the hub via one path doesn't reveal the other district. */
+   if(dest === 'warrensear' && !state.quest10Path) return;
+   if(dest === 'choir' && !state.tunnelMoleInformantDefeated) return;
+   if(dest === 'ledgervault' && !state.seniorClerkDefeated) return;
    regenBiscuits();
    if(forceHomeIfBroke()) return;
    const cost = travelCostFor(dest);
@@ -256,6 +265,27 @@ function travelTo(dest){
       state.victoryMonster = null;
       clearLog();
       log("You step into a cramped office stacked floor to ceiling with paperwork no one asked for. Something behind the counter is already reaching for a stamp." + costSuffix);
+   } else if(dest === 'warrensear'){
+      const cameFromDistrict = state.location==='choir' || state.location==='ledgervault';
+      state.location = 'warrensear';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log((cameFromDistrict
+          ? "You climb back out to the space between the two districts, the root-door still hanging open behind you."
+          : "The chained door gives way easier than it should. Beyond it, the tunnel opens up — and somewhere close, something is very clearly listening.") + costSuffix);
+   } else if(dest === 'choir'){
+      state.location = 'choir';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log("You duck into a wide, root-vaulted chamber that carries every sound a beat too long." + costSuffix);
+   } else if(dest === 'ledgervault'){
+      state.location = 'ledgervault';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log("You push into a cramped vault stacked floor to ceiling with ledgers, every one of them somehow up to date." + costSuffix);
    }
    /* No homeTown update here anymore — merely walking into either
    square doesn't claim it as home. restAtInn() sets 'town' and

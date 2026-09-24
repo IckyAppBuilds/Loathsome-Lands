@@ -221,6 +221,41 @@ function reportQuest9(){
    autosave();
 }
 
+/* Quest 10, "Whatever's Listening" — Act 2's first quest with a real
+downstream CONSEQUENCE rather than just longer flavor-text branching:
+two rare hunts run in parallel (tunnelMoleInformantHunt/seniorClerkHunt,
+combat.js), each in an EXISTING Mudroot Warren district, and whichever
+the player finds FIRST sets state.quest10Path — which of the Warren's
+Ear's two districts (the Choir/the Ledger Vault) is revealed
+immediately, the other staying hidden until its own rare hunt is
+separately cleared later. Same "no zone names, no markers" convention
+quest9 established — the guildmaster's own text below never says which
+path leads where, only that a choice happened. */
+function acceptQuest10(){
+   if(state.location !== 'gnomeguild' || !state.quest9Complete || state.quest10Accepted || state.quest10Complete) return;
+   state.quest10Accepted = true;
+   clearLog();
+   log("\"Whatever's coordinating those outposts, it's not going to just tell you,\" the guildmaster says. \"Find someone who'll talk, or find the paperwork that already has. Either one gets you there — just get there.\"");
+   render();
+   autosave();
+}
+function reportQuest10(){
+   if(state.location !== 'gnomeguild' || !state.quest10Accepted || state.quest10Complete || !state.quest10Path) return;
+   state.quest10Complete = true;
+   state.popTabs += 140;
+   state.xp += 110;
+   state.bountyTokens += 10;
+   clearLog();
+   log("You lay out what you found — and how you found it. (+140 Pop Tabs, +110 XP, +10 Bounty Tokens)");
+   log(state.quest10Path === 'informant'
+       ? "The guildmaster nods slowly. \"Someone talked. That's one way to do it — messier than paperwork, but it works.\" He doesn't ask what happened to the one who talked."
+       : "The guildmaster flips through the ledger you brought back, longer than he needs to. \"Paper trail. Should've guessed. This place runs on more of it than anyone down there would admit.\"");
+   log("\"Whatever's listening down there, it knows you're coming now. That's not nothing.\"");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
 /* How many of PALACE_GUARDS (content.js) are down in the CURRENT
 uninterrupted gauntlet attempt — a plain transient variable, never
 saved, same convention combatSubView (combat.js) uses for UI/session

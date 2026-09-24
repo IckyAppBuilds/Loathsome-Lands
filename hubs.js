@@ -29,6 +29,16 @@ const HUB_TOWNS = {
    that gating lives in travelTo() (town.js) same as every other
    quest-gated destination already does. */
    mudrootwarren: ['rootcellar', 'mudflats', 'bureau'],
+   /* Quest 10's own hub — deeper in the same warren system, reached
+   through Mudroot Warren's sealed root-door once quest10Path is set
+   (either rare hunt found first — see quest10's own comment, guild.js).
+   Choir/Ledger Vault are alternate CHOICES, not a sequence: whichever
+   rare hunt (the tunnel-mole informant in rootcellar, or the senior
+   clerk in bureau) the player finds FIRST sets quest10Path and reveals
+   that district immediately; the other stays an inert filler tile
+   until its own rare hunt is separately defeated, same reveal
+   mechanism Mudflats already uses. */
+   warrensear: ['choir', 'ledgervault'],
 };
 
 /* Which of HUB_TOWNS's keys are proper TOWN hubs — a real home base with

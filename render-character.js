@@ -383,6 +383,22 @@ if(state.quest9Complete){
   </div>`);
 }
 
+if(state.quest10Complete){
+  completedEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">Whatever's Listening</div>
+  <div class="quest-desc">You found a way to whatever's coordinating the outposts, and told the guildmaster what you learned.</div>
+  <div class="quest-progress">Reward claimed: 140 Pop Tabs, 110 XP, 10 Bounty Tokens</div>
+  </div>`);
+} else if(state.quest10Accepted){
+  activeEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">Whatever's Listening</div>
+  <div class="quest-desc">Whatever's coordinating those outposts isn't going to introduce itself. Find someone who'll talk, or find the paperwork that already has — either lead gets you there.</div>
+  <div class="quest-progress">${state.quest10Path ? 'Ready to report back at the Guild.' : "Nobody's talked yet, and nothing's turned up in writing either."}</div>
+  </div>`);
+}
+
 if(state.classQuestComplete){
   completedEntries.push(`
   <div class="quest-log-entry">

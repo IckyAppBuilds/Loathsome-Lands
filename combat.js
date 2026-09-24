@@ -5,7 +5,7 @@ districts (reached from that town square via travelTo(), gnometropolis.js)
 took its place as the actual adventuring locations; 'palace' is
 deliberately excluded -- it's a single scripted fight (approachPalaceGate(),
 guild.js), not somewhere to wander and roll random encounters. */
-const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault', 'garrison', 'roguesden', 'sanctum', 'rootcellar', 'mudflats', 'bureau'];
+const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault', 'garrison', 'roguesden', 'sanctum', 'rootcellar', 'mudflats', 'bureau', 'choir', 'ledgervault'];
 
 /* Garrison/Rogues' Den/Arcane Sanctum's exploration role is temporary —
 before quest7Complete they're real adventure zones (each district's
@@ -103,6 +103,29 @@ const tunnelWardenHunt = state.location==='rootcellar' && state.quest9Accepted &
 const warrenScoutHunt = state.location==='mudflats' && state.quest9Accepted && !state.quest9Complete && state.tunnelWardenDefeated && !state.warrenScoutDefeated;
    if(warrenScoutHunt && Math.random() < WARREN_SCOUT_SPAWN_CHANCE){
       startCombat(warrenScout);
+      render();
+      return;
+   }
+
+/* Quest 10's two rare hunt targets — a CHOICE, not a sequence: both are
+active in parallel the whole time quest10Accepted is true, each in an
+EXISTING Mudroot Warren district (Root Cellar/the Bureau) rather than a
+new zone. Deliberately NOT gated on !state.quest10Complete — reaching
+the Warren's Ear via one path doesn't stop the OTHER rare hunt from
+still being findable later, so a player can go back and reveal the
+second district too, purely as an optional bonus (see
+warrensear-content.js's own comment). Whichever is found FIRST sets
+state.quest10Path (winCombat() below). */
+const tunnelMoleInformantHunt = state.location==='rootcellar' && state.quest10Accepted && !state.tunnelMoleInformantDefeated;
+   if(tunnelMoleInformantHunt && Math.random() < TUNNEL_MOLE_INFORMANT_SPAWN_CHANCE){
+      startCombat(tunnelMoleInformant);
+      render();
+      return;
+   }
+
+const seniorClerkHunt = state.location==='bureau' && state.quest10Accepted && !state.seniorClerkDefeated;
+   if(seniorClerkHunt && Math.random() < SENIOR_CLERK_SPAWN_CHANCE){
+      startCombat(seniorClerk);
       render();
       return;
    }
@@ -606,6 +629,8 @@ function winCombat(){
    const wasArcaneSanctumGuardian = !!state.monster.rare && state.monster.name === arcaneSanctumGuardian.name;
    const wasTunnelWarden = !!state.monster.rare && state.monster.name === tunnelWarden.name;
    const wasWarrenScout = !!state.monster.rare && state.monster.name === warrenScout.name;
+   const wasTunnelMoleInformant = !!state.monster.rare && state.monster.name === tunnelMoleInformant.name;
+   const wasSeniorClerk = !!state.monster.rare && state.monster.name === seniorClerk.name;
    /* Which of the 5 palace gauntlet guards (PALACE_GUARDS, content.js)
    this was, if any — -1 when it wasn't one of them. Used below to both
    log a distinct "guards left" message and advance
@@ -711,6 +736,18 @@ clearLog();
    } else if(wasWarrenScout){
       state.warrenScoutDefeated = true;
       log(`You defeat ${defeatedName}! Whatever it was watching for, it isn't reporting back now. (+${xpGain} XP)`);
+   } else if(wasTunnelMoleInformant){
+      state.tunnelMoleInformantDefeated = true;
+      /* Whichever of the two quest10 rare hunts is defeated FIRST sets
+      the path — checked so the second one, whenever it happens, never
+      overwrites it. Deliberately vague: no zone name, no hint at what
+      the path actually unlocks. */
+      if(!state.quest10Path) state.quest10Path = 'informant';
+      log(`You defeat ${defeatedName}! Whatever it was so nervous about, it talked before the end. (+${xpGain} XP)`);
+   } else if(wasSeniorClerk){
+      state.seniorClerkDefeated = true;
+      if(!state.quest10Path) state.quest10Path = 'ledger';
+      log(`You defeat ${defeatedName}! The ledger it was guarding is yours now, for whatever that's worth. (+${xpGain} XP)`);
    } else if(wasPalaceGuard){
       /* Advances the gauntlet exactly once per guard kill — guild.js's
       approachPalaceGate() reads this same variable to decide whether the

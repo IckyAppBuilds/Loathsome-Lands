@@ -557,6 +557,36 @@ function artWarrenScout(){
    return sceneWrap(`<ellipse cx="50" cy="60" rx="24" ry="20" fill="#5f4632"/><ellipse cx="50" cy="42" rx="13" ry="11" fill="#5f4632"/><path d="M38 36 L44 44 M62 36 L56 44 M44 44 L56 44" stroke="#2b2b28" stroke-width="2.5"/><path d="M40 38 Q35 28 27 30" fill="none" stroke-width="3"/><path d="M60 38 Q65 28 73 30" fill="none" stroke-width="3"/><path d="M20 62 Q10 58 12 46 M80 62 Q90 58 88 46" fill="none" stroke-width="2.5"/><line x1="40" y1="76" x2="34" y2="92"/><line x1="60" y1="76" x2="66" y2="92"/>`, 0);
 }
 
+/* The Warren's Ear's own monsters (warrensear-content.js) — Choir
+(exaggerated ears, echo motifs) and the Ledger Vault (buried in
+paperwork, continuing the Bureau's own bureaucracy joke one hub
+deeper). Same mole silhouette vocabulary as every other Mudroot Warren
+monster above. */
+function artMoleCantor(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="24" ry="18" fill="#5f4632"/><ellipse cx="50" cy="46" rx="13" ry="11" fill="#5f4632"/><path d="M42 42 Q38 34 32 36" fill="none" stroke-width="3"/><path d="M58 42 Q62 34 68 36" fill="none" stroke-width="3"/><path d="M44 46 Q50 42 56 46" fill="none" stroke="#2b2b28" stroke-width="2.5"/><circle cx="50" cy="70" r="4" fill="#d1a94e" stroke="none"/><path d="M50 66 Q56 60 62 64 M50 66 Q44 60 38 64" fill="none" stroke-width="2"/>`, 0);
+}
+function artEchoMole(){
+   return sceneWrap(`<ellipse cx="50" cy="62" rx="22" ry="18" fill="#5f4632" opacity="0.7"/><ellipse cx="58" cy="58" rx="22" ry="18" fill="#5f4632" opacity="0.4"/><ellipse cx="50" cy="44" rx="13" ry="11" fill="#5f4632"/><path d="M42 40 Q37 30 29 32" fill="none" stroke-width="3"/><path d="M58 40 Q63 30 71 32" fill="none" stroke-width="3"/><line x1="42" y1="78" x2="36" y2="92"/><line x1="58" y1="78" x2="64" y2="92"/>`, 0);
+}
+function artListeningSentry(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="24" ry="18" fill="#5f4632"/><ellipse cx="50" cy="44" rx="14" ry="12" fill="#5f4632"/><path d="M38 38 Q28 30 24 40 Q30 42 38 38 Z" fill="#5f4632" stroke-width="2.5"/><path d="M62 38 Q72 30 76 40 Q70 42 62 38 Z" fill="#5f4632" stroke-width="2.5"/><circle cx="44" cy="46" r="1.6" fill="#2b2b28" stroke="none"/><circle cx="56" cy="46" r="1.6" fill="#2b2b28" stroke="none"/>`, 0);
+}
+function artArchivistMole(){
+   return sceneWrap(`<ellipse cx="46" cy="66" rx="22" ry="16" fill="#5f4632"/><ellipse cx="46" cy="48" rx="12" ry="10" fill="#5f4632"/><path d="M38 44 Q34 36 28 38" fill="none" stroke-width="3"/><path d="M54 44 Q58 36 64 38" fill="none" stroke-width="3"/><rect x="60" y="52" width="20" height="26" fill="#f4efe4" stroke="#2b2b28" stroke-width="2" transform="rotate(8 70 65)"/><line x1="65" y1="58" x2="76" y2="60" stroke-width="1.5"/><line x1="64" y1="65" x2="75" y2="67" stroke-width="1.5"/><line x1="64" y1="72" x2="74" y2="74" stroke-width="1.5"/>`, 0);
+}
+function artVaultClerk(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="23" ry="17" fill="#5f4632"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M42 41 Q38 33 32 35" fill="none" stroke-width="3"/><path d="M58 41 Q62 33 68 35" fill="none" stroke-width="3"/><rect x="66" y="46" width="14" height="14" fill="#b5453f" transform="rotate(-8 73 53)"/><line x1="73" y1="60" x2="73" y2="72" stroke-width="3"/>`, 0);
+}
+function artAuditorInChief(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="25" ry="19" fill="#2b2b28"/><ellipse cx="50" cy="43" rx="13" ry="11" fill="#5f4632"/><path d="M41 39 Q36 30 29 32" fill="none" stroke-width="3.5"/><path d="M59 39 Q64 30 71 32" fill="none" stroke-width="3.5"/><line x1="72" y1="50" x2="82" y2="46" stroke="#b5453f" stroke-width="3"/><line x1="40" y1="82" x2="34" y2="96"/><line x1="60" y1="82" x2="66" y2="96"/>`, 0);
+}
+function artTunnelMoleInformant(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="26" ry="19" fill="#5f4632"/><ellipse cx="50" cy="46" rx="14" ry="12" fill="#5f4632"/><path d="M40 42 Q34 32 25 34" fill="none" stroke-width="3.5"/><path d="M60 42 Q66 32 75 34" fill="none" stroke-width="3.5"/><path d="M44 46 L50 40 L56 46" stroke="#2b2b28" stroke-width="2.5" fill="none"/><line x1="40" y1="82" x2="32" y2="98"/><line x1="60" y1="82" x2="68" y2="98"/>`, 0);
+}
+function artSeniorClerk(){
+   return sceneWrap(`<ellipse cx="48" cy="66" rx="26" ry="19" fill="#5f4632"/><ellipse cx="48" cy="46" rx="14" ry="12" fill="#5f4632"/><path d="M39 42 Q34 33 26 35" fill="none" stroke-width="3.5"/><path d="M57 42 Q62 33 70 35" fill="none" stroke-width="3.5"/><rect x="68" y="50" width="20" height="26" fill="#f4efe4" stroke="#2b2b28" stroke-width="2.5" transform="rotate(-6 78 63)"/><line x1="72" y1="58" x2="84" y2="59" stroke-width="1.6"/><line x1="72" y1="65" x2="84" y2="66" stroke-width="1.6"/>`, 0);
+}
+
 /* The Bureau's business moles (mudroot-content.js) — same mole
 silhouette vocabulary as the 6 above, dressed in office trappings
 (spectacles, a stack of papers, a stamp) instead of tunnel gear. */
