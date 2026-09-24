@@ -463,15 +463,31 @@ each zone's unlock quest completed:
   clean 1-4-encounter fight and Gnometropolis unlocks at level 10-12
   every run. The captain's own stats are correctly tuned for "level 10
   with a class," not for a Vault-fresh level 7-9 player — vault's `max`
-  and gnometropolis's `min` below reflect that intended detour. */
+  and gnometropolis's `min` below reflect that intended detour.
+
+Mudroot Warren's original `min:16`/Warren's Ear's `min:20` were guessed
+by extrapolating the ZONE_DIFFICULTY step (not simulated like the Act 1
+numbers above) and turned out badly overtuned once actually checked —
+real playtesting reached Mudroot Warren comfortably at level 12, using
+health items mid-fight same as any other zone, nowhere near the
+guessed level-16 floor. Re-derived from 300-trial-per-level win-rate
+probes (a fresh Meathead, one level's worth of stat points sunk into
+Beef, real startCombat()/playerAttack()/checkDefeat() combat code, 3
+healing items on hand) against each zone's own regular-monster pool:
+Mudroot Warren clears ~79-98% of fights by level 12 (bare gear vs. a
+few +3-ish stat items respectively) and >90% by 14; Warren's Ear — one
+full ZONE_DIFFICULTY step higher, and gated behind Mudroot Warren's own
+quest9 to begin with — needs level 16 with that same modest gear to
+reach the same >90% comfort zone. `min` below reflects each zone's own
+"comfortable" floor rather than the old guesswork. */
 const ZONE_LEVEL_RECOMMENDATION = {
    commons: { min:1, max:4 },
    sewers: { min:4, max:7 },
    quarry: { min:6, max:9 },
    vault: { min:7, max:10 },
    gnometropolis: { min:10 },
-   mudrootwarren: { min:16 },
-   warrensear: { min:20 },
+   mudrootwarren: { min:12, max:16 },
+   warrensear: { min:16 },
 };
 
 /* Chance, per kill, that a monster's own rareDrop (defined per entry in
