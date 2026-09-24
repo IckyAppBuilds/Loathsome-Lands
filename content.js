@@ -399,13 +399,14 @@ const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers',
 /* Biscuit cost to travel TO each of these (travelCostFor(), town.js) —
 the further out a zone is, the more it costs, same escalating-by-depth
 idea as ZONE_DIFFICULTY above but for the trip itself, not the fights
-inside it. Charged only on ENTERING one of these keys from OUTSIDE the
-Gnometropolis area (isGnometropolisArea(), town.js); the trip back to
-a hub, and any move within the Gnometropolis area (square<->district),
-is always free — see travelCostFor(). Gnometropolis itself is the only
-paywall for the whole Act 2 area: garrison/roguesden/sanctum/palace are
-deliberately NOT listed here, since they're only ever reached from
-inside the square you already paid to enter. This is still what gives
+inside it. Charged only on ENTERING one of these keys from OUTSIDE its
+hub's area (isHubArea(), hubs.js) — for keys that are a hub square
+themselves (currently just 'gnometropolis'); the trip back to a hub,
+and any move within a hub's area (square<->district), is always free —
+see travelCostFor(). A hub square is the only paywall for its whole
+area: garrison/roguesden/sanctum/palace are deliberately NOT listed
+here, since they're only ever reached from inside the square you
+already paid to enter. This is still what gives
 restAtCamp() (gnometropolis.js) a real reason to exist: Biscuits spent
 resting at the Camp are Biscuits you don't have left for the next trip
 out. Gnometropolis sits one step past Vault, same "deepest costs most"

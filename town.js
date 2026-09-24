@@ -1,14 +1,16 @@
-/* Every location id that's a valid state.homeTown value — see
-hydrateState() (save.js), which falls back to 'town' for anything not
-in this list, and isTravelHub()/forceHomeIfBroke() below. Neither hub
-qualifies just by walking in — state.homeTown is "wherever you last
-actually rested," not "wherever you last stood": restAtInn() sets it to
-'town' on a successful rest, restAtCamp() (gnometropolis.js) sets it to
-'gnometropolis' on one. Merely passing through either square (or a
-blocked/cooldown-refused rest attempt) leaves it untouched. This is
-also where a defeated player lands (checkDefeat(), combat.js) — the
-last place you recovered, not just the last place you happened to be. */
-const TOWN_HUBS = ['town', 'gnometropolis'];
+/* Every location id that's a valid state.homeTown value — derived
+straight from HUB_TOWNS's own keys (hubs.js) rather than a second
+hand-kept list. See hydrateState() (save.js), which falls back to
+'town' for anything not in this list, and isTravelHub()/
+forceHomeIfBroke() below. No hub qualifies just by walking in —
+state.homeTown is "wherever you last actually rested," not "wherever
+you last stood": restAtInn() sets it to 'town' on a successful rest,
+restAtCamp() (gnometropolis.js) sets it to 'gnometropolis' on one.
+Merely passing through a hub square (or a blocked/cooldown-refused rest
+attempt) leaves it untouched. This is also where a defeated player
+lands (checkDefeat(), combat.js) — the last place you recovered, not
+just the last place you happened to be. */
+const TOWN_HUBS = Object.keys(HUB_TOWNS);
 
 function restAtInn(){
    if(state.inCombat || state.location !== 'town') return;
@@ -60,29 +62,23 @@ same list as TOWN_HUBS above (both town squares), reused here since
 counts as a valid home" happen to be the same set. */
 function isTravelHub(loc){ return TOWN_HUBS.includes(loc); }
 
-/* The Gnometropolis square plus its 4 buildings — once the player has
-paid to get into the square (ZONE_TRAVEL_COST.gnometropolis, content.js),
-moving around anywhere inside this whole area is free, including back
-out to the square from a district. Districts are only ever reachable
-by clicking a tile inside the square in the first place (boot.js's
-data-action dispatch), so a player can never even ATTEMPT to enter one
-without already being inside the area. */
-function isGnometropolisArea(loc){
-   return loc==='gnometropolis' || loc==='garrison' || loc==='roguesden' || loc==='sanctum' || loc==='palace';
-}
-
-/* Biscuit cost of a trip to `dest`. Gnometropolis itself is the only
-paywall for the whole Act 2 area (see isGnometropolisArea() above) —
-entering it from outside costs ZONE_TRAVEL_COST.gnometropolis, but
-entering a district (already inside the area) or leaving one back to
-the square is free. Every other priced destination (ZONE_TRAVEL_COST,
-content.js) is charged on ENTERING it regardless of origin; the return
-trip to a hub is always free — heading home never costs Biscuits, only
-heading out does. */
+/* Biscuit cost of a trip to `dest`. Each hub square (HUB_TOWNS, hubs.js)
+is the only paywall for its whole area — entering one from outside
+costs ZONE_TRAVEL_COST[that hub's key], but entering one of its
+districts (already inside the area, per isHubArea()) or leaving one
+back to its own square is free. Every other priced destination
+(ZONE_TRAVEL_COST, content.js — the Act 1 zones) is charged on
+ENTERING it regardless of origin; the return trip to a hub is always
+free — heading home never costs Biscuits, only heading out does. */
 function travelCostFor(dest){
-   if(dest === 'gnometropolis') return isGnometropolisArea(state.location) ? 0 : (ZONE_TRAVEL_COST.gnometropolis || 0);
-   if(isGnometropolisArea(dest)) return 0;
-   return ZONE_TRAVEL_COST[dest] || 0;
+   const destHubKey = hubKeyForLocation(dest);
+   if(destHubKey === null) return ZONE_TRAVEL_COST[dest] || 0;
+   if(dest !== destHubKey) return 0; // a district — only reachable from inside its own hub already
+   /* Free only when already inside THIS SAME hub's area (e.g. leaving
+   a Gnometropolis district back to the Gnometropolis square) — being
+   inside some OTHER hub (Gladstone Hollow counts as one too, per
+   HUB_TOWNS) must not give a free pass into a different one. */
+   return hubKeyForLocation(state.location) === destHubKey ? 0 : (ZONE_TRAVEL_COST[dest] || 0);
 }
 
 /* Running out of Biscuits mid-adventure shouldn't require manually
