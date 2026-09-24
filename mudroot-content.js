@@ -93,6 +93,15 @@ plain array mutation, not a reassignment, so it stays a genuine `const`
 concatenation rather than needing combat.js's own filter touched. */
 monsters.push(...mudrootMonsters);
 
+/* Same reasoning, for the Bounty Board's own pool — BOUNTY_TEMPLATES
+(content.js) is a one-time snapshot taken at content.js's own parse
+time, BEFORE this file's monsters.push() above ever runs, so without
+this, Root Cellar/Mudflats/Bureau would never get a bounty template at
+all. makeBountyTemplate() (content.js) is the exact same function
+content.js used to build its own entries — reused here rather than
+reimplemented, so the two can never drift out of sync. */
+BOUNTY_TEMPLATES.push(...mudrootMonsters.map(makeBountyTemplate));
+
 /* Extends content.js's own noncombatEvents/hazardEvents (both plain
 objects, safe to add keys to after the fact) so Root Cellar/Mudflats get
 their own flavor instead of silently falling back to the Commons pool

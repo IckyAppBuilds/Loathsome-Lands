@@ -291,16 +291,24 @@ winCombat() above. */
    always-available baseline zone. Gnometropolis itself (the town square)
    is never a bounty zone — only its 3 explorable districts are, gated the
    same way the districts themselves are (state.quest7Accepted). */
-/* Act 2: once the guild relocates (quest7Complete), the board only
-ever offers Act 1 zones is stopped dead — Commons/Sewers/Quarry/Vault
-drop out of the pool entirely, same as the guild hall itself becoming a
-dead end (enterGuild(), above). Garrison/Rogues' Den/Arcane Sanctum
-keep serving as the bounty pool in the meantime — they're the only
-non-Act-1 combat content that exists yet; revisit once real Mole
-People zones (Act 2 plan, Part 2) ship and can take over. */
+/* Act 2: once the guild relocates (quest7Complete), the board stops
+offering Act 1 zones entirely — Commons/Sewers/Quarry/Vault drop out
+of the pool, same as the guild hall itself becoming a dead end
+(enterGuild(), above). Garrison/Rogues' Den/Arcane Sanctum served as
+an interim pool for a while (the only non-Act-1 combat content that
+existed yet), but they stopped being real bounty targets the moment
+they converted into pure class-trainer buildings (CLASS_AREA_ZONES,
+combat.js) — a bounty asking for kills there would've been
+unfulfillable. Root Cellar/the Bureau are available as soon as
+quest9Accepted (mirrors travelTo()'s own gate, town.js); Mudflats
+needs tunnelWardenDefeated on top of that, same defense-in-depth gate
+travelTo('mudflats') itself already enforces, since the tile isn't
+even reachable before then. */
 function isBountyZoneUnlocked(zone){
    if(state.quest7Complete){
-      return zone === 'garrison' || zone === 'roguesden' || zone === 'sanctum';
+      if(zone === 'rootcellar' || zone === 'bureau') return state.quest9Accepted;
+      if(zone === 'mudflats') return state.quest9Accepted && state.tunnelWardenDefeated;
+      return false;
    }
    if(zone === 'commons') return true;
    if(zone === 'sewers') return state.quest2Complete;
@@ -311,13 +319,20 @@ function isBountyZoneUnlocked(zone){
 }
 function rollNewBounty(){
    const prevId = state.activeBounty ? state.activeBounty.templateId : null;
-   /* Only ever roll from zones the player has actually unlocked. Commons
-      bounties are always eligible, so this pool is never empty. */
+   /* Only ever roll from zones the player has actually unlocked. Pre-Act-2
+   this pool is never empty (Commons has no gate at all), but post-
+   quest7Complete it legitimately CAN be — quest8Complete (reaching the
+   new Guild) doesn't by itself unlock any Act 2 zone; that only happens
+   once quest9Accepted. Leave state.activeBounty null in that window
+   rather than crashing on an empty pool, same "nothing to offer right
+   now" shape the daily-cap case (ensureActiveBounty() below) already
+   uses. */
    let pool = BOUNTY_TEMPLATES.filter(b => isBountyZoneUnlocked(b.zone));
    if(prevId){
       const filtered = pool.filter(b => b.id !== prevId);
       if(filtered.length > 0) pool = filtered;
    }
+   if(pool.length === 0){ state.activeBounty = null; return; }
    const template = pool[Math.floor(Math.random()*pool.length)];
    state.activeBounty = { templateId: template.id, progress: 0, startedAt: Date.now() };
 }

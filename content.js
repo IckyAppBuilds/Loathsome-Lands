@@ -1066,7 +1066,18 @@ monster's own individual count. */
 const BOUNTY_BASE_ENCOUNTERS = 24;
 const BOUNTY_MIN_COUNT = 3;
 const BOUNTY_MAX_COUNT = 8;
-const BOUNTY_TEMPLATES = monsters.map((m, i) => {
+/* Extracted to a named function (rather than an inline .map() callback)
+so mudroot-content.js can generate its own zones' bounty templates the
+exact same way, after pushing its own monsters onto the shared
+`monsters` array — BOUNTY_TEMPLATES itself is computed once, at
+content.js parse time, which is BEFORE mudroot-content.js's own
+monsters.push() runs (content.js loads first); without this, Root
+Cellar/Mudflats/Bureau would silently never get a bounty template at
+all, since this snapshot would already be taken. zoneRoster reads the
+GLOBAL `monsters` array (not a passed-in list) specifically so it
+still sees every monster actually in that zone regardless of which
+file's push added them. */
+function makeBountyTemplate(m){
    const zoneRoster = monsters.filter(z => z.zone === m.zone);
    const count = Math.min(BOUNTY_MAX_COUNT, Math.max(BOUNTY_MIN_COUNT,
       Math.round(BOUNTY_BASE_ENCOUNTERS / zoneRoster.length)));
@@ -1076,7 +1087,8 @@ const BOUNTY_TEMPLATES = monsters.map((m, i) => {
       type: 'kill', monsterName: m.name, zone: m.zone, count,
       reward: { bountyTokens },
       };
-   });
+}
+const BOUNTY_TEMPLATES = monsters.map(makeBountyTemplate);
 
 /* ---------------- Town Lot (Gladstone Hollow) ---------------- */
 /* The one previously-empty cell in the town square (translate(200,100) in

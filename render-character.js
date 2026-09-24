@@ -193,10 +193,13 @@ a full re-render every second. */
 if(state.questComplete){
   ensureActiveBounty();
   if(!state.activeBounty){
+    /* Same two-cause distinction as renderBountyBoard()'s own copy
+    (render-shop.js) — daily cap hit, or no Act 2 zone unlocked yet. */
+    const noZoneUnlocked = state.bountiesClaimedToday < BOUNTY_DAILY_CAP;
     activeEntries.push(`
     <div class="quest-log-entry">
     <div class="quest-name">Bounty Board (The Guild)</div>
-    <div class="quest-desc">You've claimed ${BOUNTY_DAILY_CAP} bounties today — the board's empty until tomorrow.</div>
+    <div class="quest-desc">${noZoneUnlocked ? "Nothing worth posting yet — check back once you've found somewhere new to hunt." : `You've claimed ${BOUNTY_DAILY_CAP} bounties today — the board's empty until tomorrow.`}</div>
     </div>`);
   }
   const bt = state.activeBounty && BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
