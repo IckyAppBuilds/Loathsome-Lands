@@ -15,49 +15,52 @@ killed" reasoning, just via icons that already exist and fit
 (iconFigurine/iconClover for every rareDrop is the established
 convention; gearDrop/loot icons below reuse whichever existing icon
 best matches the item's own flavor — nothing here is unique enough to
-need a brand-new SVG). gearDrop bonus values are +4 (one step past
-Gnometropolis districts' own +3, tracking the same "+1/+2/+3" curve
-content.js's own comment above monsters[] describes). */
+need a brand-new SVG). gearDrop bonus values continue content.js's own
+per-zone ladder (see the comment above its monsters[] array) one step
+past Gnometropolis's own districts (+5): Root Cellar and the Bureau
+are parallel, same-tier districts, so both sit at +6; Mudflats is
+fought AFTER Root Cellar within this same hub (tunnelWardenHunt gates
+it, combat.js), so it gets one more step, +7. */
 const mudrootMonsters = [
    { name:"a blind tunnel-mole, all claws", hp:42, atkMin:6, atkMax:10, xp:25, zone:"rootcellar",
     art: artTunnelMole, loot:{name:"fistful of freshly-turned root-dirt", desc:"Rich, dark, and recently disturbed.", type:"junk", sell:10, icon:iconSoil},
     rareDrop:{name:"the mole's own lucky digging claw", desc:"Worn smooth from decades of tunneling toward something.", type:"junk", sell:35, icon:iconFigurine},
-    gearDrop:{name:"claw-notched digging spike of the Badger", desc:"Balanced for digging. Repurposed for hitting things.", type:"equip", slot:"weapon", bonus:{beef:4}, tier:'common', icon:iconRakeShank} },
+    gearDrop:{name:"claw-notched digging spike of the Badger", desc:"Balanced for digging. Repurposed for hitting things.", type:"equip", slot:"weapon", bonus:{beef:6}, tier:'common', icon:iconRakeShank} },
    { name:"a root-gnawing grub, fat and glistening", hp:38, atkMin:5, atkMax:9, xp:23, zone:"rootcellar",
     art: artRootGrub, loot:{name:"glistening chewed root-fiber", desc:"Still faintly warm. You don't ask why.", type:"junk", sell:9, icon:iconOreGrit},
     rareDrop:{name:"grub's own hoarded good-luck pebble", desc:"Grubs, it turns out, believe in luck too.", type:"luck", hpValue:21, mpValue:11, icon:iconClover},
-    gearDrop:{name:"grub-slick carapace plating of the Tortoise", desc:"Slick, load-bearing, and faintly unpleasant to touch.", type:"equip", slot:"chest", bonus:{grit:4}, tier:'common', icon:iconVest} },
+    gearDrop:{name:"grub-slick carapace plating of the Tortoise", desc:"Slick, load-bearing, and faintly unpleasant to touch.", type:"equip", slot:"chest", bonus:{grit:6}, tier:'common', icon:iconVest} },
    { name:"a mole-sapper, packing a satchel of loose dirt", hp:46, atkMin:6, atkMax:11, xp:27, zone:"rootcellar",
     art: artMoleSapper, loot:{name:"satchel of finely sifted collapse-dirt", desc:"Packed for exactly one purpose: bringing down a ceiling.", type:"junk", sell:11, icon:iconPipeFitting},
     rareDrop:{name:"the sapper's unused good-luck charm", desc:"Never needed it, evidently. You do now.", type:"junk", sell:37, icon:iconFigurine},
-    gearDrop:{name:"sapper's dirt-packed leg wraps of the Weasel", desc:"Built for a fast retreat after the ceiling comes down.", type:"equip", slot:"legs", bonus:{zip:4}, tier:'common', icon:iconShinGuard} },
+    gearDrop:{name:"sapper's dirt-packed leg wraps of the Weasel", desc:"Built for a fast retreat after the ceiling comes down.", type:"equip", slot:"legs", bonus:{zip:6}, tier:'common', icon:iconShinGuard} },
    { name:"a mudflat leech, bloated and patient", hp:50, atkMin:7, atkMax:12, xp:30, zone:"mudflats",
     art: artMudflatLeech, loot:{name:"bloated, still-twitching leech segment", desc:"You cut it off. It's still moving.", type:"junk", sell:12, icon:iconRatTail},
     rareDrop:{name:"leech's hoarded silt-pearl", desc:"Patient enough to swallow one, apparently.", type:"luck", hpValue:23, mpValue:12, icon:iconClover},
-    gearDrop:{name:"leech-slick wading boots of the Weasel", desc:"Somehow keeps the mud out. Somehow.", type:"equip", slot:"boots", bonus:{zip:4}, tier:'common', icon:iconGripBoots} },
+    gearDrop:{name:"leech-slick wading boots of the Weasel", desc:"Somehow keeps the mud out. Somehow.", type:"equip", slot:"boots", bonus:{zip:7}, tier:'common', icon:iconGripBoots} },
    { name:"a mole scout, painted in warpaint mud", hp:54, atkMin:7, atkMax:12, xp:32, zone:"mudflats",
     art: artMoleScout, loot:{name:"scout's smeared warpaint mud", desc:"Still wet. Still watching, somehow, from wherever it went.", type:"junk", sell:13, icon:iconSurveyMap},
     rareDrop:{name:"scout's own uncanny sense of direction, bottled", desc:"It never once got lost down here. Neither will you, for a while.", type:"luck", hpValue:23, mpValue:12, icon:iconClover},
-    gearDrop:{name:"scout's mud-caked warpaint wand of the Loon", desc:"Doubles as a weapon. Mostly a paintbrush, though.", type:"equip", slot:"weapon", bonus:{hoodoo:4}, tier:'common', icon:iconWandStick} },
+    gearDrop:{name:"scout's mud-caked warpaint wand of the Loon", desc:"Doubles as a weapon. Mostly a paintbrush, though.", type:"equip", slot:"weapon", bonus:{hoodoo:7}, tier:'common', icon:iconWandStick} },
    { name:"a burrow-hound, all teeth and no eyes", hp:58, atkMin:8, atkMax:13, xp:34, zone:"mudflats",
     art: artBurrowHound, loot:{name:"burrow-hound's cast-off tooth", desc:"Doesn't need eyes when it's got teeth like this.", type:"junk", sell:14, icon:iconBurrowShell},
     rareDrop:{name:"the hound's own keen, sightless instinct", desc:"You start noticing things a beat before they happen.", type:"junk", sell:40, icon:iconFigurine},
-    gearDrop:{name:"hound-tooth skullguard of the Tortoise", desc:"Bite marks included, free of charge.", type:"equip", slot:"head", bonus:{grit:4}, tier:'common', icon:iconGuardHelm} },
+    gearDrop:{name:"hound-tooth skullguard of the Tortoise", desc:"Bite marks included, free of charge.", type:"equip", slot:"head", bonus:{grit:7}, tier:'common', icon:iconGuardHelm} },
    /* The Bureau's business moles — a third, parallel district (same
    ZONE_DIFFICULTY tier as Root Cellar, not part of the tunnelWarden/
    warrenScout sequence), run entirely on paperwork instead of claws. */
    { name:"a mole clerk, drowning in triplicate paperwork", hp:40, atkMin:6, atkMax:10, xp:24, zone:"bureau",
     art: artMoleClerk, loot:{name:"hopelessly tangled reel of red tape", desc:"Somehow still spooling. Nobody knows where it ends.", type:"junk", sell:10, icon:iconVizierLedger},
     rareDrop:{name:"a form that approves its own approval", desc:"Bureaucratically flawless. Deeply unsettling.", type:"junk", sell:36, icon:iconFigurine},
-    gearDrop:{name:"paperwork-padded trouser cuffs of the Weasel", desc:"Filed correctly, for once, and surprisingly comfortable.", type:"equip", slot:"legs", bonus:{zip:4}, tier:'common', icon:iconQuickstepTrousers} },
+    gearDrop:{name:"paperwork-padded trouser cuffs of the Weasel", desc:"Filed correctly, for once, and surprisingly comfortable.", type:"equip", slot:"legs", bonus:{zip:6}, tier:'common', icon:iconQuickstepTrousers} },
    { name:"a mole auditor, sniffing out every discrepancy", hp:44, atkMin:6, atkMax:11, xp:26, zone:"bureau",
     art: artMoleAuditor, loot:{name:"auditor's marked-up ledger page", desc:"Every number circled twice, in a different color both times.", type:"junk", sell:11, icon:iconDrillRoster},
     rareDrop:{name:"the auditor's own clean bill of health, forged", desc:"Passed inspection. Somehow. You're not asking how.", type:"luck", hpValue:22, mpValue:11, icon:iconClover},
-    gearDrop:{name:"auditor's spectacles-and-helm of the Tortoise", desc:"Sees every discrepancy. Stops most head trauma.", type:"equip", slot:"head", bonus:{grit:4}, tier:'common', icon:iconGuardHelm} },
+    gearDrop:{name:"auditor's spectacles-and-helm of the Tortoise", desc:"Sees every discrepancy. Stops most head trauma.", type:"equip", slot:"head", bonus:{grit:6}, tier:'common', icon:iconGuardHelm} },
    { name:"a mole notary, stamping everything twice out of spite", hp:48, atkMin:7, atkMax:11, xp:28, zone:"bureau",
     art: artMoleNotary, loot:{name:"notary's over-inked rubber stamp", desc:"Stamps everything. Has opinions about all of it.", type:"junk", sell:12, icon:iconCoinPurse},
     rareDrop:{name:"the notary's own personal seal of approval", desc:"Rarely given. Never explained.", type:"luck", hpValue:22, mpValue:11, icon:iconClover},
-    gearDrop:{name:"notary's oversized rubber stamp-mace of the Badger", desc:"Notarized. Also a mace.", type:"equip", slot:"weapon", bonus:{beef:4}, tier:'common', icon:iconRakeShank} },
+    gearDrop:{name:"notary's oversized rubber stamp-mace of the Badger", desc:"Notarized. Also a mace.", type:"equip", slot:"weapon", bonus:{beef:6}, tier:'common', icon:iconRakeShank} },
    ];
 
 /* Quest 9's two rare hunt targets — same mechanic as gnomeCommander/
