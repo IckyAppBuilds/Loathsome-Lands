@@ -79,9 +79,15 @@ function chainIndex(loc){
 player currently is (chainIndex() above) — one step over costs 1
 Biscuit, two costs 2, and so on, the same whichever direction or which
 two points on the chain it's between (see ZONE_ORDER's own comment,
-content.js). Two things stay flat regardless of distance: 'town' is
-always free to head to — heading home never costs Biscuits, only
-heading out does (see forceHomeIfBroke()'s own comment below) — and
+content.js) — but only for a trip that actually LEAVES a hub for a
+wild adventure zone. Three things stay free regardless of distance:
+'town' is always free to head to no matter where the player currently
+is — heading home never costs Biscuits, only heading out does (see
+forceHomeIfBroke()'s own comment below); hub-to-hub travel is free —
+already standing anywhere inside ANY hub's own area (its square, a
+district, or a building interior) and heading to a DIFFERENT hub
+square is a trip between two home bases, not an expedition, so it
+costs nothing even when the two hubs sit far apart on the chain; and
 entering one of a hub's own districts (or leaving one back to its
 square) is free as long as the player's already inside that hub's
 area, same as it's always been. */
@@ -89,6 +95,7 @@ function travelCostFor(dest){
    if(dest === 'town') return 0;
    const destHubKey = hubKeyForLocation(dest);
    if(destHubKey !== null && dest !== destHubKey) return 0; // a district — only reachable from inside its own hub already
+   if(destHubKey !== null && hubKeyForLocation(state.location) !== null) return 0; // hub-to-hub
    return Math.abs(chainIndex(dest) - chainIndex(state.location));
 }
 
