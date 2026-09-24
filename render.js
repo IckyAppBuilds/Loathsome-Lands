@@ -537,13 +537,14 @@ document.getElementById('combat-row').style.display = (state.inCombat && combatS
   if(state.inCombat && combatSubView==='spells') renderSpellMenu();
   if(state.inCombat){
     /* Matches renderSpellMenu()'s own contents (render-character.js) —
-    the Use menu now lists damage spells AND usable HP/MP/luck
-    consumables, so the button should only disable when there's
-    genuinely neither (a player who only knows Warding Charm but is
-    carrying a potion still has a reason to open it). */
+    the Use menu lists damage spells, non-damage "Buffs & Support"
+    spells (ward/heal/buff/shout — Warding Charm, Smoke Screen, etc.),
+    AND usable HP/MP/luck consumables, so the button should only
+    disable when there's genuinely none of the three. */
     const hasDamageSpell = spells.some(s => s.type==='damage' && state.spellsKnown.includes(s.id));
+    const hasBuffSpell = spells.some(s => s.type!=='damage' && state.spellsKnown.includes(s.id));
     const hasUsableItem = state.inventory.some(it => ['hp','mp','luck'].includes(it.type));
-    document.getElementById('use-btn').disabled = !hasDamageSpell && !hasUsableItem;
+    document.getElementById('use-btn').disabled = !hasDamageSpell && !hasBuffSpell && !hasUsableItem;
   }
   /* Garrison/Rogues' Den/Arcane Sanctum only get the Adventure! loop
   (CLASS_AREA_ZONES, combat.js) before quest7Complete — once converted,

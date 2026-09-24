@@ -25,6 +25,30 @@ function renderSpellMenu(){
     });
   }
 
+  /* Buffs & support (heal/ward/buff/shout — Mending Charm, Warding
+  Charm, Shout, Adrenaline Rush, Loaded Dice, Arcane Focus, Stubborn
+  Recovery, Smoke Screen, ...) — these never cost a turn (castSpell()
+  only calls monsterRetaliate() for 'damage'), so they belong in the
+  in-combat Use menu same as a damage spell or a consumable, not just
+  on the Character page (renderCastableSpellsBlock(), class-spells.js).
+  Without this, a player who only knew a ward/buff spell had no way to
+  actually cast it mid-fight through the Use button at all. */
+  const buffSpells = spells.filter(s => s.type!=='damage' && state.spellsKnown.includes(s.id));
+  if(buffSpells.length > 0){
+    const buffHeader = document.createElement('div');
+    buffHeader.className = 'shop-section-title';
+    buffHeader.textContent = 'Buffs & Support';
+    list.appendChild(buffHeader);
+    buffSpells.forEach(spell=>{
+      const div = document.createElement('div');
+      div.className = 'shop-item';
+      const iconSvg = spell.icon ? spell.icon() : '';
+      const canCast = state.mp >= spell.mpCost;
+      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div><button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${spell.mpCost} MP</button></div>`;
+      list.appendChild(div);
+    });
+  }
+
   /* Consumables — same grouping groupInventoryByName() (render-shop.js)
   uses for the Pack drawer, so a stack of potions shows as one row with
   a ×count badge instead of one row per copy. Using one here costs the
