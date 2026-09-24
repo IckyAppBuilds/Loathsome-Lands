@@ -69,8 +69,12 @@ authored primary stat/value, but rolls which OTHER stat(s) it actually
 gets fresh on every purchase — same "guaranteed primary, randomized
 secondary" shape as rollGearDropTier() (combat.js) uses for monster
 drops, minus the tier roll itself (a shop purchase's tier is already
-fixed by which tier's price you paid). Tier 1 (a single stat) and
-non-equip items pass through unchanged — there's nothing to roll. */
+fixed by which tier's price you paid). Each secondary stat rolls
+independently via rollSecondaryStatValue (above) — half the primary's
+value to the full value — rather than a flat +1, so secondary stats
+keep pace with however strong the primary stat's tier actually is.
+Tier 1 (a single stat) and non-equip items pass through unchanged —
+there's nothing to roll. */
 function rollShopGearStats(def){
    if(def.type !== 'equip' || !def.bonus) return { ...def };
    const statKeys = Object.keys(def.bonus);
@@ -81,7 +85,7 @@ function rollShopGearStats(def){
    const candidates = ['beef','zip','grit','hoodoo'].filter(s => s !== primaryStat);
    const shuffled = candidates.map(s => ({ s, r: Math.random() })).sort((a,b) => a.r - b.r).map(x => x.s);
    const bonus = { [primaryStat]: primaryValue };
-   shuffled.slice(0, secondaryCount).forEach(s => { bonus[s] = 1; });
+   shuffled.slice(0, secondaryCount).forEach(s => { bonus[s] = rollSecondaryStatValue(primaryValue); });
    return { ...def, bonus };
 }
 
@@ -132,6 +136,16 @@ function buyGnomeShopItemByName(name){
 }
 
 function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+/* A secondary/tertiary stat scales WITH the primary stat it's riding
+along with, rather than sitting at a flat +1 regardless of tier — a
+tier whose primary is +8 should hand out secondary stats anywhere from
+half that to the full amount (4-8), not the same +1 a tier-2 item with
+a +2 primary would give. Shared by rollShopGearStats (below) and
+rollGearDropTier (combat.js) so both roll paths scale identically. */
+function rollSecondaryStatValue(primaryValue){
+   return randInt(Math.ceil(primaryValue/2), primaryValue);
+}
 
 /* ---------------- Biscuit regeneration ---------------- */
 const BISCUIT_MAX = 100;

@@ -7,11 +7,12 @@ Per the Act 2 plan's resolved decision: the new Shop's own "Tier 1"
 restarts the tier LABEL at 1 while its actual bonus value (+8 to a
 primary stat) is double Gladstone's own Tier 4 (+4) — this whole ladder
 continues climbing from there (+8 -> +10 -> +12 -> +16) rather than
-mirroring Act 1's +1/+2/+3/+4 spacing. Secondary stats stay flat +1
-each, same as every Act 1 tier — rollShopGearStats() (economy.js),
-which rerolls a purchase's secondary stat(s) at buy time, hardcodes
-that +1 regardless of tier, so there was no reason to invent a
-different secondary convention here.
+mirroring Act 1's +1/+2/+3/+4 spacing. Secondary stats scale WITH the
+primary here too, same as every Act 1 tier — rollShopGearStats()
+(economy.js), which rerolls a purchase's secondary stat(s) at buy time,
+rolls each one from half the primary's value up to the full value
+(rollSecondaryStatValue(), economy.js), so there was no reason to
+invent a different secondary convention here.
 
 `tier` restarts at 'common' (black) for act2Tier 1 and climbs the same
 ramp Act 1's own gear does — common -> uncommon -> rare -> epic — per

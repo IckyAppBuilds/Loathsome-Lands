@@ -592,9 +592,10 @@ function playerFlee(){
 /* Scales a monster's authored gearDrop (content.js — always the tier-1
 baseline, 1 stat) up to a randomly-rolled tier per GEAR_DROP_TIER_CHANCE
 (content.js), weighted toward the lower tiers. Tier 2/3 each add +1 to
-the primary stat and one more secondary stat at +1 (STAT_ROTATION,
-content.js) — the same 1/2/3-stat, +1-per-step progression
-shopGearItemsTier2/3 use, so a monster-dropped item at a given tier
+the primary stat and one more secondary stat (STAT_ROTATION,
+content.js), rolled via rollSecondaryStatValue (economy.js) — half the
+(post-tier-bump) primary value up to the full value, same scaling
+rollShopGearStats uses — so a monster-dropped item at a given tier
 reads the same way a shop item at that tier would. Name/desc/slot/icon
 are untouched — only `bonus` and `tier` change with the roll. */
 function rollGearDropTier(baseDrop){
@@ -607,10 +608,10 @@ function rollGearDropTier(baseDrop){
       tierIndex = i;
    }
    const primaryStat = Object.keys(baseDrop.bonus)[0];
-   const primaryValue = baseDrop.bonus[primaryStat];
-   const bonus = { [primaryStat]: primaryValue + tierIndex };
+   const primaryValue = baseDrop.bonus[primaryStat] + tierIndex;
+   const bonus = { [primaryStat]: primaryValue };
    const secondaryStats = STAT_ROTATION[primaryStat].slice(0, tierIndex);
-   secondaryStats.forEach(stat => { bonus[stat] = 1; });
+   secondaryStats.forEach(stat => { bonus[stat] = rollSecondaryStatValue(primaryValue); });
    return { ...baseDrop, bonus, tier: GEAR_DROP_TIER_NAMES[tierIndex] };
 }
 
