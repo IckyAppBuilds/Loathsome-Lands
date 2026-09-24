@@ -26,10 +26,11 @@ const isTownSquare = state.location === 'town';
   const isRoguesden = state.location === 'roguesden';
   const isSanctum = state.location === 'sanctum';
   const isPalace = state.location === 'palace';
-  /* Any of the Gnometropolis square + its 3 districts + the palace gate —
-  used where the Map's "you are here" tag/lock state shouldn't go dark
-  just because the player stepped off the square into a district. */
-  const inGnometropolisArea = isGnometropolis || isGarrison || isRoguesden || isSanctum || isPalace;
+  const isGnomeGuild = state.location === 'gnomeguild'; /* Act 2: the Guild's new home, reachable once quest7Complete — enterGnomeGuild(), guild.js */
+  /* Any of the Gnometropolis square + its 3 districts + the palace gate
+  + the new Guild — used where the Map's "you are here" tag/lock state
+  shouldn't go dark just because the player stepped off the square. */
+  const inGnometropolisArea = isGnometropolis || isGarrison || isRoguesden || isSanctum || isPalace || isGnomeGuild;
   const isCasino = state.location === 'casino';
   const isNoticeBoard = state.location === 'noticeboard';
   const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot || isNoticeBoard;
@@ -42,7 +43,7 @@ const ZONE_TITLES = {
   noticeboard: 'The Notice Board', town: 'Gladstone Hollow', commons: 'The Overgrown Commons',
   sewers: 'Dank Sewers', quarry: 'The Clockwork Quarry', vault: 'The Sunless Vault',
   gnometropolis: 'Gnometropolis', garrison: 'The Garrison', roguesden: "The Rogues' Den",
-  sanctum: 'The Arcane Sanctum', palace: 'The Palace Gate',
+  sanctum: 'The Arcane Sanctum', palace: 'The Palace Gate', gnomeguild: 'The Guild',
 };
 document.getElementById('zone-title').textContent = isTownLot ? LOT_TIER_NAMES[state.lotTier] : (ZONE_TITLES[state.location] || 'The Overgrown Commons');
   document.getElementById('ztag-town').style.display = inTownArea ? 'block' : 'none';
@@ -57,8 +58,13 @@ document.getElementById('zone-title').textContent = isTownLot ? LOT_TIER_NAMES[s
   runs in a zone, where none of these building-only blocks ever show in
   the first place — this is the one location that needed the same
   "combat is its own clean screen" treatment applied explicitly. */
-  document.getElementById('bounty-box').style.display = (!state.inCombat && isGuild && state.questComplete) ? 'block' : 'none';
-  if(!state.inCombat && isGuild && state.questComplete) renderBountyBoard();
+  /* Act 2: the Bounty Board moved to the new Gnometropolis Guild
+  (isGnomeGuild) once quest7Complete — Gladstone's own Guild
+  (isGuild) stops offering it from that point on (enterGuild()'s own
+  dead-end branch, guild.js, already stops giving quests there too). */
+  const showBountyBox = !state.inCombat && state.questComplete && ((isGuild && !state.quest7Complete) || isGnomeGuild);
+  document.getElementById('bounty-box').style.display = showBountyBox ? 'block' : 'none';
+  if(showBountyBox) renderBountyBoard();
   document.getElementById('town-row').style.display = (isTownSquare && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('shop-row').style.display = (isShop && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('shop-list').style.display = isShop ? 'block' : 'none';
@@ -197,6 +203,10 @@ const quest7State = state.quest7Complete ? 'complete'
   const palaceGateGearItem = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
   const canApproachPalaceGate = isPalace && !state.inCombat && state.quest7Accepted && !state.quest7RareDefeated;
 
+/* Quest 8, "New Digs" — Act 2's opener, offered/turned in at the new
+Gnometropolis Guild (enterGnomeGuild(), guild.js) once quest7Complete. */
+const quest8State = state.quest8Complete ? 'complete' : (state.quest8Accepted ? 'active' : (state.quest7Complete ? 'offer' : 'locked'));
+
 /* 'trials': accepted, but not all three trainers' tests are passed yet.
 'ready': all three passed, waiting on claimClassPath(chosenStat) — see the
 three claim-path-*-btn buttons below and their isGuild=='ready' branch. */
@@ -276,6 +286,11 @@ document.getElementById('accept-quest7-btn').style.display = quest7State==='offe
   document.getElementById('report-gnomeking-defeat-btn').style.display = quest7State==='ready' ? '' : 'none';
   document.getElementById('report-gnomeking-defeat-btn').classList.toggle('btn-ready', quest7State==='ready');
 
+document.getElementById('gnomeguild-row').style.display = (isGnomeGuild && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('accept-quest8-btn').style.display = quest8State==='offer' ? '' : 'none';
+  document.getElementById('report-quest8-btn').style.display = quest8State==='active' ? '' : 'none';
+  document.getElementById('report-quest8-btn').classList.toggle('btn-ready', quest8State==='active');
+
 document.getElementById('accept-quest3-btn').style.display = quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = quest3State==='active' ? '' : 'none';
   document.getElementById('brew-potion-btn').disabled = !canBrew;
@@ -316,6 +331,7 @@ const guildQuestBoxNeeded = quest2State==='offer' || quest2State==='active'
 document.getElementById('quest-box').style.display = (!state.inCombat && (
   (isGafferHouse && (questState==='offer' || questState==='active'))
   || (isGuild && guildQuestBoxNeeded)
+  || (isGnomeGuild && (quest8State==='offer' || quest8State==='active'))
   || (isHoodoo && (quest3State==='offer' || quest3State==='active'))
   || (isTinker && (quest4State==='offer' || quest4State==='active' || quest5State==='offer' || quest5State==='active'))
 )) ? 'block' : 'none';
@@ -360,6 +376,16 @@ if(isGafferHouse){
     document.getElementById('quest-name').textContent = "Quest: The Gnome King's Court";
     document.getElementById('quest-desc').textContent = "The King has fallen — report back to the guildmaster.";
     document.getElementById('quest-progress').textContent = 'Ready to report.';
+  }
+} else if(isGnomeGuild){
+  if(quest8State==='offer'){
+    document.getElementById('quest-name').textContent = 'Quest available: New Digs';
+    document.getElementById('quest-desc').textContent = "The guildmaster's set up shop in Gnometropolis. Make it official — sign on and take charge here.";
+    document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+  } else if(quest8State==='active'){
+    document.getElementById('quest-name').textContent = 'Quest: New Digs';
+    document.getElementById('quest-desc').textContent = "Sign the ledger and make it official.";
+    document.getElementById('quest-progress').textContent = 'Ready to sign.';
   }
 } else if(isHoodoo){
   if(quest3State==='offer'){
@@ -528,12 +554,19 @@ if(state.inCombat){
     sanctum: { flag: (state.classTitle==='Hexpert' && state.quest7Accepted && !state.quest7Complete && !state.arcaneSanctumGuardianDefeated) ? 'offer' : null },
     palace: { flag: canApproachPalaceGate ? 'turnin' : null },
     camp: { flag: state.hp < state.maxHp ? 'offer' : null },
+    gnomeguild: { flag: quest8State==='offer' ? 'offer' : (quest8State==='active' ? 'turnin' : null) },
   };
   /* Same cooldown-overlay pattern as the Inn's innCooldownText above,
   just for restAtCamp()'s CAMP_COOLDOWN_MS (content.js) instead. */
   const campCooldownLeft = CAMP_COOLDOWN_MS - (Date.now() - state.lastCampRestAt);
   const campCooldownText = campCooldownLeft > 0 ? formatMs(campCooldownLeft) : null;
   document.getElementById('scene-art').innerHTML = artGnometropolisSquare(gnomeBuildingIndicators, campCooldownText);
+  document.getElementById('victory-banner').style.display = 'none';
+} else if(isGnomeGuild){
+  /* Reuses artGuildmaster() (art.js) — same guildmaster, new office,
+  no new art needed for a building that's otherwise plain quest-box/
+  bounty-box UI like Gladstone's own Guild. */
+  document.getElementById('scene-art').innerHTML = artGuildmaster();
   document.getElementById('victory-banner').style.display = 'none';
 } else if(isGarrison){
   document.getElementById('scene-art').innerHTML = artZoneGarrison();

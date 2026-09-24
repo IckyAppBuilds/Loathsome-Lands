@@ -56,6 +56,17 @@ function enterGuild(){
    if(state.inCombat || state.location !== 'town') return;
    state.location = 'guild';
    clearLog();
+   /* Act 2: the guild hall itself moved to Gnometropolis the moment
+   quest7Complete flipped true (enterGnomeGuild(), below) — this
+   building becomes a dead end, same shape as every other hard-gated
+   no-further-content screen in this codebase. Checked first, ahead of
+   every quest6/quest7-flavored branch below, since quest7Complete
+   already implies all of them are long since resolved anyway. */
+   if(state.quest7Complete){
+      log("The guild hall's mostly cleared out. A hand-lettered sign points toward Gnometropolis: \"Guild's moved — ask for the guildmaster there.\"");
+      render();
+      return;
+   }
    if(state.quest6Complete){
       log("You step into the guild hall. The guildmaster raises a glass in your direction — Gnometropolis, toppled, more or less, thanks to you.");
    } else if(state.quest6Accepted){
@@ -173,6 +184,61 @@ function reportGnomeKingDefeat(){
    autosave();
 }
 
+/* ---------------- Act 2: the Guild relocates to Gnometropolis ---------------- */
+/* New building at the Gnometropolis square (data-action="gnomeguild",
+gnometropolis-art.js), only ever reachable once quest7Complete — same
+"gate at the door, not on the button" shape every other building here
+uses. Takes over quest-giving and the Bounty Board (isBountyZoneUnlocked()/
+claimBounty(), above) from Gladstone Hollow's own Guild, which becomes
+a dead end the moment this one opens (see enterGuild()'s own
+quest7Complete branch). */
+function enterGnomeGuild(){
+   if(state.inCombat || state.location !== 'gnometropolis' || !state.quest7Complete) return;
+   state.location = 'gnomeguild';
+   clearLog();
+   if(state.quest8Complete){
+      log("You step into the guildmaster's new hall. Gnometropolis suits him better than he'll admit.");
+   } else if(state.quest8Accepted){
+      log("You step into the guildmaster's new hall. He's still getting the place in order.");
+   } else {
+      log("You step into the guildmaster's new hall — freshly claimed, still smells like scavenged gold and sawdust.");
+   }
+   render();
+}
+function leaveGnomeGuild(){
+   if(state.inCombat || state.location !== 'gnomeguild') return;
+   state.location = 'gnometropolis';
+   clearLog();
+   render();
+}
+
+/* Quest 8, "New Digs" — Act 2's own opener. Deliberately a formality,
+not a fetch/hunt quest: no real gameplay objective sits behind it yet
+(there's no Act 2 combat content to point it at until the Mole People
+zones, Act 2 plan Part 2, actually exist), so this is a soft
+reintroduction to the accept/report loop rather than a skipped step.
+Still two clicks, not an instant accept-and-complete, to keep the same
+rhythm every other quest in this file uses. */
+function acceptQuest8(){
+   if(state.location !== 'gnomeguild' || !state.quest7Complete || state.quest8Accepted || state.quest8Complete) return;
+   state.quest8Accepted = true;
+   clearLog();
+   log("\"Make it official, then,\" the guildmaster says, sliding a ledger across a desk that's still missing a leg. \"Take charge here. I'll handle the paperwork — you handle whatever's next.\"");
+   render();
+}
+function reportQuest8(){
+   if(state.location !== 'gnomeguild' || !state.quest8Accepted || state.quest8Complete) return;
+   state.quest8Complete = true;
+   state.popTabs += 40;
+   state.xp += 30;
+   clearLog();
+   log("You sign the ledger. Gnometropolis is officially, on paper, yours to run. (+40 Pop Tabs, +30 XP)");
+   log("The guildmaster looks almost nervous. \"Something's been digging under the throne room since the King fell. Wasn't there before. Might want to look into that, when you get a chance.\"");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
 /* How many of PALACE_GUARDS (content.js) are down in the CURRENT
 uninterrupted gauntlet attempt — a plain transient variable, never
 saved, same convention combatSubView (combat.js) uses for UI/session
@@ -243,7 +309,17 @@ winCombat() above. */
    always-available baseline zone. Gnometropolis itself (the town square)
    is never a bounty zone — only its 3 explorable districts are, gated the
    same way the districts themselves are (state.quest7Accepted). */
+/* Act 2: once the guild relocates (quest7Complete), the board only
+ever offers Act 1 zones is stopped dead — Commons/Sewers/Quarry/Vault
+drop out of the pool entirely, same as the guild hall itself becoming a
+dead end (enterGuild(), above). Garrison/Rogues' Den/Arcane Sanctum
+keep serving as the bounty pool in the meantime — they're the only
+non-Act-1 combat content that exists yet; revisit once real Mole
+People zones (Act 2 plan, Part 2) ship and can take over. */
 function isBountyZoneUnlocked(zone){
+   if(state.quest7Complete){
+      return zone === 'garrison' || zone === 'roguesden' || zone === 'sanctum';
+   }
    if(zone === 'commons') return true;
    if(zone === 'sewers') return state.quest2Complete;
    if(zone === 'quarry') return state.quest4Complete;
@@ -304,7 +380,7 @@ function formatBountyTimeLeft(ms){
    return h > 0 ? `${h}h ${m}m` : `${m}m`;
 }
 function claimBounty(){
-   if(state.location !== 'guild' || !state.questComplete || !state.activeBounty) return;
+   if((state.location !== 'guild' && state.location !== 'gnomeguild') || !state.questComplete || !state.activeBounty) return;
    checkBountyDayReset();
    if(state.bountiesClaimedToday >= BOUNTY_DAILY_CAP) return;
    const bt = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);

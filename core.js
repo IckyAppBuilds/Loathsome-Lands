@@ -118,6 +118,12 @@ function createDefaultState(){
      arcaneSanctumGuardianDefeated: false,
      quest7RareDefeated: false, /* the REAL gnomeKing (content.js) beaten via approachPalaceGate() -- separate from quest6RareDefeated, which is the decoy gnomeKingsCaptain in the Vault */
      quest7Complete: false,
+     /* Act 2 opener, "New Digs" -- accepted/reported at the new Guild
+     building in Gnometropolis (enterGnomeGuild(), guild.js), only
+     reachable once quest7Complete. A formality quest (no combat
+     objective yet), not a typo -- see acceptQuest8()'s own comment. */
+     quest8Accepted: false,
+     quest8Complete: false,
      classQuestAccepted: false,
      classQuestComplete: false,
      classTitle: null,

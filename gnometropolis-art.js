@@ -18,13 +18,13 @@ Gladstone Hollow's cottage-warm red/yellow — Gnometropolis is a capital
 built out of repurposed junk, not a village. */
 
 /* One {flag} slot per real building tile (garrison/roguesden/sanctum/
-palace/camp) — see render.js's isGnometropolis branch for how these get
-set. Simpler than artTownSquare()'s buildingIndicators (no bounty/trial
-slot; there's no bounty board or class-trial building here) but same
-biGet() shape so a future addition (a bounty board moving here, say) is
-just adding a badge call, not a signature change. campCooldownText
-mirrors artTownSquare()'s innCooldownText param — non-null while
-restAtCamp()'s CAMP_COOLDOWN_MS is still counting down (see render.js). */
+palace/camp/gnomeguild) — see render.js's isGnometropolis branch for how
+these get set. Simpler than artTownSquare()'s buildingIndicators (no
+trial slot — there's no class-trial building here) but same biGet()
+shape so a future addition is just adding a badge call, not a signature
+change. campCooldownText mirrors artTownSquare()'s innCooldownText
+param — non-null while restAtCamp()'s CAMP_COOLDOWN_MS is still
+counting down (see render.js). */
 function artGnometropolisSquare(buildingIndicators, campCooldownText){
    const bi = (key) => biGet(buildingIndicators, key);
    /* Small mushroom-cap accent (ellipse-on-a-stalk) — the one recurring
@@ -115,12 +115,15 @@ function artGnometropolisSquare(buildingIndicators, campCooldownText){
    ${campCooldown}
    </g>
 
-   <g transform="translate(200,100)">
+   <g transform="translate(200,100)" class="building-hit" data-action="gnomeguild">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
-   <path d="M10 80 L30 50 L50 65 L65 40 L90 80 Z" fill="#8a8477"/>
-   <path d="M20 80 L35 60 L45 72 L60 55 L75 80 Z" fill="#b9b3a4"/>
-   <line x1="30" y1="70" x2="36" y2="62"/>
-   <line x1="55" y1="68" x2="61" y2="60"/>
+   <path d="M18 44 L18 36 L28 36 L28 44 L36 44 L36 36 L44 36 L44 44 L56 44 L56 36 L64 36 L64 44 L72 44 L72 36 L80 36 L80 44 Z" fill="#8a8477"/>
+   <rect x="18" y="44" width="62" height="30" fill="#b9b3a4"/>
+   <rect x="42" y="58" width="16" height="16" fill="#5f4632"/>
+   <line x1="50" y1="36" x2="50" y2="14"/>
+   <path d="M50 14 L68 20 L50 26 Z" fill="#d1a94e"/>
+   ${makeFlag(bi('gnomeguild').flag)}
+   ${plate("The Guild")}
    </g>
 
    <g transform="translate(0,200)">
