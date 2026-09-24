@@ -314,6 +314,48 @@ if(state.quest7Complete){
   </div>`);
 }
 
+/* Quest 8 ("New Digs", Act 2's opener) and quest 9 ("What the Throne
+Room Opened", Act 2's first multi-stage quest) — same completed/active
+convention as every quest above, reproduced here since the Quest Log's
+copy is its own separate string, not shared markup (same reasoning as
+quest7's own comment above). Quest 9's progress line stays deliberately
+vague/marker-free (no zone names), matching its own text everywhere
+else it's shown (render.js's isGnomeGuild quest-box). */
+if(state.quest8Complete){
+  completedEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">New Digs</div>
+  <div class="quest-desc">You signed the ledger and made it official — Gnometropolis is yours to run.</div>
+  <div class="quest-progress">Reward claimed: 40 Pop Tabs, 30 XP</div>
+  </div>`);
+} else if(state.quest8Accepted){
+  activeEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">New Digs</div>
+  <div class="quest-desc">Sign the ledger at the new Guild in Gnometropolis and make it official.</div>
+  <div class="quest-progress">Ready to sign.</div>
+  </div>`);
+}
+
+if(state.quest9Complete){
+  completedEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">What the Throne Room Opened</div>
+  <div class="quest-desc">You found what was living under the throne room, fought your way past it, and reported back. It wasn't alone down there.</div>
+  <div class="quest-progress">Reward claimed: 90 Pop Tabs, 70 XP</div>
+  </div>`);
+} else if(state.quest9Accepted){
+  const quest9ProgressLog = state.warrenScoutDefeated ? 'Ready to report back at the Guild.'
+    : state.tunnelWardenDefeated ? "You've gone further than anyone in living memory. Something further in noticed."
+    : "It hasn't shown itself yet.";
+  activeEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">What the Throne Room Opened</div>
+  <div class="quest-desc">Something's been living under the throne room a very long time, and it isn't happy about the light. Go find out what — and watch yourself down there.</div>
+  <div class="quest-progress">${quest9ProgressLog}</div>
+  </div>`);
+}
+
 if(state.classQuestComplete){
   completedEntries.push(`
   <div class="quest-log-entry">
