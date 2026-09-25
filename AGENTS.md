@@ -289,23 +289,32 @@ item, or changing its own unlock-level gating.
 its tier color, used everywhere an item's name renders via innerHTML
 (the Pack, Shop listings including Sell, equipped gear, Rare Finds).
 Never used in log() messages (those are textContent, not innerHTML).
+Also appends a `+N` for `item.temperLevel` when tempered
+(`temperEquippedItem()`, player-actions.js) — every one of those same
+call sites picks it up automatically.
 
 Also `getGearRequirements(item)` and `gearRequirementText(item)` — an
-equip item's level/stat requirement is never stored on the item itself,
-it's derived here from the item's own `bonus` object every time it's
-needed (equipItem(), player-actions.js; the Pack/Shop listings), so a
-requirement can never drift out of sync with what the item actually
-grants. levelReq = 2x total stat points across the whole bonus; statReq
-= 2x the primary (first-keyed) stat's own value, checked against raw
-`state.stats`, never `getEffectiveStats()`.
+equip item's level requirement is never stored on the item itself,
+it's derived here every time it's needed (equipItem(), player-
+actions.js; the Pack/Shop listings), so a requirement can never drift
+out of sync with what the item actually grants. levelReq = 2x
+`item.levelReqBase` when present, else 2x the item's own primary
+(first-keyed) stat value. `levelReqBase` is a snapshot of a value the
+item had BEFORE some later change could otherwise inflate the
+requirement — set by `rollGearDropTier()` (combat.js, the zone's own
+unrolled tier-1 value, so a lucky rarity roll's stat bump doesn't also
+raise the gate) or by `temperEquippedItem()` (player-actions.js, the
+pre-temper value, so tempering doesn't either). statReq/statKey are
+kept in the returned shape but are always 0/null now — dropped as a
+requirement entirely, callers that still check them just no-op.
 
 Pure throughout: every function here only reads its `item` argument,
 never `state` — comparing a requirement against the player's actual
-level/stats is left to each caller (equipItem(); the Pack/Shop
-listings' own disabled-button checks).
+level is left to each caller (equipItem(); the Pack/Shop listings' own
+disabled-button checks).
 
 Touch this file when: changing a rarity color, adding a new tier, or
-changing how level/stat requirements scale off an item's bonus.
+changing how level requirements scale off an item's bonus.
 
 ## render.js — core screen sync
 `render()` is now a short dispatch — it used to be one ~770-line
@@ -415,9 +424,21 @@ silently resets on the next reload.
 `equipItem` (refuses below the item's own level/stat requirement —
 `getGearRequirements()`, item-tiers.js — with a log message rather than
 a silent no-op)/`unequipItem`, `getEffectiveStats`/`recomputeMaxStats`/
-`spendStatPoint`.
+`spendStatPoint`, `temperEquippedItem(slot)` — Bounty Tokens' first
+real sink (per explicit direction; `TEMPER_BASE_COST`/
+`TEMPER_STAT_BONUS`/`temperCost(level)`, content.js), permanently
+adding `TEMPER_STAT_BONUS` to every stat an equipped item grants.
+`item.temperLevel` lives on the item instance itself (not a separate
+`state` field), so it round-trips through save.js's already-generic
+`serializeItem`/`hydrateItem` for free — no save-format change, nothing
+to lose. Snapshots `item.levelReqBase` (same field
+`rollGearDropTier()`, combat.js, uses) the first time an item is ever
+tempered, so repeated tempering never raises its level requirement.
+Equipped-only, deliberately — see the function's own comment for why
+the Pack's own by-name item grouping (`groupInventoryByName()`,
+render-shop.js) makes tempering a stacked Pack item unsafe.
 
-Touch this file when: changing equip/use-item/stat-point logic.
+Touch this file when: changing equip/use-item/stat-point/temper logic.
 
 ## tutorial.js — onboarding overlay
 `TUTORIAL_STEPS`, `openTutorial`/`closeTutorial`/`tutorialSkip`/

@@ -152,3 +152,37 @@ function unequipItem(slot){
    log(`You unequip ${item.name}.`);
    render();
 }
+
+/* Bounty Tokens' first real sink — see TEMPER_BASE_COST's own comment
+(content.js) for the full reasoning. Equipped-only, deliberately: the
+Pack's own inventory display groups stacked items purely by name
+(groupInventoryByName(), render-shop.js), so two same-named drops with
+different rolled stats can already share one visual stack — tempering
+one specific copy there would make that ambiguity a real correctness
+problem instead of just a cosmetic one. state.equipment[slot] is always
+exactly one item, never grouped, so that's the only place this is
+offered (renderEquipmentBlock(), render-character.js). */
+function temperEquippedItem(slot){
+   const item = state.equipment[slot];
+   if(!item || item.type!=='equip' || !item.bonus || Object.keys(item.bonus).length===0) return;
+   const level = item.temperLevel || 0;
+   const cost = temperCost(level);
+   if(state.bountyTokens < cost) return;
+   /* Snapshot the PRE-temper primary value as a permanent level-requirement
+   anchor the first time this item is ever tempered — same reasoning
+   rollGearDropTier() already snapshots a zone drop's own unrolled value
+   (levelReqBase, combat.js/item-tiers.js). Tempering is meant to make
+   gear you already own and are already wearing stronger, not to
+   retroactively lock you out of it. */
+   if(item.levelReqBase === undefined){
+      item.levelReqBase = item.bonus[Object.keys(item.bonus)[0]];
+   }
+   state.bountyTokens -= cost;
+   item.temperLevel = level + 1;
+   Object.keys(item.bonus).forEach(stat => { item.bonus[stat] += TEMPER_STAT_BONUS; });
+   recomputeMaxStats();
+   clearLog();
+   log(`You temper ${item.name}, now +${item.temperLevel} — every stat it grants rises by ${TEMPER_STAT_BONUS}. (-${cost} Bounty Tokens)`);
+   render();
+   autosave();
+}

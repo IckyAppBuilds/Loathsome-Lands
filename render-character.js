@@ -178,9 +178,21 @@ function renderEquipmentBlock(){
       </div>`;
     }
     const iconSvg = item.icon ? item.icon() : '';
-    const bonusText = item.bonus && Object.keys(item.bonus).length
+    const hasStats = item.bonus && Object.keys(item.bonus).length > 0;
+    const bonusText = hasStats
     ? Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')
       : 'No bonus — just flavor.';
+    /* Bounty Tokens' first real sink — see TEMPER_BASE_COST's own comment
+    (content.js) and temperEquippedItem()'s (player-actions.js) for the
+    full reasoning. Nothing to temper on a flavor-only item (starterGear),
+    so the button just doesn't show there at all. */
+    const temperBtn = hasStats
+    ? (() => {
+      const cost = temperCost(item.temperLevel || 0);
+      const canAfford = state.bountyTokens >= cost;
+      return `<button class="btn-secondary" ${canAfford?'':'disabled'} onclick="temperEquippedItem('${slot}')">Temper — ${cost} Bounty Token${cost===1?'':'s'}</button>`;
+    })()
+      : '';
     return `<div class="equip-row">
     <div class="icon-box">${iconSvg}</div>
     <div style="flex:1;">
@@ -188,6 +200,7 @@ function renderEquipmentBlock(){
     <div class="name">${itemNameHtml(item)}</div>
     <div class="desc">${bonusText}</div>
     <button class="btn-secondary" onclick="unequipItem('${slot}')">Unequip</button>
+    ${temperBtn}
     </div>
     </div>`;
   }).join('');

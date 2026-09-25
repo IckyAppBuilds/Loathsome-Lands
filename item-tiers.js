@@ -42,9 +42,16 @@ name is rendered via innerHTML against known, data-driven content (the
 Pack, Shop listings, equipped gear, the Rare Finds log). Never used
 against log()'s text messages, which stay plain text (log() sets
 textContent, not innerHTML, so a color span there would just show up as
-literal tags rather than being XSS-relevant, but it'd look broken). */
+literal tags rather than being XSS-relevant, but it'd look broken).
+
+Also appends a `+N` for however many times this exact item has been
+tempered (temperEquippedItem(), player-actions.js — item.temperLevel
+lives on the item instance itself, not a separate name string), so
+every one of these same call sites picks the suffix up for free
+without needing its own change. */
 function itemNameHtml(item){
-   return `<span style="color:${ITEM_TIER_COLORS[getItemTier(item)]};">${item.name}</span>`;
+   const temperSuffix = item.temperLevel > 0 ? ` +${item.temperLevel}` : '';
+   return `<span style="color:${ITEM_TIER_COLORS[getItemTier(item)]};">${item.name}${temperSuffix}</span>`;
 }
 
 /* An equip item's level requirement is never stored on the item itself —
