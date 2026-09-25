@@ -237,15 +237,28 @@ function monsterRetaliate(){
    monsterAutoAttack();
 }
 
+/* Shared by monsterAutoAttack() and useMonsterSkill()'s 'bolt' branch
+below — the normal Zip-based roll, plus SMOKE_SCREEN_DODGE_BONUS
+(content.js) on top while state.smokeScreenActive (castSpell()'s
+'evade' branch below), capped at SMOKE_SCREEN_DODGE_CAP instead of the
+normal 0.5 ceiling so Smoke Screen actually delivers the "dramatic"
+boost it's meant to. */
+function playerDodgeChance(){
+   const eff = getEffectiveStats();
+   const base = Math.min(0.5, statBonus(eff.zip)*0.03);
+   if(!state.smokeScreenActive) return base;
+   return Math.min(SMOKE_SCREEN_DODGE_CAP, base + SMOKE_SCREEN_DODGE_BONUS);
+}
+
 /* A monster's default turn: try to hit the player, worn down by the
 player's own Zip-based dodge chance same as always. Boosted by a prior
 'buff' skill use (state.monster.buffTurnsLeft/buffMult, set in
 useMonsterSkill() below) until it ticks back down to 0. */
 function monsterAutoAttack(){
-   const eff = getEffectiveStats();
-   const dodgeChance = Math.min(0.5, statBonus(eff.zip)*0.03);
-   if(Math.random() < dodgeChance){
-      log(`You dodge ${state.monster.name}'s counterattack completely.`);
+   if(Math.random() < playerDodgeChance()){
+      log(state.smokeScreenActive
+          ? `Still hidden in the smoke, you dodge ${state.monster.name}'s counterattack completely.`
+          : `You dodge ${state.monster.name}'s counterattack completely.`);
       tickMonsterBuff();
       return;
    }
@@ -285,10 +298,10 @@ function useMonsterSkill(skill){
       state.monster.buffMult = skill.buffMult;
       log(`${capitalize(state.monster.name)} ${skill.flavor}.`);
    } else if(skill.type==='bolt'){
-      const eff = getEffectiveStats();
-      const dodgeChance = Math.min(0.5, statBonus(eff.zip)*0.03);
-      if(Math.random() < dodgeChance){
-         log(`You dodge ${state.monster.name}'s ${skill.flavor} completely.`);
+      if(Math.random() < playerDodgeChance()){
+         log(state.smokeScreenActive
+             ? `Still hidden in the smoke, you dodge ${state.monster.name}'s ${skill.flavor} completely.`
+             : `You dodge ${state.monster.name}'s ${skill.flavor} completely.`);
       } else {
          const dmg = randInt(skill.boltMin, skill.boltMax);
          const { absorbed, remaining } = applyDamageToPlayer(dmg);
@@ -301,6 +314,14 @@ function useMonsterSkill(skill){
 
 function playerAttack(){
    if(!state.inCombat) return;
+   /* Smoke Screen (castSpell()'s 'evade' branch) breaks the instant you
+   swing back — cleared before anything else below so this same attack's
+   own retaliation roll (monsterRetaliate(), further down) resolves at
+   normal odds, not the boosted ones. */
+   if(state.smokeScreenActive){
+      state.smokeScreenActive = false;
+      log("Swinging back gives away your position — the smoke clears.");
+   }
    const eff = getEffectiveStats();
    /* Named in every log line below rather than a generic "You swing/
    strike" — state.equipment.weapon is always populated in real play
@@ -435,7 +456,9 @@ function castSpell(id){
    free actions — cast one mid-fight and the monster doesn't get a
    bonus swing out of it, same as if you'd cast it from the Character
    page between fights. */
-   if(spell.type==='damage' && !state.inCombat) return;
+   /* 'evade' (Smoke Screen) needs a fight to apply to, same reasoning as
+   'damage' needing a monster to target — see the comment above. */
+   if((spell.type==='damage' || spell.type==='evade') && !state.inCombat) return;
    if(!state.spellsKnown.includes(id) || state.mp < spell.mpCost) return;
    /* Defense-in-depth: learnSpell() already refuses to teach a buff spell
    to the wrong class, but a crafted castSpell() call could still try to
@@ -452,6 +475,14 @@ state.mp -= spell.mpCost;
    combatSubView = 'main';
 
 if(spell.type==='damage'){
+   /* Same "your own aggression breaks the cloud" rule playerAttack() enforces
+   — a damage spell costs a turn and provokes retaliation just like a
+   physical Attack, so it closes the Smoke Screen window exactly the same
+   way (see SMOKE_SCREEN_DODGE_BONUS's own comment, content.js). */
+   if(state.smokeScreenActive){
+      state.smokeScreenActive = false;
+      log("Swinging back gives away your position — the smoke clears.");
+   }
    let dmg = randInt(spell.dmgMin, spell.dmgMax) + (state.level-1) + statBonus(eff.hoodoo);
    if(state.classTitle === 'Hexpert') dmg += HEXPERT_SPELL_DMG_BONUS[state.classSkillLevel];
    /* Arcane Focus buff (content.js's spells[], classRequired:'Hexpert') —
@@ -508,6 +539,16 @@ if(spell.type==='damage'){
    const shieldAmount = 5 + state.classSkillLevel*3;
    state.shield += shieldAmount;
    log(`You let out a bone-rattling shout, bracing for whatever's coming. (+${shieldAmount} Shield)`);
+} else if(spell.type==='evade'){
+   /* Smoke Screen — see SMOKE_SCREEN_DODGE_BONUS's own comment (content.js)
+   for the full reasoning. Sets a plain flag rather than a fights-left
+   counter like 'buff' above: this doesn't persist past the current
+   fight at all, so there's nothing to count down — endCombat() clears
+   it unconditionally the moment this encounter ends, and playerAttack()/
+   the 'damage' branch above clear it early if the player swings back
+   first. Re-casting while already active just re-confirms it (harmless). */
+   state.smokeScreenActive = true;
+   log(`You cast ${spell.name} — kick up a cloud of grit and vanish into it. Don't swing back if you want to stay hidden.`);
 }
 
 if(state.inCombat){
@@ -838,6 +879,11 @@ function endCombat(){
    action that doesn't end the fight (a normal attack, a non-lethal spell)
    never reaches endCombat() at all, so it can't double-decrement. */
    if(state.classBuffFightsLeft > 0) state.classBuffFightsLeft--;
+   /* Smoke Screen (state.smokeScreenActive, castSpell()'s 'evade' branch)
+   is scoped to a single fight, unlike the multi-fight classBuffFightsLeft
+   above — this same funnel point guarantees it never survives into the
+   next encounter regardless of how this one ended. */
+   state.smokeScreenActive = false;
 }
 
 /* Where a defeat's own wake-up line (checkDefeat() below) says the

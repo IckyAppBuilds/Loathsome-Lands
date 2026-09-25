@@ -98,7 +98,12 @@ class-less player could still know Hex Bolt... no, that's 'damage', so
 in practice everyone who reaches this block already has a class, but
 the filter itself is just "non-damage AND known," not "class-exclusive
 AND known," so it stays correct if a future non-class-exclusive
-non-damage spell is ever added. */
+non-damage spell is ever added.
+
+'evade' (Smoke Screen) is excluded here too, same reasoning as 'damage'
+— it needs a CURRENT fight to apply to (state.smokeScreenActive means
+nothing outside combat), so it only ever shows in the in-combat Use
+menu's own "Buffs & Support" section, never here. */
 function renderCastableSpellsBlock(){
    const el = document.getElementById('castable-spells-block');
    if(!el) return;
@@ -107,7 +112,7 @@ function renderCastableSpellsBlock(){
    its own comment for how that happens (the dev tools' class override,
    not real play) and why it'd otherwise show a Cast button that always
    silently refuses. */
-   const castable = spells.filter(s => s.type!=='damage' && state.spellsKnown.includes(s.id) && isSpellCurrentlyUsable(s));
+   const castable = spells.filter(s => s.type!=='damage' && s.type!=='evade' && state.spellsKnown.includes(s.id) && isSpellCurrentlyUsable(s));
    if(castable.length===0){
       el.style.display = 'none';
       el.innerHTML = '';

@@ -188,6 +188,15 @@ function createDefaultState(){
         CLASS_BUFF_FIGHTS (content.js) on cast, ticked down by 1 (never
         below 0) once per completed fight — see endCombat(), combat.js. */
      classBuffFightsLeft: 0,
+     /* Smoke Screen (Card Shark's 'evade' spell, content.js) — true for the
+        rest of the CURRENT fight only, unlike classBuffFightsLeft above.
+        Cleared by endCombat() (so it never survives into the next fight)
+        and by playerAttack()/a cast damage spell (so swinging back breaks
+        it immediately) — see castSpell(), combat.js. Deliberately not part
+        of serializeState() (save.js): same reasoning as state.inCombat/
+        state.monster not being saved either — this only ever matters
+        mid-fight, and a reload never resumes mid-fight. */
+     smokeScreenActive: false,
      /* Bounty board (The Guild) — one active bounty at a time, auto-refreshed
         on claim or expiry (see ensureActiveBounty()/claimBounty() in
         guild.js). null until the player's first visit rolls one, or once

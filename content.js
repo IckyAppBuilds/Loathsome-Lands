@@ -793,11 +793,15 @@ page, see castSpell()'s top-line gate.
 class's existing mechanic (Meathead melee damage/Card Shark sneak
 attack/Hexpert spell damage) for the next few fights.
 - 'shout'  — Meathead-exclusive; see its own entry below.
+- 'evade'  — Card Shark-exclusive (Smoke Screen, below); see its own
+entry for why this one breaks from every type above it.
 'heal'/'ward'/'buff'/'shout' never cost a turn (no monsterRetaliate()
 call) and are castable both mid-combat and from the Character page
 (renderCastableSpellsBlock(), class-spells.js) — a deliberate choice:
 only a damage spell trades your turn for an effect, everything else is
-free utility you can use as often as your MP allows.
+free utility you can use as often as your MP allows. 'evade' is also a
+free action, but — unlike the other four — combat-only, same
+restriction 'damage' has, see its own entry below for why.
 
 `classRequired` restricts BOTH where a spell can be learned
 (learnSpell(), combat.js — a class's own building, not the Hoodoo
@@ -833,7 +837,32 @@ dedicated combat button with no MP cost; folded into the normal
 learnSpell()/castSpell() system so it costs Pop Tabs to learn and MP to
 cast like every other class-exclusive ability. Priced/costed to match
 Warding Charm (the spell it's mechanically closest to), not the pricier
-buff-spell tier. */
+buff-spell tier.
+
+'evade' (Smoke Screen, Card Shark's Act 2 spell) was originally a plain
+'ward' — a shield, same as everything else that "defends." Reworked per
+explicit correction: a shield doesn't fit an evasive class the way a
+dodge boost does, and a shield that just sits there mid-fight doesn't
+create any real decision. castSpell() now grants a large, temporary
+boost to the player's own dodge chance (playerDodgeChance(), combat.js
+— the one place both monsterAutoAttack() and a monster's own 'bolt'
+skill roll it) instead of touching state.shield at all. Two rules make
+it a genuine tool rather than a free stat stick:
+- Combat-only (state.smokeScreenActive is reset every time endCombat()
+  fires, same funnel winCombat()/playerFlee()/checkDefeat() all use for
+  classBuffFightsLeft) — cast it mid-fight and it's gone the moment
+  that fight ends, never carried into the next encounter the way
+  Loaded Dice/Adrenaline Rush/Arcane Focus persist for CLASS_BUFF_FIGHTS
+  fights. Also can't be pre-cast from the Character page for the same
+  reason 'damage' can't — there's no "current fight" to apply it to.
+- Broken by your own aggression (playerAttack(), and a 'damage' spell
+  cast — see castSpell()) — swing back and the cloud clears instantly,
+  before that action's own retaliation roll. The intended play pattern
+  is cast it, then spend the safe window on a heal/item/ward instead of
+  attacking — "vanish into the smoke long enough to patch yourself up,"
+  not "attack safely forever." Priced steeply (20 MP, well past every
+  other class buff's 10) since a near-total dodge window is strong
+  enough to be worth a real MP commitment, not a habitual open. */
 const spells = [
    { id:'hexbolt', name:'Hex Bolt', desc:'A jagged little curse that stings more than it should.', type:'damage', mpCost:3, price:15, dmgMin:4, dmgMax:9, icon: iconHexBolt },
    { id:'mendcharm', name:'Mending Charm', desc:'Patches you up with muttered nonsense and surprising effectiveness.', type:'heal', healValue:10, mpCost:4, price:15, classRequired:'Hexpert', icon: iconMendCharm },
@@ -847,7 +876,7 @@ const spells = [
    Gnometropolis) — see the comment above spells[] for why these three
    and not another copy of an existing type. */
    { id:'stubbornrecovery', name:'Stubborn Recovery', desc:"You refuse to go down like that. Grit your teeth, shake it off, and keep going.", type:'heal', healValue:35, mpCost:8, price:300, classRequired:'Meathead', learnLocation:'garrison', icon: iconStubbornRecovery },
-   { id:'smokescreen', name:'Smoke Screen', desc:"Kick up a cloud of grit and vanish into it just long enough for whatever's coming to second-guess itself.", type:'ward', mpCost:6, price:300, classRequired:'Card Shark', learnLocation:'roguesden', icon: iconSmokeScreen },
+   { id:'smokescreen', name:'Smoke Screen', desc:"Kick up a cloud of grit and vanish into it — your dodge goes way up for the rest of this fight, as long as you don't swing back. One attack and the cloud clears.", type:'evade', mpCost:20, price:300, classRequired:'Card Shark', learnLocation:'roguesden', icon: iconSmokeScreen },
    { id:'arcanelance', name:'Arcane Lance', desc:"No flourish, no misdirection — just a thin, precise lance of raw arcane force.", type:'damage', dmgMin:14, dmgMax:22, mpCost:8, price:350, classRequired:'Hexpert', learnLocation:'sanctum', icon: iconArcaneLance },
    ];
 /* How many upcoming fights a class buff spell's effect lasts, set into
@@ -938,6 +967,16 @@ Casino, not in combat, felt off next to Meathead/Hexpert's both being
 combat bonuses. */
 const CARD_SHARK_DOUBLE_ATTACK_CHANCE = [0, 0.01, 0.02, 0.03];
 const HEXPERT_SPELL_DMG_BONUS = [0, 3, 6, 9]; /* flat bonus added to spell damage */
+/* Smoke Screen's own dodge boost (playerDodgeChance(), combat.js) — a
+flat add-on to the normal Zip-based roll, not a classSkillLevel-indexed
+array like the three constants above. Smoke Screen isn't amplifying an
+existing per-class mechanic the way Adrenaline Rush/Loaded Dice/Arcane
+Focus amplify one of these, it's introducing a standalone evasion
+window, so there's no existing base value for classSkillLevel to scale.
+Capped well short of 1 (SMOKE_SCREEN_DODGE_CAP) so "heal safely" still
+carries a sliver of real risk rather than becoming true invincibility. */
+const SMOKE_SCREEN_DODGE_BONUS = 0.5;
+const SMOKE_SCREEN_DODGE_CAP = 0.92;
 /* Cost to go from `level` to `level+1` for the shared class-skill counter
 above — quadratic, same style as buildingUpgradeCost() below: 150/600/1350
 Pop Tabs. One cost curve shared across all 3 classes' single skill level. */

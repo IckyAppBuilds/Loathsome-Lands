@@ -55,7 +55,14 @@ function renderSpellMenu(){
       div.className = 'shop-item';
       const iconSvg = spell.icon ? spell.icon() : '';
       const canCast = state.mp >= spell.mpCost;
-      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div><button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${spell.mpCost} MP</button></div>`;
+      /* Smoke Screen specifically shows "Active" while state.smokeScreenActive
+      is already true, same "tell the player there's nothing left to do
+      here" signal the Known/Fully-trained buttons elsewhere use — recasting
+      would just re-confirm the same flag, so there's no reason to invite it. */
+      const btn = (spell.type==='evade' && state.smokeScreenActive)
+      ? `<button class="btn-secondary" disabled>Active</button>`
+        : `<button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${spell.mpCost} MP</button>`;
+      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div>${btn}</div>`;
       list.appendChild(div);
     });
   }
