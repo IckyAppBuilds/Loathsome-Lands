@@ -276,11 +276,21 @@ function syncBuildingScreens(ctx){
   document.getElementById('gnometownlot-list').style.display = ctx.isGnomeTownLot ? 'block' : 'none';
   if(ctx.isGnomeTownLot) renderGnomeTownLot();
 
-  document.getElementById('casino-bet-row').style.display = (ctx.isCasino && !state.inCombat) ? 'flex' : 'none';
-  document.getElementById('casino-row').style.display = (ctx.isCasino && !state.inCombat) ? 'flex' : 'none';
+  /* Blackjack (casino.js) — casino-bet-row (the Deal buttons) and the
+  Leave button both hide while a hand is actually live (phase==='playerTurn'):
+  you've already put your bet up, and hitting/standing is the only thing
+  left to do until it resolves. blackjack-hand-row (Hit/Stand) is the
+  exact inverse. */
+  const blackjackLive = !!state.blackjack && state.blackjack.phase==='playerTurn';
+  document.getElementById('casino-bet-row').style.display = (ctx.isCasino && !state.inCombat && !blackjackLive) ? 'flex' : 'none';
+  document.getElementById('blackjack-hand-row').style.display = (ctx.isCasino && !state.inCombat && blackjackLive) ? 'flex' : 'none';
+  document.getElementById('casino-row').style.display = (ctx.isCasino && !state.inCombat && !blackjackLive) ? 'flex' : 'none';
   document.getElementById('bet-5-btn').disabled = state.popTabs < 5;
   document.getElementById('bet-10-btn').disabled = state.popTabs < 10;
   document.getElementById('bet-25-btn').disabled = state.popTabs < 25;
+
+  document.getElementById('blackjack-table').style.display = (ctx.isCasino && !!state.blackjack) ? 'block' : 'none';
+  if(ctx.isCasino && state.blackjack) renderBlackjackTable();
 
   document.getElementById('casino-winnings-box').style.display = (ctx.isCasino && !state.inCombat && casinoWinningsCap() > 0) ? 'block' : 'none';
   if(ctx.isCasino && !state.inCombat) renderCasinoWinningsBox();

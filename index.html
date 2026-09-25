@@ -21,7 +21,7 @@ file itself, so this no longer needs doing by hand. Without it, a
 returning player's browser (and a static host's CDN, e.g. GitHub Pages)
 could keep serving an old cached copy of a file indefinitely, since
 none of these are fingerprinted filenames from a real build step. -->
-<link rel="stylesheet" href="styles.css?v=20260925140010">
+<link rel="stylesheet" href="styles.css?v=20260925142356">
 </head>
 <body>
 <div id="app">
@@ -126,6 +126,8 @@ none of these are fingerprinted filenames from a real build step. -->
 
 <div class="quest-progress" id="casino-trial-hint" style="display:none;"></div>
 <div class="quest-progress" id="hoodoo-trial-hint" style="display:none;"></div>
+
+<div class="quest-panel" id="blackjack-table" style="display:none;"></div>
 
 <div class="quest-panel" id="casino-winnings-box" style="display:none;"></div>
 
@@ -244,9 +246,13 @@ show/hide logic (getElementById(...).style.display = ...) is unchanged
 <button class="btn-secondary" onclick="leaveGnomeTownLot()">Leave</button>
 </div>
 <div class="btn-row" id="casino-bet-row" style="display:none;">
-<button class="btn-primary" id="bet-5-btn" onclick="gambleCasino(5)">Bet 5</button>
-<button class="btn-primary" id="bet-10-btn" onclick="gambleCasino(10)">Bet 10</button>
-<button class="btn-primary" id="bet-25-btn" onclick="gambleCasino(25)">Bet 25</button>
+<button class="btn-primary" id="bet-5-btn" onclick="dealBlackjack(5)">Deal — 5</button>
+<button class="btn-primary" id="bet-10-btn" onclick="dealBlackjack(10)">Deal — 10</button>
+<button class="btn-primary" id="bet-25-btn" onclick="dealBlackjack(25)">Deal — 25</button>
+</div>
+<div class="btn-row" id="blackjack-hand-row" style="display:none;">
+<button class="btn-attack" onclick="blackjackHit()">Hit</button>
+<button class="btn-secondary" onclick="blackjackStand()">Stand</button>
 </div>
 <div class="btn-row" id="casino-trial-row" style="display:none;">
 <button class="btn-attack" id="start-trial-fight-casino-btn" onclick="startClassTrialCasino()" style="display:none;">Face Down the Card Shark</button>
@@ -460,35 +466,35 @@ after every script has loaded):
   2. boot.js must be LAST -- its final block calls renderGate()/
      startFreshGame() immediately at parse time, so every other global
      it might touch must already exist. See AGENTS.md for the full file map. -->
-<script src="core.js?v=20260925140010"></script>
-<script src="icons.js?v=20260925140010"></script>
-<script src="art.js?v=20260925140010"></script>
-<script src="gnometropolis-art.js?v=20260925140010"></script>
-<script src="mudroot-art.js?v=20260925140010"></script>
-<script src="warrensear-art.js?v=20260925140010"></script>
-<script src="content.js?v=20260925140010"></script>
-<script src="mudroot-content.js?v=20260925140010"></script>
-<script src="warrensear-content.js?v=20260925140010"></script>
-<script src="act2-shop.js?v=20260925140010"></script>
-<script src="item-tiers.js?v=20260925140010"></script>
-<script src="render.js?v=20260925140010"></script>
-<script src="render-shop.js?v=20260925140010"></script>
-<script src="render-character.js?v=20260925140010"></script>
-<script src="class-spells.js?v=20260925140010"></script>
-<script src="dev-tools.js?v=20260925140010"></script>
-<script src="auth.js?v=20260925140010"></script>
-<script src="save.js?v=20260925140010"></script>
-<script src="player-actions.js?v=20260925140010"></script>
-<script src="tutorial.js?v=20260925140010"></script>
-<script src="hubs.js?v=20260925140010"></script>
-<script src="combat.js?v=20260925140010"></script>
-<script src="town.js?v=20260925140010"></script>
-<script src="casino.js?v=20260925140010"></script>
-<script src="class-trial.js?v=20260925140010"></script>
-<script src="guild.js?v=20260925140010"></script>
-<script src="gnometropolis.js?v=20260925140010"></script><script src="economy.js?v=20260925140010"></script>
-<script src="noticeboard.js?v=20260925140010"></script>
-<script src="boot.js?v=20260925140010"></script>
+<script src="core.js?v=20260925142356"></script>
+<script src="icons.js?v=20260925142356"></script>
+<script src="art.js?v=20260925142356"></script>
+<script src="gnometropolis-art.js?v=20260925142356"></script>
+<script src="mudroot-art.js?v=20260925142356"></script>
+<script src="warrensear-art.js?v=20260925142356"></script>
+<script src="content.js?v=20260925142356"></script>
+<script src="mudroot-content.js?v=20260925142356"></script>
+<script src="warrensear-content.js?v=20260925142356"></script>
+<script src="act2-shop.js?v=20260925142356"></script>
+<script src="item-tiers.js?v=20260925142356"></script>
+<script src="render.js?v=20260925142356"></script>
+<script src="render-shop.js?v=20260925142356"></script>
+<script src="render-character.js?v=20260925142356"></script>
+<script src="class-spells.js?v=20260925142356"></script>
+<script src="dev-tools.js?v=20260925142356"></script>
+<script src="auth.js?v=20260925142356"></script>
+<script src="save.js?v=20260925142356"></script>
+<script src="player-actions.js?v=20260925142356"></script>
+<script src="tutorial.js?v=20260925142356"></script>
+<script src="hubs.js?v=20260925142356"></script>
+<script src="combat.js?v=20260925142356"></script>
+<script src="town.js?v=20260925142356"></script>
+<script src="casino.js?v=20260925142356"></script>
+<script src="class-trial.js?v=20260925142356"></script>
+<script src="guild.js?v=20260925142356"></script>
+<script src="gnometropolis.js?v=20260925142356"></script><script src="economy.js?v=20260925142356"></script>
+<script src="noticeboard.js?v=20260925142356"></script>
+<script src="boot.js?v=20260925142356"></script>
 </body>
 </html>
 

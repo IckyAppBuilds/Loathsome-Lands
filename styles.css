@@ -485,6 +485,21 @@ on a white button. */
   padding:0 5px;
   vertical-align:middle;
 }
+/* One playing card in the Casino's Blackjack table (#blackjack-table,
+renderBlackjackTable(), casino.js) — classic red/black suit coloring,
+purely cosmetic. */
+.card-chip{
+  display:inline-block;
+  margin:2px 3px 2px 0;
+  padding:2px 7px;
+  font-size:0.82rem;
+  font-weight:700;
+  color:var(--black);
+  background:var(--white);
+  border:2px solid var(--black);
+  vertical-align:middle;
+}
+.card-chip.red{ color:var(--red); }
 .inv-item .desc{ font-size:0.74rem; margin:3px 0 6px; }
 .inv-item button{ font-size:0.7rem; padding:5px; }
 .inv-empty{ font-size:0.82rem; font-style:italic; padding:6px 2px; }

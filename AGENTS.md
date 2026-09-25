@@ -489,16 +489,32 @@ Touch this file when: changing a quest's logic (except quest2/quest6/
 the class Trial — see guild.js), travel/unlock/cost rules, or a
 building's upgrade gating.
 
-## casino.js — Casino
-`enterCasino`/`leaveCasino`/`gambleCasino` (ordinary wagering),
+## casino.js — Casino: Blackjack
+`enterCasino`/`leaveCasino`, Blackjack (`dealBlackjack(bet)`/
+`blackjackHit`/`blackjackStand`/`resolveBlackjack` — the one funnel
+every hand ends through, win/lose/push/dealer-natural alike — plus its
+own `renderBlackjackTable()`, this file's render function same as
+auth.js/class-spells.js/noticeboard.js/tutorial.js each own theirs),
 `claimCasinoWinnings` (the separate passive-income claim —
 `regenCasinoWinnings()`/`casinoWinningsCap()` live in economy.js).
-Split out of guild.js — this concern was fully self-contained there
-(zero calls into Guild/Bounty Board/Trial code), so it was the
-cleanest extraction once guild.js's own bundled-systems problem got
-addressed. Loads right before class-trial.js/guild.js; no particular
-load-order requirement beyond that (nothing here is read by value at
-parse time), kept adjacent purely for readability.
+Replaced the old flat coin-flip (`gambleCasino`, Bet 5/10/25 for a
+CASINO_WIN_CHANCE-ish shot at 2x) per explicit direction — a real card
+game instead of straight betting. `state.blackjack` is null whenever
+no hand is live, otherwise `{ bet, playerHand, dealerHand, phase,
+resultText }` — not saved (save.js), same reasoning as
+`state.inCombat`/`state.monster`. Deck/payout/flavor-line constants
+(`CARD_RANKS`/`CARD_SUITS`/`BLACKJACK_WIN_PAYOUT`/
+`BLACKJACK_NATURAL_PAYOUT`/`BLACKJACK_DEALER_STAND`/the
+`blackjack*Lines` arrays) live in content.js, same split every other
+content table uses. `CASINO_WIN_BONUS` (content.js) is now a payout
+multiplier on a win, not a win-CHANCE bonus — Blackjack's own rules
+supply the house's edge. Split out of guild.js — this concern was
+fully self-contained there (zero calls into Guild/Bounty Board/Trial
+code), so it was the cleanest extraction once guild.js's own
+bundled-systems problem got addressed. Loads right before
+class-trial.js/guild.js; no particular load-order requirement beyond
+that (nothing here is read by value at parse time), kept adjacent
+purely for readability.
 
 Touch this file when: changing Casino betting odds/payout logic.
 
@@ -680,7 +696,7 @@ near the section it belongs to.
   cost rules -> **hubs.js** (the actual pricing formula is in
   town.js's `travelCostFor()`, which reads hubs.js's own registry).
 - Change Guild(1 or 2)/bounty/Palace-gauntlet logic -> **guild.js**.
-  Casino betting -> **casino.js**. The class Trial/skill-upgrade
+  Casino/Blackjack -> **casino.js**. The class Trial/skill-upgrade
   system -> **class-trial.js**. Casino/Biscuit passive-income regen
   math itself -> **economy.js**.
 - Change shop sell/buy pricing (either Shop), Biscuit/MP regen, or the

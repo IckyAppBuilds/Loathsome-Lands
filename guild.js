@@ -1,4 +1,4 @@
-/* Casino (enterCasino/leaveCasino/gambleCasino/claimCasinoWinnings) and
+/* Casino (enterCasino/leaveCasino/Blackjack/claimCasinoWinnings) and
 the class-capstone Trial (acceptClassQuest through levelUpClassSkill)
 used to live in this file too — split out into casino.js/class-trial.js
 respectively (both were fully self-contained, no calls into anything

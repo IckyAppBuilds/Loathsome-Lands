@@ -231,6 +231,11 @@ function createDefaultState(){
         claimCasinoWinnings() (guild.js) at the Casino screen. */
      casinoWinnings: 0,
      lastCasinoRegenAt: Date.now(),
+     /* The live Blackjack hand (casino.js) — null whenever no hand is in
+        progress. Deliberately not part of serializeState() (save.js),
+        same reasoning as state.inCombat/state.monster: a reload should
+        never resume mid-hand. */
+     blackjack: null,
      /* Rare-drop collection log — every rareDrop item name ever obtained,
         kept even if later sold/lost (see winCombat() in game.js and the
         Character drawer's Rare Finds block in render.js). */

@@ -1085,17 +1085,61 @@ const arcaneSanctumGuardian = {
    art: artArcaneSanctumGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Hexpert')
 };
 
-/* ---------------- Casino ---------------- */
-const CASINO_WIN_CHANCE = 0.45; /* the house always wins, on average */
-const casinoWinLines = [
-   "The wheel clatters to a stop on gold. You win!",
-   "Against all odds — and the Croupier's raised eyebrow — you win!",
-   "The dice tumble your way, somehow. You win!",
+/* ---------------- Casino: Blackjack ---------------- */
+/* Replaces the old flat coin-flip (gambleCasino() — Bet 5/10/25 for a
+CASINO_WIN_CHANCE-ish shot at a flat 2x) per explicit direction: a real
+card game instead of "straight betting." All the actual dealing/hand
+logic lives in casino.js (dealBlackjack()/blackjackHit()/blackjackStand()/
+resolveBlackjack()) — this is just the deck's own data (ranks/suits,
+drawn from an infinite shoe — no depleting deck to track, same
+"roll a fresh random one" shape startCombat() already uses for
+monsters rather than modeling a finite pool) and the payout/flavor
+constants split out the way every other content table in this file is.
+
+Payouts are standard blackjack: a normal win pays 1:1
+(BLACKJACK_WIN_PAYOUT), a natural blackjack (21 on the first two cards)
+pays 3:2 (BLACKJACK_NATURAL_PAYOUT) — both on top of the returned bet.
+The dealer stands at BLACKJACK_DEALER_STAND (17) or higher, hits below
+it — no soft-17 distinction, a deliberate slight simplification (and
+a hair player-favorable) rather than tracking soft/hard dealer logic
+for a casual minigame. The house's edge now comes from the RULES
+themselves (dealer-wins-on-push-adjacent totals, both-bust-you-still-
+lose), not an injected probability the way CASINO_WIN_CHANCE used to
+work — CASINO_WIN_BONUS (below) still matters, just as a payout boost
+on a win instead of a chance-to-win boost. */
+const CARD_RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const CARD_SUITS = ['♠','♥','♦','♣'];
+const BLACKJACK_DEALER_STAND = 17;
+const BLACKJACK_WIN_PAYOUT = 1;      /* 1:1 on a normal win */
+const BLACKJACK_NATURAL_PAYOUT = 1.5; /* 3:2 on a natural blackjack */
+const blackjackWinLines = [
+   "You beat the dealer's hand clean. You win.",
+   "The Croupier counts it out without a word. You win.",
+   "Your hand holds up. You win.",
    ];
-const casinoLoseLines = [
-   "The wheel clatters to a stop on absolutely nothing. You lose your stake.",
-   "The Croupier doesn't even try to hide the smirk. You lose your stake.",
-   "The dice betray you completely. You lose your stake.",
+const blackjackNaturalLines = [
+   "Blackjack! The Croupier doesn't even try to look pleased.",
+   "Two cards, twenty-one. Blackjack.",
+   ];
+const blackjackDealerBustLines = [
+   "The dealer busts chasing your hand. You win.",
+   "The Croupier goes over trying to catch up. You win.",
+   ];
+const blackjackBustLines = [
+   "You bust. The Croupier sweeps your stake without looking up.",
+   "Over 21. The house doesn't need to do anything else.",
+   ];
+const blackjackLoseLines = [
+   "The dealer's hand holds up better than yours.",
+   "Not enough. The house takes it.",
+   ];
+const blackjackDealerBJLines = [
+   "The dealer flips a natural blackjack. Rough beat.",
+   "Blackjack, dealer's side. No beating that.",
+   ];
+const blackjackPushLines = [
+   "Same total both sides. Push — your bet's returned.",
+   "A tie. The Croupier slides your stake right back.",
    ];
 
 /* ---------------- Bounty Board (The Guild) ---------------- */
@@ -1191,11 +1235,12 @@ a future reader can find the mechanism without re-deriving it:
              sellItemByName() (game.js).
 - 'guild'  — GUILD_BOUNTY_BONUS, applied to Bounty Token rewards in
              claimBounty() (game.js).
-- 'casino' — CASINO_WIN_BONUS, added to CASINO_WIN_CHANCE above when
-             gambling, PLUS a second, independent effect,
-             CASINO_WINNINGS_CAP (see its own comment further below) —
-             raising the passive-income cap and unlocking it in the
-             first place at level 1.
+- 'casino' — CASINO_WIN_BONUS, a payout multiplier on top of a
+             Blackjack win (resolveBlackjack(), casino.js — a maxed
+             Casino turns a normal win's 1:1 into 1.1:1), PLUS a
+             second, independent effect, CASINO_WINNINGS_CAP (see its
+             own comment further below) — raising the passive-income
+             cap and unlocking it in the first place at level 1.
 None of these mechanics are wired up in game.js yet as of this data-layer
 pass — that's the next task; this file only defines the numbers. */
 const BUILDING_UPGRADES = [
@@ -1279,9 +1324,13 @@ claimBounty() (game.js). 0.30 at max level = bounties pay out 30% more
 Bounty Tokens. */
 const GUILD_BOUNTY_BONUS = [0, 0.10, 0.20, 0.30];
 
-/* The Casino — added directly to CASINO_WIN_CHANCE above when gambling, so
-a maxed casino narrows (but per product intent never eliminates) the
-house's edge. 0.10 at max level = 45% base win chance becomes 55%. */
+/* The Casino — a payout multiplier on a Blackjack win (resolveBlackjack(),
+casino.js): winnings = round(bet * payout * (1 + CASINO_WIN_BONUS[level])).
+0.10 at max level turns a normal win's 1:1 payout into 1.1:1, a natural's
+3:2 into 1.65:1 — Blackjack's own rules already supply the house's edge
+now (see the comment above blackjackWinLines), so this is framed as
+"the house shares a little more of a win with you" rather than
+"narrowing the house's edge" the old flat-bet version was. */
 const CASINO_WIN_BONUS = [0, 0.03, 0.06, 0.10];
 
 /* Passive Casino income ("the house's cut", state.casinoWinnings) — 0 at
