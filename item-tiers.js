@@ -55,10 +55,26 @@ derived this way can never drift out of alignment with what the item
 actually grants, the way a hand-authored parallel field could once bonus
 values get rebalanced later.
 
-levelReq = 2x the item's total stat points (every bonus value summed) —
-a plain +1 tier-1 item needs level 2, a 3-stat (+3/+1/+1) tier-3 item
-needs level 10. An item with no bonus (starterGear) or no stats at all
-needs nothing.
+levelReq = 2x the item's PRIMARY stat only (the first key in `bonus` —
+every item everywhere is authored primary-stat-first, same convention
+rollShopGearStats/rollGearDropTier, economy.js/combat.js, already rely
+on) — a plain +1 tier-1 item needs level 2, a tier-3 item whose primary
+is +3 needs level 6, regardless of what its secondary stats rolled.
+
+Deliberately NOT a sum across every stat anymore: once secondary stats
+started rolling their own randomized value instead of a flat +1
+(rollSecondaryStatValue(), economy.js), a sum-based requirement would
+make the SAME nominal tier of item demand wildly different levels from
+one roll to the next — a tier-4 item's three secondaries could each
+roll as high as the primary itself, nearly quadrupling the total and
+its level requirement along with it. The primary stat is the one
+constant every roll of a given tier shares, so it's the one requirement
+should track. This also happens to be exactly why the gearDrop bonus
+values in content.js/mudroot-content.js/warrensear-content.js climb
+1-2-3-4-5-6-7-8 in zone order in the first place: at this 2x multiplier
+that ladder lines up almost exactly with ZONE_LEVEL_RECOMMENDATION's
+own min for that zone (e.g. rootcellar/bureau's gearDrop of 6 needs
+level 12, Mudroot Warren's own new floor).
 
 Stat requirements (statReq/statKey) were dropped: level alone was already
 gating gear sensibly, and a separate base-stat floor mostly just blocked
@@ -69,9 +85,9 @@ below) no-op without needing their own changes. */
 function getGearRequirements(item){
    const statKeys = (item && item.bonus) ? Object.keys(item.bonus) : [];
    if(statKeys.length === 0) return { levelReq: 1, statReq: 0, statKey: null };
-   const totalPower = statKeys.reduce((sum, k) => sum + item.bonus[k], 0);
+   const primaryValue = item.bonus[statKeys[0]];
    return {
-      levelReq: Math.max(1, totalPower * 2),
+      levelReq: Math.max(1, primaryValue * 2),
       statReq: 0,
       statKey: null,
    };
