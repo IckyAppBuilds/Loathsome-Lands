@@ -16,13 +16,14 @@ function enterCasino(){
 }
 
 function leaveCasino(){
-   /* Blocked mid-hand (state.blackjack.phase==='playerTurn') — you've
-   already put your bet up, and walking away shouldn't be a free way to
-   dodge a loss. render.js hides the Leave button for the same reason,
-   this is defense-in-depth against a direct call. */
-   if(state.inCombat || state.location !== 'casino' || (state.blackjack && state.blackjack.phase==='playerTurn')) return;
+   /* Blocked while at the Blackjack table at all (state.blackjack truthy,
+   any phase) — enterBlackjackTable()/leaveBlackjackTable() below are the
+   only door in and out of that screen; leaveCasino() itself is Casino
+   lobby -> town, a level up. render.js hides this button entirely
+   whenever state.blackjack is set, this is defense-in-depth against a
+   direct call. */
+   if(state.inCombat || state.location !== 'casino' || state.blackjack) return;
    state.location = 'town';
-   state.blackjack = null;
    clearLog();
    render();
 }
@@ -38,14 +39,35 @@ plus its own render function (renderBlackjackTable() below), same
 tutorial.js already use rather than growing render-shop.js with a
 fourth building's worth of markup-building.
 
-state.blackjack is null whenever no hand is in progress, otherwise
-{ bet, playerHand, dealerHand, phase, resultText } — phase is
-'playerTurn' (hit-or-stand) or 'resolved' (hand's over, showing the
-final table until the next deal). Deliberately NOT part of
-serializeState() (save.js) — same reasoning as state.inCombat/
-state.monster not being saved: a reload should never resume mid-hand,
-and there's no case where resuming one would even make sense (the bet
-Pop Tabs are already spent the moment the hand starts). */
+state.blackjack is null in the Casino LOBBY (spell trainer/House's Cut/
+Leave visible, no cards on screen) — enterBlackjackTable() below is the
+only way in. Once set, it's { bet, playerHand, dealerHand, phase,
+resultText }, and the whole screen swaps to just the table: no spell
+trainer, no House's Cut, nothing but the cards and whichever action row
+fits `phase` (render.js) — same "combat gets its own uncluttered screen"
+shape state.inCombat already has, per explicit request to mirror it.
+`phase` is 'betting' (sat down, no hand dealt yet — Deal buttons only),
+'playerTurn' (hit-or-stand), or 'resolved' (hand's over, Deal buttons
+return so the next hand can start without leaving the table). Deliberately
+NOT part of serializeState() (save.js) — same reasoning as state.inCombat/
+state.monster not being saved: a reload should never resume mid-hand or
+mid-sitting-at-the-table. */
+function enterBlackjackTable(){
+   if(state.inCombat || state.location !== 'casino' || state.blackjack) return;
+   state.blackjack = { bet:0, playerHand:[], dealerHand:[], phase:'betting', resultText:'' };
+   clearLog();
+   log("You take a seat at the Blackjack table. The Croupier waits for your bet.");
+   render();
+}
+/* Only reachable from 'betting'/'resolved' (render.js hides the button
+during 'playerTurn' — defense-in-depth here too) — you can always walk
+away between hands, just not out from under a live bet. */
+function leaveBlackjackTable(){
+   if(state.inCombat || state.location !== 'casino' || !state.blackjack || state.blackjack.phase==='playerTurn') return;
+   state.blackjack = null;
+   clearLog();
+   render();
+}
 function drawCard(){
    return {
       rank: CARD_RANKS[Math.floor(Math.random()*CARD_RANKS.length)],
@@ -74,7 +96,10 @@ function randomLine(pool){ return pool[Math.floor(Math.random()*pool.length)]; }
 
 function dealBlackjack(bet){
    if(state.location !== 'casino' || state.inCombat) return;
-   if(state.blackjack && state.blackjack.phase==='playerTurn') return; /* a hand's already live */
+   /* Only from the table itself, and only between hands — 'betting' is
+   the just-sat-down state, 'resolved' is right after a previous hand,
+   both mean "no cards on the table right now." */
+   if(!state.blackjack || state.blackjack.phase==='playerTurn') return;
    if(state.popTabs < bet) return;
    state.popTabs -= bet;
    state.blackjack = { bet, playerHand:[drawCard(), drawCard()], dealerHand:[drawCard(), drawCard()], phase:'playerTurn', resultText:'' };
@@ -168,11 +193,16 @@ function cardChipHtml(card){
 second card stays face-down (a plain "?" chip, real total withheld)
 until the hand resolves, same "don't show what a real player couldn't
 see yet" reasoning a monster's own hidden stats never get exposed either.
-Hidden while state.blackjack is null (render.js). */
+Hidden while state.blackjack is null (render.js), i.e. in the Casino
+lobby rather than at the table at all. */
 function renderBlackjackTable(){
    const el = document.getElementById('blackjack-table');
    if(!el || !state.blackjack) return;
    const bj = state.blackjack;
+   if(bj.phase==='betting'){
+      el.innerHTML = `<div class="block-title">Blackjack</div><div class="quest-desc">The Croupier waits for your bet.</div>`;
+      return;
+   }
    const dealerHidden = bj.phase==='playerTurn';
    const dealerCardsHtml = dealerHidden
       ? cardChipHtml(bj.dealerHand[0]) + ' <span class="card-chip">?</span>'

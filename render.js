@@ -276,27 +276,33 @@ function syncBuildingScreens(ctx){
   document.getElementById('gnometownlot-list').style.display = ctx.isGnomeTownLot ? 'block' : 'none';
   if(ctx.isGnomeTownLot) renderGnomeTownLot();
 
-  /* Blackjack (casino.js) — casino-bet-row (the Deal buttons) and the
-  Leave button both hide while a hand is actually live (phase==='playerTurn'):
-  you've already put your bet up, and hitting/standing is the only thing
-  left to do until it resolves. blackjack-hand-row (Hit/Stand) is the
-  exact inverse. */
-  const blackjackLive = !!state.blackjack && state.blackjack.phase==='playerTurn';
-  document.getElementById('casino-bet-row').style.display = (ctx.isCasino && !state.inCombat && !blackjackLive) ? 'flex' : 'none';
+  /* Blackjack (casino.js) — its own screen, no Casino-lobby clutter,
+  mirroring how state.inCombat already gets its own uncluttered screen
+  (no shop lists/quest panels either) — per explicit request. atTable
+  is true in EVERY blackjack phase (betting/playerTurn/resolved); the
+  lobby-only stuff below (House's Cut/Card Shark trainer/Trial fight/
+  casino-row's Play Blackjack+Leave) all gate on `!atTable`, full stop.
+  Within the table itself, casino-bet-row (Deal + Leave Table) shows
+  outside 'playerTurn', blackjack-hand-row (Hit/Stand) shows only
+  during it — you don't see a Deal button until you've actually sat
+  down, and you can't step away mid-hand either way. */
+  const atTable = !!state.blackjack;
+  const blackjackLive = atTable && state.blackjack.phase==='playerTurn';
+  document.getElementById('casino-bet-row').style.display = (ctx.isCasino && !state.inCombat && atTable && !blackjackLive) ? 'flex' : 'none';
   document.getElementById('blackjack-hand-row').style.display = (ctx.isCasino && !state.inCombat && blackjackLive) ? 'flex' : 'none';
-  document.getElementById('casino-row').style.display = (ctx.isCasino && !state.inCombat && !blackjackLive) ? 'flex' : 'none';
+  document.getElementById('casino-row').style.display = (ctx.isCasino && !state.inCombat && !atTable) ? 'flex' : 'none';
   document.getElementById('bet-5-btn').disabled = state.popTabs < 5;
   document.getElementById('bet-10-btn').disabled = state.popTabs < 10;
   document.getElementById('bet-25-btn').disabled = state.popTabs < 25;
 
-  document.getElementById('blackjack-table').style.display = (ctx.isCasino && !!state.blackjack) ? 'block' : 'none';
-  if(ctx.isCasino && state.blackjack) renderBlackjackTable();
+  document.getElementById('blackjack-table').style.display = (ctx.isCasino && atTable) ? 'block' : 'none';
+  if(ctx.isCasino && atTable) renderBlackjackTable();
 
-  document.getElementById('casino-winnings-box').style.display = (ctx.isCasino && !state.inCombat && casinoWinningsCap() > 0) ? 'block' : 'none';
-  if(ctx.isCasino && !state.inCombat) renderCasinoWinningsBox();
+  document.getElementById('casino-winnings-box').style.display = (ctx.isCasino && !state.inCombat && !atTable && casinoWinningsCap() > 0) ? 'block' : 'none';
+  if(ctx.isCasino && !state.inCombat && !atTable) renderCasinoWinningsBox();
 
-  document.getElementById('casino-spell-list').style.display = (ctx.isCasino && !state.inCombat) ? 'block' : 'none';
-  if(ctx.isCasino && !state.inCombat){
+  document.getElementById('casino-spell-list').style.display = (ctx.isCasino && !state.inCombat && !atTable) ? 'block' : 'none';
+  if(ctx.isCasino && !state.inCombat && !atTable){
     renderClassSpellList('casino-spell-list', 'Card Shark');
     renderClassSkillUpgrade('casino-classskill-block', 'Card Shark');
   } else {
@@ -375,13 +381,13 @@ function syncBuildingScreens(ctx){
   purpose as guild-trial-box above, just a single-line nudge instead of
   a full dialog since neither screen also needs to show its own separate
   mainline-quest text alongside it. */
-  document.getElementById('casino-trial-hint').style.display = (ctx.isCasino && ctx.classQuestState==='trials') ? 'block' : 'none';
-  if(ctx.isCasino && ctx.classQuestState==='trials'){
+  document.getElementById('casino-trial-hint').style.display = (ctx.isCasino && !atTable && ctx.classQuestState==='trials') ? 'block' : 'none';
+  if(ctx.isCasino && !atTable && ctx.classQuestState==='trials'){
     document.getElementById('casino-trial-hint').textContent = state.classTrialCasinoPassed
       ? "You've already put the Casino's own card shark in their place — that trial is passed."
       : "The Croupier nods toward a card shark working the far table — impossible to pin down, by all accounts. Trial-takers prove their nerve by beating them outright.";
   }
-  document.getElementById('casino-trial-row').style.display = (ctx.isCasino && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('casino-trial-row').style.display = (ctx.isCasino && !state.inCombat && !atTable) ? 'flex' : 'none';
   document.getElementById('start-trial-fight-casino-btn').style.display = (ctx.classQuestState==='trials' && !state.classTrialCasinoPassed) ? '' : 'none';
 
   document.getElementById('hoodoo-trial-hint').style.display = (ctx.isHoodoo && ctx.classQuestState==='trials') ? 'block' : 'none';

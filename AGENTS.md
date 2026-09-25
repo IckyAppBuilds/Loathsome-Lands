@@ -490,18 +490,27 @@ the class Trial — see guild.js), travel/unlock/cost rules, or a
 building's upgrade gating.
 
 ## casino.js — Casino: Blackjack
-`enterCasino`/`leaveCasino`, Blackjack (`dealBlackjack(bet)`/
-`blackjackHit`/`blackjackStand`/`resolveBlackjack` — the one funnel
-every hand ends through, win/lose/push/dealer-natural alike — plus its
-own `renderBlackjackTable()`, this file's render function same as
-auth.js/class-spells.js/noticeboard.js/tutorial.js each own theirs),
-`claimCasinoWinnings` (the separate passive-income claim —
-`regenCasinoWinnings()`/`casinoWinningsCap()` live in economy.js).
-Replaced the old flat coin-flip (`gambleCasino`, Bet 5/10/25 for a
-CASINO_WIN_CHANCE-ish shot at 2x) per explicit direction — a real card
-game instead of straight betting. `state.blackjack` is null whenever
-no hand is live, otherwise `{ bet, playerHand, dealerHand, phase,
-resultText }` — not saved (save.js), same reasoning as
+`enterCasino`/`leaveCasino` (the lobby — House's Cut/Card Shark
+trainer/Trial fight/a "Play Blackjack" button), `enterBlackjackTable`/
+`leaveBlackjackTable` (sitting down/getting up — the ONLY door into
+Blackjack's own screen, which per explicit request mirrors
+`state.inCombat`'s own "no other clutter" screen: the lobby's spell
+trainer/House's Cut/Trial button all hide the instant `state.blackjack`
+is set, in every phase, not just mid-hand), Blackjack itself
+(`dealBlackjack(bet)`/`blackjackHit`/`blackjackStand`/`resolveBlackjack`
+— the one funnel every hand ends through, win/lose/push/dealer-natural
+alike — plus its own `renderBlackjackTable()`, this file's render
+function same as auth.js/class-spells.js/noticeboard.js/tutorial.js
+each own theirs), `claimCasinoWinnings` (the separate passive-income
+claim — `regenCasinoWinnings()`/`casinoWinningsCap()` live in
+economy.js). Replaced the old flat coin-flip (`gambleCasino`, Bet
+5/10/25 for a CASINO_WIN_CHANCE-ish shot at 2x) per explicit
+direction — a real card game instead of straight betting.
+`state.blackjack` is null in the lobby, set the moment the player sits
+down and cleared on standing up; while set it's `{ bet, playerHand,
+dealerHand, phase, resultText }`, `phase` climbing
+betting -> playerTurn -> resolved (Deal buttons return between hands
+without leaving the table) — not saved (save.js), same reasoning as
 `state.inCombat`/`state.monster`. Deck/payout/flavor-line constants
 (`CARD_RANKS`/`CARD_SUITS`/`BLACKJACK_WIN_PAYOUT`/
 `BLACKJACK_NATURAL_PAYOUT`/`BLACKJACK_DEALER_STAND`/the
