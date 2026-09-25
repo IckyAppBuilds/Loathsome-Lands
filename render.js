@@ -296,32 +296,31 @@ function syncBuildingScreens(ctx){
   /* Act 2's own class trainers — Garrison/Rogues' Den/Arcane Sanctum, each
   now teaching that class's Act 2 spell (learnLocation, content.js)
   alongside the existing class-skill upgrade, same as every Act 1 trainer
-  above. Unlike the Casino (a betting room AND a trainer at once), these
-  three stop being adventure zones the moment they finish being one —
-  once quest7Complete, CLASS_AREA_ZONES (combat.js) takes goAdventuring()
-  away from them and explore-row (syncCombatUI()) stops showing here, so
-  the trainer is the ONLY thing left on screen; before that, this block
-  sits alongside the same explore-row/random-encounter loop every other
-  adventure zone has, since quest7's own objective is fighting each
-  district's class-gated guardian here. */
-  document.getElementById('garrison-spell-list').style.display = (ctx.isGarrison && !state.inCombat) ? 'block' : 'none';
-  if(ctx.isGarrison && !state.inCombat){
+  above. Gated on state.quest7Complete same as CLASS_AREA_ZONES (combat.js)
+  gates goAdventuring() away from these three — before quest7Complete
+  they're still real adventure zones (quest7's own objective is fighting
+  each district's class-gated guardian here), and showing the trainer
+  UI early would let a player start banking class spells/skill levels
+  off gear that isn't even the intended reward for finishing that fight
+  yet. The trainer only appears once these fully convert. */
+  document.getElementById('garrison-spell-list').style.display = (ctx.isGarrison && !state.inCombat && state.quest7Complete) ? 'block' : 'none';
+  if(ctx.isGarrison && !state.inCombat && state.quest7Complete){
     renderClassSpellList('garrison-spell-list', 'Meathead');
     renderClassSkillUpgrade('garrison-classskill-block', 'Meathead');
   } else {
     document.getElementById('garrison-classskill-block').style.display = 'none';
   }
 
-  document.getElementById('roguesden-spell-list').style.display = (ctx.isRoguesden && !state.inCombat) ? 'block' : 'none';
-  if(ctx.isRoguesden && !state.inCombat){
+  document.getElementById('roguesden-spell-list').style.display = (ctx.isRoguesden && !state.inCombat && state.quest7Complete) ? 'block' : 'none';
+  if(ctx.isRoguesden && !state.inCombat && state.quest7Complete){
     renderClassSpellList('roguesden-spell-list', 'Card Shark');
     renderClassSkillUpgrade('roguesden-classskill-block', 'Card Shark');
   } else {
     document.getElementById('roguesden-classskill-block').style.display = 'none';
   }
 
-  document.getElementById('sanctum-spell-list').style.display = (ctx.isSanctum && !state.inCombat) ? 'block' : 'none';
-  if(ctx.isSanctum && !state.inCombat){
+  document.getElementById('sanctum-spell-list').style.display = (ctx.isSanctum && !state.inCombat && state.quest7Complete) ? 'block' : 'none';
+  if(ctx.isSanctum && !state.inCombat && state.quest7Complete){
     renderClassSpellList('sanctum-spell-list', 'Hexpert');
     renderClassSkillUpgrade('sanctum-classskill-block', 'Hexpert');
   } else {
