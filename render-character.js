@@ -8,10 +8,21 @@ access, just moving where non-damage spells live). A damage spell (or
 now, using an item — useItemInCombat(), combat.js) is still a real
 combat action that trades your turn for its effect, so both live here
 alongside Attack/Flee, not on the free-action Character page. */
+/* A spell in state.spellsKnown whose own classRequired no longer matches
+state.classTitle is permanently uncastable — castSpell() (combat.js)
+refuses it outright — so every filter below also requires that match
+(or no classRequired at all, e.g. Hex Bolt, learnable by any class).
+This can't happen through a real class choice (claimClassPath() is a
+one-time pick), but IS reachable through the dev tools' own class
+override (dev-tools.js), which resets classTitle without touching
+spellsKnown — "old skills" left behind from a class no longer active. */
+function isSpellCurrentlyUsable(spell){
+   return !spell.classRequired || spell.classRequired === state.classTitle;
+}
 function renderSpellMenu(){
   const list = document.getElementById('spell-list');
   list.innerHTML = '';
-  const known = spells.filter(s => s.type==='damage' && state.spellsKnown.includes(s.id));
+  const known = spells.filter(s => s.type==='damage' && state.spellsKnown.includes(s.id) && isSpellCurrentlyUsable(s));
   if(known.length===0){
     list.innerHTML = '<div class="shop-empty">You don\'t know any damage spells yet. The Hoodoo Doctor in town might teach you one.</div>';
   } else {
@@ -33,7 +44,7 @@ function renderSpellMenu(){
   on the Character page (renderCastableSpellsBlock(), class-spells.js).
   Without this, a player who only knew a ward/buff spell had no way to
   actually cast it mid-fight through the Use button at all. */
-  const buffSpells = spells.filter(s => s.type!=='damage' && state.spellsKnown.includes(s.id));
+  const buffSpells = spells.filter(s => s.type!=='damage' && state.spellsKnown.includes(s.id) && isSpellCurrentlyUsable(s));
   if(buffSpells.length > 0){
     const buffHeader = document.createElement('div');
     buffHeader.className = 'shop-section-title';

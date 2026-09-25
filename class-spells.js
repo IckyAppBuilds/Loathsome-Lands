@@ -102,7 +102,12 @@ non-damage spell is ever added. */
 function renderCastableSpellsBlock(){
    const el = document.getElementById('castable-spells-block');
    if(!el) return;
-   const castable = spells.filter(s => s.type!=='damage' && state.spellsKnown.includes(s.id));
+   /* isSpellCurrentlyUsable() (render-character.js) also excludes a known
+   spell whose classRequired no longer matches state.classTitle — see
+   its own comment for how that happens (the dev tools' class override,
+   not real play) and why it'd otherwise show a Cast button that always
+   silently refuses. */
+   const castable = spells.filter(s => s.type!=='damage' && state.spellsKnown.includes(s.id) && isSpellCurrentlyUsable(s));
    if(castable.length===0){
       el.style.display = 'none';
       el.innerHTML = '';

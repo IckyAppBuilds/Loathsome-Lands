@@ -371,7 +371,11 @@ Train-a-tier UI for `state.classSkillLevel`. `renderCastableSpellsBlock()`
 — the Character page's own list of every known non-damage spell (this
 is a SEPARATE surface from the in-combat Use menu's own "Buffs &
 Support" section, `renderSpellMenu()`, render-character.js — both call
-the same `castSpell()`).
+the same `castSpell()`, and both also call `isSpellCurrentlyUsable()`,
+render-character.js, so a known spell whose `classRequired` no longer
+matches `state.classTitle` — reachable via the dev tools' class
+override, not real play — is hidden instead of showing a Cast button
+that always silently refuses).
 
 Touch this file when: changing how a class spell trainer or the
 class-skill upgrade block is displayed.
