@@ -26,8 +26,23 @@ is just adding a badge call, not a signature change. campCooldownText
 mirrors artTownSquare()'s innCooldownText param — non-null while
 restAtCamp()'s CAMP_COOLDOWN_MS is still counting down (see render.js).
 gnomeLotTier drives the Town Lot tile's own 4-stage art, same idea as
-artTownSquare()'s lotTier param but for state.gnomeLotTier instead. */
-function artGnometropolisSquare(buildingIndicators, campCooldownText, gnomeLotTier){
+artTownSquare()'s lotTier param but for state.gnomeLotTier instead.
+
+quest7Complete gates the Guild/Shop/Town Lot tiles specifically — all
+three already refuse to actually open before then (enterGnomeGuild()/
+enterGnomeShop()/enterGnomeTownLot(), guild.js/gnometropolis.js, each
+"gate at the door" on state.quest7Complete), but the tiles themselves
+used to render as real, inviting building-hit tiles regardless, so a
+player could see "The Guild"/"The Shop"/"Reclaimed Vault" fully drawn
+and plated well before the gnome king fight actually opens any of
+them, and clicking would silently do nothing. Same reveal-not-marker
+treatment Mudflats/the Warren's Ear door already use elsewhere in Act
+2 (mudroot-art.js): before quest7Complete these three fall back to
+plain decorative filler — no class, no data-action, no plate — same
+mushroom-cluster look the genuinely-empty tile at (100,200) already
+uses, so a locked building simply looks like nothing is there yet
+rather than looking like a door that won't open. */
+function artGnometropolisSquare(buildingIndicators, campCooldownText, gnomeLotTier, quest7Complete){
    const bi = (key) => biGet(buildingIndicators, key);
    /* Small mushroom-cap accent (ellipse-on-a-stalk) — the one recurring
    motif tying the tiles together as "underground gnome capital" without
@@ -117,6 +132,7 @@ function artGnometropolisSquare(buildingIndicators, campCooldownText, gnomeLotTi
    ${campCooldown}
    </g>
 
+   ${quest7Complete ? `
    <g transform="translate(200,100)" class="building-hit" data-action="gnomeguild">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
    <path d="M18 44 L18 36 L28 36 L28 44 L36 44 L36 36 L44 36 L44 44 L56 44 L56 36 L64 36 L64 44 L72 44 L72 36 L80 36 L80 44 Z" fill="#8a8477"/>
@@ -126,8 +142,13 @@ function artGnometropolisSquare(buildingIndicators, campCooldownText, gnomeLotTi
    <path d="M50 14 L68 20 L50 26 Z" fill="#d1a94e"/>
    ${makeFlag(bi('gnomeguild').flag)}
    ${plate("The Guild")}
-   </g>
+   </g>` : `
+   <g transform="translate(200,100)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   ${mushroom(30, 78)}${mushroom(68, 84)}${mushroom(50, 66)}
+   </g>`}
 
+   ${quest7Complete ? `
    <g transform="translate(0,200)" class="building-hit" data-action="gnomeshop">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
    <path d="M16 50 L50 26 L84 50 Z" fill="#d1a94e"/>
@@ -138,7 +159,11 @@ function artGnometropolisSquare(buildingIndicators, campCooldownText, gnomeLotTi
    <circle cx="63" cy="65" r="2" fill="#d1a94e" stroke="none"/>
    ${makeFlag(bi('gnomeshop').flag)}
    ${plate("The Shop")}
-   </g>
+   </g>` : `
+   <g transform="translate(0,200)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   ${mushroom(30, 80)}${mushroom(64, 70)}${mushroom(50, 88)}
+   </g>`}
 
    <g transform="translate(100,200)">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
@@ -147,6 +172,7 @@ function artGnometropolisSquare(buildingIndicators, campCooldownText, gnomeLotTi
    <line x1="78" y1="80" x2="78" y2="70" stroke-width="2"/><ellipse cx="78" cy="67" rx="7" ry="4" fill="#b06a97"/>
    </g>
 
+   ${quest7Complete ? `
    <g transform="translate(200,200)" class="building-hit" data-action="gnometownlot">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
    ${gnomeLotTier===0 ? `
@@ -170,7 +196,11 @@ function artGnometropolisSquare(buildingIndicators, campCooldownText, gnomeLotTi
    `}
    ${makeFlag(bi('gnometownlot').flag)}
    ${plate(gnomeLotTier===0 ? 'Shuttered Stall' : (gnomeLotTier>=3 ? "The Regent's Hall" : 'Reclaimed Vault'))}
-   </g>
+   </g>` : `
+   <g transform="translate(200,200)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   ${mushroom(30, 84)}${mushroom(66, 78)}${mushroom(50, 60)}
+   </g>`}
    </svg>`;
 }
 

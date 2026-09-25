@@ -817,7 +817,7 @@ function renderSceneArt(ctx){
     just for restAtCamp()'s CAMP_COOLDOWN_MS (content.js) instead. */
     const campCooldownLeft = CAMP_COOLDOWN_MS - (Date.now() - state.lastCampRestAt);
     const campCooldownText = campCooldownLeft > 0 ? formatMs(campCooldownLeft) : null;
-    document.getElementById('scene-art').innerHTML = artGnometropolisSquare(gnomeBuildingIndicators, campCooldownText, state.gnomeLotTier);
+    document.getElementById('scene-art').innerHTML = artGnometropolisSquare(gnomeBuildingIndicators, campCooldownText, state.gnomeLotTier, state.quest7Complete);
     document.getElementById('victory-banner').style.display = 'none';
   } else if(ctx.isMudrootWarren){
     /* Mirrors gnomeBuildingIndicators above. No flag on any of the three —
