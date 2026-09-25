@@ -781,10 +781,19 @@ function renderSceneArt(ctx){
     document.getElementById('victory-banner').style.display = 'none';
   } else if(ctx.isTownSquare){
     const gafferFlag = ctx.questState==='offer' ? 'offer' : (ctx.questState==='active' && ctx.tinesHeld>0 ? 'turnin' : null);
+    /* quest7 ("The Gnome King's Court" — Act 1's finale, acceptQuest7()/
+    reportGnomeKingDefeat(), guild.js) is offered/turned in at this same
+    Guild building, same as quest2/quest6, but was missing from this
+    flag chain entirely — the accept/report buttons worked fine once
+    you walked in, but the building's own flag never popped to tell you
+    either was waiting. Added as a third fallback link, same "offer
+    beats turnin beats nothing" priority the quest2/quest6 links use. */
     const guildFlag = ctx.quest2State==='offer' ? 'offer'
       : (ctx.quest2State==='active' && state.commanderDefeated ? 'turnin'
          : (ctx.quest6State==='offer' ? 'offer'
-            : (ctx.quest6State==='active' && state.quest6RareDefeated ? 'turnin' : null)));
+            : (ctx.quest6State==='active' && state.quest6RareDefeated ? 'turnin'
+               : (ctx.quest7State==='offer' ? 'offer'
+                  : (ctx.quest7State==='ready' ? 'turnin' : null)))));
     /* NOTE: the "ready to turn in" branches below must use the raw
     underlying conditions (ingredientsHeld/state.quest4RareDefeated/
     veinHeld), NOT canBrew/canReportDigger/canTurnInVein — those three
