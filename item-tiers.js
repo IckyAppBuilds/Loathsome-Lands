@@ -69,12 +69,27 @@ one roll to the next — a tier-4 item's three secondaries could each
 roll as high as the primary itself, nearly quadrupling the total and
 its level requirement along with it. The primary stat is the one
 constant every roll of a given tier shares, so it's the one requirement
-should track. This also happens to be exactly why the gearDrop bonus
-values in content.js/mudroot-content.js/warrensear-content.js climb
-1-2-3-4-5-6-7-8 in zone order in the first place: at this 2x multiplier
-that ladder lines up almost exactly with ZONE_LEVEL_RECOMMENDATION's
-own min for that zone (e.g. rootcellar/bureau's gearDrop of 6 needs
-level 12, Mudroot Warren's own new floor).
+should track.
+
+`item.levelReqBase` (rollGearDropTier(), combat.js), where present,
+overrides even the primary stat for this calculation — per explicit
+correction, a monster-dropped item's level requirement should track
+which ZONE it came from, not which rarity tier the drop happened to
+roll. rollGearDropTier() bumps the primary stat itself by +1/+2 for a
+better roll (that's the whole reward for rarity), which would otherwise
+push the SAME zone's drop from, say, level 12 (common) to level 16
+(lucky rare) purely off luck — a player farming exactly the zone the
+game recommends could get "rewarded" with gear they can't equip yet.
+levelReqBase is the zone's own unrolled tier-1 value, so every rarity
+of a given zone's drop demands the same level; only Shop gear (whose
+primary is fixed by which tier you paid for, never randomized) has no
+such field and falls through to the plain primaryValue*2 below. This is
+also exactly why the gearDrop bonus values in content.js/
+mudroot-content.js/warrensear-content.js climb 1-2-3-4-5-6-7-8 in zone
+order in the first place: at this 2x multiplier that ladder lines up
+almost exactly with ZONE_LEVEL_RECOMMENDATION's own min for that zone
+(e.g. rootcellar/bureau's gearDrop of 6 needs level 12, Mudroot
+Warren's own floor, at every rarity).
 
 Stat requirements (statReq/statKey) were dropped: level alone was already
 gating gear sensibly, and a separate base-stat floor mostly just blocked
@@ -85,7 +100,7 @@ below) no-op without needing their own changes. */
 function getGearRequirements(item){
    const statKeys = (item && item.bonus) ? Object.keys(item.bonus) : [];
    if(statKeys.length === 0) return { levelReq: 1, statReq: 0, statKey: null };
-   const primaryValue = item.bonus[statKeys[0]];
+   const primaryValue = (item && item.levelReqBase !== undefined) ? item.levelReqBase : item.bonus[statKeys[0]];
    return {
       levelReq: Math.max(1, primaryValue * 2),
       statReq: 0,

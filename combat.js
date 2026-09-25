@@ -638,7 +638,18 @@ content.js), rolled via rollSecondaryStatValue (economy.js) — half the
 (post-tier-bump) primary value up to the full value, same scaling
 rollShopGearStats uses — so a monster-dropped item at a given tier
 reads the same way a shop item at that tier would. Name/desc/slot/icon
-are untouched — only `bonus` and `tier` change with the roll. */
+are untouched — only `bonus`/`tier`/`levelReqBase` change with the roll.
+
+levelReqBase carries the zone's own UNROLLED baseline value through to
+getGearRequirements() (item-tiers.js) — per explicit correction, a
+drop's level requirement should track which ZONE it came from, not
+which rarity tier the roll happened to land on. Without this, the same
+Root Cellar kill could demand level 12 (a common drop) or level 16 (a
+lucky rare one) purely off the tier roll, even though the rare drop is
+still, by definition, Root Cellar gear — a player farming exactly the
+zone the game recommends could get "rewarded" with an item they can't
+equip yet. Rarity still means more power (the +1/+2 tier bump, extra
+secondary stats) — it just no longer means a higher gate too. */
 function rollGearDropTier(baseDrop){
    const roll = Math.random();
    let cumulative = 0;
@@ -649,11 +660,12 @@ function rollGearDropTier(baseDrop){
       tierIndex = i;
    }
    const primaryStat = Object.keys(baseDrop.bonus)[0];
-   const primaryValue = baseDrop.bonus[primaryStat] + tierIndex;
+   const levelReqBase = baseDrop.bonus[primaryStat];
+   const primaryValue = levelReqBase + tierIndex;
    const bonus = { [primaryStat]: primaryValue };
    const secondaryStats = STAT_ROTATION[primaryStat].slice(0, tierIndex);
    secondaryStats.forEach(stat => { bonus[stat] = rollSecondaryStatValue(primaryValue); });
-   return { ...baseDrop, bonus, tier: GEAR_DROP_TIER_NAMES[tierIndex] };
+   return { ...baseDrop, bonus, tier: GEAR_DROP_TIER_NAMES[tierIndex], levelReqBase };
 }
 
 function winCombat(){
