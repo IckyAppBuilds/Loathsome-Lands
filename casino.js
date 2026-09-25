@@ -159,8 +159,15 @@ function resolveBlackjack(){
 
    function win(multiplier, line){
       const winnings = Math.round(bj.bet * multiplier * (1+bonus));
-      state.popTabs += bj.bet + winnings;
-      bj.resultText = `${line} (+${winnings} Pop Tabs)`;
+      const total = bj.bet + winnings;
+      state.popTabs += total;
+      /* Spells out bet-back + winnings = total rather than just showing
+      `winnings` alone — that number on its own (a 25 bet's 1:1 win
+      shows "+25") reads like the whole payout instead of profit ON TOP
+      of getting the bet back, which is genuinely confusing at a glance
+      (a real player mistook it for "only got 27 back on a 25 bet" when
+      the actual credit was bet 25 + winnings 27 = 52). */
+      bj.resultText = `${line} Your ${bj.bet} bet back plus ${winnings} winnings — +${total} Pop Tabs total.`;
    }
    function push(line){
       state.popTabs += bj.bet;
