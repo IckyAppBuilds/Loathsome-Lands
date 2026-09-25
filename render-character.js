@@ -178,21 +178,9 @@ function renderEquipmentBlock(){
       </div>`;
     }
     const iconSvg = item.icon ? item.icon() : '';
-    const hasStats = item.bonus && Object.keys(item.bonus).length > 0;
-    const bonusText = hasStats
+    const bonusText = item.bonus && Object.keys(item.bonus).length
     ? Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')
       : 'No bonus — just flavor.';
-    /* Bounty Tokens' first real sink — see TEMPER_BASE_COST's own comment
-    (content.js) and temperEquippedItem()'s (player-actions.js) for the
-    full reasoning. Nothing to temper on a flavor-only item (starterGear),
-    so the button just doesn't show there at all. */
-    const temperBtn = hasStats
-    ? (() => {
-      const cost = temperCost(item.temperLevel || 0);
-      const canAfford = state.bountyTokens >= cost;
-      return `<button class="btn-secondary" ${canAfford?'':'disabled'} onclick="temperEquippedItem('${slot}')">Temper — ${cost} Bounty Token${cost===1?'':'s'}</button>`;
-    })()
-      : '';
     return `<div class="equip-row">
     <div class="icon-box">${iconSvg}</div>
     <div style="flex:1;">
@@ -200,11 +188,56 @@ function renderEquipmentBlock(){
     <div class="name">${itemNameHtml(item)}</div>
     <div class="desc">${bonusText}</div>
     <button class="btn-secondary" onclick="unequipItem('${slot}')">Unequip</button>
-    ${temperBtn}
     </div>
     </div>`;
   }).join('');
   el.innerHTML = `<div class="block-title">Equipped</div>${rows}`;
+}
+
+/* The Tinker's Workshop's own version of the rows above — same shape
+(icon/name/bonus), but this is where temperEquippedItem() (player-
+actions.js) actually lives now, per explicit correction: tempering
+only works while state.location==='tinker', so the button only ever
+shows here, not on the Character page. Only equipped slots that
+actually HAVE a stat to temper get a row at all — nothing to offer on
+an empty slot or a flavor-only item (starterGear). If literally
+nothing is temperable, a plain note shows instead of an empty block. */
+function renderTinkerTemperBlock(){
+  const el = document.getElementById('tinker-temper-block');
+  if(!el) return;
+  const temperableSlots = SLOT_ORDER.filter(slot => {
+    const item = state.equipment[slot];
+    return item && item.bonus && Object.keys(item.bonus).length > 0;
+  });
+  if(temperableSlots.length===0){
+    el.innerHTML = `<div class="block-title">Temper Gear</div><div class="quest-desc">Nothing equipped worth tempering yet.</div>`;
+    return;
+  }
+  const rows = temperableSlots.map(slot => {
+    const item = state.equipment[slot];
+    const iconSvg = item.icon ? item.icon() : '';
+    const bonusText = Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ');
+    const level = item.temperLevel || 0;
+    const maxed = level >= TEMPER_MAX_LEVEL;
+    let btn;
+    if(maxed){
+      btn = `<button class="btn-secondary" disabled>Fully Tempered (+${TEMPER_MAX_LEVEL})</button>`;
+    } else {
+      const cost = temperCost(level);
+      const canAfford = state.bountyTokens >= cost;
+      btn = `<button class="btn-secondary ${canAfford?'btn-ready':''}" ${canAfford?'':'disabled'} onclick="temperEquippedItem('${slot}')">Temper — ${cost} Bounty Token${cost===1?'':'s'}</button>`;
+    }
+    return `<div class="equip-row">
+    <div class="icon-box">${iconSvg}</div>
+    <div style="flex:1;">
+    <div class="equip-slot-label">${SLOT_LABELS[slot]}</div>
+    <div class="name">${itemNameHtml(item)}</div>
+    <div class="desc">${bonusText}</div>
+    ${btn}
+    </div>
+    </div>`;
+  }).join('');
+  el.innerHTML = `<div class="block-title">Temper Gear</div>${rows}`;
 }
 
 function renderQuestLogDrawer(){

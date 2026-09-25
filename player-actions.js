@@ -154,18 +154,22 @@ function unequipItem(slot){
 }
 
 /* Bounty Tokens' first real sink — see TEMPER_BASE_COST's own comment
-(content.js) for the full reasoning. Equipped-only, deliberately: the
-Pack's own inventory display groups stacked items purely by name
-(groupInventoryByName(), render-shop.js), so two same-named drops with
-different rolled stats can already share one visual stack — tempering
-one specific copy there would make that ambiguity a real correctness
-problem instead of just a cosmetic one. state.equipment[slot] is always
-exactly one item, never grouped, so that's the only place this is
-offered (renderEquipmentBlock(), render-character.js). */
+(content.js) for the full reasoning. Only from the Tinker's Workshop
+(per explicit correction — a tinkerer's workbench, not a menu buried
+on the Character page) and equipped-only: the Pack's own inventory
+display groups stacked items purely by name (groupInventoryByName(),
+render-shop.js), so two same-named drops with different rolled stats
+can already share one visual stack — tempering one specific copy there
+would make that ambiguity a real correctness problem instead of just a
+cosmetic one. state.equipment[slot] is always exactly one item, never
+grouped, so that's the only place this is offered
+(renderTinkerTemperBlock(), render-character.js). */
 function temperEquippedItem(slot){
+   if(state.location !== 'tinker') return;
    const item = state.equipment[slot];
    if(!item || item.type!=='equip' || !item.bonus || Object.keys(item.bonus).length===0) return;
    const level = item.temperLevel || 0;
+   if(level >= TEMPER_MAX_LEVEL) return;
    const cost = temperCost(level);
    if(state.bountyTokens < cost) return;
    /* Snapshot the PRE-temper primary value as a permanent level-requirement

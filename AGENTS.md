@@ -426,19 +426,25 @@ silently resets on the next reload.
 a silent no-op)/`unequipItem`, `getEffectiveStats`/`recomputeMaxStats`/
 `spendStatPoint`, `temperEquippedItem(slot)` — Bounty Tokens' first
 real sink (per explicit direction; `TEMPER_BASE_COST`/
-`TEMPER_STAT_MULTIPLIER`/`temperCost(level)`, content.js), permanently
-multiplying every stat an equipped item grants by
-`TEMPER_STAT_MULTIPLIER` (+50%, compounding on the already-tempered
-value each time, rounded UP so even a bare +1 stat keeps climbing).
-`item.temperLevel` lives on the item instance itself (not a separate
-`state` field), so it round-trips through save.js's already-generic
-`serializeItem`/`hydrateItem` for free — no save-format change, nothing
-to lose. Snapshots `item.levelReqBase` (same field
-`rollGearDropTier()`, combat.js, uses) the first time an item is ever
-tempered, so repeated tempering never raises its level requirement.
-Equipped-only, deliberately — see the function's own comment for why
-the Pack's own by-name item grouping (`groupInventoryByName()`,
-render-shop.js) makes tempering a stacked Pack item unsafe.
+`TEMPER_STAT_MULTIPLIER`/`TEMPER_MAX_LEVEL`/`temperCost(level)`,
+content.js), permanently multiplying every stat an equipped item
+grants by `TEMPER_STAT_MULTIPLIER` (+50%, compounding on the
+already-tempered value each time, rounded UP so even a bare +1 stat
+keeps climbing), capped at `TEMPER_MAX_LEVEL` (+5) per item. Only
+usable while `state.location==='tinker'` (per explicit correction — a
+tinkerer's workbench, not a Character-page menu); its UI
+(`renderTinkerTemperBlock()`) lives in render-character.js rather than
+town.js, alongside `renderEquipmentBlock()`'s own near-identical item
+rows. `item.temperLevel` lives on the item instance itself (not a
+separate `state` field), so it round-trips through save.js's
+already-generic `serializeItem`/`hydrateItem` for free — no
+save-format change, nothing to lose. Snapshots `item.levelReqBase`
+(same field `rollGearDropTier()`, combat.js, uses) the first time an
+item is ever tempered, so repeated tempering never raises its level
+requirement. Equipped-only, deliberately — see the function's own
+comment for why the Pack's own by-name item grouping
+(`groupInventoryByName()`, render-shop.js) makes tempering a stacked
+Pack item unsafe.
 
 Touch this file when: changing equip/use-item/stat-point/temper logic.
 
@@ -506,7 +512,11 @@ free), `isTravelHub`/`forceHomeIfBroke`/`travelTo`/`restAtInn`,
 enter/leave pairs and quest accept/report for the Gaffer House, Shop,
 Hoodoo Doctor's (incl. `brewPotion`/`brewStatResetPotion`), and
 Tinker's Workshop, plus `giveRakeTines`/`turnInVein`, and the Town Lot
-economy (`buyTownLot`/`upgradeTownLot`/`upgradeBuilding`).
+economy (`buyTownLot`/`upgradeTownLot`/`upgradeBuilding`). The
+Tinker's Workshop is also where gear tempering happens now
+(`temperEquippedItem()`, player-actions.js — gated on
+`state.location==='tinker'`), even though `enterTinker`/`leaveTinker`
+themselves don't need to know anything about it.
 `travelTo` also refuses outright while `state.blackjack.phase` is
 `'playerTurn'` or `state.hilo.phase` is `'guessing'` (casino.js/hilo.js)
 — the Map drawer is reachable from the tab bar regardless of the

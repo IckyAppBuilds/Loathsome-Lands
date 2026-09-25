@@ -1237,32 +1237,36 @@ const BOUNTY_TEMPLATES = monsters.map(makeBountyTemplate);
 /* Bounty Tokens have paid out since Act 1 with nothing to spend them on
 ("Tokens can be spent at a future gear exchange — nothing to redeem
 them for yet.", the Bounty Board's own old copy, render-shop.js) — this
-is that exchange. temperEquippedItem(slot) (player-actions.js)
-permanently multiplies EVERY stat an equipped item grants by
-TEMPER_STAT_MULTIPLIER, rounded UP to the next whole number, one
-temper at a time — per explicit correction, a multiplier rather than a
+is that exchange. temperEquippedItem(slot) (player-actions.js), only
+from the Tinker's Workshop (state.location==='tinker' — a tinkerer's
+workshop fits "reinforce my gear" better than a menu tucked away on
+the Character page, per explicit correction; renderTinkerTemperBlock(),
+render-character.js, is the Workshop's own version of
+renderEquipmentBlock()'s item rows), permanently multiplies EVERY stat
+an equipped item grants by TEMPER_STAT_MULTIPLIER, rounded UP to the
+next whole number, one temper at a time — a multiplier rather than a
 flat add, so it compounds: a +6 stat becomes 9, then 14, then 21, each
-temper applying to the ALREADY-tempered value, not the original. Also
-stamps a `+N` onto the item's displayed name (itemNameHtml(),
-item-tiers.js) for however many times it's been tempered. temperLevel
-lives right on the item object itself (like `bonus`/`tier` already
-do), not as a separate counter anywhere in `state` — it round-trips
-through save.js's already-generic serializeItem()/hydrateItem() for
-free, no save-format change needed, and there's nothing to lose:
-tempering only ever mutates an item that's already sitting in
-`state.equipment`, never removes or replaces it.
+temper applying to the ALREADY-tempered value, not the original,
+capped at TEMPER_MAX_LEVEL (+5) per item. Also stamps a `+N` onto the
+item's displayed name (itemNameHtml(), item-tiers.js) for however many
+times it's been tempered. temperLevel lives right on the item object
+itself (like `bonus`/`tier` already do), not as a separate counter
+anywhere in `state` — it round-trips through save.js's already-generic
+serializeItem()/hydrateItem() for free, no save-format change needed,
+and there's nothing to lose: tempering only ever mutates an item
+that's already sitting in `state.equipment`, never removes or
+replaces it.
 
 Cost scales quadratically per temper ON THAT ITEM (temperCost(level) —
 same shape classSkillCost()/buildingUpgradeCost() already use), so
 spreading Bounty Tokens across several pieces of gear stays cheaper
 than stacking them all onto one — a real brake against the compounding
-multiplier above turning one item absurd, since the escalating cost
-is the only cap (deliberately uncapped otherwise, unlike
-classSkillLevel/buildingUpgrades' own hard ceilings — this is meant as
-a long-run sink for Bounty Tokens a player keeps earning long after
-there's anything else to spend them on). */
+multiplier above turning one item absurd well before TEMPER_MAX_LEVEL
+even comes into it (temperCost(4), the cost of the 5th and final
+temper, is 100 Bounty Tokens on its own). */
 const TEMPER_BASE_COST = 4;
 const TEMPER_STAT_MULTIPLIER = 0.5; /* +50% per temper, compounding, rounded up */
+const TEMPER_MAX_LEVEL = 5;
 function temperCost(level){ return TEMPER_BASE_COST * (level+1) * (level+1); }
 
 /* ---------------- Town Lot (Gladstone Hollow) ---------------- */

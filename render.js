@@ -481,6 +481,11 @@ function syncBuildingScreens(ctx){
   document.getElementById('turn-in-vein-btn').classList.toggle('btn-ready', ctx.canTurnInVein);
   document.getElementById('turn-in-vein-btn').textContent = ctx.canTurnInVein ? 'Turn In the Parts' : `Turn In the Parts (${ctx.veinHeld}/${ctx.veinNeeded})`;
 
+  /* Gear tempering (player-actions.js/render-character.js) — only from
+  the Tinker's Workshop, per explicit correction. */
+  document.getElementById('tinker-temper-block').style.display = (ctx.isTinker && !state.inCombat) ? 'block' : 'none';
+  if(ctx.isTinker && !state.inCombat) renderTinkerTemperBlock();
+
   /* quest-box only takes up space when a building actually has something
   active or newly offered to say — a "locked, nothing yet" or "complete,
   reward already claimed" building has nothing left worth a permanent box
