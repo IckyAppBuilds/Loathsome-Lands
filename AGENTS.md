@@ -426,8 +426,10 @@ silently resets on the next reload.
 a silent no-op)/`unequipItem`, `getEffectiveStats`/`recomputeMaxStats`/
 `spendStatPoint`, `temperEquippedItem(slot)` — Bounty Tokens' first
 real sink (per explicit direction; `TEMPER_BASE_COST`/
-`TEMPER_STAT_BONUS`/`temperCost(level)`, content.js), permanently
-adding `TEMPER_STAT_BONUS` to every stat an equipped item grants.
+`TEMPER_STAT_MULTIPLIER`/`temperCost(level)`, content.js), permanently
+multiplying every stat an equipped item grants by
+`TEMPER_STAT_MULTIPLIER` (+50%, compounding on the already-tempered
+value each time, rounded UP so even a bare +1 stat keeps climbing).
 `item.temperLevel` lives on the item instance itself (not a separate
 `state` field), so it round-trips through save.js's already-generic
 `serializeItem`/`hydrateItem` for free — no save-format change, nothing

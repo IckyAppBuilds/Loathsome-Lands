@@ -179,10 +179,14 @@ function temperEquippedItem(slot){
    }
    state.bountyTokens -= cost;
    item.temperLevel = level + 1;
-   Object.keys(item.bonus).forEach(stat => { item.bonus[stat] += TEMPER_STAT_BONUS; });
+   /* Multiplies the CURRENT value, not the original — each temper
+   compounds on top of whatever the last one left behind (TEMPER_STAT_
+   MULTIPLIER's own comment, content.js), rounded UP so even a bare +1
+   stat still climbs every time (ceil(1*1.5) = 2). */
+   Object.keys(item.bonus).forEach(stat => { item.bonus[stat] = Math.ceil(item.bonus[stat] * (1 + TEMPER_STAT_MULTIPLIER)); });
    recomputeMaxStats();
    clearLog();
-   log(`You temper ${item.name}, now +${item.temperLevel} — every stat it grants rises by ${TEMPER_STAT_BONUS}. (-${cost} Bounty Tokens)`);
+   log(`You temper ${item.name}, now +${item.temperLevel} — every stat it grants rises ${Math.round(TEMPER_STAT_MULTIPLIER*100)}%. (-${cost} Bounty Tokens)`);
    render();
    autosave();
 }

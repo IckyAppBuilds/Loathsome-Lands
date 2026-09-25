@@ -1238,26 +1238,31 @@ const BOUNTY_TEMPLATES = monsters.map(makeBountyTemplate);
 ("Tokens can be spent at a future gear exchange — nothing to redeem
 them for yet.", the Bounty Board's own old copy, render-shop.js) — this
 is that exchange. temperEquippedItem(slot) (player-actions.js)
-permanently adds TEMPER_STAT_BONUS to EVERY stat an equipped item
-grants, one temper at a time, and stamps a `+N` onto its displayed name
-(itemNameHtml(), item-tiers.js) for however many times it's been
-tempered. temperLevel lives right on the item object itself (like
-`bonus`/`tier` already do), not as a separate counter anywhere in
-`state` — it round-trips through save.js's already-generic
-serializeItem()/hydrateItem() for free, no save-format change needed,
-and there's nothing to lose: tempering only ever mutates an item that's
-already sitting in `state.equipment`, never removes or replaces it.
+permanently multiplies EVERY stat an equipped item grants by
+TEMPER_STAT_MULTIPLIER, rounded UP to the next whole number, one
+temper at a time — per explicit correction, a multiplier rather than a
+flat add, so it compounds: a +6 stat becomes 9, then 14, then 21, each
+temper applying to the ALREADY-tempered value, not the original. Also
+stamps a `+N` onto the item's displayed name (itemNameHtml(),
+item-tiers.js) for however many times it's been tempered. temperLevel
+lives right on the item object itself (like `bonus`/`tier` already
+do), not as a separate counter anywhere in `state` — it round-trips
+through save.js's already-generic serializeItem()/hydrateItem() for
+free, no save-format change needed, and there's nothing to lose:
+tempering only ever mutates an item that's already sitting in
+`state.equipment`, never removes or replaces it.
 
 Cost scales quadratically per temper ON THAT ITEM (temperCost(level) —
 same shape classSkillCost()/buildingUpgradeCost() already use), so
 spreading Bounty Tokens across several pieces of gear stays cheaper
-than stacking them all onto one. Deliberately uncapped — unlike
-classSkillLevel/buildingUpgrades' own hard ceilings, the escalating
-cost is the only brake, since this is meant as a long-run sink for
-Bounty Tokens a player keeps earning long after there's anything else
-to spend them on. */
+than stacking them all onto one — a real brake against the compounding
+multiplier above turning one item absurd, since the escalating cost
+is the only cap (deliberately uncapped otherwise, unlike
+classSkillLevel/buildingUpgrades' own hard ceilings — this is meant as
+a long-run sink for Bounty Tokens a player keeps earning long after
+there's anything else to spend them on). */
 const TEMPER_BASE_COST = 4;
-const TEMPER_STAT_BONUS = 1;
+const TEMPER_STAT_MULTIPLIER = 0.5; /* +50% per temper, compounding, rounded up */
 function temperCost(level){ return TEMPER_BASE_COST * (level+1) * (level+1); }
 
 /* ---------------- Town Lot (Gladstone Hollow) ---------------- */
