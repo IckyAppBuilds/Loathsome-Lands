@@ -1,7 +1,7 @@
 # The Loathsome Lands — file map
 
 A single-page browser RPG. No build step, no bundler, no modules — plain
-HTML/CSS/`<script>` tags, all globals. 30 JS files load in a specific
+HTML/CSS/`<script>` tags, all globals. 31 JS files load in a specific
 order (see `index.html`'s `<script>` block, which documents this inline
 too):
 
@@ -12,7 +12,7 @@ supabase (CDN)
 -> warrensear-content.js -> act2-shop.js -> item-tiers.js
 -> render.js -> render-shop.js -> render-character.js -> class-spells.js
 -> dev-tools.js -> auth.js -> save.js -> player-actions.js -> tutorial.js
--> hubs.js -> combat.js -> town.js -> casino.js -> class-trial.js
+-> hubs.js -> combat.js -> town.js -> casino.js -> hilo.js -> class-trial.js
 -> guild.js -> gnometropolis.js -> economy.js -> noticeboard.js -> boot.js
 ```
 
@@ -484,6 +484,15 @@ enter/leave pairs and quest accept/report for the Gaffer House, Shop,
 Hoodoo Doctor's (incl. `brewPotion`/`brewStatResetPotion`), and
 Tinker's Workshop, plus `giveRakeTines`/`turnInVein`, and the Town Lot
 economy (`buyTownLot`/`upgradeTownLot`/`upgradeBuilding`).
+`travelTo` also refuses outright while `state.blackjack.phase` is
+`'playerTurn'` or `state.hilo.phase` is `'guessing'` (casino.js/hilo.js)
+— the Map drawer is reachable from the tab bar regardless of the
+current screen's own action-bar, so without this a player could walk
+away from a live bet through the Map instead of Attack/Use/Flee-style
+combat actions, which `state.inCombat` already blocks the same way.
+Successfully leaving 'casino'/'roguesden' any other way (merely seated
+between hands) also clears `state.blackjack`/`state.hilo` so a later
+trip back doesn't resume sitting at the table.
 
 Touch this file when: changing a quest's logic (except quest2/quest6/
 the class Trial — see guild.js), travel/unlock/cost rules, or a
@@ -517,15 +526,46 @@ without leaving the table) — not saved (save.js), same reasoning as
 `blackjack*Lines` arrays) live in content.js, same split every other
 content table uses. `CASINO_WIN_BONUS` (content.js) is now a payout
 multiplier on a win, not a win-CHANCE bonus — Blackjack's own rules
-supply the house's edge. Split out of guild.js — this concern was
-fully self-contained there (zero calls into Guild/Bounty Board/Trial
-code), so it was the cleanest extraction once guild.js's own
-bundled-systems problem got addressed. Loads right before
-class-trial.js/guild.js; no particular load-order requirement beyond
-that (nothing here is read by value at parse time), kept adjacent
-purely for readability.
+supply the house's edge. `dealBlackjack(bet)`'s 3 preset amounts (Bet
+5/10/25) sit alongside `dealBlackjackCustom()`, which reads
+`#blackjack-bet-input` (index.html, a `.wager-row`, styles.css) instead
+— per explicit request, so a player isn't capped at the 3 presets.
+Split out of guild.js — this concern was fully self-contained there
+(zero calls into Guild/Bounty Board/Trial code), so it was the
+cleanest extraction once guild.js's own bundled-systems problem got
+addressed. Loads right before class-trial.js/guild.js; no particular
+load-order requirement beyond that (nothing here is read by value at
+parse time), kept adjacent purely for readability.
 
 Touch this file when: changing Casino betting odds/payout logic.
+
+## hilo.js — Rogues' Den: Hi-Lo
+The second, simpler casino minigame — per explicit direction ("what
+other casino game is easy to develop"), lives at the Rogues' Den
+(Card Shark's Act 2 building) rather than the Casino. `enterHiLoTable`/
+`leaveHiLoTable` (sitting down/getting up — same "own uncluttered
+screen" shape `enterBlackjackTable`/`leaveBlackjackTable` use: the
+Rogues' Den's own spell trainer/class-skill block/"Return to Map"/
+"Play Hi-Lo" button all hide the instant `state.hilo` is set), Hi-Lo
+itself (`playHiLo(bet)`/`playHiLoCustom()` (reads `#hilo-bet-input`,
+same `.wager-row` shape as Blackjack's own custom bet)/`hiloGuess`
+('higher'/'lower')/`hiloCashOut`), plus its own `renderHiLoTable()`.
+Reuses `CARD_RANKS`/`CARD_SUITS`/`drawCard()`/`cardChipHtml()`
+(content.js/casino.js) rather than a second deck — `hiloRankIndex()`
+just reads a card's own index into `CARD_RANKS` as its rank (that
+array is already written Ace-low-to-King-high). `state.hilo` is null
+in the Rogues' Den's normal view, otherwise `{ bet, currentCard,
+streak, phase, resultText }`, `phase` climbing
+betting -> guessing -> resolved — not saved (save.js), same reasoning
+as `state.blackjack`/`state.inCombat`. `HILO_STREAK_PAYOUT`/the
+`hilo*Lines` arrays live in content.js, same split as Blackjack's own
+constants; see the comment above `HILO_STREAK_PAYOUT` for the full
+ruleset (streak-based, cash-out-or-press-your-luck, ties silently
+redraw rather than counting as a result). No `CASINO_WIN_BONUS`-style
+building-upgrade bonus — that constant is Casino-building-scoped, and
+there's no equivalent Rogues' Den upgrade to hang a second one off of.
+
+Touch this file when: changing Hi-Lo's odds/payout logic.
 
 ## class-trial.js — Level-10 capstone: "The Adventurer's Trial"
 `acceptClassQuest`/`startClassTrialGuild`/`startClassTrialCasino`/
@@ -705,9 +745,9 @@ near the section it belongs to.
   cost rules -> **hubs.js** (the actual pricing formula is in
   town.js's `travelCostFor()`, which reads hubs.js's own registry).
 - Change Guild(1 or 2)/bounty/Palace-gauntlet logic -> **guild.js**.
-  Casino/Blackjack -> **casino.js**. The class Trial/skill-upgrade
-  system -> **class-trial.js**. Casino/Biscuit passive-income regen
-  math itself -> **economy.js**.
+  Casino/Blackjack -> **casino.js**. Rogues' Den/Hi-Lo -> **hilo.js**.
+  The class Trial/skill-upgrade system -> **class-trial.js**. Casino/
+  Biscuit passive-income regen math itself -> **economy.js**.
 - Change shop sell/buy pricing (either Shop), Biscuit/MP regen, or the
   Casino's passive-income accrual/cap -> **economy.js**.
 - Change an item's rarity color, or add a new tier -> **item-tiers.js**.

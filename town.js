@@ -125,6 +125,15 @@ function forceHomeIfBroke(){
 
 function travelTo(dest){
    if(state.inCombat) return;
+   /* The Map drawer's own travel-card clicks are a separate path from
+   leaveBlackjackTable()/leaveHiLoTable() (casino.js/hilo.js) — without
+   this, a player mid-hand/mid-guess could open the Map (always
+   reachable from the tab bar, unlike the action-bar's own Leave
+   buttons, which those two functions already refuse) and walk away
+   from a live bet for free. Between hands/rounds (phase 'betting' or
+   'resolved') travel is still allowed; see the cleanup below. */
+   if(state.blackjack && state.blackjack.phase==='playerTurn') return;
+   if(state.hilo && state.hilo.phase==='guessing') return;
    if(dest === state.location){ closeAllDrawers(); return; }
    if(dest === 'sewers' && !state.quest2Complete) return;
    if(dest === 'quarry' && !state.quest4Complete) return;
@@ -159,8 +168,15 @@ function travelTo(dest){
    /* Every earlier check above either returns or commits — reaching here
    means this trip is definitely happening, so leaving the Palace gauntlet
    mid-run (any destination at all, not just back to Gnometropolis)
-   resets its progress. resetPalaceGauntlet() (guild.js). */
+   resets its progress. resetPalaceGauntlet() (guild.js). Same logic for
+   leaving the Blackjack/Hi-Lo table (casino.js/hilo.js) via the Map
+   instead of their own dedicated Leave buttons — mid-hand/mid-guess was
+   already refused above, so reaching here means it's safe to treat this
+   as standing up too, rather than resuming sitting at the table on a
+   later trip back. */
    if(state.location === 'palace') resetPalaceGauntlet();
+   if(state.location === 'casino' && state.blackjack) state.blackjack = null;
+   if(state.location === 'roguesden' && state.hilo) state.hilo = null;
    /* No quest7Accepted gate on the 4 district/palace destinations below —
    they're only ever reachable by clicking a building tile inside the
    Gnometropolis square (boot.js's data-action dispatch), so standing

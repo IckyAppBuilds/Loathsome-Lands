@@ -281,6 +281,22 @@ once it ends rather than getting stuck tinted. */
 .shop-empty{ font-size:0.82rem; font-style:italic; padding:6px 2px; }
 
 .btn-row{ display:flex; gap:8px; margin:0 0 14px; }
+/* A custom-bet row (Blackjack/Hi-Lo, casino.js/hilo.js) — a number
+input plus one button, same "input:flex:1, button:flex:none" shape
+.dev-row (below) already uses for the dev panel, just its own class so
+maintenance doesn't get the two mixed up. */
+.wager-row{ display:flex; gap:8px; margin:0 0 14px; align-items:center; }
+.wager-row input{
+  flex:1;
+  min-width:0;
+  font-family:Verdana, Geneva, Arial, sans-serif;
+  font-size:0.82rem;
+  padding:9px 8px;
+  border:2px solid var(--black);
+  background:var(--white);
+  color:var(--black);
+}
+.wager-row button{ flex:none; }
 button{
   font-family:Verdana, Geneva, Arial, sans-serif;
   font-weight:700;

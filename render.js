@@ -289,6 +289,7 @@ function syncBuildingScreens(ctx){
   const atTable = !!state.blackjack;
   const blackjackLive = atTable && state.blackjack.phase==='playerTurn';
   document.getElementById('casino-bet-row').style.display = (ctx.isCasino && !state.inCombat && atTable && !blackjackLive) ? 'flex' : 'none';
+  document.getElementById('casino-custom-bet-row').style.display = (ctx.isCasino && !state.inCombat && atTable && !blackjackLive) ? 'flex' : 'none';
   document.getElementById('blackjack-hand-row').style.display = (ctx.isCasino && !state.inCombat && blackjackLive) ? 'flex' : 'none';
   document.getElementById('casino-row').style.display = (ctx.isCasino && !state.inCombat && !atTable) ? 'flex' : 'none';
   document.getElementById('bet-5-btn').disabled = state.popTabs < 5;
@@ -327,13 +328,31 @@ function syncBuildingScreens(ctx){
     document.getElementById('garrison-classskill-block').style.display = 'none';
   }
 
-  document.getElementById('roguesden-spell-list').style.display = (ctx.isRoguesden && !state.inCombat && state.quest7Complete) ? 'block' : 'none';
-  if(ctx.isRoguesden && !state.inCombat && state.quest7Complete){
+  /* Hi-Lo (hilo.js) — same "own uncluttered screen" shape Blackjack
+  (casino.js) already established: the instant state.hilo is set (any
+  phase), the Rogues' Den's own trainer/class-skill block AND its own
+  "Play Hi-Lo" entry button all hide, leaving just the table and
+  whichever action row fits `phase`. atHiLoTable covers every phase;
+  hiloGuessing is the mid-round-only subset (Higher/Lower/Cash Out). */
+  const atHiLoTable = !!state.hilo;
+  const hiloGuessing = atHiLoTable && state.hilo.phase==='guessing';
+  document.getElementById('roguesden-spell-list').style.display = (ctx.isRoguesden && !state.inCombat && state.quest7Complete && !atHiLoTable) ? 'block' : 'none';
+  if(ctx.isRoguesden && !state.inCombat && state.quest7Complete && !atHiLoTable){
     renderClassSpellList('roguesden-spell-list', 'Card Shark');
     renderClassSkillUpgrade('roguesden-classskill-block', 'Card Shark');
   } else {
     document.getElementById('roguesden-classskill-block').style.display = 'none';
   }
+  document.getElementById('roguesden-hilo-entry-row').style.display = (ctx.isRoguesden && !state.inCombat && state.quest7Complete && !atHiLoTable) ? 'flex' : 'none';
+  document.getElementById('hilo-table').style.display = (ctx.isRoguesden && atHiLoTable) ? 'block' : 'none';
+  if(ctx.isRoguesden && atHiLoTable) renderHiLoTable();
+  document.getElementById('hilo-bet-row').style.display = (ctx.isRoguesden && !state.inCombat && atHiLoTable && !hiloGuessing) ? 'flex' : 'none';
+  document.getElementById('hilo-custom-bet-row').style.display = (ctx.isRoguesden && !state.inCombat && atHiLoTable && !hiloGuessing) ? 'flex' : 'none';
+  document.getElementById('hilo-guess-row').style.display = (ctx.isRoguesden && !state.inCombat && hiloGuessing) ? 'flex' : 'none';
+  document.getElementById('hilo-cashout-btn').disabled = !hiloGuessing || state.hilo.streak < 1;
+  document.getElementById('hilo-bet-5-btn').disabled = state.popTabs < 5;
+  document.getElementById('hilo-bet-10-btn').disabled = state.popTabs < 10;
+  document.getElementById('hilo-bet-25-btn').disabled = state.popTabs < 25;
 
   document.getElementById('sanctum-spell-list').style.display = (ctx.isSanctum && !state.inCombat && state.quest7Complete) ? 'block' : 'none';
   if(ctx.isSanctum && !state.inCombat && state.quest7Complete){
@@ -692,7 +711,11 @@ function syncCombatUI(ctx){
   explore-row (with its own "Return to Map" button baked in) is the
   ONLY thing that gave any of these screens a way back to the Map. */
   const inUnconvertedClassArea = (ctx.isGarrison || ctx.isRoguesden || ctx.isSanctum) && !state.quest7Complete;
-  const inConvertedClassArea = (ctx.isGarrison || ctx.isRoguesden || ctx.isSanctum) && state.quest7Complete;
+  /* Excludes Rogues' Den while sitting at its own Hi-Lo table (hilo.js)
+  — same "own uncluttered screen" reasoning as everywhere else Hi-Lo
+  hides the building's normal furniture; "Return to Map" isn't part of
+  that screen either, hilo-bet-row's own "Leave Table" is. */
+  const inConvertedClassArea = (ctx.isGarrison || ctx.isRoguesden || ctx.isSanctum) && state.quest7Complete && !(ctx.isRoguesden && state.hilo);
   document.getElementById('explore-row').style.display = ((ctx.isCommons || ctx.isSewers || ctx.isQuarry || ctx.isVault || ctx.isRootCellar || ctx.isMudflats || ctx.isBureau || ctx.isChoir || ctx.isLedgerVault || inUnconvertedClassArea) && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('class-area-row').style.display = (inConvertedClassArea && !state.inCombat) ? 'flex' : 'none';
   /* The Palace has no Explore row (it's not an ADVENTURE_ZONES entry —

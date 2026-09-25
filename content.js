@@ -1142,6 +1142,43 @@ const blackjackPushLines = [
    "A tie. The Croupier slides your stake right back.",
    ];
 
+/* ---------------- Rogues' Den: Hi-Lo ---------------- */
+/* The second, simpler casino minigame per explicit direction ("what
+other casino game is easy to develop") — lives at the Rogues' Den
+(Card Shark's Act 2 building) rather than the Casino, so it gets its
+own file (hilo.js) the same way Blackjack got casino.js, but shares
+CARD_RANKS/CARD_SUITS/drawCard()/cardChipHtml() (content.js/casino.js)
+rather than re-declaring a second deck.
+
+One card shows face up; the player bets on whether the NEXT card will
+rank higher or lower, using CARD_RANKS' own array order as the rank
+scale (hiloRankIndex(), hilo.js — Ace is index 0, lowest, King is
+index 12, highest, since that's the order CARD_RANKS is already
+written in). A correct guess doesn't end the round: the drawn card
+becomes the new one to beat, and the player can either cash out what's
+built up so far or press their luck on another guess — HILO_STREAK_PAYOUT
+is the profit added per correct guess IN A ROW, linear rather than
+compounding (streak 2 is worth 2x this, not this-squared) to keep the
+number legible and the house's edge from ballooning out of hand. A
+wrong guess loses the whole streak, not just this guess — cash out is
+the only way to actually bank anything. A tie (same rank) redraws
+silently (hiloDrawDistinctFrom(), hilo.js) rather than counting as a
+win, loss, or push — there's no clean rule for "the next card was
+exactly as high as this one" that wouldn't feel arbitrary, so the game
+simply doesn't let that case exist. No CASINO_WIN_BONUS-style building
+upgrade bonus — that constant is scoped to the Casino building
+specifically (state.buildingUpgrades.casino), and there's no
+equivalent Rogues' Den upgrade to hang a second one off of. */
+const HILO_STREAK_PAYOUT = 0.75; /* profit per correct guess, as a fraction of the bet */
+const hiloLoseLines = [
+   "Wrong side of the card. The Croupier collects the whole streak.",
+   "Not this time — the streak's gone, stake and all.",
+   ];
+const hiloCashOutLines = [
+   "You quit while you're ahead. Smart.",
+   "The Croupier counts it out, visibly disappointed you stopped there.",
+   ];
+
 /* ---------------- Bounty Board (The Guild) ---------------- */
 /* Repeatable content — one at a time, see state.activeBounty in core.js and
 rollNewBounty()/claimBounty() in game.js. Reward is paid in Bounty Tokens

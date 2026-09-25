@@ -239,6 +239,10 @@ function createDefaultState(){
         state.monster: a reload should never resume mid-hand or
         mid-sitting-at-the-table. */
      blackjack: null,
+     /* The Hi-Lo table (hilo.js, Rogues' Den) — same shape/same
+        not-saved reasoning as blackjack above, just its own building
+        and its own `{ bet, currentCard, streak, phase, resultText }`. */
+     hilo: null,
      /* Rare-drop collection log — every rareDrop item name ever obtained,
         kept even if later sold/lost (see winCombat() in game.js and the
         Character drawer's Rare Finds block in render.js). */

@@ -115,6 +115,18 @@ function dealBlackjack(bet){
    autosave();
 }
 
+/* The 3 preset Deal buttons (5/10/25) call dealBlackjack(bet) directly;
+this reads #blackjack-bet-input (index.html) instead, for a player who
+wants to wager something else entirely. Sanitized to a whole number
+>=1 -- anything larger than state.popTabs still just gets silently
+refused by dealBlackjack()'s own guard, same as an unaffordable preset
+button already is. */
+function dealBlackjackCustom(){
+   const input = document.getElementById('blackjack-bet-input');
+   const bet = Math.max(1, Math.floor(Number(input.value) || 0));
+   dealBlackjack(bet);
+}
+
 function blackjackHit(){
    if(!state.blackjack || state.blackjack.phase !== 'playerTurn') return;
    state.blackjack.playerHand.push(drawCard());
