@@ -406,8 +406,25 @@ those three: a second adventure hub, deeper in the same warren system,
 reached through Mudroot Warren's own sealed root-door once quest10Path
 is set. Same parallel-districts shape as rootcellar/bureau — Choir and
 the Ledger Vault are alternate CHOICES (quest10's own branching), not a
-sequence, so they share one tier. */
-const ZONE_DIFFICULTY = { commons:1, sewers:1.15, quarry:1.55, vault:1.9, garrison:2.3, roguesden:2.3, sanctum:2.3, palace:2.3, rootcellar:2.6, bureau:2.6, mudflats:2.9, choir:3.2, ledgervault:3.2, foundry:3.5, gearworks:3.5 };
+sequence, so they share one tier.
+
+Every value below carries a small extra multiplier on top of its
+original tier baseline — a ramp, not a flat percentage, per explicit
+request once gear tempering (player-actions.js) gave every zone's own
+power ceiling real headroom that didn't exist when these were first
+tuned. The ramp is ~0% at Commons (a fresh character can't have
+tempered anything yet — there's been no time to earn Bounty Tokens)
+growing to ~18% by the Ember Warren (the deepest zone, where tempering
+has had the most time to compound): +0/+2/+4/+6/+8/+10/+12/+15/+18%
+across the 9 tiers below, in order. Deliberately NOT re-deriving
+ZONE_LEVEL_RECOMMENDATION (below) to match — those floors were
+calibrated for bare/lightly-geared characters, and the whole point of
+this bump is that a TEMPERED character absorbs it at the same
+recommended level, not that the recommended level itself needs to
+rise. Revisit with a real win-rate probe (same "simulated, not
+guessed" methodology used to catch Mudroot Warren/Warren's Ear's own
+overtuned guesses) if that assumption turns out wrong in practice. */
+const ZONE_DIFFICULTY = { commons:1, sewers:1.17, quarry:1.61, vault:2.01, garrison:2.48, roguesden:2.48, sanctum:2.48, palace:2.48, rootcellar:2.86, bureau:2.86, mudflats:3.25, choir:3.68, ledgervault:3.68, foundry:4.13, gearworks:4.13 };
 
 /* Display names for each adventure zone, keyed by state.location/zone id —
 used by the Bounty Board (render.js) to spell out where a bounty's
