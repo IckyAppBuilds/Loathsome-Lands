@@ -39,6 +39,14 @@ const HUB_TOWNS = {
    until its own rare hunt is separately defeated, same reveal
    mechanism Mudflats already uses. */
    warrensear: ['choir', 'ledgervault'],
+   /* Quest 11's own hub — reached through Mudroot Warren's own sealed
+   root-door (the SAME tile that became Warren's Ear's entrance once
+   quest10Path was set, mudroot-art.js) once quest11Complete flips true.
+   Unlike Warren's Ear, both districts are real/clickable from the
+   moment the hub itself unlocks — the hub-level gate already does all
+   the gating this hub needs, so there's no second reveal layer inside
+   it (artEmberWarrenSquare(), emberwarren-art.js). */
+   emberwarren: ['foundry', 'gearworks'],
 };
 
 /* Which of HUB_TOWNS's keys are proper TOWN hubs — a real home base with

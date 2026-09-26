@@ -600,6 +600,30 @@ function artMoleNotary(){
    return sceneWrap(`<ellipse cx="46" cy="64" rx="24" ry="18" fill="#5f4632"/><ellipse cx="46" cy="46" rx="13" ry="11" fill="#5f4632"/><path d="M38 42 Q34 34 28 36" fill="none" stroke-width="3"/><path d="M54 42 Q58 34 64 36" fill="none" stroke-width="3"/><rect x="68" y="46" width="14" height="14" fill="#b5453f" transform="rotate(-10 75 53)"/><line x1="75" y1="60" x2="75" y2="72" stroke-width="3"/>`, 0);
 }
 
+/* The Ember Warren's mole rig (emberwarren-content.js) -- same mole
+silhouette vocabulary as every warren above, dressed in forge/machine
+trappings (sparks, bellows, cogs, steam) instead of tunnel or office
+gear. #b5453f doubles as ember-glow here same as it does as a red pen/
+stamp accent elsewhere -- no new palette color introduced. */
+function artForgeMole(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="25" ry="18" fill="#5f4632"/><ellipse cx="50" cy="47" rx="13" ry="11" fill="#5f4632"/><path d="M41 43 Q36 34 28 36" fill="none" stroke-width="3.5"/><path d="M59 43 Q64 34 72 36" fill="none" stroke-width="3.5"/><circle cx="30" cy="30" r="2" fill="#b5453f" stroke="none"/><circle cx="70" cy="26" r="2.4" fill="#d1a94e" stroke="none"/><circle cx="60" cy="20" r="1.8" fill="#b5453f" stroke="none"/><line x1="40" y1="82" x2="34" y2="96"/><line x1="60" y1="82" x2="66" y2="96"/>`, 0);
+}
+function artBellowsMole(){
+   return sceneWrap(`<ellipse cx="50" cy="68" rx="27" ry="17" fill="#5f4632"/><ellipse cx="50" cy="47" rx="14" ry="12" fill="#5f4632"/><path d="M40 43 Q35 34 27 36" fill="none" stroke-width="3.5"/><path d="M60 43 Q65 34 73 36" fill="none" stroke-width="3.5"/><ellipse cx="38" cy="54" rx="6" ry="5" fill="#5f4632" opacity="0.8"/><ellipse cx="62" cy="54" rx="6" ry="5" fill="#5f4632" opacity="0.8"/><path d="M50 30 Q56 20 50 12 Q44 20 50 30" fill="none" stroke="#b5453f" stroke-width="2" opacity="0.6"/>`, 0);
+}
+function artSlagHauler(){
+   return sceneWrap(`<rect x="60" y="70" width="26" height="16" fill="#8a8477"/><circle cx="66" cy="88" r="5" fill="none" stroke-width="2.5"/><circle cx="80" cy="88" r="5" fill="none" stroke-width="2.5"/><path d="M64 74 L74 74 L70 66 Z" fill="#b5453f"/><ellipse cx="38" cy="66" rx="24" ry="18" fill="#5f4632"/><ellipse cx="38" cy="47" rx="13" ry="11" fill="#5f4632"/><path d="M30 43 Q25 34 17 36" fill="none" stroke-width="3.5"/><path d="M46 43 Q51 34 59 36" fill="none" stroke-width="3.5"/><line x1="60" y1="66" x2="46" y2="70" stroke-width="3"/>`, 0);
+}
+function artCogFitter(){
+   return sceneWrap(`<ellipse cx="46" cy="64" rx="24" ry="18" fill="#5f4632"/><ellipse cx="46" cy="45" rx="13" ry="11" fill="#5f4632"/><path d="M38 41 Q33 32 25 34" fill="none" stroke-width="3.5"/><path d="M54 41 Q59 32 67 34" fill="none" stroke-width="3.5"/><circle cx="76" cy="58" r="11" fill="none" stroke="#d1a94e" stroke-width="3"/><circle cx="76" cy="58" r="4" fill="#d1a94e" stroke="none"/><line x1="76" y1="45" x2="76" y2="49" stroke="#d1a94e" stroke-width="2.5"/><line x1="76" y1="67" x2="76" y2="71" stroke="#d1a94e" stroke-width="2.5"/><line x1="63" y1="58" x2="67" y2="58" stroke="#d1a94e" stroke-width="2.5"/><line x1="85" y1="58" x2="89" y2="58" stroke="#d1a94e" stroke-width="2.5"/>`, 0);
+}
+function artPressureMole(){
+   return sceneWrap(`<ellipse cx="50" cy="68" rx="25" ry="17" fill="#5f4632"/><ellipse cx="50" cy="48" rx="13" ry="11" fill="#5f4632"/><path d="M41 44 Q36 35 28 37" fill="none" stroke-width="3.5"/><path d="M59 44 Q64 35 72 37" fill="none" stroke-width="3.5"/><path d="M68 60 Q76 54 74 44" fill="none" stroke="#b9b3a4" stroke-width="2.5" opacity="0.8"/><path d="M74 50 Q82 42 78 30" fill="none" stroke="#f4efe4" stroke-width="2" opacity="0.6"/>`, 0);
+}
+function artLineRunner(){
+   return sceneWrap(`<ellipse cx="46" cy="66" rx="22" ry="16" fill="#5f4632"/><ellipse cx="46" cy="48" rx="12" ry="10" fill="#5f4632"/><path d="M39 45 Q34 37 27 39" fill="none" stroke-width="3"/><path d="M53 45 Q58 37 65 39" fill="none" stroke-width="3"/><line x1="70" y1="56" x2="86" y2="52" stroke="#8a8477" stroke-width="2"/><line x1="70" y1="64" x2="86" y2="60" stroke="#8a8477" stroke-width="2"/><line x1="70" y1="72" x2="86" y2="68" stroke="#8a8477" stroke-width="2"/>`, 0);
+}
+
 /* ---------------- Zone backdrop art ---------------- */
 /* One scene per Act 1 adventure zone (ZONE_DIFFICULTY, content.js), shown
 between fights in place of artIdle() (see render.js) so each zone has

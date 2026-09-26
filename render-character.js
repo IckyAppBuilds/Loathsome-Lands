@@ -463,6 +463,23 @@ if(state.quest10Complete){
   </div>`);
 }
 
+if(state.quest11Complete){
+  completedEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">Loose Ends</div>
+  <div class="quest-desc">Both of them, accounted for — not just whichever talked first.</div>
+  <div class="quest-progress">Reward claimed: 170 Pop Tabs, 130 XP, 12 Bounty Tokens</div>
+  </div>`);
+} else if(state.quest11Accepted){
+  const bothAccountedFor = state.tunnelMoleInformantDefeated && state.seniorClerkDefeated;
+  activeEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">Loose Ends</div>
+  <div class="quest-desc">One of them got away clean. The guildmaster wants both accounted for, not just whichever talked first.</div>
+  <div class="quest-progress">${bothAccountedFor ? 'Ready to report back at the Guild.' : (state.tunnelMoleInformantDefeated || state.seniorClerkDefeated ? '1/2 accounted for.' : '0/2 accounted for.')}</div>
+  </div>`);
+}
+
 if(state.classQuestComplete){
   completedEntries.push(`
   <div class="quest-log-entry">

@@ -37,6 +37,9 @@ document.getElementById('scene-art').addEventListener('click', function(e){
    else if(action === 'warrensear') travelTo('warrensear');
    else if(action === 'choir') travelTo('choir');
    else if(action === 'ledgervault') travelTo('ledgervault');
+   else if(action === 'emberwarren') travelTo('emberwarren');
+   else if(action === 'foundry') travelTo('foundry');
+   else if(action === 'gearworks') travelTo('gearworks');
 });
 
 /* Seed a brand-new run: starter gear (equipped) and a couple of starter

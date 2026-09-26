@@ -407,12 +407,12 @@ reached through Mudroot Warren's own sealed root-door once quest10Path
 is set. Same parallel-districts shape as rootcellar/bureau — Choir and
 the Ledger Vault are alternate CHOICES (quest10's own branching), not a
 sequence, so they share one tier. */
-const ZONE_DIFFICULTY = { commons:1, sewers:1.15, quarry:1.55, vault:1.9, garrison:2.3, roguesden:2.3, sanctum:2.3, palace:2.3, rootcellar:2.6, bureau:2.6, mudflats:2.9, choir:3.2, ledgervault:3.2 };
+const ZONE_DIFFICULTY = { commons:1, sewers:1.15, quarry:1.55, vault:1.9, garrison:2.3, roguesden:2.3, sanctum:2.3, palace:2.3, rootcellar:2.6, bureau:2.6, mudflats:2.9, choir:3.2, ledgervault:3.2, foundry:3.5, gearworks:3.5 };
 
 /* Display names for each adventure zone, keyed by state.location/zone id —
 used by the Bounty Board (render.js) to spell out where a bounty's
 monster lives without hand-typing zone names in a second place. */
-const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace', rootcellar:'the Root Cellar', mudflats:'the Mudflats', bureau:'the Bureau', choir:'the Choir', ledgervault:'the Ledger Vault' };
+const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace', rootcellar:'the Root Cellar', mudflats:'the Mudflats', bureau:'the Bureau', choir:'the Choir', ledgervault:'the Ledger Vault', foundry:'the Foundry', gearworks:'the Gearworks' };
 
 /* The Map's main chain, Gladstone Hollow through to Mudroot Warren, in
 travel order — travelCostFor() (town.js) prices a trip by the DISTANCE
@@ -429,7 +429,7 @@ distance purposes. 'town' itself is a special case travelCostFor()
 always prices at 0 regardless of distance — the trip home is always
 free (see forceHomeIfBroke()'s own comment, town.js), same as any move
 within a hub's own area (square<->district) already was. */
-const ZONE_ORDER = ['town', 'commons', 'sewers', 'quarry', 'vault', 'gnometropolis', 'mudrootwarren', 'warrensear'];
+const ZONE_ORDER = ['town', 'commons', 'sewers', 'quarry', 'vault', 'gnometropolis', 'mudrootwarren', 'warrensear', 'emberwarren'];
 
 /* Shown on each zone's card in the Map drawer (render.js) as a "Recommended
 level" guideline — deliberately advisory, not a hard gate like zone
@@ -487,7 +487,15 @@ const ZONE_LEVEL_RECOMMENDATION = {
    vault: { min:7, max:10 },
    gnometropolis: { min:10 },
    mudrootwarren: { min:12, max:16 },
-   warrensear: { min:16 },
+   warrensear: { min:16, max:20 },
+   /* Not yet simulated the way the numbers above were -- an initial
+   estimate off the same "gearDrop bonus x2" alignment noted at
+   getGearRequirements() (item-tiers.js): the Ember Warren's own
+   gearDrop values are +9, one step past Warren's Ear's +8. Revisit
+   with a real win-rate probe once there's enough live play to bother,
+   same as Mudroot Warren/Warren's Ear's own guessed numbers were
+   caught and corrected above. */
+   emberwarren: { min:18 },
 };
 
 /* Chance, per kill, that a monster's own rareDrop (defined per entry in

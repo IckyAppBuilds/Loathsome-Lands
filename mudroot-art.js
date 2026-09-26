@@ -30,8 +30,16 @@ the Warren's Ear, one hub deeper: it becomes a real clickable tile
 (data-action="warrensear") once `warrensEarUnlocked` is true (that's
 `state.quest10Path` being set, either rare hunt found first — see
 warrensear-content.js), same reveal-not-marker treatment as Mudflats
-above; travelTo() gates the real destination independently. */
-function artMudrootWarrenSquare(buildingIndicators, mudflatsRevealed, warrensEarUnlocked){
+above; travelTo() gates the real destination independently.
+
+The rockpile filler at translate(0,200) gets the same treatment for
+quest11's own gateway to the Ember Warren, one hub deeper still: once
+`emberWarrenUnlocked` (state.quest11Complete) is true it becomes a real
+clickable tile (data-action="emberwarren"), heat/spark accents standing
+in for the root-door's chain-and-glyph look above. The other four
+filler tiles are untouched — there's no fourth hub planned past this
+one yet. */
+function artMudrootWarrenSquare(buildingIndicators, mudflatsRevealed, warrensEarUnlocked, emberWarrenUnlocked){
    const bi = (key) => biGet(buildingIndicators, key);
    /* A small root-tangle accent, this area's answer to
    gnometropolis-art.js's mushroom() — ties the filler tiles together as
@@ -118,11 +126,18 @@ function artMudrootWarrenSquare(buildingIndicators, mudflatsRevealed, warrensEar
    ${roots(20, 50)}
    </g>
 
+   ${emberWarrenUnlocked ? `
+   <g transform="translate(0,200)" class="building-hit" data-action="emberwarren">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <path d="M14 60 Q50 40 86 60 L82 82 Q50 92 18 82 Z" fill="#8a8477"/>
+   <circle cx="42" cy="58" r="2.4" fill="#b5453f" stroke="none"/><circle cx="58" cy="64" r="2" fill="#d1a94e" stroke="none"/><circle cx="50" cy="72" r="1.8" fill="#b5453f" stroke="none"/>
+   ${plate("The Ember Warren")}
+   </g>` : `
    <g transform="translate(0,200)">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
    <path d="M14 60 Q50 40 86 60 L82 82 Q50 92 18 82 Z" fill="#8a8477" opacity="0.6"/>
    ${roots(50, 30)}
-   </g>
+   </g>`}
 
    <g transform="translate(100,200)">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>

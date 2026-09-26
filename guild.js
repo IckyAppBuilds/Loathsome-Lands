@@ -256,6 +256,41 @@ function reportQuest10(){
    autosave();
 }
 
+/* Quest 11, "Loose Ends" — deliberately closes the ONE thing quest10
+left open on purpose: whichever of the two rare hunts (tunnelMoleInformant/
+seniorClerk) wasn't found first never got chased down, since quest10Path
+only needed one. This quest requires BOTH state.tunnelMoleInformantDefeated
+AND state.seniorClerkDefeated regardless of which one set quest10Path —
+the guildmaster wants the loose end tied off, not just the lucky first
+lead. Both hunts already keep spawning after quest10Complete (their own
+gate is quest10Accepted && !defeated, combat.js — quest10 finishing
+never stops them), so nothing needs to change there; this is purely a
+new report-side requirement on state that already exists. No new zone
+of its own — quest11's entire objective lives inside the
+already-unlocked Warren's Ear, which is exactly why it's the one
+forcing a return trip there instead of pointing at anywhere new. */
+function acceptQuest11(){
+   if(state.location !== 'gnomeguild' || !state.quest10Complete || state.quest11Accepted || state.quest11Complete) return;
+   state.quest11Accepted = true;
+   clearLog();
+   log("\"One of them got away clean,\" the guildmaster says. \"Doesn't matter which — I want both accounted for, not just whichever talked first. Finish it.\"");
+   render();
+   autosave();
+}
+function reportQuest11(){
+   if(state.location !== 'gnomeguild' || !state.quest11Accepted || state.quest11Complete || !state.tunnelMoleInformantDefeated || !state.seniorClerkDefeated) return;
+   state.quest11Complete = true;
+   state.popTabs += 170;
+   state.xp += 130;
+   state.bountyTokens += 12;
+   clearLog();
+   log("Both accounted for, finally. (+170 Pop Tabs, +130 XP, +12 Bounty Tokens)");
+   log("The guildmaster is quiet for a moment. \"Good. Now — that root-door in Mudroot Warren that never opened onto anything. It just opened onto something. You're going to want to see it.\"");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
 /* How many of PALACE_GUARDS (content.js) are down in the CURRENT
 uninterrupted gauntlet attempt — a plain transient variable, never
 saved, same convention combatSubView (combat.js) uses for UI/session
@@ -343,6 +378,17 @@ function isBountyZoneUnlocked(zone){
    if(state.quest7Complete){
       if(zone === 'rootcellar' || zone === 'bureau') return state.quest9Accepted;
       if(zone === 'mudflats') return state.quest9Accepted && state.tunnelWardenDefeated;
+      /* Choir/the Ledger Vault (Warren's Ear, quest10) and the
+      Foundry/the Gearworks (Ember Warren, quest11) were both missing
+      from this function entirely until now — every kill in either
+      hub was quietly unbountyable no matter how far a save had
+      progressed, the exact same category of gap as quest7's own
+      missing Guild-flag case. Gated on the same flags travelTo()
+      (town.js) itself already uses to unlock each district, so a
+      bounty can never point at somewhere the player can't reach. */
+      if(zone === 'choir') return state.tunnelMoleInformantDefeated;
+      if(zone === 'ledgervault') return state.seniorClerkDefeated;
+      if(zone === 'foundry' || zone === 'gearworks') return state.quest11Complete;
       return false;
    }
    if(zone === 'commons') return true;

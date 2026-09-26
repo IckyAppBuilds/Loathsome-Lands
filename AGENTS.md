@@ -1,15 +1,15 @@
 # The Loathsome Lands — file map
 
 A single-page browser RPG. No build step, no bundler, no modules — plain
-HTML/CSS/`<script>` tags, all globals. 31 JS files load in a specific
+HTML/CSS/`<script>` tags, all globals. 33 JS files load in a specific
 order (see `index.html`'s `<script>` block, which documents this inline
 too):
 
 ```
 supabase (CDN)
 -> core.js -> icons.js -> art.js -> gnometropolis-art.js -> mudroot-art.js
--> warrensear-art.js -> content.js -> mudroot-content.js
--> warrensear-content.js -> act2-shop.js -> item-tiers.js
+-> warrensear-art.js -> emberwarren-art.js -> content.js -> mudroot-content.js
+-> warrensear-content.js -> emberwarren-content.js -> act2-shop.js -> item-tiers.js
 -> render.js -> render-shop.js -> render-character.js -> class-spells.js
 -> dev-tools.js -> auth.js -> save.js -> player-actions.js -> tutorial.js
 -> hubs.js -> combat.js -> town.js -> casino.js -> hilo.js -> class-trial.js
@@ -144,20 +144,25 @@ layout/decoration, or its three district backdrops.
 
 ## mudroot-art.js — Act 2 Part 2 (Mudroot Warren) art
 `artMudrootWarrenSquare(buildingIndicators, mudflatsRevealed,
-warrensEarUnlocked)` — the 3x3 Mudroot Warren square (Root Cellar/
-Mudflats/Bureau — all three real combat districts, no rest tile in
-this hub at all; resting happens at Gnometropolis's Camp instead). The
-Mudflats tile renders as a second real building ONLY once
-`tunnelWardenDefeated` is true, otherwise as an inert collapsed-tunnel
-filler (no data-action, no plate label) — deliberately not a marker
-pointing at "a door that opens later," just a tile that quietly
-becomes a different tile once quest9's own first stage clears. The
-root-wrapped, chained-shut door tile works the same way for quest10:
-once `warrensEarUnlocked` (`state.quest10Path` being set) it becomes a
-real clickable tile into the Warren's Ear (warrensear-art.js), one hub
-deeper. Also the three district backdrops
-(`artZoneRootCellar`/`artZoneMudflats`/`artZoneBureau`). Same
-shared-helper-reuse convention as gnometropolis-art.js above.
+warrensEarUnlocked, emberWarrenUnlocked)` — the 3x3 Mudroot Warren
+square (Root Cellar/Mudflats/Bureau — all three real combat districts,
+no rest tile in this hub at all; resting happens at Gnometropolis's
+Camp instead). The Mudflats tile renders as a second real building
+ONLY once `tunnelWardenDefeated` is true, otherwise as an inert
+collapsed-tunnel filler (no data-action, no plate label) —
+deliberately not a marker pointing at "a door that opens later," just
+a tile that quietly becomes a different tile once quest9's own first
+stage clears. The root-wrapped, chained-shut door tile works the same
+way for quest10: once `warrensEarUnlocked` (`state.quest10Path` being
+set) it becomes a real clickable tile into the Warren's Ear
+(warrensear-art.js), one hub deeper. The rockpile filler tile at
+`translate(0,200)` gets the SAME treatment for quest11: once
+`emberWarrenUnlocked` (`state.quest11Complete`) it becomes a real
+clickable tile into the Ember Warren (emberwarren-art.js), one hub
+deeper still — the other four filler tiles are untouched. Also the
+three district backdrops (`artZoneRootCellar`/`artZoneMudflats`/
+`artZoneBureau`). Same shared-helper-reuse convention as
+gnometropolis-art.js above.
 
 Touch this file when: changing the Mudroot Warren square's own
 layout/reveal logic, or its three district backdrops.
@@ -174,6 +179,19 @@ already uses. Also the two district backdrops (`artZoneChoir`/
 
 Touch this file when: changing the Warren's Ear square's own
 layout/reveal logic, or its two district backdrops.
+
+## emberwarren-art.js — The Ember Warren art (Act 2, quest11)
+`artEmberWarrenSquare()` — the same tight 2-tile hub shape as
+warrensear-art.js, one step past the Warren's Ear, but unlike it,
+BOTH tiles (the Foundry/the Gearworks) are real, clickable districts
+from the moment the hub itself unlocks — no per-district reveal state
+to thread through, since `quest11Complete` already gates reaching the
+hub at all (travelTo(), town.js). Also the two district backdrops
+(`artZoneFoundry`/`artZoneGearworks`). Loads after
+art.js/mudroot-art.js/warrensear-art.js.
+
+Touch this file when: changing the Ember Warren square's own layout,
+or its two district backdrops.
 
 ## content.js — game data tables
 `monsters[]` (per-zone, each with its own optional `rareDrop` AND
@@ -215,9 +233,9 @@ Every equip/consumable item should carry an explicit `tier` field (see
 item-tiers.js below) — 'poor'/'common'/'uncommon'/'rare'/'epic'; quest
 items and ordinary junk loot don't need one, they're derived from `type`.
 `ZONE_ORDER` is the Map's main chain (town->commons->sewers->quarry->
-vault->gnometropolis->mudrootwarren) that `travelCostFor()` (town.js)
-prices trips by DISTANCE against — new zones on the main chain (not a
-district) get added here, in order.
+vault->gnometropolis->mudrootwarren->warrensear->emberwarren) that
+`travelCostFor()` (town.js) prices trips by DISTANCE against — new
+zones on the main chain (not a district) get added here, in order.
 
 ## mudroot-content.js — Act 2 Part 2 (Mudroot Warren) monster data
 `mudrootMonsters` (Root Cellar's 3 + Mudflats' 3 + the Bureau's 3
@@ -264,6 +282,22 @@ warrensear-art.js/icons.js.
 
 Touch this file when: adding/rebalancing a Warren's Ear monster, or
 extending quest10's own branching-path mechanics.
+
+## emberwarren-content.js — The Ember Warren (Act 2, quest11) monster data
+`emberWarrenMonsters` (the Foundry's 3 + the Gearworks' 3 regulars —
+same shape as warrensear-content.js's own monsters, `.push()`ed onto
+`monsters`/`BOUNTY_TEMPLATES` the same way; gearDrop bonus continues
+the zone-difficulty ladder at +9, one step past Warren's Ear's +8).
+Deliberately no rare hunt/boss of its own yet — quest11's entire
+objective already lives inside the Warren's Ear (both of quest10's
+existing rare hunts, `tunnelMoleInformant`/`seniorClerk`), so there's
+no new named monster to add here until a future quest actually needs
+one, same as Mudroot Warren itself launching bare before quest9/
+quest10 added theirs. Also extends `noncombatEvents`/`hazardEvents`
+with `foundry`/`gearworks` entries. Loads after content.js/
+mudroot-content.js/warrensear-content.js/emberwarren-art.js/icons.js.
+
+Touch this file when: adding/rebalancing an Ember Warren monster.
 
 ## act2-shop.js — Act 2 Shop (Gnometropolis) gear + food ladder
 `act2GearItemsTier1/2/3/4` and `act2FoodItemsTier1/2` — a structurally
@@ -642,14 +676,30 @@ flow.
   sequence, and whichever is found first sets `state.quest10Path`,
   which decides which of the Warren's Ear's two districts opens first
   — see `quest10State`, render.js, and
-  `tunnelMoleInformantHunt`/`seniorClerkHunt`, combat.js).
+  `tunnelMoleInformantHunt`/`seniorClerkHunt`, combat.js), and quest11
+  "Loose Ends" (`acceptQuest11`/`reportQuest11` — closes the one thing
+  quest10 left open on purpose: whichever of the two rare hunts wasn't
+  found first. Requires BOTH `tunnelMoleInformantDefeated` AND
+  `seniorClerkDefeated` to report, regardless of which one set
+  `quest10Path` — no new rare hunt of its own, both already keep
+  spawning after quest10Complete. Completing it unlocks the Ember
+  Warren via Mudroot Warren's own rockpile tile, mudroot-art.js).
 - **Bounty Board**: `isBountyZoneUnlocked`/`rollNewBounty`/
   `checkBountyDayReset`/`ensureActiveBounty`/`isBountyReady`/
   `formatBountyTimeLeft`/`claimBounty`/`updateBountyTimerDisplay`. Its
   own zone pool has moved twice now — Act 1 zones, then Garrison/
   Rogues' Den/Arcane Sanctum as an interim pool, now Mudroot Warren's
-  own districts (`rootcellar`/`mudflats`/`bureau`) once quest7Complete
-  — `isBountyZoneUnlocked()` is the single place that pool is defined.
+  own districts (`rootcellar`/`mudflats`/`bureau`), the Warren's Ear's
+  own districts (`choir`/`ledgervault`, each gated on its own rare
+  hunt — the exact same gate `travelTo()` itself uses, town.js), and
+  the Ember Warren's own (`foundry`/`gearworks`, gated on
+  `quest11Complete`) once quest7Complete —
+  `isBountyZoneUnlocked()` is the single place that pool is defined.
+  Choir/ledgervault/foundry/gearworks were all missing from this
+  function entirely until this session — every kill in any of those
+  zones was quietly unbountyable no matter how far a save had
+  progressed, the same category of gap as quest7's own missing
+  Guild-flag case (see the Refactor history below).
 
 Quest 6 ("The Gnome King's Throne") is a retcon setup for quest 7: you
 fight `gnomeKingsCaptain` in the Vault, not the real King — he's
@@ -764,7 +814,9 @@ near the section it belongs to.
 ## Quick lookup — "I want to change X"
 - Rebalance/add an Act 1 monster, item, spell, shop listing, or a
   cost/bonus curve -> **content.js**. Act 2's own (Mudroot Warren
-  monsters -> **mudroot-content.js**; Gnometropolis Shop gear/food ->
+  monsters -> **mudroot-content.js**; the Warren's Ear's ->
+  **warrensear-content.js**; the Ember Warren's ->
+  **emberwarren-content.js**; Gnometropolis Shop gear/food ->
   **act2-shop.js**).
 - Add a new save field -> **core.js** (`createDefaultState()`) +
   **save.js** (`serializeState`/`hydrateState`) together.

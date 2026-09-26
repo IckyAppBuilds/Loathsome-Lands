@@ -5,7 +5,7 @@ districts (reached from that town square via travelTo(), gnometropolis.js)
 took its place as the actual adventuring locations; 'palace' is
 deliberately excluded -- it's a single scripted fight (approachPalaceGate(),
 guild.js), not somewhere to wander and roll random encounters. */
-const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault', 'garrison', 'roguesden', 'sanctum', 'rootcellar', 'mudflats', 'bureau', 'choir', 'ledgervault'];
+const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault', 'garrison', 'roguesden', 'sanctum', 'rootcellar', 'mudflats', 'bureau', 'choir', 'ledgervault', 'foundry', 'gearworks'];
 
 /* Garrison/Rogues' Den/Arcane Sanctum's exploration role is temporary —
 before quest7Complete they're real adventure zones (each district's

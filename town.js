@@ -154,6 +154,12 @@ function travelTo(dest){
    if(dest === 'warrensear' && !state.quest10Path) return;
    if(dest === 'choir' && !state.tunnelMoleInformantDefeated) return;
    if(dest === 'ledgervault' && !state.seniorClerkDefeated) return;
+   /* The Ember Warren (quest11) — unlocked once quest11Complete, the
+   same flag that flips Mudroot Warren's own root-door tile from inert
+   filler into a real one (mudroot-art.js). Unlike the Warren's Ear,
+   both districts are real the moment the hub itself is — no second
+   per-district gate needed here. */
+   if(dest === 'emberwarren' && !state.quest11Complete) return;
    regenBiscuits();
    if(forceHomeIfBroke()) return;
    const cost = travelCostFor(dest);
@@ -302,6 +308,27 @@ function travelTo(dest){
       state.victoryMonster = null;
       clearLog();
       log("You push into a cramped vault stacked floor to ceiling with ledgers, every one of them somehow up to date." + costSuffix);
+   } else if(dest === 'emberwarren'){
+      const cameFromDistrict = state.location==='foundry' || state.location==='gearworks';
+      state.location = 'emberwarren';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log((cameFromDistrict
+          ? "You climb back out into the space between the two districts, heat still rolling off the walls."
+          : "The root-door opens onto heat this time, not silence — somewhere close, something is hammering, and hasn't stopped for you.") + costSuffix);
+   } else if(dest === 'foundry'){
+      state.location = 'foundry';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log("You step into a cavern lit orange from somewhere below, the air thick with hot metal and turned coal." + costSuffix);
+   } else if(dest === 'gearworks'){
+      state.location = 'gearworks';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log("You push into a chamber of turning gears and hissing pipework, every part of it built by something that clearly knew what it was doing." + costSuffix);
    }
    /* No homeTown update here anymore — merely walking into either
    square doesn't claim it as home. restAtInn() sets 'town' and

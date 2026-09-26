@@ -54,6 +54,7 @@ const ZONE_TITLES = {
   mudrootwarren: 'Mudroot Warren', rootcellar: 'The Root Cellar', mudflats: 'The Mudflats',
   bureau: 'The Bureau',
   warrensear: "The Warren's Ear", choir: 'The Choir', ledgervault: 'The Ledger Vault',
+  emberwarren: 'The Ember Warren', foundry: 'The Foundry', gearworks: 'The Gearworks',
 };
 
 /* All PURE `state` reads used by two or more of the sync functions
@@ -106,6 +107,13 @@ function computeRenderContext(){
   "adventure hub" shape (TOWN_HUB_KEYS, hubs.js — this one isn't a town
   hub, so travel to/from it is never free). */
   const inWarrensEarArea = isWarrensEar || isChoir || isLedgerVault;
+  const isEmberWarren = state.location === 'emberwarren'; /* Act 2, quest11 — a third adventure hub, one step past the Warren's Ear, reached through Mudroot Warren's own root-door once quest11Complete is set */
+  const isFoundry = state.location === 'foundry';
+  const isGearworks = state.location === 'gearworks';
+  /* Mirrors inWarrensEarArea above — both districts are real from the
+  moment the hub itself unlocks (quest11Complete), no per-district
+  reveal layer needed inside it. */
+  const inEmberWarrenArea = isEmberWarren || isFoundry || isGearworks;
   const isCasino = state.location === 'casino';
   const isNoticeBoard = state.location === 'noticeboard';
   const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot || isNoticeBoard;
@@ -180,6 +188,15 @@ function computeRenderContext(){
     : state.quest10Accepted ? 'active'
     : (state.quest9Complete ? 'offer' : 'locked');
 
+  /* Quest 11, "Loose Ends" — no branching path like quest10's own; 'ready'
+  needs BOTH tunnelMoleInformantDefeated AND seniorClerkDefeated, not
+  just one, since the whole point is closing out whichever one quest10
+  left for later. */
+  const quest11State = state.quest11Complete ? 'complete'
+    : (state.tunnelMoleInformantDefeated && state.seniorClerkDefeated) ? 'ready'
+    : state.quest11Accepted ? 'active'
+    : (state.quest10Complete ? 'offer' : 'locked');
+
   /* 'trials': accepted, but not all three trainers' tests are passed yet.
   'ready': all three passed, waiting on claimClassPath(chosenStat) — see the
   three claim-path-*-btn buttons and their isGuild=='ready' branch. */
@@ -194,6 +211,7 @@ function computeRenderContext(){
     isSanctum, isPalace, isGnomeGuild, isGnomeShop, isGnomeTownLot, inGnometropolisArea,
     isMudrootWarren, isRootCellar, isMudflats, isBureau, inMudrootWarrenArea,
     isWarrensEar, isChoir, isLedgerVault, inWarrensEarArea,
+    isEmberWarren, isFoundry, isGearworks, inEmberWarrenArea,
     isCasino, isNoticeBoard, inTownArea,
     questState, tinesHeld, tinesStillNeeded, canGive,
     quest2State, canReport,
@@ -202,7 +220,7 @@ function computeRenderContext(){
     quest5State, veinHeld, veinNeeded, canTurnInVein,
     quest6State, canReportGnomeKing,
     quest7State, palaceGateGearItem, canApproachPalaceGate,
-    quest10State,
+    quest10State, quest11State,
     quest8State, quest9State, classQuestState,
   };
 }
@@ -452,6 +470,9 @@ function syncBuildingScreens(ctx){
   document.getElementById('accept-quest10-btn').style.display = ctx.quest10State==='offer' ? '' : 'none';
   document.getElementById('report-quest10-btn').style.display = ctx.quest10State==='ready' ? '' : 'none';
   document.getElementById('report-quest10-btn').classList.toggle('btn-ready', ctx.quest10State==='ready');
+  document.getElementById('accept-quest11-btn').style.display = ctx.quest11State==='offer' ? '' : 'none';
+  document.getElementById('report-quest11-btn').style.display = ctx.quest11State==='ready' ? '' : 'none';
+  document.getElementById('report-quest11-btn').classList.toggle('btn-ready', ctx.quest11State==='ready');
 
   document.getElementById('accept-quest3-btn').style.display = ctx.quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = ctx.quest3State==='active' ? '' : 'none';
@@ -500,7 +521,8 @@ function syncBuildingScreens(ctx){
     || (ctx.isGuild && guildQuestBoxNeeded)
     || (ctx.isGnomeGuild && (ctx.quest8State==='offer' || ctx.quest8State==='active'
         || ctx.quest9State==='offer' || ctx.quest9State==='stage1' || ctx.quest9State==='stage2' || ctx.quest9State==='ready'
-        || ctx.quest10State==='offer' || ctx.quest10State==='active' || ctx.quest10State==='ready'))
+        || ctx.quest10State==='offer' || ctx.quest10State==='active' || ctx.quest10State==='ready'
+        || ctx.quest11State==='offer' || ctx.quest11State==='active' || ctx.quest11State==='ready'))
     || (ctx.isHoodoo && (ctx.quest3State==='offer' || ctx.quest3State==='active'))
     || (ctx.isTinker && (ctx.quest4State==='offer' || ctx.quest4State==='active' || ctx.quest5State==='offer' || ctx.quest5State==='active'))
   )) ? 'block' : 'none';
@@ -582,6 +604,18 @@ function syncBuildingScreens(ctx){
     } else if(ctx.quest10State==='ready'){
       document.getElementById('quest-name').textContent = "Quest: Whatever's Listening";
       document.getElementById('quest-desc').textContent = "You found a way in. Head back and tell the guildmaster what you learned.";
+      document.getElementById('quest-progress').textContent = 'Ready to report.';
+    } else if(ctx.quest11State==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: Loose Ends';
+      document.getElementById('quest-desc').textContent = "One of them got away clean, and the guildmaster wants both accounted for — not just whichever talked first. Track down whichever one you haven't dealt with yet.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(ctx.quest11State==='active'){
+      document.getElementById('quest-name').textContent = 'Quest: Loose Ends';
+      document.getElementById('quest-desc').textContent = "Keep at it. Both of them, this time — not just one.";
+      document.getElementById('quest-progress').textContent = (state.tunnelMoleInformantDefeated?1:0) + (state.seniorClerkDefeated?1:0) + '/2 accounted for.';
+    } else if(ctx.quest11State==='ready'){
+      document.getElementById('quest-name').textContent = 'Quest: Loose Ends';
+      document.getElementById('quest-desc').textContent = "Both accounted for now. Head back and tell the guildmaster it's done.";
       document.getElementById('quest-progress').textContent = 'Ready to report.';
     }
   } else if(ctx.isHoodoo){
@@ -683,6 +717,11 @@ function syncMapDrawer(ctx){
   document.getElementById('ztag-warrensear').textContent = warrensearUnlocked ? 'You are here' : 'Locked';
   document.getElementById('ztag-warrensear').style.display = warrensearUnlocked ? (ctx.inWarrensEarArea ? 'block' : 'none') : 'block';
 
+  const emberwarrenUnlocked = state.quest11Complete;
+  document.getElementById('zone-card-emberwarren').classList.toggle('locked', !emberwarrenUnlocked);
+  document.getElementById('ztag-emberwarren').textContent = emberwarrenUnlocked ? 'You are here' : 'Locked';
+  document.getElementById('ztag-emberwarren').style.display = emberwarrenUnlocked ? (ctx.inEmberWarrenArea ? 'block' : 'none') : 'block';
+
   /* Map drawer's Act 1/Act 2 tab split (mapTab, player-actions.js) — pure
   UI state, mirrors shopTab's own active/inactive button-class toggle. */
   document.getElementById('map-tab-act1-btn').classList.toggle('btn-primary', mapTab==='act1');
@@ -721,7 +760,7 @@ function syncCombatUI(ctx){
   hides the building's normal furniture; "Return to Map" isn't part of
   that screen either, hilo-bet-row's own "Leave Table" is. */
   const inConvertedClassArea = (ctx.isGarrison || ctx.isRoguesden || ctx.isSanctum) && state.quest7Complete && !(ctx.isRoguesden && state.hilo);
-  document.getElementById('explore-row').style.display = ((ctx.isCommons || ctx.isSewers || ctx.isQuarry || ctx.isVault || ctx.isRootCellar || ctx.isMudflats || ctx.isBureau || ctx.isChoir || ctx.isLedgerVault || inUnconvertedClassArea) && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('explore-row').style.display = ((ctx.isCommons || ctx.isSewers || ctx.isQuarry || ctx.isVault || ctx.isRootCellar || ctx.isMudflats || ctx.isBureau || ctx.isChoir || ctx.isLedgerVault || ctx.isFoundry || ctx.isGearworks || inUnconvertedClassArea) && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('class-area-row').style.display = (inConvertedClassArea && !state.inCombat) ? 'flex' : 'none';
   /* The Palace has no Explore row (it's not an ADVENTURE_ZONES entry —
   one scripted fight, not somewhere to wander) and palace-gate-row only
@@ -862,7 +901,7 @@ function renderSceneArt(ctx){
       /* Combined with quest9's own offer/ready states — this tile is
       "something to do at the Guild," not a marker for where quest9's
       combat stages actually are (those show no flag anywhere). */
-      gnomeguild: { flag: (ctx.quest8State==='offer' || ctx.quest9State==='offer' || ctx.quest10State==='offer') ? 'offer' : ((ctx.quest8State==='active' || ctx.quest9State==='ready' || ctx.quest10State==='ready') ? 'turnin' : null) },
+      gnomeguild: { flag: (ctx.quest8State==='offer' || ctx.quest9State==='offer' || ctx.quest10State==='offer' || ctx.quest11State==='offer') ? 'offer' : ((ctx.quest8State==='active' || ctx.quest9State==='ready' || ctx.quest10State==='ready' || ctx.quest11State==='ready') ? 'turnin' : null) },
       gnomeshop: {},
       gnometownlot: {},
     };
@@ -886,7 +925,7 @@ function renderSceneArt(ctx){
       mudflats: {},
       bureau: {},
     };
-    document.getElementById('scene-art').innerHTML = artMudrootWarrenSquare(mudrootBuildingIndicators, state.tunnelWardenDefeated, !!state.quest10Path);
+    document.getElementById('scene-art').innerHTML = artMudrootWarrenSquare(mudrootBuildingIndicators, state.tunnelWardenDefeated, !!state.quest10Path, state.quest11Complete);
     document.getElementById('victory-banner').style.display = 'none';
   } else if(ctx.isRootCellar){
     document.getElementById('scene-art').innerHTML = artZoneRootCellar();
@@ -910,6 +949,18 @@ function renderSceneArt(ctx){
     document.getElementById('victory-banner').style.display = 'none';
   } else if(ctx.isLedgerVault){
     document.getElementById('scene-art').innerHTML = artZoneLedgerVault();
+    document.getElementById('victory-banner').style.display = 'none';
+  } else if(ctx.isEmberWarren){
+    /* Unlike Mudroot Warren/the Warren's Ear above, both districts are
+    real and clickable the moment this hub itself unlocks (quest11Complete
+    already gated travel here) — no per-district reveal state to pass in. */
+    document.getElementById('scene-art').innerHTML = artEmberWarrenSquare();
+    document.getElementById('victory-banner').style.display = 'none';
+  } else if(ctx.isFoundry){
+    document.getElementById('scene-art').innerHTML = artZoneFoundry();
+    document.getElementById('victory-banner').style.display = 'none';
+  } else if(ctx.isGearworks){
+    document.getElementById('scene-art').innerHTML = artZoneGearworks();
     document.getElementById('victory-banner').style.display = 'none';
   } else if(ctx.isGnomeGuild){
     /* Reuses artGuildmaster() (art.js) — same guildmaster, new office,

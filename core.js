@@ -157,6 +157,15 @@ function createDefaultState(){
      quest10Path: null,
      tunnelMoleInformantDefeated: false,
      seniorClerkDefeated: false,
+     /* Quest 11, "Loose Ends" — offered once quest10Complete. No new
+     rare hunt of its own: it just requires BOTH tunnelMoleInformant-
+     Defeated AND seniorClerkDefeated (guild.js's own comment), forcing
+     a return trip to whichever Warren's Ear district quest10Path
+     didn't already cover. Completing it unlocks the Ember Warren (a
+     third adventure hub, past the Warren's Ear) via Mudroot Warren's
+     own root-door tile, same reveal mechanism as every hub before it. */
+     quest11Accepted: false,
+     quest11Complete: false,
      classQuestAccepted: false,
      classQuestComplete: false,
      classTitle: null,
