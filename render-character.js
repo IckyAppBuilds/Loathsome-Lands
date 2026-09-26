@@ -481,6 +481,23 @@ if(state.quest11Complete){
   </div>`);
 }
 
+if(state.quest12Complete){
+  completedEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">Chain of Custody</div>
+  <div class="quest-desc">The whole chain, start to finish — the Ember Warren's shipments, and who was quietly receiving them.</div>
+  <div class="quest-progress">Reward claimed: 190 Pop Tabs, 150 XP, 14 Bounty Tokens</div>
+  </div>`);
+} else if(state.quest12Accepted){
+  const stage2 = state.gearworksForemanDefeated;
+  activeEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">Chain of Custody</div>
+  <div class="quest-desc">${stage2 ? 'The trail leads back to the Bureau, in Mudroot Warren — someone there has been receiving every shipment.' : "Someone in the Ember Warren is clearly running the books on this. Find them — start in the Gearworks."}</div>
+  <div class="quest-progress">${state.bureauQuartermasterDefeated ? 'Ready to report back at the Guild.' : (stage2 ? 'Head back to the Bureau and find the quartermaster.' : "The foreman hasn't turned up yet.")}</div>
+  </div>`);
+}
+
 if(state.classQuestComplete){
   completedEntries.push(`
   <div class="quest-log-entry">

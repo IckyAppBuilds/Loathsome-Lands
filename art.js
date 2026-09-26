@@ -624,6 +624,23 @@ function artLineRunner(){
    return sceneWrap(`<ellipse cx="46" cy="66" rx="22" ry="16" fill="#5f4632"/><ellipse cx="46" cy="48" rx="12" ry="10" fill="#5f4632"/><path d="M39 45 Q34 37 27 39" fill="none" stroke-width="3"/><path d="M53 45 Q58 37 65 39" fill="none" stroke-width="3"/><line x1="70" y1="56" x2="86" y2="52" stroke="#8a8477" stroke-width="2"/><line x1="70" y1="64" x2="86" y2="60" stroke="#8a8477" stroke-width="2"/><line x1="70" y1="72" x2="86" y2="68" stroke="#8a8477" stroke-width="2"/>`, 0);
 }
 
+/* Quest12's own two rare-hunt bosses (emberwarren-content.js) — the
+first pair of monsters in this game with a 'debuff' skill (see
+state.playerStatusEffect's own comment, core.js), so both get a bigger,
+more distinct silhouette than a regular zone mole, same "boss reads as
+a step up" treatment as gnomeCommander/tunnelWarden/etc. The foreman
+carries a clipboard (ties Gearworks back to its own "precision" theme);
+the quartermaster is dressed exactly like the Bureau's own business
+moles (art.js's artMoleClerk/artMoleAuditor, above) on purpose — same
+silhouette, since this IS one of them, just with the paper trail
+finally catching up. */
+function artGearworksForeman(){
+   return sceneWrap(`<ellipse cx="50" cy="68" rx="30" ry="21" fill="#5f4632"/><ellipse cx="50" cy="45" rx="15" ry="13" fill="#5f4632"/><path d="M40 40 Q34 30 24 32" fill="none" stroke-width="4"/><path d="M60 40 Q66 30 76 32" fill="none" stroke-width="4"/><rect x="68" y="52" width="16" height="22" fill="#f4efe4" stroke="#2b2b28" stroke-width="2" transform="rotate(8 76 63)"/><line x1="71" y1="58" x2="81" y2="60" stroke-width="1.6"/><line x1="71" y1="64" x2="81" y2="66" stroke-width="1.6"/><rect x="18" y="60" width="14" height="20" fill="#8a8477" transform="rotate(-10 25 70)"/><circle cx="58" cy="26" r="2.4" fill="#d1a94e" stroke="none"/>`, 0);
+}
+function artBureauQuartermaster(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="28" ry="20" fill="#5f4632"/><ellipse cx="50" cy="44" rx="14" ry="12" fill="#5f4632"/><circle cx="43" cy="44" r="5" fill="none" stroke="#2b2b28" stroke-width="2.5"/><circle cx="57" cy="44" r="5" fill="none" stroke="#2b2b28" stroke-width="2.5"/><line x1="48" y1="44" x2="52" y2="44" stroke-width="2"/><rect x="66" y="50" width="18" height="24" fill="#f4efe4" stroke="#2b2b28" stroke-width="2.5" transform="rotate(-6 75 62)"/><line x1="70" y1="56" x2="82" y2="57" stroke-width="1.6"/><line x1="70" y1="63" x2="82" y2="64" stroke-width="1.6"/><line x1="70" y1="70" x2="82" y2="71" stroke-width="1.6"/><line x1="40" y1="80" x2="34" y2="94" stroke-width="3.5"/><line x1="60" y1="80" x2="66" y2="94" stroke-width="3.5"/>`, 0);
+}
+
 /* ---------------- Zone backdrop art ---------------- */
 /* One scene per Act 1 adventure zone (ZONE_DIFFICULTY, content.js), shown
 between fights in place of artIdle() (see render.js) so each zone has

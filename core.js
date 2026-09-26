@@ -166,6 +166,15 @@ function createDefaultState(){
      own root-door tile, same reveal mechanism as every hub before it. */
      quest11Accepted: false,
      quest11Complete: false,
+     /* Quest 12, "Chain of Custody" — offered once quest11Complete. A
+     sequential two-stage hunt like quest9's own, but stage 2 sends the
+     player BACK to the Bureau (an already-explored Mudroot Warren
+     district) instead of further out — see gearworksForemanHunt/
+     bureauQuartermasterHunt (combat.js) for the actual sequencing. */
+     quest12Accepted: false,
+     quest12Complete: false,
+     gearworksForemanDefeated: false,
+     bureauQuartermasterDefeated: false,
      classQuestAccepted: false,
      classQuestComplete: false,
      classTitle: null,
@@ -206,6 +215,16 @@ function createDefaultState(){
         state.monster not being saved either — this only ever matters
         mid-fight, and a reload never resumes mid-fight. */
      smokeScreenActive: false,
+     /* A boss's own 'debuff' skill (useMonsterSkill(), combat.js) inflicts
+        this instead of just attacking that turn -- null, or
+        { type:'burn'|'poison'|'freeze', turnsLeft, dmgPerTurn, dmgReduction }.
+        Only one active at a time (a fresh debuff overwrites whatever was
+        there), ticked down by applyPlayerStatusEffectForTurn() only on the
+        player's own next N turns (Attack/a damage spell/an item use — the
+        same "turns that cost a turn" set monsterRetaliate() already keys
+        off of), not real-time turns. Same not-saved reasoning as
+        smokeScreenActive right above — this only ever matters mid-fight. */
+     playerStatusEffect: null,
      /* Bounty board (The Guild) — one active bounty at a time, auto-refreshed
         on claim or expiry (see ensureActiveBounty()/claimBounty() in
         guild.js). null until the player's first visit rolls one, or once

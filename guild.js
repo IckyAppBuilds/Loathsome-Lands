@@ -291,6 +291,37 @@ function reportQuest11(){
    autosave();
 }
 
+/* Quest 12, "Chain of Custody" — offered once quest11Complete, once the
+Ember Warren itself is reachable. A sequential two-stage hunt like
+quest9's own (gearworksForemanHunt gates bureauQuartermasterHunt,
+combat.js), but the twist is where stage 2 happens: NOT a new zone, but
+back in the Bureau — a district the player already cleared for quest9/
+10. The guildmaster's own dialogue stays exactly as zone-name-free as
+quest9/quest10's, on purpose (see quest12State's own comment, render.js,
+for where this quest DOES get concrete about places — the UI status
+lines, not the narrative text). */
+function acceptQuest12(){
+   if(state.location !== 'gnomeguild' || !state.quest11Complete || state.quest12Accepted || state.quest12Complete) return;
+   state.quest12Accepted = true;
+   clearLog();
+   log("\"Every shipment out of that forge has a paper trail,\" the guildmaster says. \"Follow it. Somebody down there's been keeping very careful count.\"");
+   render();
+   autosave();
+}
+function reportQuest12(){
+   if(state.location !== 'gnomeguild' || !state.quest12Accepted || state.quest12Complete || !state.bureauQuartermasterDefeated) return;
+   state.quest12Complete = true;
+   state.popTabs += 190;
+   state.xp += 150;
+   state.bountyTokens += 14;
+   clearLog();
+   log("You lay out the whole chain, start to finish. (+190 Pop Tabs, +150 XP, +14 Bounty Tokens)");
+   log("The guildmaster is quiet for a second. \"So that's where it all went. All that paperwork was never just paperwork. Feels almost obvious, in hindsight.\"");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
 /* How many of PALACE_GUARDS (content.js) are down in the CURRENT
 uninterrupted gauntlet attempt — a plain transient variable, never
 saved, same convention combatSubView (combat.js) uses for UI/session

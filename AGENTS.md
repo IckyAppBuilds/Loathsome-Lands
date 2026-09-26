@@ -283,21 +283,23 @@ warrensear-art.js/icons.js.
 Touch this file when: adding/rebalancing a Warren's Ear monster, or
 extending quest10's own branching-path mechanics.
 
-## emberwarren-content.js — The Ember Warren (Act 2, quest11) monster data
+## emberwarren-content.js — The Ember Warren (Act 2, quest11/12) monster data
 `emberWarrenMonsters` (the Foundry's 3 + the Gearworks' 3 regulars —
 same shape as warrensear-content.js's own monsters, `.push()`ed onto
 `monsters`/`BOUNTY_TEMPLATES` the same way; gearDrop bonus continues
 the zone-difficulty ladder at +9, one step past Warren's Ear's +8).
-Deliberately no rare hunt/boss of its own yet — quest11's entire
-objective already lives inside the Warren's Ear (both of quest10's
-existing rare hunts, `tunnelMoleInformant`/`seniorClerk`), so there's
-no new named monster to add here until a future quest actually needs
-one, same as Mudroot Warren itself launching bare before quest9/
-quest10 added theirs. Also extends `noncombatEvents`/`hazardEvents`
-with `foundry`/`gearworks` entries. Loads after content.js/
-mudroot-content.js/warrensear-content.js/emberwarren-art.js/icons.js.
+Also quest12's own two-stage rare hunt, "Chain of Custody" —
+`gearworksForeman` (Gearworks, stage 1, inflicts `'burn'`) and
+`bureauQuartermaster` (Bureau, stage 2 — a district from an OLDER hub,
+not a new one) — this game's first monsters with a `'debuff'` skill
+(see `state.playerStatusEffect`'s own comment, combat.js). No loot/
+rareDrop of their own, same as every other named quest-hunt boss.
+Also extends `noncombatEvents`/`hazardEvents` with `foundry`/
+`gearworks` entries. Loads after content.js/mudroot-content.js/
+warrensear-content.js/emberwarren-art.js/icons.js.
 
-Touch this file when: adding/rebalancing an Ember Warren monster.
+Touch this file when: adding/rebalancing an Ember Warren monster, or
+quest12's own two-stage hunt.
 
 ## act2-shop.js — Act 2 Shop (Gnometropolis) gear + food ladder
 `act2GearItemsTier1/2/3/4` and `act2FoodItemsTier1/2` — a structurally
@@ -511,11 +513,22 @@ drop out of it entirely once `state.quest7Complete`, converting into
 pure class-trainer buildings; see gnometropolis.js)/`goAdventuring()`
 (one `*Hunt` const per rare-hunt quest target — `commanderHunt`/
 `diggerBotHunt`/`vaultCaptainHunt`/`garrisonHunt`/`roguesdenHunt`/
-`sanctumHunt`/`tunnelWardenHunt`/`warrenScoutHunt` — each a simple
-"quest accepted, not complete, not already found" boolean checked
-against a per-target spawn chance), `startCombat`/
-`applyDamageToPlayer`/`applyDamageToMonster`/`monsterRetaliate`/
-`monsterAutoAttack`/`tickMonsterBuff`/`useMonsterSkill`/`playerAttack`/
+`sanctumHunt`/`tunnelWardenHunt`/`warrenScoutHunt`/
+`tunnelMoleInformantHunt`/`seniorClerkHunt`/`gearworksForemanHunt`/
+`bureauQuartermasterHunt` — each a simple "quest accepted, not
+complete, not already found" boolean checked against a per-target
+spawn chance), `startCombat`/`applyDamageToPlayer`/
+`applyDamageToMonster`/`monsterRetaliate`/`monsterAutoAttack`/
+`tickMonsterBuff`/`useMonsterSkill` (dispatches a monster's own
+`skills[]` entry by `type` — `'heal'`/`'buff'`/`'bolt'`/`'debuff'`, the
+last of which sets `state.playerStatusEffect` instead of attacking that
+turn)/`applyPlayerStatusEffectForTurn` (plays out one turn of a boss's
+`'debuff'` — burn/poison deal their own damage to the player
+immediately, freeze instead hands back a `dmgMult` for the caller to
+apply to whatever it's about to deal that turn; called at the start of
+every player action that costs a turn — `playerAttack`/a damage
+spell/`useItemInCombat` — so it ticks down on "a set number of
+attacks" regardless of hit/miss/item use)/`playerAttack`/
 `openSpellMenu`/`closeSpellMenu`/`useItemInCombat`/`castSpell`/
 `CLASS_SPELL_LOCATION`/`CLASS_SPELL_TRAINER`/`learnSpell` (a spell's
 own `learnLocation` — content.js's `spells[]` — overrides
@@ -525,13 +538,23 @@ one)/`playerFlee`/`rollGearDropTier` (scales a monster's authored
 tier-1 gearDrop up 0-2 tiers, `GEAR_DROP_TIER_CHANCE`)/`winCombat`
 (rolls lootRoll/rareRoll/gearRoll independently on every kill — see
 the comment above monsters[], content.js, for what each one is)/
-`endCombat`/`DEFEAT_WAKE_UP_LOCATION` (keyed by `state.homeTown` — the
-place name AND rest-building a defeat's own wake-up line mentions,
-kept in sync with wherever `checkDefeat()` actually teleports the
-player)/`checkDefeat`/`checkLevelUp`.
+`endCombat` (also clears `state.playerStatusEffect` — scoped to a
+single fight, same as `state.smokeScreenActive`)/`DEFEAT_WAKE_UP_LOCATION`
+(keyed by `state.homeTown` — the place name AND rest-building a
+defeat's own wake-up line mentions, kept in sync with wherever
+`checkDefeat()` actually teleports the player)/`checkDefeat`/
+`checkLevelUp`.
 
-Touch this file when: changing combat math, encounter rolls, or a
-spell's learn/cast mechanics.
+`state.playerStatusEffect` itself (`null`, or `{type:'burn'|'poison'|
+'freeze', turnsLeft, dmgPerTurn, dmgReduction}`) lives on `state`
+(core.js) but is deliberately NOT part of `serializeState()`/
+`hydrateState()` (save.js) — same reasoning as `state.smokeScreenActive`
+not being saved either: it only ever matters mid-fight, and a reload
+never resumes mid-fight. Only one slot — a fresh `'debuff'` skill use
+always overwrites, never stacks.
+
+Touch this file when: changing combat math, encounter rolls, a spell's
+learn/cast mechanics, or a boss's own debuff (burn/freeze/poison).
 
 ## town.js — per-building nav/quests + Town Lot economy
 `ZONE_ORDER`-based travel (`chainIndex(loc)` — where a location sits on
@@ -689,7 +712,18 @@ flow.
   dialogue, since a progress readout is UI, not narrative flavor; the
   guildmaster's own spoken lines (guild.js) stay just as vague as
   before. Completing it unlocks the Ember
-  Warren via Mudroot Warren's own rockpile tile, mudroot-art.js).
+  Warren via Mudroot Warren's own rockpile tile, mudroot-art.js), and
+  quest12 "Chain of Custody" (`acceptQuest12`/`reportQuest12` — a
+  sequential two-stage hunt like quest9's own, but the twist is where
+  stage 2 happens: not a new zone, but back in the Bureau, a district
+  the player already cleared for quest9/10. Stage 1
+  (`gearworksForemanHunt`, combat.js) gates stage 2
+  (`bureauQuartermasterHunt`) exactly like `tunnelWardenHunt` gates
+  `warrenScoutHunt`. Also this game's first quest built specifically to
+  introduce the boss-debuff mechanic — see `state.playerStatusEffect`'s
+  own comment, combat.js — the foreman inflicts burn, the quartermaster
+  poison, each with its own flavor tying back to its own district's
+  theme rather than reusing text).
 - **Bounty Board**: `isBountyZoneUnlocked`/`rollNewBounty`/
   `checkBountyDayReset`/`ensureActiveBounty`/`isBountyReady`/
   `formatBountyTimeLeft`/`claimBounty`/`updateBountyTimerDisplay`. Its

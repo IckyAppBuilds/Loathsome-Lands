@@ -9,11 +9,7 @@ The Foundry's 3 regulars + the Gearworks' 3 regulars follow the exact
 same loot/rareDrop/gearDrop shape as every monster in content.js's own
 monsters[] — reusing existing icons throughout, same established
 convention. gearDrop bonus values continue the same per-zone ladder
-(+9 — one step past choir/ledgervault's own +8). Deliberately no rare
-hunt/boss monster here yet — same as Mudroot Warren itself launching
-bare before quest9/quest10 later added tunnelWarden/warrenScout and
-tunnelMoleInformant/seniorClerk; this zone gets one only once a future
-quest actually needs it. */
+(+9 — one step past choir/ledgervault's own +8). */
 const emberWarrenMonsters = [
    { name:"a soot-caked forge-mole, sparks catching in its fur", hp:66, atkMin:9, atkMax:15, xp:41, zone:"foundry",
     art: artForgeMole, loot:{name:"a fistful of clinker-slag", desc:"Still warm. Still stuck to itself.", type:"junk", sell:17, icon:iconOreGrit},
@@ -43,6 +39,32 @@ const emberWarrenMonsters = [
 
 monsters.push(...emberWarrenMonsters);
 BOUNTY_TEMPLATES.push(...emberWarrenMonsters.map(makeBountyTemplate));
+
+/* Quest 12's own two-stage rare hunt, "Chain of Custody" — the first
+Act 2 quest that sends the player BACKWARD into old territory instead
+of always pushing further out: stage 1 (the line foreman) is here in
+the Gearworks, but stage 2 (the quartermaster) surfaces back in the
+Bureau, an already-explored Mudroot Warren district (guild.js/combat.js
+for the actual sequencing). Both are also this game's first monsters
+with a 'debuff' skill (state.playerStatusEffect, core.js) — the
+foreman's burn ties to the Foundry/Gearworks' own forge-heat theme; the
+quartermaster's poison is dressed as a "corroded filing spike," tying
+it back to the Bureau's own paperwork theme rather than reusing the
+same flavor. No loot/rareDrop of their own, same reasoning as every
+other named quest-hunt boss — they're already a dedicated quest
+reward. */
+const GEARWORKS_FOREMAN_SPAWN_CHANCE = 0.05;
+const BUREAU_QUARTERMASTER_SPAWN_CHANCE = 0.05;
+const gearworksForeman = {
+   name:"the line foreman, clipboard in one hand and a wrench in the other", hp:78, atkMin:10, atkMax:16, xp:55, rare:true, zone:"gearworks",
+   skills:[ { type:'debuff', chance:0.22, debuffType:'burn', debuffTurns:3, dmgPerTurn:7, flavor:"shoves you into a live vent, sparks catching on your sleeve" } ],
+   art: artGearworksForeman, loot:null
+};
+const bureauQuartermaster = {
+   name:"the quartermaster, three ledgers behind and somehow ahead of you", hp:80, atkMin:10, atkMax:16, xp:55, rare:true, zone:"bureau",
+   skills:[ { type:'debuff', chance:0.22, debuffType:'poison', debuffTurns:4, dmgPerTurn:5, flavor:"jabs you with a corroded filing spike, something on it clearly not ink" } ],
+   art: artBureauQuartermaster, loot:null
+};
 
 /* Same reasoning as mudroot-content.js/warrensear-content.js's own
 extension of these two objects — the Foundry/the Gearworks get their

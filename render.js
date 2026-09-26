@@ -211,6 +211,18 @@ function computeRenderContext(){
     : state.quest11Accepted ? 'active'
     : (state.quest10Complete ? 'offer' : 'locked');
 
+  /* Quest 12, "Chain of Custody" — sequential like quest9's own two
+  stages (stage2 can't be reached before stage1's flag is set), but
+  stage2 happens back in the Bureau, not a new zone. 'stage1' covers
+  the whole "accepted, hunting the foreman" window; 'stage2' begins the
+  instant gearworksForemanDefeated flips, whether or not the
+  quartermaster hunt has actually spawned yet. */
+  const quest12State = state.quest12Complete ? 'complete'
+    : state.bureauQuartermasterDefeated ? 'ready'
+    : state.gearworksForemanDefeated ? 'stage2'
+    : state.quest12Accepted ? 'stage1'
+    : (state.quest11Complete ? 'offer' : 'locked');
+
   /* 'trials': accepted, but not all three trainers' tests are passed yet.
   'ready': all three passed, waiting on claimClassPath(chosenStat) — see the
   three claim-path-*-btn buttons and their isGuild=='ready' branch. */
@@ -234,7 +246,7 @@ function computeRenderContext(){
     quest5State, veinHeld, veinNeeded, canTurnInVein,
     quest6State, canReportGnomeKing,
     quest7State, palaceGateGearItem, canApproachPalaceGate,
-    quest10State, quest11State,
+    quest10State, quest11State, quest12State,
     quest8State, quest9State, classQuestState,
   };
 }
@@ -487,6 +499,9 @@ function syncBuildingScreens(ctx){
   document.getElementById('accept-quest11-btn').style.display = ctx.quest11State==='offer' ? '' : 'none';
   document.getElementById('report-quest11-btn').style.display = ctx.quest11State==='ready' ? '' : 'none';
   document.getElementById('report-quest11-btn').classList.toggle('btn-ready', ctx.quest11State==='ready');
+  document.getElementById('accept-quest12-btn').style.display = ctx.quest12State==='offer' ? '' : 'none';
+  document.getElementById('report-quest12-btn').style.display = ctx.quest12State==='ready' ? '' : 'none';
+  document.getElementById('report-quest12-btn').classList.toggle('btn-ready', ctx.quest12State==='ready');
 
   document.getElementById('accept-quest3-btn').style.display = ctx.quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = ctx.quest3State==='active' ? '' : 'none';
@@ -536,7 +551,8 @@ function syncBuildingScreens(ctx){
     || (ctx.isGnomeGuild && (ctx.quest8State==='offer' || ctx.quest8State==='active'
         || ctx.quest9State==='offer' || ctx.quest9State==='stage1' || ctx.quest9State==='stage2' || ctx.quest9State==='ready'
         || ctx.quest10State==='offer' || ctx.quest10State==='active' || ctx.quest10State==='ready'
-        || ctx.quest11State==='offer' || ctx.quest11State==='active' || ctx.quest11State==='ready'))
+        || ctx.quest11State==='offer' || ctx.quest11State==='active' || ctx.quest11State==='ready'
+        || ctx.quest12State==='offer' || ctx.quest12State==='stage1' || ctx.quest12State==='stage2' || ctx.quest12State==='ready'))
     || (ctx.isHoodoo && (ctx.quest3State==='offer' || ctx.quest3State==='active'))
     || (ctx.isTinker && (ctx.quest4State==='offer' || ctx.quest4State==='active' || ctx.quest5State==='offer' || ctx.quest5State==='active'))
   )) ? 'block' : 'none';
@@ -630,6 +646,22 @@ function syncBuildingScreens(ctx){
     } else if(ctx.quest11State==='ready'){
       document.getElementById('quest-name').textContent = 'Quest: Loose Ends';
       document.getElementById('quest-desc').textContent = "Both accounted for now. Head back and tell the guildmaster it's done.";
+      document.getElementById('quest-progress').textContent = 'Ready to report.';
+    } else if(ctx.quest12State==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: Chain of Custody';
+      document.getElementById('quest-desc').textContent = "Someone in that new forge complex is clearly running the books on this. Track them down — start in the Gearworks.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(ctx.quest12State==='stage1'){
+      document.getElementById('quest-name').textContent = 'Quest: Chain of Custody';
+      document.getElementById('quest-desc').textContent = "Find whoever's logging the Ember Warren's own shipments — somewhere in the Gearworks.";
+      document.getElementById('quest-progress').textContent = "The foreman hasn't turned up yet.";
+    } else if(ctx.quest12State==='stage2'){
+      document.getElementById('quest-name').textContent = 'Quest: Chain of Custody';
+      document.getElementById('quest-desc').textContent = "The trail leads back to the Bureau, in Mudroot Warren — someone there has been receiving every shipment.";
+      document.getElementById('quest-progress').textContent = 'Head back to the Bureau and find the quartermaster.';
+    } else if(ctx.quest12State==='ready'){
+      document.getElementById('quest-name').textContent = 'Quest: Chain of Custody';
+      document.getElementById('quest-desc').textContent = "You've got the whole chain now. Head back and tell the guildmaster.";
       document.getElementById('quest-progress').textContent = 'Ready to report.';
     }
   } else if(ctx.isHoodoo){
@@ -915,7 +947,7 @@ function renderSceneArt(ctx){
       /* Combined with quest9's own offer/ready states — this tile is
       "something to do at the Guild," not a marker for where quest9's
       combat stages actually are (those show no flag anywhere). */
-      gnomeguild: { flag: (ctx.quest8State==='offer' || ctx.quest9State==='offer' || ctx.quest10State==='offer' || ctx.quest11State==='offer') ? 'offer' : ((ctx.quest8State==='active' || ctx.quest9State==='ready' || ctx.quest10State==='ready' || ctx.quest11State==='ready') ? 'turnin' : null) },
+      gnomeguild: { flag: (ctx.quest8State==='offer' || ctx.quest9State==='offer' || ctx.quest10State==='offer' || ctx.quest11State==='offer' || ctx.quest12State==='offer') ? 'offer' : ((ctx.quest8State==='active' || ctx.quest9State==='ready' || ctx.quest10State==='ready' || ctx.quest11State==='ready' || ctx.quest12State==='ready') ? 'turnin' : null) },
       gnomeshop: {},
       gnometownlot: {},
     };

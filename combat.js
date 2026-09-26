@@ -130,6 +130,30 @@ const seniorClerkHunt = state.location==='bureau' && state.quest10Accepted && !s
       return;
    }
 
+/* Quest 12's own two-stage rare hunt, "Chain of Custody" — same
+sequential shape as quest9's tunnelWarden->warrenScout above (stage 2
+can't fire until stage 1's own flag is set), but stage 2 relocates back
+to the Bureau, a zone the player already explored back in quest9/10,
+instead of pushing into somewhere new — the "spans back into an older
+zone" twist. bureauQuartermasterHunt sits below seniorClerkHunt above
+on purpose: both can be live in the Bureau at once (quest10's own hunt
+never stops spawning once quest10Accepted, per its own comment), so
+this checks its own gate independently rather than assuming it's the
+only thing that can spawn there. */
+const gearworksForemanHunt = state.location==='gearworks' && state.quest12Accepted && !state.gearworksForemanDefeated;
+   if(gearworksForemanHunt && Math.random() < GEARWORKS_FOREMAN_SPAWN_CHANCE){
+      startCombat(gearworksForeman);
+      render();
+      return;
+   }
+
+const bureauQuartermasterHunt = state.location==='bureau' && state.quest12Accepted && state.gearworksForemanDefeated && !state.bureauQuartermasterDefeated;
+   if(bureauQuartermasterHunt && Math.random() < BUREAU_QUARTERMASTER_SPAWN_CHANCE){
+      startCombat(bureauQuartermaster);
+      render();
+      return;
+   }
+
 /* Non-combat share of the encounter roll: hazard was cut from 12% down
    to 5% per user feedback that unscripted damage events specifically
    were showing up too often — the freed-up 7 points went to combat
@@ -283,6 +307,41 @@ function tickMonsterBuff(){
    if(state.monster.buffTurnsLeft > 0) state.monster.buffTurnsLeft--;
 }
 
+/* Plays out one turn of state.playerStatusEffect (a boss's own 'debuff'
+skill, useMonsterSkill() above) — called once at the very start of
+EVERY player turn that costs a turn (playerAttack()/a damage spell/an
+item use, mirroring exactly which actions provoke monsterRetaliate()),
+so a debuff ticks down on "a set number of attacks" regardless of
+whether that attack then hits, misses, or gets spent on an item
+instead. Burn/poison deal their own damage to the player immediately
+(same shield-absorption path as a monster's own retaliation,
+applyDamageToPlayer()); freeze instead hands back a damage multiplier
+for the CALLER to apply to whatever it's about to deal out this turn —
+it doesn't hurt on its own, it just saps the swing. Only one effect
+slot (state.playerStatusEffect itself, not this function) means a
+fresh debuff always overwrites rather than stacking. Returns
+{defeated} so a burn/poison tick that drops HP to 0 stops the caller
+from still landing an attack that same turn — same "already lost, no
+bonus swing" rule checkDefeat() enforces everywhere else. */
+function applyPlayerStatusEffectForTurn(){
+   const fx = state.playerStatusEffect;
+   if(!fx) return { defeated: false, dmgMult: 1 };
+   let dmgMult = 1;
+   if(fx.type === 'freeze'){
+      dmgMult = 1 - fx.dmgReduction;
+      log(`The cold still in your limbs saps the swing (${fx.turnsLeft} attack${fx.turnsLeft===1?'':'s'} left).`);
+   } else {
+      const { absorbed, remaining } = applyDamageToPlayer(fx.dmgPerTurn);
+      const label = fx.type === 'burn' ? 'burn' : 'poison';
+      log(absorbed > 0
+          ? `The ${label} still in you deals ${fx.dmgPerTurn} damage — your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'} (${fx.turnsLeft} attack${fx.turnsLeft===1?'':'s'} left).`
+          : `The ${label} still in you deals ${fx.dmgPerTurn} damage (${fx.turnsLeft} attack${fx.turnsLeft===1?'':'s'} left).`, 'damage');
+   }
+   fx.turnsLeft--;
+   if(fx.turnsLeft <= 0) state.playerStatusEffect = null;
+   return { defeated: state.hp <= 0, dmgMult };
+}
+
 /* Executes one monster skill (content.js's skills[] entries) instead of
 the normal auto-attack for this turn. Generic by skill.type, so a future
 monster with its own skills[] needs no new dispatch code here unless it
@@ -296,6 +355,14 @@ function useMonsterSkill(skill){
    } else if(skill.type==='buff'){
       state.monster.buffTurnsLeft = skill.buffTurns;
       state.monster.buffMult = skill.buffMult;
+      log(`${capitalize(state.monster.name)} ${skill.flavor}.`);
+   } else if(skill.type==='debuff'){
+      /* Inflicts a lingering status on the PLAYER instead of a normal
+      attack this turn — see state.playerStatusEffect's own comment
+      (core.js) and applyPlayerStatusEffectForTurn() below for how it
+      actually plays out. Overwrites whatever was already active, same
+      no-stacking simplicity as the 'buff' branch above. */
+      state.playerStatusEffect = { type: skill.debuffType, turnsLeft: skill.debuffTurns, dmgPerTurn: skill.dmgPerTurn, dmgReduction: skill.dmgReduction };
       log(`${capitalize(state.monster.name)} ${skill.flavor}.`);
    } else if(skill.type==='bolt'){
       if(Math.random() < playerDodgeChance()){
@@ -322,6 +389,14 @@ function playerAttack(){
       state.smokeScreenActive = false;
       log("Swinging back gives away your position — the smoke clears.");
    }
+   /* A lingering boss debuff (state.playerStatusEffect) ticks on THIS
+   turn regardless of what happens next — before the miss roll, so a
+   burn/poison tick still lands on a turn that then whiffs, and before
+   the damage roll below, so freeze's own dmgMult actually applies to
+   it. A tick that drops HP to 0 ends the turn right here, same
+   "already lost, no bonus swing" rule as every other defeat path. */
+   const statusFx = applyPlayerStatusEffectForTurn();
+   if(statusFx.defeated){ checkDefeat(); render(); return; }
    const eff = getEffectiveStats();
    /* Named in every log line below rather than a generic "You swing/
    strike" — state.equipment.weapon is always populated in real play
@@ -346,6 +421,10 @@ function playerAttack(){
    }
 
    let dmg = randInt(3,7) + (state.level-1) + statBonus(eff.beef);
+   /* Freeze's own dmgMult (applyPlayerStatusEffectForTurn() above) saps
+   this base roll before any class bonus multiplies it further, same
+   ordering as every other per-turn modifier here. */
+   dmg = Math.round(dmg * statusFx.dmgMult);
    if(state.classTitle === 'Meathead') dmg = Math.round(dmg * (1 + MEATHEAD_DAMAGE_BONUS[state.classSkillLevel]));
    /* Adrenaline Rush buff (content.js's spells[], classRequired:'Meathead')
    — chains on top of the passive MEATHEAD_DAMAGE_BONUS line above rather
@@ -392,7 +471,7 @@ function playerAttack(){
    unchanged and still gating on the FIRST swing's sneak-attack roll
    only, same "landing it denies retaliation" rule as before. */
    if(state.classTitle === 'Card Shark' && Math.random() < CARD_SHARK_DOUBLE_ATTACK_CHANCE[state.classSkillLevel]){
-      const dmg2 = randInt(3,7) + (state.level-1) + statBonus(eff.beef);
+      const dmg2 = Math.round((randInt(3,7) + (state.level-1) + statBonus(eff.beef)) * statusFx.dmgMult);
       const { dodged: dodged2 } = applyDamageToMonster(dmg2, false);
       if(dodged2){
          log(`Quick as a card trick, you come back around for a second swing with ${weaponName} — ${state.monster.name} slips out of the way again.`);
@@ -439,6 +518,13 @@ function useItemInCombat(idx){
    applyConsumableEffect(item);
    state.inventory.splice(idx,1);
    combatSubView = 'main';
+   /* Ticked AFTER the item's own effect, unlike playerAttack()/castSpell()
+   ticking BEFORE theirs — an item use is usually a reaction to being in
+   trouble, so a burn/poison tick shouldn't cancel out the very potion
+   drunk to survive it. Item use never deals monster damage, so
+   dmgMult is irrelevant here — only {defeated} matters. */
+   const itemStatusFx = applyPlayerStatusEffectForTurn();
+   if(itemStatusFx.defeated){ checkDefeat(); render(); return; }
    monsterRetaliate();
    checkDefeat();
    render();
@@ -483,7 +569,13 @@ if(spell.type==='damage'){
       state.smokeScreenActive = false;
       log("Swinging back gives away your position — the smoke clears.");
    }
-   let dmg = randInt(spell.dmgMin, spell.dmgMax) + (state.level-1) + statBonus(eff.hoodoo);
+   /* Same per-turn debuff tick as playerAttack() — a damage spell costs
+   a turn exactly like a physical Attack, so it ticks state.playerStatus
+   Effect the same way (and a burn/poison tick that drops HP to 0 ends
+   the turn here too, before the spell itself resolves). */
+   const spellStatusFx = applyPlayerStatusEffectForTurn();
+   if(spellStatusFx.defeated){ checkDefeat(); render(); return; }
+   let dmg = Math.round((randInt(spell.dmgMin, spell.dmgMax) + (state.level-1) + statBonus(eff.hoodoo)) * spellStatusFx.dmgMult);
    if(state.classTitle === 'Hexpert') dmg += HEXPERT_SPELL_DMG_BONUS[state.classSkillLevel];
    /* Arcane Focus buff (content.js's spells[], classRequired:'Hexpert') —
    applied AFTER the flat HEXPERT_SPELL_DMG_BONUS line above so the
@@ -685,6 +777,8 @@ function winCombat(){
    const wasWarrenScout = !!state.monster.rare && state.monster.name === warrenScout.name;
    const wasTunnelMoleInformant = !!state.monster.rare && state.monster.name === tunnelMoleInformant.name;
    const wasSeniorClerk = !!state.monster.rare && state.monster.name === seniorClerk.name;
+   const wasGearworksForeman = !!state.monster.rare && state.monster.name === gearworksForeman.name;
+   const wasBureauQuartermaster = !!state.monster.rare && state.monster.name === bureauQuartermaster.name;
    /* Which of the 5 palace gauntlet guards (PALACE_GUARDS, content.js)
    this was, if any — -1 when it wasn't one of them. Used below to both
    log a distinct "guards left" message and advance
@@ -802,6 +896,12 @@ clearLog();
       state.seniorClerkDefeated = true;
       if(!state.quest10Path) state.quest10Path = 'ledger';
       log(`You defeat ${defeatedName}! The ledger it was guarding is yours now, for whatever that's worth. (+${xpGain} XP)`);
+   } else if(wasGearworksForeman){
+      state.gearworksForemanDefeated = true;
+      log(`You defeat ${defeatedName}! The clipboard hits the floor, one line still unfinished: a destination. (+${xpGain} XP)`);
+   } else if(wasBureauQuartermaster){
+      state.bureauQuartermasterDefeated = true;
+      log(`You defeat ${defeatedName}! Every shipment, every stamp, all of it finally accounted for. (+${xpGain} XP)`);
    } else if(wasPalaceGuard){
       /* Advances the gauntlet exactly once per guard kill — guild.js's
       approachPalaceGate() reads this same variable to decide whether the
@@ -896,6 +996,10 @@ function endCombat(){
    above — this same funnel point guarantees it never survives into the
    next encounter regardless of how this one ended. */
    state.smokeScreenActive = false;
+   /* state.playerStatusEffect (a boss's own 'debuff' skill) is scoped to
+   a single fight same as smokeScreenActive right above — a burn caught
+   in one fight shouldn't still be ticking in the next, unrelated one. */
+   state.playerStatusEffect = null;
 }
 
 /* Where a defeat's own wake-up line (checkDefeat() below) says the
