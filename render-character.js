@@ -472,11 +472,12 @@ if(state.quest11Complete){
   </div>`);
 } else if(state.quest11Accepted){
   const bothAccountedFor = state.tunnelMoleInformantDefeated && state.seniorClerkDefeated;
+  const remainingDistrict = quest11RemainingDistrict();
   activeEntries.push(`
   <div class="quest-log-entry">
   <div class="quest-name">Loose Ends</div>
-  <div class="quest-desc">One of them got away clean. The guildmaster wants both accounted for, not just whichever talked first.</div>
-  <div class="quest-progress">${bothAccountedFor ? 'Ready to report back at the Guild.' : (state.tunnelMoleInformantDefeated || state.seniorClerkDefeated ? '1/2 accounted for.' : '0/2 accounted for.')}</div>
+  <div class="quest-desc">One of them got away clean. The guildmaster wants both accounted for, not just whichever talked first. ${bothAccountedFor ? '' : `Head back to ${remainingDistrict}, in Mudroot Warren, and finish it.`}</div>
+  <div class="quest-progress">${bothAccountedFor ? 'Ready to report back at the Guild.' : (state.tunnelMoleInformantDefeated || state.seniorClerkDefeated ? `1/2 accounted for — ${remainingDistrict} still needs clearing.` : `0/2 accounted for — ${remainingDistrict} still needs clearing.`)}</div>
   </div>`);
 }
 

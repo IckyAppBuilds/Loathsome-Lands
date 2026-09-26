@@ -43,6 +43,20 @@ function syncHeaderAndStats(){
   document.getElementById('xp-text').textContent = state.xp+'/'+state.xpToLevel;
 }
 
+/* Quest11's own progress readout needs to actually name a place, unlike
+quest9/quest10's deliberately vague guildmaster dialogue (guild.js's
+own log() lines stay exactly as mysterious as those two) -- a status
+line is UI, not narrative flavor, so it should just say where to go.
+Only ever called once quest10Complete (quest11 is offered), by which
+point exactly one of the two is already true (quest10Path requires
+it) -- so this never returns null in practice, but falls back to null
+rather than throwing if it somehow did. */
+function quest11RemainingDistrict(){
+  if(!state.tunnelMoleInformantDefeated) return 'the Root Cellar';
+  if(!state.seniorClerkDefeated) return 'the Bureau';
+  return null;
+}
+
 const ZONE_TITLES = {
   gaffer: "Gaffer Thistlewick's Cottage", shop: 'The Shop', hoodoo: "The Hoodoo Doctor's Shack",
   guild: "The Adventurers' Guild", tinker: "Tinker's Workshop", casino: 'The Casino',
@@ -607,12 +621,12 @@ function syncBuildingScreens(ctx){
       document.getElementById('quest-progress').textContent = 'Ready to report.';
     } else if(ctx.quest11State==='offer'){
       document.getElementById('quest-name').textContent = 'Quest available: Loose Ends';
-      document.getElementById('quest-desc').textContent = "One of them got away clean, and the guildmaster wants both accounted for — not just whichever talked first. Track down whichever one you haven't dealt with yet.";
+      document.getElementById('quest-desc').textContent = `One of them got away clean, and the guildmaster wants both accounted for — not just whichever talked first. ${quest11RemainingDistrict()} still needs clearing.`;
       document.getElementById('quest-progress').textContent = 'Not yet accepted.';
     } else if(ctx.quest11State==='active'){
       document.getElementById('quest-name').textContent = 'Quest: Loose Ends';
-      document.getElementById('quest-desc').textContent = "Keep at it. Both of them, this time — not just one.";
-      document.getElementById('quest-progress').textContent = (state.tunnelMoleInformantDefeated?1:0) + (state.seniorClerkDefeated?1:0) + '/2 accounted for.';
+      document.getElementById('quest-desc').textContent = `Head back to ${quest11RemainingDistrict()}, in Mudroot Warren, and finish it.`;
+      document.getElementById('quest-progress').textContent = (state.tunnelMoleInformantDefeated?1:0) + (state.seniorClerkDefeated?1:0) + `/2 accounted for — ${quest11RemainingDistrict()} still needs clearing.`;
     } else if(ctx.quest11State==='ready'){
       document.getElementById('quest-name').textContent = 'Quest: Loose Ends';
       document.getElementById('quest-desc').textContent = "Both accounted for now. Head back and tell the guildmaster it's done.";

@@ -682,7 +682,13 @@ flow.
   found first. Requires BOTH `tunnelMoleInformantDefeated` AND
   `seniorClerkDefeated` to report, regardless of which one set
   `quest10Path` — no new rare hunt of its own, both already keep
-  spawning after quest10Complete. Completing it unlocks the Ember
+  spawning after quest10Complete. `quest11RemainingDistrict()`
+  (render.js) names whichever of Root Cellar/the Bureau still needs
+  clearing, in the Guild's own quest box AND the Quest Log entry —
+  deliberately more concrete than quest9/quest10's own zone-name-free
+  dialogue, since a progress readout is UI, not narrative flavor; the
+  guildmaster's own spoken lines (guild.js) stay just as vague as
+  before. Completing it unlocks the Ember
   Warren via Mudroot Warren's own rockpile tile, mudroot-art.js).
 - **Bounty Board**: `isBountyZoneUnlocked`/`rollNewBounty`/
   `checkBountyDayReset`/`ensureActiveBounty`/`isBountyReady`/
