@@ -22,14 +22,26 @@ index that stack currently occupies, for a Use/Equip button to target —
 that part is unaffected, only the ordering of the groups is. Shared by
 renderInventory() below and renderSpellMenu()'s consumables section
 (render-character.js), which needs the exact same grouping for its own
-Use-menu item list. */
+Use-menu item list.
+
+Equip items are deliberately EXCLUDED from grouping by name at all —
+per explicit correction, gear never stacks, full stop. Two items can
+share the exact same authored name (a monster's own gearDrop base name,
+content.js) while carrying completely different rolled bonus/tier/
+temperLevel data (rollGearDropTier()/rollSecondaryStatValue(), combat.js/
+economy.js; temperEquippedItem(), player-actions.js), so merging them
+into one "×2" row silently hid which specific item a player was even
+looking at — a real report, not a hypothetical. Keying by array index
+instead of name guarantees every equip item gets its own group of
+exactly 1, no matter how identical two of them might look. */
 function groupInventoryByName(){
   const groups = new Map();
   state.inventory.forEach((item, idx)=>{
-    if(!groups.has(item.name)){
-      groups.set(item.name, { item, count:0, firstIdx:idx });
+    const key = item.type==='equip' ? `equip-${idx}` : item.name;
+    if(!groups.has(key)){
+      groups.set(key, { item, count:0, firstIdx:idx });
     }
-    groups.get(item.name).count++;
+    groups.get(key).count++;
   });
   return [...groups.values()].sort((a,b)=>a.item.name.localeCompare(b.item.name));
 }
@@ -237,11 +249,15 @@ single generic system (getItemSellValue(), item-tiers.js, reading
 straight off whatever's actually in state.inventory) with nothing
 shop-specific about it, so both Shops show literally the same Sell
 pane rather than each maintaining its own copy. sellFn defaults to
-Gladstone's sellItemByName(); the Act 2 Shop doesn't need its own
-separate sell function the way it needed its own buy function (selling
-doesn't touch either shop's own catalog, only the Pack), so unlike
-renderShopItemRow()'s buyFn param this one has no real second caller
-yet — kept as a param anyway so that stays true if it ever needs one. */
+Gladstone's sellItemByName(), used for the junk/consumable/quest rows
+only — equip rows always call sellEquipItemByIndex() directly (economy.js),
+regardless of sellFn, since gear is never grouped/matched by name (see
+this function's own comment below). The Act 2 Shop doesn't need its
+own separate sell function the way it needed its own buy function
+(selling doesn't touch either shop's own catalog, only the Pack), so
+unlike renderShopItemRow()'s buyFn param this one has no real second
+caller yet — kept as a param anyway so that stays true if it ever
+needs one. */
 function buildSellSection(sellFn){
   sellFn = sellFn || 'sellItemByName';
   const sellSection = document.createElement('div');
@@ -257,31 +273,47 @@ function buildSellSection(sellFn){
     sellSection.innerHTML += '<div class="shop-empty">Nothing in your pack worth selling. Bring back some gnome junk.</div>';
     return sellSection;
   }
-  const groups = new Map();
-  sellable.forEach(item=>{
-    /* Equip items group by name+tier, not name alone — the same drop
-    name can roll different tiers (rollGearDropTier(), combat.js), and
-    those sell for different amounts, so lumping them together would
-    show one wrong blended price. Junk/quest items never vary by tier,
-    so they keep grouping by name only. */
-    const key = item.type==='equip' ? `${item.name}::${item.tier}` : item.name;
-    if(!groups.has(key)) groups.set(key, { item, count:0 });
-    groups.get(key).count++;
+  /* Equip items never group here either — same reasoning as
+  groupInventoryByName()'s own comment (render-shop.js): even name+tier
+  isn't enough to guarantee two items are actually identical (rolled
+  secondary stats/temperLevel can still differ), so gear doesn't stack
+  at all, full stop. Each gets its own row, sold individually by its
+  own array index (sellEquipItemByIndex(), economy.js) rather than
+  matched back up by name. Junk/consumables/quest items are genuinely
+  fungible (no rolled stats to differ), so they keep grouping by name. */
+  const equipRows = [];
+  state.inventory.forEach((item, idx)=>{
+    if(item.type!=='equip') return;
+    const iconSvg = item.icon ? item.icon() : '';
+    const unitSell = getItemSellValue(item);
+    const div = document.createElement('div');
+    div.className = 'shop-item';
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}</div><div class="desc">${item.desc} (${unitSell} Pop Tab${unitSell>1?'s':''})</div><button class="btn-secondary" onclick="sellEquipItemByIndex(${idx})">Sell — ${unitSell} Pop Tabs</button></div>`;
+    equipRows.push({ name: item.name, div });
   });
-  /* Sort by name rather than trusting state.inventory's current order —
-  same reasoning as renderInventory() above: that order shifts under
-  this list's feet whenever items are used/equipped elsewhere, which
-  made entries here reshuffle too even though nothing was sold. */
-  [...groups.values()].sort((a,b)=>a.item.name.localeCompare(b.item.name)).forEach(({item, count})=>{
+
+  const groups = new Map();
+  sellable.filter(item => item.type!=='equip').forEach(item=>{
+    if(!groups.has(item.name)) groups.set(item.name, { item, count:0 });
+    groups.get(item.name).count++;
+  });
+  const nonEquipRows = [...groups.values()].map(({item, count})=>{
     const div = document.createElement('div');
     div.className = 'shop-item';
     const iconSvg = item.icon ? item.icon() : '';
     const unitSell = getItemSellValue(item);
     const total = unitSell * count;
-    const tierArg = item.type==='equip' ? `, '${item.tier}'` : '';
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)} <span class="qty-badge">×${count}</span></div><div class="desc">${item.desc} (${unitSell} Pop Tab${unitSell>1?'s':''} each)</div><button class="btn-secondary" onclick="${sellFn}('${item.name.replace(/'/g,"\\'")}'${tierArg})">Sell All — ${total} Pop Tabs</button></div>`;
-    sellSection.appendChild(div);
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)} <span class="qty-badge">×${count}</span></div><div class="desc">${item.desc} (${unitSell} Pop Tab${unitSell>1?'s':''} each)</div><button class="btn-secondary" onclick="${sellFn}('${item.name.replace(/'/g,"\\'")}')">Sell All — ${total} Pop Tabs</button></div>`;
+    return { name: item.name, div };
   });
+
+  /* Sort by name rather than trusting state.inventory's current order —
+  same reasoning as renderInventory() above: that order shifts under
+  this list's feet whenever items are used/equipped elsewhere, which
+  made entries here reshuffle too even though nothing was sold. */
+  [...equipRows, ...nonEquipRows]
+    .sort((a,b)=>a.name.localeCompare(b.name))
+    .forEach(({div}) => sellSection.appendChild(div));
   return sellSection;
 }
 

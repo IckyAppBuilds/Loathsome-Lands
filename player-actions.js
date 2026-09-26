@@ -156,14 +156,14 @@ function unequipItem(slot){
 /* Bounty Tokens' first real sink — see TEMPER_BASE_COST's own comment
 (content.js) for the full reasoning. Only from the Tinker's Workshop
 (per explicit correction — a tinkerer's workbench, not a menu buried
-on the Character page) and equipped-only: the Pack's own inventory
-display groups stacked items purely by name (groupInventoryByName(),
-render-shop.js), so two same-named drops with different rolled stats
-can already share one visual stack — tempering one specific copy there
-would make that ambiguity a real correctness problem instead of just a
-cosmetic one. state.equipment[slot] is always exactly one item, never
-grouped, so that's the only place this is offered
-(renderTinkerTemperBlock(), render-character.js). */
+on the Character page) and equipped-only, by deliberate choice: gear
+never groups/stacks in the Pack at all anymore (groupInventoryByName(),
+render-shop.js — two same-named drops with different rolled stats used
+to share one misleading visual stack, a real bug now fixed), so
+tempering a specific Pack item would be perfectly safe to add, there's
+just no current need to — state.equipment[slot] already names exactly
+one item unambiguously, which is all the Tinker's Workshop's own
+workflow (renderTinkerTemperBlock(), render-character.js) needs. */
 function temperEquippedItem(slot){
    if(state.location !== 'tinker') return;
    const item = state.equipment[slot];

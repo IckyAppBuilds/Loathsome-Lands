@@ -43,6 +43,27 @@ function sellItemByName(name, tier){
    render();
 }
 
+/* Equip items never go through sellItemByName() above — per explicit
+correction, gear is never grouped/stacked anywhere (groupInventoryByName(),
+render-shop.js), so there's no "all matching name+tier" to sell in the
+first place: the Sell tab's own equip rows (buildSellSection(),
+render-shop.js) each represent exactly one physical item and sell it
+by its own array index instead. Two items can share a name (and even a
+tier) while carrying different rolled secondary stats or temperLevel,
+so matching by name+tier the way sellItemByName() does for junk/
+consumables could silently sell the wrong mix at the wrong price. */
+function sellEquipItemByIndex(idx){
+   if(state.location !== 'shop' && state.location !== 'gnomeshop') return;
+   const item = state.inventory[idx];
+   if(!item || item.type !== 'equip') return;
+   const earned = Math.round(getItemSellValue(item) * (1 + TINKER_SELL_BONUS[state.buildingUpgrades.tinker || 0]));
+   state.inventory.splice(idx,1);
+   state.popTabs += earned;
+   clearLog();
+   log(`You sell ${item.name} for ${earned} Pop Tabs.`);
+   render();
+}
+
 /* Upgrading the Shop building (state.buildingUpgrades.shop, via the Town
 Lot) unlocks additive tiers of both food and gear at each level — see
 SHOP_LEVEL_FOOD_TIER2/SHOP_LEVEL_FOOD_TIER3/SHOP_LEVEL_GEAR_TIER2/

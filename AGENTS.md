@@ -441,10 +441,10 @@ already-generic `serializeItem`/`hydrateItem` for free — no
 save-format change, nothing to lose. Snapshots `item.levelReqBase`
 (same field `rollGearDropTier()`, combat.js, uses) the first time an
 item is ever tempered, so repeated tempering never raises its level
-requirement. Equipped-only, deliberately — see the function's own
-comment for why the Pack's own by-name item grouping
-(`groupInventoryByName()`, render-shop.js) makes tempering a stacked
-Pack item unsafe.
+requirement. Equipped-only by choice, not necessity — gear no longer
+groups/stacks in the Pack at all (`groupInventoryByName()`,
+render-shop.js), so a Pack item would be just as safe to temper; the
+Tinker's Workshop's own workflow just never needed that yet.
 
 Touch this file when: changing equip/use-item/stat-point/temper logic.
 
@@ -692,7 +692,16 @@ class/label mapping.
 ## economy.js — shop sell/buy + Biscuit/MP regen + Casino passive income
 `isQuestItemSellable`/`sellItemByName` (works from EITHER Shop —
 `state.location==='shop'` or `'gnomeshop'` — selling never touches
-either shop's own catalog, only the Pack)/`getAvailableShopItems`/
+either shop's own catalog, only the Pack; junk/consumable/quest items
+only — see `sellEquipItemByIndex` below for equip)/
+`sellEquipItemByIndex(idx)` — gear's own sell path, selling exactly the
+one item at that array index rather than matching by name+tier the way
+`sellItemByName` does, since per explicit correction gear is never
+grouped/stacked anywhere (two same-named, same-tier drops can still
+carry different rolled secondary stats or `temperLevel` —
+`groupInventoryByName()`, render-shop.js, and `buildSellSection()`'s
+own equip rows both key off array index for exactly this reason) —
+`getAvailableShopItems`/
 `rollShopGearStats` (rerolls tier-2/3+ gear's secondary stat(s) fresh
 on every purchase — the primary stat/value is fixed by the definition,
 only which OTHER stat(s) it gets is random; shared by both shops)/
