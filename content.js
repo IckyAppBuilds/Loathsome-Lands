@@ -423,8 +423,21 @@ this bump is that a TEMPERED character absorbs it at the same
 recommended level, not that the recommended level itself needs to
 rise. Revisit with a real win-rate probe (same "simulated, not
 guessed" methodology used to catch Mudroot Warren/Warren's Ear's own
-overtuned guesses) if that assumption turns out wrong in practice. */
-const ZONE_DIFFICULTY = { commons:1, sewers:1.17, quarry:1.61, vault:2.01, garrison:2.48, roguesden:2.48, sanctum:2.48, palace:2.48, rootcellar:2.86, bureau:2.86, mudflats:3.25, choir:3.68, ledgervault:3.68, foundry:4.13, gearworks:4.13 };
+overtuned guesses) if that assumption turns out wrong in practice.
+
+That assumption turned out wrong: player feedback after that first ramp
+shipped was that tempering was STILL making the game too easy, so the
+Mole Wars zones — rootcellar/bureau/mudflats/choir/ledgervault/foundry/
+gearworks specifically, NOT garrison/roguesden/sanctum/palace, which
+are Act 1's own finale content just housed in the Gnometropolis
+building shell — get a second, much bigger correction on top of the
+first ramp above: roughly +50% at Root Cellar/Bureau growing to +60% by
+the Ember Warren, a decisive jump sized for a character with several
+fully-tempered (+5) items rather than another small nudge. Act 1's own
+zones (commons through vault) and the three Gnometropolis districts are
+untouched by this second pass — this is scoped to Act 2's Mole Wars
+content specifically, per explicit request. */
+const ZONE_DIFFICULTY = { commons:1, sewers:1.17, quarry:1.61, vault:2.01, garrison:2.48, roguesden:2.48, sanctum:2.48, palace:2.48, rootcellar:4.29, bureau:4.29, mudflats:4.97, choir:5.74, ledgervault:5.74, foundry:6.61, gearworks:6.61 };
 
 /* Display names for each adventure zone, keyed by state.location/zone id —
 used by the Bounty Board (render.js) to spell out where a bounty's

@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 4, date: 'September 26', title: 'Act 2 Gets Harder', items: [
+      "Every Mole Wars zone hits a lot harder now — Root Cellar/Bureau, the Mudflats, the Warren's Ear, and the Ember Warren all jump 50-60% on top of last patch's own bump. Tempering was still making these zones too easy; this is the correction.",
+      "The Garrison, Rogues' Den, Arcane Sanctum, and the Palace are untouched — that's Act 1 finale content, not the Mole Wars.",
+      ]},
    { id: 3, date: 'September 26', title: 'Tempering Gets Teeth', items: [
       "Every zone from the Sewers onward hits a little harder now — gear tempering gave every zone's own power ceiling real headroom, so the difficulty curve finally uses it.",
       'New quest at the Gnome Guild: "Chain of Custody" — follow the Ember Warren\'s own shipments back to a familiar face in the Bureau.',
