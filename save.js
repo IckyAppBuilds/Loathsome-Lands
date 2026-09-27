@@ -140,7 +140,8 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
        classBuffFightsLeft,
        activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
-       lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt } = state;
+       lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
+       lastSeenChangelogVersion } = state;
    return {
       hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
       lastRegenAt, lastMpRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
@@ -160,6 +161,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
       classBuffFightsLeft,
       activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
       lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
+      lastSeenChangelogVersion,
       equipment: Object.fromEntries(
          SLOT_ORDER.map(slot => [slot, serializeItem(state.equipment[slot])])
          ),

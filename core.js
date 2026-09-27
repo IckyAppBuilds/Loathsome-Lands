@@ -225,6 +225,15 @@ function createDefaultState(){
         off of), not real-time turns. Same not-saved reasoning as
         smokeScreenActive right above — this only ever matters mid-fight. */
      playerStatusEffect: null,
+     /* The highest CHANGELOG entry id (changelog.js) this player has
+        already been shown, checked once per login (checkChangelogOnLogin(),
+        called from enterGameAfterAuth(), auth.js) — null covers both a
+        genuinely brand-new character (never shown anything, and never
+        will be: nothing has happened yet) and a save that predates this
+        field entirely (treated as "show the full history once," not
+        "silently already caught up"). Unlike playerStatusEffect above,
+        THIS one is saved — see serializeState()/hydrateState(), save.js. */
+     lastSeenChangelogVersion: null,
      /* Bounty board (The Guild) — one active bounty at a time, auto-refreshed
         on claim or expiry (see ensureActiveBounty()/claimBounty() in
         guild.js). null until the player's first visit rolls one, or once

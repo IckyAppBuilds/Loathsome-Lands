@@ -94,7 +94,11 @@ function playAsGuest(){
 }
 
 /* Called once, right after the gate closes because of a real login (not a
-guest). `loaded` says whether an existing save was found and hydrated. */
+guest). `loaded` says whether an existing save was found and hydrated.
+checkChangelogOnLogin() (changelog.js) only ever fires in the `loaded`
+branch — a returning player is the only one who could have "missed"
+anything; a brand-new character (the `else` branch) has no history to
+catch up on, and a guest never reaches this function at all. */
 function enterGameAfterAuth(loaded){
    closeGate();
    if(loaded){
@@ -103,6 +107,7 @@ function enterGameAfterAuth(loaded){
           ? `Welcome back! Your save has been loaded. While you were away, you earned ${lastOfflineBiscuitGain} Biscuit${lastOfflineBiscuitGain===1?'':'s'}.`
           : "Welcome back! Your save has been loaded.");
       render();
+      checkChangelogOnLogin();
    } else {
       startFreshGame();
    }
@@ -117,7 +122,7 @@ function renderAccountTab(){
    when accounts failed to load entirely — so a player can revisit the
    tutorial without it depending on Supabase at all. See "In-game
    tutorial" near the bottom of this file. */
-const tutorialBtnRow = `<div class="btn-row"><button class="btn-secondary" onclick="openTutorial()">📖 How to Play</button></div>`;
+const tutorialBtnRow = `<div class="btn-row"><button class="btn-secondary" onclick="openTutorial()">📖 How to Play</button><button class="btn-secondary" onclick="openChangelog()">🗞 What's New</button></div>`;
 
 if(!sb){
    label.textContent = 'Account';

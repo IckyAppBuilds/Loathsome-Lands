@@ -1,7 +1,7 @@
 # The Loathsome Lands — file map
 
 A single-page browser RPG. No build step, no bundler, no modules — plain
-HTML/CSS/`<script>` tags, all globals. 33 JS files load in a specific
+HTML/CSS/`<script>` tags, all globals. 34 JS files load in a specific
 order (see `index.html`'s `<script>` block, which documents this inline
 too):
 
@@ -12,8 +12,9 @@ supabase (CDN)
 -> warrensear-content.js -> emberwarren-content.js -> act2-shop.js -> item-tiers.js
 -> render.js -> render-shop.js -> render-character.js -> class-spells.js
 -> dev-tools.js -> auth.js -> save.js -> player-actions.js -> tutorial.js
--> hubs.js -> combat.js -> town.js -> casino.js -> hilo.js -> class-trial.js
--> guild.js -> gnometropolis.js -> economy.js -> noticeboard.js -> boot.js
+-> changelog.js -> hubs.js -> combat.js -> town.js -> casino.js -> hilo.js
+-> class-trial.js -> guild.js -> gnometropolis.js -> economy.js
+-> noticeboard.js -> boot.js
 ```
 
 Act 2's own files slot in alongside their Act 1 counterpart rather than
@@ -438,9 +439,12 @@ Touch this file when: adding a dev/cheat tool, and hook it into
 
 ## auth.js — sign-in/out, the gate, the Account drawer body
 `authSetView`/`renderAuthUI`/`renderAuthForms`/`acctMsg`/`showGate`/
-`closeGate`/`renderGate`/`playAsGuest`/`enterGameAfterAuth`,
+`closeGate`/`renderGate`/`playAsGuest`/`enterGameAfterAuth` (calls
+`checkChangelogOnLogin()`, changelog.js, in its `loaded===true` branch
+only),
 `doRegister`/`doLogin`/`doForgotPassword`/`doLogout`, and
-`renderAccountTab()` (calls into dev-tools.js).
+`renderAccountTab()` (calls into dev-tools.js; also renders the "🗞
+What's New" button, `openChangelog()`, changelog.js).
 
 Touch this file when: changing the login/register/guest flow, or the
 Account drawer's non-dev-tool content.
@@ -488,6 +492,30 @@ Touch this file when: changing equip/use-item/stat-point/temper logic.
 `TUTORIAL_STEPS`, `openTutorial`/`closeTutorial`/`tutorialSkip`/
 `tutorialBack`/`tutorialNext`/`renderTutorial`. Edited in total isolation
 from everything else.
+
+## changelog.js — login changelog overlay
+`CHANGELOG` (newest-first array of `{id, date, title, items}`) and
+`CHANGELOG_LATEST_ID` (its first entry's own id) — pure data, same
+"new concern, new file" convention as tutorial.js, whose overlay
+mechanics (`#tutorial-screen`'s open/close/render shape) this mirrors
+exactly for its own `#changelog-screen`. `checkChangelogOnLogin()` is
+the one real piece of logic: compares `state.lastSeenChangelogVersion`
+(core.js/save.js) against `CHANGELOG_LATEST_ID` and opens the overlay
+with only the unseen entries if any exist — called once from
+`enterGameAfterAuth(loaded===true)` (auth.js), never for a brand-new
+character or a guest (see that call site's own comment for why: there's
+nothing either of them could have missed). `openChangelog()`/
+`closeChangelog()`/`renderChangelog()` — `closeChangelog()` is what
+actually advances the saved marker (and autosaves); a manual reopen via
+the Account tab's "🗞 What's New" button (`renderAccountTab()`, auth.js)
+always shows the FULL list regardless of what's already been seen,
+mirroring `openTutorial()`'s own "always restarts at step 1" behavior.
+`null` (a save from before this field existed, or a genuinely new
+character) is treated as "show everything once," not "already caught
+up" — see `state.lastSeenChangelogVersion`'s own comment, core.js.
+
+Touch this file when: writing a new changelog entry after a
+player-facing change ships, or changing the overlay's own mechanics.
 
 ## hubs.js — town hub registry
 `HUB_TOWNS` — one entry per persistent hub (`town`/`gnometropolis`/

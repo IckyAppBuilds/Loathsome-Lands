@@ -853,3 +853,52 @@ since its content needs to fit and scroll on a short phone screen. */
   padding:0 18px 16px;
   flex-shrink:0;
 }
+
+#changelog-screen{
+  position:absolute; inset:0; z-index:21;
+  background:var(--white);
+  background-image: radial-gradient(circle, #2b2b2809 1px, transparent 1px);
+  background-size: 14px 14px;
+  display:none;
+  flex-direction:column;
+}
+.changelog-inner{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+.changelog-body{
+  flex:1;
+  overflow-y:auto;
+  padding:16px 18px;
+}
+.changelog-entry{
+  margin-bottom:20px;
+}
+.changelog-entry:last-child{ margin-bottom:0; }
+.changelog-entry-date{
+  font-size:0.72rem;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  color:var(--black);
+  opacity:0.55;
+  margin-bottom:2px;
+}
+.changelog-entry-title{
+  font-weight:700;
+  font-size:1.05rem;
+  color:var(--blue);
+  margin:0 0 10px;
+}
+.changelog-list{
+  margin:0;
+  padding-left:18px;
+  font-size:0.84rem;
+  line-height:1.55;
+}
+.changelog-list li{ margin-bottom:9px; }
+.changelog-list li:last-child{ margin-bottom:0; }
+.changelog-nav-row{
+  padding:0 18px 18px;
+  flex-shrink:0;
+}
