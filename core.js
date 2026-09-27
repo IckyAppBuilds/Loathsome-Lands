@@ -175,6 +175,26 @@ function createDefaultState(){
      quest12Complete: false,
      gearworksForemanDefeated: false,
      bureauQuartermasterDefeated: false,
+     /* Quest 13, "Quenched" — offered once quest12Complete. A single rare
+     hunt, no second stage — see quenchMasterHunt (combat.js). */
+     quest13Accepted: false,
+     quest13Complete: false,
+     quenchMasterDefeated: false,
+     /* Quest 14, "What the Vault Was Guarding" — offered once quest13Complete.
+     A scripted gauntlet (gauntlet.js's own 'ledgerCommittee' entry), not a
+     random hunt — vaultKeeperDefeated is the only persisted flag; the
+     guard(s) ahead of it are tracked by the transient gauntletProgress
+     object (gauntlet.js), same as the Act 1 Palace Gauntlet's own
+     palaceGauntletProgress never being saved either. */
+     quest14Accepted: false,
+     quest14Complete: false,
+     vaultKeeperDefeated: false,
+     /* Quest 15, "The Warren Answers" — offered once quest14Complete. The
+     Mole Wars arc's own finale gauntlet (gauntlet.js's 'moleCouncil'
+     entry) — same not-saved-guard-progress reasoning as quest14 above. */
+     quest15Accepted: false,
+     quest15Complete: false,
+     warrenMotherDefeated: false,
      classQuestAccepted: false,
      classQuestComplete: false,
      classTitle: null,

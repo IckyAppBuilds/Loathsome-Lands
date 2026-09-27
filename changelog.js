@@ -11,6 +11,12 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 5, date: 'September 26', title: 'The Mole Wars Continue', items: [
+      'Three new quests at the Gnome Guild: "Quenched," "What the Vault Was Guarding," and "The Warren Answers" — a harder arc that closes out the Mole Wars so far.',
+      "Bosses can now freeze you, sapping your own damage for a few attacks — joining burn and poison as the third status effect.",
+      'Two brand new gauntlets — scripted, multi-fight showdowns in the Ledger Vault and the Gearworks, the same style as the Palace Gate finale from Act One.',
+      "The Warren-Mother, staged at the very end of it all, is the hardest single fight since the Gnome King himself.",
+      ]},
    { id: 4, date: 'September 26', title: 'Act 2 Gets Harder', items: [
       "Every Mole Wars zone hits a lot harder now — Root Cellar/Bureau, the Mudflats, the Warren's Ear, and the Ember Warren all jump 50-60% on top of last patch's own bump. Tempering was still making these zones too easy; this is the correction.",
       "The Garrison, Rogues' Den, Arcane Sanctum, and the Palace are untouched — that's Act 1 finale content, not the Mole Wars.",

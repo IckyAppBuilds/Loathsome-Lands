@@ -154,6 +154,17 @@ const bureauQuartermasterHunt = state.location==='bureau' && state.quest12Accept
       return;
    }
 
+/* Quest 13, "Quenched" — a single rare hunt, same shape as
+gearworksForemanHunt above, just one stage. Introduces this game's
+first 'freeze' debuff (quenchMaster's own skills[], emberwarren-
+content.js). */
+const quenchMasterHunt = state.location==='foundry' && state.quest13Accepted && !state.quenchMasterDefeated;
+   if(quenchMasterHunt && Math.random() < QUENCH_MASTER_SPAWN_CHANCE){
+      startCombat(quenchMaster);
+      render();
+      return;
+   }
+
 /* Non-combat share of the encounter roll: hazard was cut from 12% down
    to 5% per user feedback that unscripted damage events specifically
    were showing up too often — the freed-up 7 points went to combat
@@ -779,6 +790,14 @@ function winCombat(){
    const wasSeniorClerk = !!state.monster.rare && state.monster.name === seniorClerk.name;
    const wasGearworksForeman = !!state.monster.rare && state.monster.name === gearworksForeman.name;
    const wasBureauQuartermaster = !!state.monster.rare && state.monster.name === bureauQuartermaster.name;
+   const wasQuenchMaster = !!state.monster.rare && state.monster.name === quenchMaster.name;
+   /* Any of gauntlet.js's own GAUNTLETS entries (the Ledger Committee/
+   the Mole Council) — {id, isFinalBoss} for a guard OR that gauntlet's
+   own finalBoss, null for every other monster in the game. Generalizes
+   what the Palace Gauntlet's own hand-written wasPalaceGuard/
+   wasRealGnomeKing pair does below, so a THIRD gauntlet never needs its
+   own matching pair of consts here — just a new GAUNTLETS entry. */
+   const gauntletMatch = !!state.monster.rare ? matchGauntletKill(state.monster.name) : null;
    /* Which of the 5 palace gauntlet guards (PALACE_GUARDS, content.js)
    this was, if any — -1 when it wasn't one of them. Used below to both
    log a distinct "guards left" message and advance
@@ -902,6 +921,21 @@ clearLog();
    } else if(wasBureauQuartermaster){
       state.bureauQuartermasterDefeated = true;
       log(`You defeat ${defeatedName}! Every shipment, every stamp, all of it finally accounted for. (+${xpGain} XP)`);
+   } else if(wasQuenchMaster){
+      state.quenchMasterDefeated = true;
+      log(`You defeat ${defeatedName}! The trough goes still, steam curling off the surface one last time. (+${xpGain} XP)`);
+   } else if(gauntletMatch && !gauntletMatch.isFinalBoss){
+      /* Advances that ONE gauntlet's own counter — gauntlet.js's
+      approachGauntlet() reads this same object to decide whether the
+      next click faces the next guard or the final boss. */
+      gauntletProgress[gauntletMatch.id] = (gauntletProgress[gauntletMatch.id] || 0) + 1;
+      const cfg = GAUNTLETS[gauntletMatch.id];
+      const guardsLeft = cfg.guards.length - gauntletProgress[gauntletMatch.id];
+      log(`You defeat ${defeatedName}! ${cfg.guardDefeatLine(guardsLeft)} (+${xpGain} XP)`);
+   } else if(gauntletMatch && gauntletMatch.isFinalBoss){
+      const cfg = GAUNTLETS[gauntletMatch.id];
+      state[cfg.doneFlag] = true;
+      log(`You defeat ${defeatedName}! ${cfg.finalVictoryLine} (+${xpGain} XP)`);
    } else if(wasPalaceGuard){
       /* Advances the gauntlet exactly once per guard kill — guild.js's
       approachPalaceGate() reads this same variable to decide whether the
@@ -1036,6 +1070,12 @@ function checkDefeat(){
       Palace" same as any other exit — resetPalaceGauntlet() (guild.js)
       before state.location changes below, while it's still 'palace'. */
       if(state.location === 'palace') resetPalaceGauntlet();
+      /* Same reasoning, generalized — a defeat inside either of
+      gauntlet.js's own gauntlets resets ITS OWN counter, not the other
+      one's, while state.location is still whichever zone it happened
+      in. resetGauntlet() no-ops harmlessly if location doesn't match
+      any GAUNTLETS zone. */
+      Object.keys(GAUNTLETS).forEach(id => { if(state.location === GAUNTLETS[id].zone) resetGauntlet(id); });
       /* Whichever town square the player actually calls home (TOWN_HUBS,
       town.js — 'town'/Gladstone Hollow by default, 'gnometropolis' once
       that's been reached), not always Gladstone Hollow — a defeat inside

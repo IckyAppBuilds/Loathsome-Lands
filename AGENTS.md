@@ -1,7 +1,7 @@
 # The Loathsome Lands — file map
 
 A single-page browser RPG. No build step, no bundler, no modules — plain
-HTML/CSS/`<script>` tags, all globals. 34 JS files load in a specific
+HTML/CSS/`<script>` tags, all globals. 35 JS files load in a specific
 order (see `index.html`'s `<script>` block, which documents this inline
 too):
 
@@ -9,11 +9,11 @@ too):
 supabase (CDN)
 -> core.js -> icons.js -> art.js -> gnometropolis-art.js -> mudroot-art.js
 -> warrensear-art.js -> emberwarren-art.js -> content.js -> mudroot-content.js
--> warrensear-content.js -> emberwarren-content.js -> act2-shop.js -> item-tiers.js
--> render.js -> render-shop.js -> render-character.js -> class-spells.js
--> dev-tools.js -> auth.js -> save.js -> player-actions.js -> tutorial.js
--> changelog.js -> hubs.js -> combat.js -> town.js -> casino.js -> hilo.js
--> class-trial.js -> guild.js -> gnometropolis.js -> economy.js
+-> warrensear-content.js -> emberwarren-content.js -> gauntlet.js -> act2-shop.js
+-> item-tiers.js -> render.js -> render-shop.js -> render-character.js
+-> class-spells.js -> dev-tools.js -> auth.js -> save.js -> player-actions.js
+-> tutorial.js -> changelog.js -> hubs.js -> combat.js -> town.js -> casino.js
+-> hilo.js -> class-trial.js -> guild.js -> gnometropolis.js -> economy.js
 -> noticeboard.js -> boot.js
 ```
 
@@ -278,13 +278,18 @@ defeated FIRST sets `state.quest10Path`, unlocking the Warren's Ear and
 revealing that district immediately (the other stays available
 afterward too, so the second district can still be revealed later as
 an optional bonus). Also extends `noncombatEvents`/`hazardEvents` with
-`choir`/`ledgervault` entries. Loads after content.js/mudroot-content.js/
-warrensear-art.js/icons.js.
+`choir`/`ledgervault` entries. Also quest14's own gauntlet, "the Ledger
+Committee" — `committeeAuditor` (the one guard) and `vaultKeeper` (the
+finalBoss), the Ledger Vault's first named encounter of any kind — see
+GAUNTLETS's own `ledgerCommittee` entry, gauntlet.js, for the actual
+scripted-approach mechanics (neither is pushed to `monsters[]`, so
+neither can ever spawn as a random encounter). Loads after content.js/
+mudroot-content.js/warrensear-art.js/icons.js.
 
 Touch this file when: adding/rebalancing a Warren's Ear monster, or
-extending quest10's own branching-path mechanics.
+extending quest10's own branching-path mechanics or quest14's gauntlet.
 
-## emberwarren-content.js — The Ember Warren (Act 2, quest11/12) monster data
+## emberwarren-content.js — The Ember Warren (Act 2, quest11/12/13/15) monster data
 `emberWarrenMonsters` (the Foundry's 3 + the Gearworks' 3 regulars —
 same shape as warrensear-content.js's own monsters, `.push()`ed onto
 `monsters`/`BOUNTY_TEMPLATES` the same way; gearDrop bonus continues
@@ -295,12 +300,40 @@ Also quest12's own two-stage rare hunt, "Chain of Custody" —
 not a new one) — this game's first monsters with a `'debuff'` skill
 (see `state.playerStatusEffect`'s own comment, combat.js). No loot/
 rareDrop of their own, same as every other named quest-hunt boss.
+Also quest13's single rare hunt, "Quenched" — `quenchMaster` (Foundry) —
+this game's first `'freeze'` debuff. Also quest15's own finale gauntlet,
+"the Mole Council" — `tunnelCaptain`/`foundryMarshal` (the two guards)
+and `warrenMother` (the finalBoss, biggest stat block/silhouette in the
+game — see GAUNTLETS's own `moleCouncil` entry, gauntlet.js); her own
+buff+freeze combo mirrors gnomeKing's buff+bolt finale design (Act 1).
 Also extends `noncombatEvents`/`hazardEvents` with `foundry`/
 `gearworks` entries. Loads after content.js/mudroot-content.js/
 warrensear-content.js/emberwarren-art.js/icons.js.
 
 Touch this file when: adding/rebalancing an Ember Warren monster, or
-quest12's own two-stage hunt.
+quest12/quest13/quest15's own bosses.
+
+## gauntlet.js — reusable multi-boss gauntlets
+`GAUNTLETS` (`ledgerCommittee` — quest14, Ledger Vault; `moleCouncil` —
+quest15, Gearworks) — generalizes the Act 1 Palace Gate's own one-off
+approach (`approachPalaceGate()`/`palaceGauntletProgress`/
+`PALACE_GUARDS`, guild.js/content.js, both left completely untouched)
+so a SECOND and THIRD gauntlet can each be "add one entry here" instead
+of hand-copying that whole pattern again. `gauntletProgress` (a plain
+object of transient per-gauntlet counters, never saved, same convention
+as `combatSubView`)/`resetGauntlet`/`resetAllGauntlets` (called from
+the same two places `resetPalaceGauntlet()` already is — `travelTo()`,
+town.js, and `checkDefeat()`, combat.js)/`approachGauntlet(id)`
+(starts the next guard, or the finalBoss once they're all down)/
+`gauntletButtonText(id)` (read by render.js's own button-text sync)/
+`matchGauntletKill(monsterName)` (read by `winCombat()`'s own
+gauntlet-detection block, combat.js, instead of that file needing a new
+hand-written `wasX` const per boss per gauntlet). Loads after
+warrensear-content.js/emberwarren-content.js (whose boss objects this
+file's own `GAUNTLETS` registry references BY VALUE at parse time).
+
+Touch this file when: adding a new multi-boss gauntlet, or changing how
+an existing one's guards/finalBoss/approach/reset mechanics work.
 
 ## act2-shop.js — Act 2 Shop (Gnometropolis) gear + food ladder
 `act2GearItemsTier1/2/3/4` and `act2FoodItemsTier1/2` — a structurally
@@ -427,15 +460,28 @@ Touch this file when: changing how a class spell trainer or the
 class-skill upgrade block is displayed.
 
 ## dev-tools.js — `isDevAccount()`-gated cheats
-`DEV_USERNAMES`/`isDevAccount()`, `resetLevelDev`/`resetQuestsDev`/
-`resetToNewGameDev` (the "Full Reset (New Game)" button — wipes to
-`createDefaultState()` then replays `startFreshGame()`), the direct
-state setters (Biscuits/Pop Tabs/level/stats/items/etc.), and
-`QUEST_DEV_STAGES`/`setQuestStageDev`. Never touched by normal gameplay
-work — the cleanest single-concern file in the project.
+`DEV_USERNAMES`/`isDevAccount()`, `resetLevelDev`/`resetQuestsDev`
+(reset every quest flag back to never-started — quest7 through quest15
+were silently missing from this entirely until this session, despite
+its own doc comment already claiming full coverage; fixed alongside
+adding quest13-15, and now also calls `resetAllGauntlets()`,
+gauntlet.js)/`resetToNewGameDev` (the "Full Reset (New Game)" button —
+wipes to `createDefaultState()` then replays `startFreshGame()`), the
+direct state setters (Biscuits/Pop Tabs/level/stats/items/etc.),
+`applyStatusEffectDev`/`DEV_STATUS_EFFECTS` (apply burn/poison/freeze
+directly — `state.playerStatusEffect`, core.js — without needing to
+actually get hit by one of the handful of bosses that inflict it), and
+`QUEST_DEV_STAGES`/`setQuestStageDev` (quest8 through quest15 were also
+entirely missing until this session — every Act 2 quest was reachable
+only by actually playing through it, with zero dev shortcut). Never
+touched by normal gameplay work otherwise — the cleanest single-concern
+file in the project.
 
 Touch this file when: adding a dev/cheat tool, and hook it into
-`renderAccountTab()` (auth.js).
+`renderAccountTab()` (auth.js). Adding a new quest should also mean
+adding its own `QUEST_DEV_STAGES` entry AND extending `resetQuestsDev()`
+here — both are easy to forget, and both silently rot the moment a new
+quest ships without them.
 
 ## auth.js — sign-in/out, the gate, the Account drawer body
 `authSetView`/`renderAuthUI`/`renderAuthForms`/`acctMsg`/`showGate`/
@@ -751,7 +797,19 @@ flow.
   introduce the boss-debuff mechanic — see `state.playerStatusEffect`'s
   own comment, combat.js — the foreman inflicts burn, the quartermaster
   poison, each with its own flavor tying back to its own district's
-  theme rather than reusing text).
+  theme rather than reusing text), quest13 "Quenched"
+  (`acceptQuest13`/`reportQuest13` — simpler in STRUCTURE than quest12
+  (one rare hunt, no second stage) but harder in every stat; introduces
+  this game's first `'freeze'` debuff via `quenchMaster`, Foundry),
+  quest14 "What the Vault Was Guarding" (`acceptQuest14`/`reportQuest14`
+  — the arc's first GAUNTLET, per explicit request for "more of those"
+  — a scripted approach at the Ledger Vault, `approachGauntlet
+  ('ledgerCommittee')`, gauntlet.js, not a random hunt), and quest15
+  "The Warren Answers" (`acceptQuest15`/`reportQuest15` — the Mole Wars
+  arc's own finale, a second and bigger gauntlet
+  (`approachGauntlet('moleCouncil')`) staged at the Gearworks, culminating
+  in `warrenMother` — the hardest single fight since `gnomeKing`, Act
+  1's own finale).
 - **Bounty Board**: `isBountyZoneUnlocked`/`rollNewBounty`/
   `checkBountyDayReset`/`ensureActiveBounty`/`isBountyReady`/
   `formatBountyTimeLeft`/`claimBounty`/`updateBountyTimerDisplay`. Its
@@ -900,9 +958,16 @@ near the section it belongs to.
 - Change combat math, encounter rolls, or a spell's learn/cast
   mechanics -> **combat.js**.
 - Change a per-building quest's logic or Gladstone-side travel/unlock
-  rules -> **town.js** (or **guild.js** for quest2/6/8/9/the class
+  rules -> **town.js** (or **guild.js** for quest2/6/8-15/the class
   Trial). Change a Gnometropolis building's own logic (Camp, Act 2
   Shop enter/leave, Gnometropolis's own Town Lot) -> **gnometropolis.js**.
+- Add or change a multi-boss gauntlet (guards fought in order, then a
+  finalBoss) -> **gauntlet.js**'s own `GAUNTLETS` registry — the Act 1
+  Palace Gate (guild.js/content.js) is a separate, older, untouched
+  implementation of the same idea; don't hand-copy it for a new one.
+- Add a new quest -> remember its own **QUEST_DEV_STAGES** entry AND
+  **resetQuestsDev()** line in **dev-tools.js** — both are easy to
+  forget and both silently rot (see that file's own section).
 - Change which locations belong to which hub, or hub-to-hub travel
   cost rules -> **hubs.js** (the actual pricing formula is in
   town.js's `travelCostFor()`, which reads hubs.js's own registry).

@@ -205,6 +205,17 @@ if(acctSession){
    </div>
    <div class="btn-row"><button class="btn-secondary" onclick="clearInventoryDev()">Clear Inventory</button></div>
 
+   <label>Status Effect (burn/poison/freeze)</label>
+   <div class="dev-row">
+   <select id="dev-status-select">
+   <option value="none">None</option>
+   <option value="burn">Burn</option>
+   <option value="poison">Poison</option>
+   <option value="freeze">Freeze</option>
+   </select>
+   <button class="btn-secondary" onclick="applyStatusEffectDev()">Apply</button>
+   </div>
+
    <label style="margin-bottom:2px;">Quest progress</label>
    ${QUEST_DEV_STAGES.map(cfg => `
    <label style="text-transform:none; font-weight:400; color:var(--black); margin:6px 0 2px;">${cfg.label}</label>

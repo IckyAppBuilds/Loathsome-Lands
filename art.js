@@ -641,6 +641,35 @@ function artBureauQuartermaster(){
    return sceneWrap(`<ellipse cx="50" cy="66" rx="28" ry="20" fill="#5f4632"/><ellipse cx="50" cy="44" rx="14" ry="12" fill="#5f4632"/><circle cx="43" cy="44" r="5" fill="none" stroke="#2b2b28" stroke-width="2.5"/><circle cx="57" cy="44" r="5" fill="none" stroke="#2b2b28" stroke-width="2.5"/><line x1="48" y1="44" x2="52" y2="44" stroke-width="2"/><rect x="66" y="50" width="18" height="24" fill="#f4efe4" stroke="#2b2b28" stroke-width="2.5" transform="rotate(-6 75 62)"/><line x1="70" y1="56" x2="82" y2="57" stroke-width="1.6"/><line x1="70" y1="63" x2="82" y2="64" stroke-width="1.6"/><line x1="70" y1="70" x2="82" y2="71" stroke-width="1.6"/><line x1="40" y1="80" x2="34" y2="94" stroke-width="3.5"/><line x1="60" y1="80" x2="66" y2="94" stroke-width="3.5"/>`, 0);
 }
 
+/* Quest13-15's own escalating arc, "harder" bosses by explicit request —
+same mole silhouette vocabulary throughout, scaled up (wider bodies,
+thicker strokes) so each one reads as a step above the quest9-12 roster
+without needing a whole new visual language. quenchMaster (Foundry)
+introduces freeze via a quenching-trough motif; the Ledger Committee
+(committeeAuditor/vaultKeeper) and the Mole Council
+(tunnelCaptain/foundryMarshal/warrenMother) are the two new gauntlets
+(gauntlet.js) — warrenMother is deliberately the largest silhouette in
+the game, mirroring how gnomeKing (Act 1's own finale) reads bigger than
+every guard before it. */
+function artQuenchMaster(){
+   return sceneWrap(`<ellipse cx="50" cy="68" rx="30" ry="20" fill="#5f4632"/><ellipse cx="50" cy="46" rx="15" ry="13" fill="#5f4632"/><path d="M40 42 Q34 32 24 34" fill="none" stroke-width="4"/><path d="M60 42 Q66 32 76 34" fill="none" stroke-width="4"/><rect x="14" y="70" width="34" height="18" fill="#375270" opacity="0.55" transform="translate(0,-4)"/><path d="M18 68 Q26 58 34 68" fill="none" stroke="#b9b3a4" stroke-width="2.5" opacity="0.7"/><circle cx="66" cy="30" r="2.2" fill="#b5453f" stroke="none"/>`, 0);
+}
+function artCommitteeAuditor(){
+   return sceneWrap(`<ellipse cx="48" cy="66" rx="27" ry="19" fill="#5f4632"/><ellipse cx="48" cy="45" rx="14" ry="12" fill="#5f4632"/><circle cx="41" cy="45" r="5.5" fill="none" stroke="#2b2b28" stroke-width="2.5"/><circle cx="55" cy="45" r="5.5" fill="none" stroke="#2b2b28" stroke-width="2.5"/><line x1="46.5" y1="45" x2="49.5" y2="45" stroke-width="2"/><rect x="68" y="48" width="18" height="26" fill="#f4efe4" stroke="#2b2b28" stroke-width="2.5" transform="rotate(5 77 61)"/><line x1="72" y1="55" x2="83" y2="56" stroke-width="1.6"/><line x1="72" y1="62" x2="83" y2="63" stroke-width="1.6"/><line x1="72" y1="69" x2="83" y2="70" stroke-width="1.6"/>`, 0);
+}
+function artVaultKeeper(){
+   return sceneWrap(`<rect x="10" y="30" width="30" height="60" fill="#8a5a3a"/><circle cx="25" cy="60" r="7" fill="none" stroke="#d1a94e" stroke-width="3"/><circle cx="25" cy="60" r="2" fill="#d1a94e" stroke="none"/><ellipse cx="62" cy="68" rx="28" ry="20" fill="#5f4632"/><ellipse cx="62" cy="46" rx="14" ry="12" fill="#5f4632"/><path d="M53 42 Q48 33 39 35" fill="none" stroke-width="4"/><path d="M71 42 Q76 33 85 35" fill="none" stroke-width="4"/><circle cx="78" cy="30" r="2.2" fill="#d1a94e" stroke="none"/>`, 0);
+}
+function artTunnelCaptain(){
+   return sceneWrap(`<ellipse cx="50" cy="68" rx="28" ry="19" fill="#5f4632"/><ellipse cx="50" cy="46" rx="14" ry="12" fill="#5f4632"/><path d="M40 42 Q34 32 24 34" fill="none" stroke-width="4"/><path d="M60 42 Q66 32 76 34" fill="none" stroke-width="4"/><path d="M30 56 L18 52 M30 62 L16 62 M30 68 L18 74" stroke="#8a8477" stroke-width="2.5"/><circle cx="66" cy="30" r="2" fill="#d1a94e" stroke="none"/>`, 0);
+}
+function artFoundryMarshal(){
+   return sceneWrap(`<ellipse cx="50" cy="68" rx="29" ry="20" fill="#5f4632"/><ellipse cx="50" cy="46" rx="15" ry="13" fill="#5f4632"/><path d="M40 42 Q34 32 24 34" fill="none" stroke-width="4"/><path d="M60 42 Q66 32 76 34" fill="none" stroke-width="4"/><circle cx="34" cy="60" r="2.4" fill="#b5453f" stroke="none"/><circle cx="66" cy="58" r="2" fill="#d1a94e" stroke="none"/><circle cx="50" cy="76" r="2.2" fill="#b5453f" stroke="none"/><path d="M50 26 Q58 14 50 2 Q42 14 50 26" fill="none" stroke="#b5453f" stroke-width="3" opacity="0.7" transform="translate(0,22)"/>`, 0);
+}
+function artWarrenMother(){
+   return sceneWrap(`<ellipse cx="50" cy="72" rx="38" ry="24" fill="#2b2b28"/><ellipse cx="50" cy="46" rx="18" ry="15" fill="#2b2b28"/><path d="M36 40 Q28 26 14 29" fill="none" stroke-width="5"/><path d="M64 40 Q72 26 86 29" fill="none" stroke-width="5"/><circle cx="42" cy="46" r="4" fill="#d1a94e" stroke="none"/><circle cx="58" cy="46" r="4" fill="#d1a94e" stroke="none"/><path d="M20 82 Q10 90 8 100 M80 82 Q90 90 92 100 M50 96 Q50 106 50 112" stroke="#5f4632" stroke-width="3" fill="none"/>`, 0);
+}
+
 /* ---------------- Zone backdrop art ---------------- */
 /* One scene per Act 1 adventure zone (ZONE_DIFFICULTY, content.js), shown
 between fights in place of artIdle() (see render.js) so each zone has

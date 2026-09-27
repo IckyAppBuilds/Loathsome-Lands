@@ -54,13 +54,16 @@ function resetToNewGameDev(){
 }
 
 /* Resets every quest flag (and the zone unlocks that ride on them) back to
-never-started, so a dev account can replay quest 1 through the class
-quest from scratch. Also strips any quest items already held — they'd
-otherwise be stuck in the Pack, no longer tied to an active quest and
-not yet sellable (selling a quest item requires its quest to be
-complete — see isQuestItemSellable() in game.js). Leaves level/stats/
+never-started, so a dev account can replay quest 1 through the Mole
+Wars finale from scratch. Also strips any quest items already held —
+they'd otherwise be stuck in the Pack, no longer tied to an active
+quest and not yet sellable (selling a quest item requires its quest to
+be complete — see isQuestItemSellable() in game.js). Leaves level/stats/
 Pop Tabs/inventory-otherwise alone; pair with Reset Level for a fully
-fresh run. */
+fresh run. Quest7-15 (all of Act 2, plus Act 1's own finale) were
+missing from this reset entirely until now — a dev account "resetting
+all quests" was actually only resetting quest1-6, silently leaving
+Act 2's whole chain (and its rare-hunt/gauntlet-defeated flags) intact. */
 function resetQuestsDev(){
    if(!isDevAccount()) return;
    if(!confirm('Reset all quest progress (including zone unlocks) back to never-started? Quest items in your Pack will be cleared. Level/stats are untouched.')) return;
@@ -71,10 +74,21 @@ function resetQuestsDev(){
       quest4Accepted: false, quest4RareDefeated: false, quest4Complete: false,
       quest5Accepted: false, quest5Complete: false,
       quest6Accepted: false, quest6RareDefeated: false, quest6Complete: false,
+      quest7Accepted: false, garrisonGuardianDefeated: false, roguesDenEnforcerDefeated: false, arcaneSanctumGuardianDefeated: false,
+      quest7RareDefeated: false, quest7Complete: false,
+      quest8Accepted: false, quest8Complete: false,
+      quest9Accepted: false, quest9Complete: false, tunnelWardenDefeated: false, warrenScoutDefeated: false,
+      quest10Accepted: false, quest10Complete: false, quest10Path: null, tunnelMoleInformantDefeated: false, seniorClerkDefeated: false,
+      quest11Accepted: false, quest11Complete: false,
+      quest12Accepted: false, quest12Complete: false, gearworksForemanDefeated: false, bureauQuartermasterDefeated: false,
+      quest13Accepted: false, quest13Complete: false, quenchMasterDefeated: false,
+      quest14Accepted: false, quest14Complete: false, vaultKeeperDefeated: false,
+      quest15Accepted: false, quest15Complete: false, warrenMotherDefeated: false,
       classQuestAccepted: false, classQuestComplete: false, classTitle: null,
    });
    state.inventory = state.inventory.filter(it => it.type !== 'quest');
    state.location = 'town';
+   resetAllGauntlets();
    recomputeMaxStats();
    clearLog();
    log('[Dev] All quest progress and zone unlocks have been reset.');
@@ -228,6 +242,30 @@ function clearInventoryDev(){
    autosave();
 }
 
+/* state.playerStatusEffect (core.js) had no dev-panel support at all —
+the only way to see burn/poison/freeze in action was to actually get
+hit by one of the handful of bosses that inflict it (gearworksForeman/
+bureauQuartermaster/quenchMaster/foundryMarshal/warrenMother). Applies
+it directly, same shape useMonsterSkill()'s own 'debuff' branch
+(combat.js) builds, using representative numbers for each type rather
+than requiring a specific boss's own exact values. Mid-fight or not —
+it plays out on your next turn-costing action either way, same as a
+real one would. */
+const DEV_STATUS_EFFECTS = {
+   burn: { type:'burn', turnsLeft:3, dmgPerTurn:7 },
+   poison: { type:'poison', turnsLeft:4, dmgPerTurn:5 },
+   freeze: { type:'freeze', turnsLeft:3, dmgReduction:0.35 },
+};
+function applyStatusEffectDev(){
+   if(!isDevAccount()) return;
+   const key = document.getElementById('dev-status-select').value;
+   if(key === 'none'){ state.playerStatusEffect = null; }
+   else { state.playerStatusEffect = { ...DEV_STATUS_EFFECTS[key] }; }
+   clearLog();
+   log(key === 'none' ? '[Dev] Status effect cleared.' : `[Dev] Applied ${key} (${JSON.stringify(state.playerStatusEffect)}).`);
+   render();
+}
+
 /* Named, discrete stages for each quest chain — jumping to one sets every
 flag (and any held quest items) that stage implies, so the state stays
 internally consistent rather than letting individual flags drift out of
@@ -297,6 +335,93 @@ const QUEST_DEV_STAGES = [
          if(state.quest7Accepted) return 1;
          return 0;
       } },
+
+   /* Act 2 (quest8-quest15) were entirely missing from this list until
+   now — every one of them was reachable only by actually playing
+   through Mudroot Warren/the Warren's Ear/the Ember Warren, with no dev
+   shortcut at all. Same "each stage sets every flag that stage implies"
+   rule as quest1-7 above. */
+   { id:'quest8', label:'Gnome Guild: New Digs', stages: [
+      { label:'Not started', apply(){ Object.assign(state, { quest8Accepted:false, quest8Complete:false }); } },
+      { label:'Accepted (ready to turn in — no combat objective)', apply(){ Object.assign(state, { quest8Accepted:true, quest8Complete:false }); } },
+      { label:'Complete', apply(){ Object.assign(state, { quest8Accepted:true, quest8Complete:true }); } },
+      ], detect(){ if(state.quest8Complete) return 2; if(state.quest8Accepted) return 1; return 0; } },
+
+   { id:'quest9', label:'Gnome Guild: What the Throne Room Opened', stages: [
+      { label:'Not started', apply(){ Object.assign(state, { quest9Accepted:false, tunnelWardenDefeated:false, warrenScoutDefeated:false, quest9Complete:false }); } },
+      { label:'Accepted (stage 1 — tunnel warden not yet found)', apply(){ Object.assign(state, { quest9Accepted:true, tunnelWardenDefeated:false, warrenScoutDefeated:false, quest9Complete:false }); } },
+      { label:'Stage 2 (tunnel warden defeated, hunting the scout)', apply(){ Object.assign(state, { quest9Accepted:true, tunnelWardenDefeated:true, warrenScoutDefeated:false, quest9Complete:false }); } },
+      { label:'Both defeated (ready to turn in)', apply(){ Object.assign(state, { quest9Accepted:true, tunnelWardenDefeated:true, warrenScoutDefeated:true, quest9Complete:false }); } },
+      { label:'Complete (unlocks Mudroot Warren exploration)', apply(){ Object.assign(state, { quest9Accepted:true, tunnelWardenDefeated:true, warrenScoutDefeated:true, quest9Complete:true }); } },
+      ], detect(){
+         if(state.quest9Complete) return 4;
+         if(state.tunnelWardenDefeated && state.warrenScoutDefeated) return 3;
+         if(state.tunnelWardenDefeated) return 2;
+         if(state.quest9Accepted) return 1;
+         return 0;
+      } },
+
+   { id:'quest10', label:"Gnome Guild: Whatever's Listening", stages: [
+      { label:'Not started', apply(){ Object.assign(state, { quest10Accepted:false, quest10Path:null, tunnelMoleInformantDefeated:false, seniorClerkDefeated:false, quest10Complete:false }); } },
+      { label:'Accepted (neither rare hunt found yet)', apply(){ Object.assign(state, { quest10Accepted:true, quest10Path:null, tunnelMoleInformantDefeated:false, seniorClerkDefeated:false, quest10Complete:false }); } },
+      { label:'Path: informant found (Choir revealed, ready to turn in)', apply(){ Object.assign(state, { quest10Accepted:true, quest10Path:'informant', tunnelMoleInformantDefeated:true, seniorClerkDefeated:false, quest10Complete:false }); } },
+      { label:'Path: ledger found (Ledger Vault revealed, ready to turn in)', apply(){ Object.assign(state, { quest10Accepted:true, quest10Path:'ledger', tunnelMoleInformantDefeated:false, seniorClerkDefeated:true, quest10Complete:false }); } },
+      { label:'Complete', apply(){ if(!state.quest10Path) state.quest10Path = 'informant'; if(!state.tunnelMoleInformantDefeated && !state.seniorClerkDefeated) state.tunnelMoleInformantDefeated = true; Object.assign(state, { quest10Accepted:true, quest10Complete:true }); } },
+      ], detect(){
+         if(state.quest10Complete) return 4;
+         if(state.quest10Path === 'ledger') return 3;
+         if(state.quest10Path === 'informant') return 2;
+         if(state.quest10Accepted) return 1;
+         return 0;
+      } },
+
+   { id:'quest11', label:'Gnome Guild: Loose Ends', stages: [
+      { label:'Not started', apply(){ Object.assign(state, { quest11Accepted:false, quest11Complete:false }); } },
+      { label:'Accepted (0/2 hunts accounted for)', apply(){ Object.assign(state, { quest11Accepted:true, tunnelMoleInformantDefeated:false, seniorClerkDefeated:false, quest11Complete:false }); } },
+      { label:'Accepted (1/2 — informant defeated, clerk still out)', apply(){ Object.assign(state, { quest11Accepted:true, tunnelMoleInformantDefeated:true, seniorClerkDefeated:false, quest11Complete:false }); } },
+      { label:'Both accounted for (ready to turn in)', apply(){ Object.assign(state, { quest11Accepted:true, tunnelMoleInformantDefeated:true, seniorClerkDefeated:true, quest11Complete:false }); } },
+      { label:'Complete (unlocks the Ember Warren)', apply(){ Object.assign(state, { quest11Accepted:true, tunnelMoleInformantDefeated:true, seniorClerkDefeated:true, quest11Complete:true }); } },
+      ], detect(){
+         if(state.quest11Complete) return 4;
+         if(state.tunnelMoleInformantDefeated && state.seniorClerkDefeated) return 3;
+         if(state.quest11Accepted) return 1;
+         return 0;
+      } },
+
+   { id:'quest12', label:'Gnome Guild: Chain of Custody', stages: [
+      { label:'Not started', apply(){ Object.assign(state, { quest12Accepted:false, gearworksForemanDefeated:false, bureauQuartermasterDefeated:false, quest12Complete:false }); } },
+      { label:'Accepted (stage 1 — foreman not yet found)', apply(){ Object.assign(state, { quest12Accepted:true, gearworksForemanDefeated:false, bureauQuartermasterDefeated:false, quest12Complete:false }); } },
+      { label:'Stage 2 (foreman defeated, hunting the quartermaster)', apply(){ Object.assign(state, { quest12Accepted:true, gearworksForemanDefeated:true, bureauQuartermasterDefeated:false, quest12Complete:false }); } },
+      { label:'Both defeated (ready to turn in)', apply(){ Object.assign(state, { quest12Accepted:true, gearworksForemanDefeated:true, bureauQuartermasterDefeated:true, quest12Complete:false }); } },
+      { label:'Complete', apply(){ Object.assign(state, { quest12Accepted:true, gearworksForemanDefeated:true, bureauQuartermasterDefeated:true, quest12Complete:true }); } },
+      ], detect(){
+         if(state.quest12Complete) return 4;
+         if(state.bureauQuartermasterDefeated) return 3;
+         if(state.gearworksForemanDefeated) return 2;
+         if(state.quest12Accepted) return 1;
+         return 0;
+      } },
+
+   { id:'quest13', label:'Gnome Guild: Quenched', stages: [
+      { label:'Not started', apply(){ Object.assign(state, { quest13Accepted:false, quenchMasterDefeated:false, quest13Complete:false }); } },
+      { label:'Accepted (quench-master not yet found)', apply(){ Object.assign(state, { quest13Accepted:true, quenchMasterDefeated:false, quest13Complete:false }); } },
+      { label:'Quench-master defeated (ready to turn in)', apply(){ Object.assign(state, { quest13Accepted:true, quenchMasterDefeated:true, quest13Complete:false }); } },
+      { label:'Complete', apply(){ Object.assign(state, { quest13Accepted:true, quenchMasterDefeated:true, quest13Complete:true }); } },
+      ], detect(){ if(state.quest13Complete) return 3; if(state.quenchMasterDefeated) return 2; if(state.quest13Accepted) return 1; return 0; } },
+
+   { id:'quest14', label:'Gnome Guild: What the Vault Was Guarding', stages: [
+      { label:'Not started', apply(){ Object.assign(state, { quest14Accepted:false, vaultKeeperDefeated:false, quest14Complete:false }); } },
+      { label:'Accepted (Ledger Committee gauntlet not yet cleared)', apply(){ Object.assign(state, { quest14Accepted:true, vaultKeeperDefeated:false, quest14Complete:false }); } },
+      { label:'Vault keeper defeated (ready to turn in)', apply(){ Object.assign(state, { quest14Accepted:true, vaultKeeperDefeated:true, quest14Complete:false }); } },
+      { label:'Complete', apply(){ Object.assign(state, { quest14Accepted:true, vaultKeeperDefeated:true, quest14Complete:true }); } },
+      ], detect(){ if(state.quest14Complete) return 3; if(state.vaultKeeperDefeated) return 2; if(state.quest14Accepted) return 1; return 0; } },
+
+   { id:'quest15', label:'Gnome Guild: The Warren Answers (Mole Wars finale)', stages: [
+      { label:'Not started', apply(){ Object.assign(state, { quest15Accepted:false, warrenMotherDefeated:false, quest15Complete:false }); } },
+      { label:'Accepted (Mole Council gauntlet not yet cleared)', apply(){ Object.assign(state, { quest15Accepted:true, warrenMotherDefeated:false, quest15Complete:false }); } },
+      { label:'Warren-mother defeated (ready to turn in)', apply(){ Object.assign(state, { quest15Accepted:true, warrenMotherDefeated:true, quest15Complete:false }); } },
+      { label:'Complete (Mole Wars arc finished)', apply(){ Object.assign(state, { quest15Accepted:true, warrenMotherDefeated:true, quest15Complete:true }); } },
+      ], detect(){ if(state.quest15Complete) return 3; if(state.warrenMotherDefeated) return 2; if(state.quest15Accepted) return 1; return 0; } },
 
    { id:'classquest', label:"Guild: The Adventurer's Trial (class)", stages: [
       { label:'Not accepted', apply(){ Object.assign(state, { classQuestAccepted:false, classQuestComplete:false, classTitle:null,

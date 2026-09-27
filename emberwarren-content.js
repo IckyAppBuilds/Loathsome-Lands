@@ -66,6 +66,47 @@ const bureauQuartermaster = {
    art: artBureauQuartermaster, loot:null
 };
 
+/* Quest 13, "Quenched" — a single rare hunt, deliberately simpler in
+STRUCTURE than quest12 (no second stage) but harder in every stat, and
+this game's first 'freeze' debuff (state.playerStatusEffect, core.js) —
+burn and poison already had a boss each; freeze didn't until now. Fits
+the Foundry's own forge-heat theme from the opposite angle burn does:
+rapid quenching seizes the joints instead of scorching them. */
+const QUENCH_MASTER_SPAWN_CHANCE = 0.05;
+const quenchMaster = {
+   name:"the quench-master, apron scorched black from decades at the trough", hp:88, atkMin:11, atkMax:17, xp:62, rare:true, zone:"foundry",
+   skills:[ { type:'debuff', chance:0.24, debuffType:'freeze', debuffTurns:3, dmgReduction:0.35, flavor:"plunges you into the quenching trough — your joints seize as the cold locks them up" } ],
+   art: artQuenchMaster, loot:null
+};
+
+/* Quest 15's own gauntlet, "the Mole Council" — the arc's finale, same
+scripted approach-in-order shape as quest14's Ledger Committee (both
+via gauntlet.js's generalized approachGauntlet(), not a random hunt).
+Two guards ahead of warrenMother, the single biggest silhouette and
+stat block in the game (see artWarrenMother's own comment, art.js) —
+her buff+freeze combo deliberately mirrors gnomeKing's own buff+bolt
+finale design (Act 1), just with the newer debuff mechanic standing in
+for the bolt. No loot/rareDrop on any of the three, same reasoning as
+every other named quest-hunt boss. */
+const tunnelCaptain = {
+   name:"a tunnel captain, dug in and dug in deep", hp:90, atkMin:12, atkMax:18, xp:50, rare:true, zone:"gearworks",
+   dodgeChance:0.25,
+   art: artTunnelCaptain, loot:null
+};
+const foundryMarshal = {
+   name:"a foundry marshal, still glowing faintly from the last shift", hp:100, atkMin:13, atkMax:19, xp:58, rare:true, zone:"gearworks",
+   skills:[ { type:'debuff', chance:0.24, debuffType:'burn', debuffTurns:3, dmgPerTurn:8, flavor:"brands you with a slag-iron still hot from the forge" } ],
+   art: artFoundryMarshal, loot:null
+};
+const warrenMother = {
+   name:"the warren-mother, matriarch of every tunnel you've ever walked through", hp:130, atkMin:14, atkMax:21, xp:90, rare:true, zone:"gearworks",
+   skills:[
+      { type:'buff', chance:0.15, buffMult:1.7, buffTurns:3, flavor:"calls every last tunnel to answer at once" },
+      { type:'debuff', chance:0.20, debuffType:'freeze', debuffTurns:3, dmgReduction:0.4, flavor:"the ground itself locks around your legs, cold and absolute" },
+      ],
+   art: artWarrenMother, loot:null
+};
+
 /* Same reasoning as mudroot-content.js/warrensear-content.js's own
 extension of these two objects — the Foundry/the Gearworks get their
 own flavor instead of falling back to the Commons pool. */

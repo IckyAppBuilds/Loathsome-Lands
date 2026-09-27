@@ -223,6 +223,37 @@ function computeRenderContext(){
     : state.quest12Accepted ? 'stage1'
     : (state.quest11Complete ? 'offer' : 'locked');
 
+  /* Quest 13, "Quenched" — a single rare hunt, no second stage, so this
+  only ever needs 'active' (accepted, hunting) between 'offer' and
+  'ready', unlike quest9/quest12's own 'stage1'/'stage2' split. */
+  const quest13State = state.quest13Complete ? 'complete'
+    : state.quenchMasterDefeated ? 'ready'
+    : state.quest13Accepted ? 'active'
+    : (state.quest12Complete ? 'offer' : 'locked');
+
+  /* Quest 14, "What the Vault Was Guarding" — the arc's first gauntlet
+  (gauntlet.js's own 'ledgerCommittee' entry). 'ready' is
+  vaultKeeperDefeated specifically (the gauntlet's finalBoss), not just
+  "gauntletProgress reached the end" — that transient counter isn't
+  saved and shouldn't gate a persisted quest state anyway. */
+  const quest14State = state.quest14Complete ? 'complete'
+    : state.vaultKeeperDefeated ? 'ready'
+    : state.quest14Accepted ? 'active'
+    : (state.quest13Complete ? 'offer' : 'locked');
+
+  /* Quest 15, "The Warren Answers" — the arc's finale gauntlet
+  ('moleCouncil'), same shape as quest14's own. */
+  const quest15State = state.quest15Complete ? 'complete'
+    : state.warrenMotherDefeated ? 'ready'
+    : state.quest15Accepted ? 'active'
+    : (state.quest14Complete ? 'offer' : 'locked');
+
+  /* Gauntlet approach-button visibility (gauntlet.js) — mirrors
+  canApproachPalaceGate's own shape exactly: standing in the right
+  zone, the right quest accepted, and not already cleared. */
+  const canApproachLedgerCommittee = isLedgerVault && state.quest14Accepted && !state.vaultKeeperDefeated;
+  const canApproachMoleCouncil = isGearworks && state.quest15Accepted && !state.warrenMotherDefeated;
+
   /* 'trials': accepted, but not all three trainers' tests are passed yet.
   'ready': all three passed, waiting on claimClassPath(chosenStat) — see the
   three claim-path-*-btn buttons and their isGuild=='ready' branch. */
@@ -246,7 +277,8 @@ function computeRenderContext(){
     quest5State, veinHeld, veinNeeded, canTurnInVein,
     quest6State, canReportGnomeKing,
     quest7State, palaceGateGearItem, canApproachPalaceGate,
-    quest10State, quest11State, quest12State,
+    quest10State, quest11State, quest12State, quest13State, quest14State, quest15State,
+    canApproachLedgerCommittee, canApproachMoleCouncil,
     quest8State, quest9State, classQuestState,
   };
 }
@@ -502,6 +534,23 @@ function syncBuildingScreens(ctx){
   document.getElementById('accept-quest12-btn').style.display = ctx.quest12State==='offer' ? '' : 'none';
   document.getElementById('report-quest12-btn').style.display = ctx.quest12State==='ready' ? '' : 'none';
   document.getElementById('report-quest12-btn').classList.toggle('btn-ready', ctx.quest12State==='ready');
+  document.getElementById('accept-quest13-btn').style.display = ctx.quest13State==='offer' ? '' : 'none';
+  document.getElementById('report-quest13-btn').style.display = ctx.quest13State==='ready' ? '' : 'none';
+  document.getElementById('report-quest13-btn').classList.toggle('btn-ready', ctx.quest13State==='ready');
+  document.getElementById('accept-quest14-btn').style.display = ctx.quest14State==='offer' ? '' : 'none';
+  document.getElementById('report-quest14-btn').style.display = ctx.quest14State==='ready' ? '' : 'none';
+  document.getElementById('report-quest14-btn').classList.toggle('btn-ready', ctx.quest14State==='ready');
+  document.getElementById('accept-quest15-btn').style.display = ctx.quest15State==='offer' ? '' : 'none';
+  document.getElementById('report-quest15-btn').style.display = ctx.quest15State==='ready' ? '' : 'none';
+  document.getElementById('report-quest15-btn').classList.toggle('btn-ready', ctx.quest15State==='ready');
+
+  /* Gauntlet approach buttons (gauntlet.js) — same "always visible while
+  standing there, win/lose/not-yet-fought alike" rule as palace-gate-row
+  above, and same button-text-tracks-progress pattern. */
+  document.getElementById('ledger-committee-row').style.display = ctx.canApproachLedgerCommittee ? 'flex' : 'none';
+  if(ctx.canApproachLedgerCommittee) document.getElementById('ledger-committee-btn').textContent = gauntletButtonText('ledgerCommittee');
+  document.getElementById('mole-council-row').style.display = ctx.canApproachMoleCouncil ? 'flex' : 'none';
+  if(ctx.canApproachMoleCouncil) document.getElementById('mole-council-btn').textContent = gauntletButtonText('moleCouncil');
 
   document.getElementById('accept-quest3-btn').style.display = ctx.quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = ctx.quest3State==='active' ? '' : 'none';
@@ -552,7 +601,10 @@ function syncBuildingScreens(ctx){
         || ctx.quest9State==='offer' || ctx.quest9State==='stage1' || ctx.quest9State==='stage2' || ctx.quest9State==='ready'
         || ctx.quest10State==='offer' || ctx.quest10State==='active' || ctx.quest10State==='ready'
         || ctx.quest11State==='offer' || ctx.quest11State==='active' || ctx.quest11State==='ready'
-        || ctx.quest12State==='offer' || ctx.quest12State==='stage1' || ctx.quest12State==='stage2' || ctx.quest12State==='ready'))
+        || ctx.quest12State==='offer' || ctx.quest12State==='stage1' || ctx.quest12State==='stage2' || ctx.quest12State==='ready'
+        || ctx.quest13State==='offer' || ctx.quest13State==='active' || ctx.quest13State==='ready'
+        || ctx.quest14State==='offer' || ctx.quest14State==='active' || ctx.quest14State==='ready'
+        || ctx.quest15State==='offer' || ctx.quest15State==='active' || ctx.quest15State==='ready'))
     || (ctx.isHoodoo && (ctx.quest3State==='offer' || ctx.quest3State==='active'))
     || (ctx.isTinker && (ctx.quest4State==='offer' || ctx.quest4State==='active' || ctx.quest5State==='offer' || ctx.quest5State==='active'))
   )) ? 'block' : 'none';
@@ -662,6 +714,42 @@ function syncBuildingScreens(ctx){
     } else if(ctx.quest12State==='ready'){
       document.getElementById('quest-name').textContent = 'Quest: Chain of Custody';
       document.getElementById('quest-desc').textContent = "You've got the whole chain now. Head back and tell the guildmaster.";
+      document.getElementById('quest-progress').textContent = 'Ready to report.';
+    } else if(ctx.quest13State==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: Quenched';
+      document.getElementById('quest-desc').textContent = "Something in the Foundry is running hotter than the rest of it. Find out what.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(ctx.quest13State==='active'){
+      document.getElementById('quest-name').textContent = 'Quest: Quenched';
+      document.getElementById('quest-desc').textContent = "Whatever's down there in the Foundry hasn't shown itself yet. Keep looking.";
+      document.getElementById('quest-progress').textContent = "Not yet found.";
+    } else if(ctx.quest13State==='ready'){
+      document.getElementById('quest-name').textContent = 'Quest: Quenched';
+      document.getElementById('quest-desc').textContent = "You found it — and you're still thawing out. Head back and tell the guildmaster.";
+      document.getElementById('quest-progress').textContent = 'Ready to report.';
+    } else if(ctx.quest14State==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: What the Vault Was Guarding';
+      document.getElementById('quest-desc').textContent = "That sealed vault in the Ledger Vault has never actually been opened. Go open it.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(ctx.quest14State==='active'){
+      document.getElementById('quest-name').textContent = 'Quest: What the Vault Was Guarding';
+      document.getElementById('quest-desc').textContent = "Head to the Ledger Vault and approach the committee directly — this one won't come looking for you.";
+      document.getElementById('quest-progress').textContent = 'Not yet cleared.';
+    } else if(ctx.quest14State==='ready'){
+      document.getElementById('quest-name').textContent = 'Quest: What the Vault Was Guarding';
+      document.getElementById('quest-desc').textContent = "The vault's open, and you know what was in it. Head back and tell the guildmaster.";
+      document.getElementById('quest-progress').textContent = 'Ready to report.';
+    } else if(ctx.quest15State==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: The Warren Answers';
+      document.getElementById('quest-desc').textContent = "Whoever's actually running this is done hiding. Go find out who.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(ctx.quest15State==='active'){
+      document.getElementById('quest-name').textContent = 'Quest: The Warren Answers';
+      document.getElementById('quest-desc').textContent = "Head to the Gearworks and approach the council directly. This is the one that ends it.";
+      document.getElementById('quest-progress').textContent = 'Not yet cleared.';
+    } else if(ctx.quest15State==='ready'){
+      document.getElementById('quest-name').textContent = 'Quest: The Warren Answers';
+      document.getElementById('quest-desc').textContent = "It's over. Head back and tell the guildmaster.";
       document.getElementById('quest-progress').textContent = 'Ready to report.';
     }
   } else if(ctx.isHoodoo){
@@ -947,7 +1035,7 @@ function renderSceneArt(ctx){
       /* Combined with quest9's own offer/ready states — this tile is
       "something to do at the Guild," not a marker for where quest9's
       combat stages actually are (those show no flag anywhere). */
-      gnomeguild: { flag: (ctx.quest8State==='offer' || ctx.quest9State==='offer' || ctx.quest10State==='offer' || ctx.quest11State==='offer' || ctx.quest12State==='offer') ? 'offer' : ((ctx.quest8State==='active' || ctx.quest9State==='ready' || ctx.quest10State==='ready' || ctx.quest11State==='ready' || ctx.quest12State==='ready') ? 'turnin' : null) },
+      gnomeguild: { flag: (ctx.quest8State==='offer' || ctx.quest9State==='offer' || ctx.quest10State==='offer' || ctx.quest11State==='offer' || ctx.quest12State==='offer' || ctx.quest13State==='offer' || ctx.quest14State==='offer' || ctx.quest15State==='offer') ? 'offer' : ((ctx.quest8State==='active' || ctx.quest9State==='ready' || ctx.quest10State==='ready' || ctx.quest11State==='ready' || ctx.quest12State==='ready' || ctx.quest13State==='ready' || ctx.quest14State==='ready' || ctx.quest15State==='ready') ? 'turnin' : null) },
       gnomeshop: {},
       gnometownlot: {},
     };

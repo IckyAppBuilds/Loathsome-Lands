@@ -181,6 +181,11 @@ function travelTo(dest){
    as standing up too, rather than resuming sitting at the table on a
    later trip back. */
    if(state.location === 'palace') resetPalaceGauntlet();
+   /* Same reasoning, generalized to gauntlet.js's own gauntlets — leaving
+   the exact zone a gauntlet lives in, for ANY destination (even a
+   sibling district in the same hub), resets that gauntlet's progress,
+   same as Palace's own "no partial credit for stepping away" rule. */
+   Object.keys(GAUNTLETS).forEach(id => { if(state.location === GAUNTLETS[id].zone) resetGauntlet(id); });
    if(state.location === 'casino' && state.blackjack) state.blackjack = null;
    if(state.location === 'roguesden' && state.hilo) state.hilo = null;
    /* No quest7Accepted gate on the 4 district/palace destinations below —

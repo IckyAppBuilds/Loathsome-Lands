@@ -62,6 +62,26 @@ const seniorClerk = {
    art: artSeniorClerk, loot:null
 };
 
+/* Quest 14's own gauntlet, "the Ledger Committee" — the Ledger Vault's
+first named encounter of any kind (it's had 3 regular monsters since
+warrensEarMonsters above, but no rare hunt/boss until now). A SCRIPTED
+approach, not a random hunt — see approachGauntlet('ledgerCommittee'),
+gauntlet.js, which generalizes the Act 1 Palace Gate's own
+approach-a-gate-in-order pattern instead of hand-copying it a second
+time. committeeAuditor is the one guard standing between the door and
+vaultKeeper; no loot/rareDrop on either, same reasoning as every other
+named quest-hunt boss. */
+const committeeAuditor = {
+   name:"a committee auditor, cross-referencing you against three different ledgers", hp:85, atkMin:11, atkMax:17, xp:45, rare:true, zone:"ledgervault",
+   skills:[ { type:'buff', chance:0.20, buffMult:1.5, buffTurns:2, flavor:"finds a discrepancy in your favor, then immediately revokes it" } ],
+   art: artCommitteeAuditor, loot:null
+};
+const vaultKeeper = {
+   name:"the vault keeper, the only door in the Warren's Ear that was never meant to open", hp:95, atkMin:12, atkMax:18, xp:68, rare:true, zone:"ledgervault",
+   skills:[ { type:'heal', chance:0.20, healMin:14, healMax:20, flavor:"seals itself back up along an old, familiar seam" } ],
+   art: artVaultKeeper, loot:null
+};
+
 monsters.push(...warrensEarMonsters);
 BOUNTY_TEMPLATES.push(...warrensEarMonsters.map(makeBountyTemplate));
 

@@ -498,6 +498,54 @@ if(state.quest12Complete){
   </div>`);
 }
 
+if(state.quest13Complete){
+  completedEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">Quenched</div>
+  <div class="quest-desc">Whatever was running hot in the Foundry, it's been found and put down.</div>
+  <div class="quest-progress">Reward claimed: 220 Pop Tabs, 175 XP, 17 Bounty Tokens</div>
+  </div>`);
+} else if(state.quest13Accepted){
+  activeEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">Quenched</div>
+  <div class="quest-desc">Something in the Foundry is running hotter than the rest of it. Find out what.</div>
+  <div class="quest-progress">${state.quenchMasterDefeated ? 'Ready to report back at the Guild.' : "Not yet found."}</div>
+  </div>`);
+}
+
+if(state.quest14Complete){
+  completedEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">What the Vault Was Guarding</div>
+  <div class="quest-desc">The one door in the Ledger Vault that was never meant to open — opened.</div>
+  <div class="quest-progress">Reward claimed: 250 Pop Tabs, 200 XP, 19 Bounty Tokens</div>
+  </div>`);
+} else if(state.quest14Accepted){
+  activeEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">What the Vault Was Guarding</div>
+  <div class="quest-desc">Head to the Ledger Vault and approach the committee directly — this one won't come looking for you.</div>
+  <div class="quest-progress">${state.vaultKeeperDefeated ? 'Ready to report back at the Guild.' : 'Not yet cleared.'}</div>
+  </div>`);
+}
+
+if(state.quest15Complete){
+  completedEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">The Warren Answers</div>
+  <div class="quest-desc">The Mole Wars, however anyone ends up telling it, end here.</div>
+  <div class="quest-progress">Reward claimed: 320 Pop Tabs, 260 XP, 25 Bounty Tokens</div>
+  </div>`);
+} else if(state.quest15Accepted){
+  activeEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">The Warren Answers</div>
+  <div class="quest-desc">Head to the Gearworks and approach the council directly. This is the one that ends it.</div>
+  <div class="quest-progress">${state.warrenMotherDefeated ? 'Ready to report back at the Guild.' : 'Not yet cleared.'}</div>
+  </div>`);
+}
+
 if(state.classQuestComplete){
   completedEntries.push(`
   <div class="quest-log-entry">

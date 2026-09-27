@@ -322,6 +322,87 @@ function reportQuest12(){
    autosave();
 }
 
+/* Quest 13, "Quenched" — offered once quest12Complete. Deliberately
+simpler in STRUCTURE than quest12 (a single rare hunt, no second
+stage) but harder in every stat — the arc's own escalation happens in
+the fight, not the quest's own shape, this time. */
+function acceptQuest13(){
+   if(state.location !== 'gnomeguild' || !state.quest12Complete || state.quest13Accepted || state.quest13Complete) return;
+   state.quest13Accepted = true;
+   clearLog();
+   log("\"Something in that forge is running hotter than the rest of it,\" the guildmaster says. \"Find out what. Carefully.\"");
+   render();
+   autosave();
+}
+function reportQuest13(){
+   if(state.location !== 'gnomeguild' || !state.quest13Accepted || state.quest13Complete || !state.quenchMasterDefeated) return;
+   state.quest13Complete = true;
+   state.popTabs += 220;
+   state.xp += 175;
+   state.bountyTokens += 17;
+   clearLog();
+   log("You describe the trough, the cold, the way it locked your own joints up before you got clear of it. (+220 Pop Tabs, +175 XP, +17 Bounty Tokens)");
+   log("The guildmaster doesn't look reassured. \"That's not a work hazard. That's a weapon somebody built on purpose. Watch yourself down there.\"");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
+/* Quest 14, "What the Vault Was Guarding" — offered once quest13Complete.
+The arc's first real gauntlet (per explicit request for "more of
+those" — Act 1's own Palace Gate finale) — a scripted approach at the
+Ledger Vault (approachGauntlet('ledgerCommittee'), gauntlet.js), not a
+random hunt. The guildmaster's own dialogue stays zone-vague; the
+gauntlet button itself (render.js) is what actually says where. */
+function acceptQuest14(){
+   if(state.location !== 'gnomeguild' || !state.quest13Complete || state.quest14Accepted || state.quest14Complete) return;
+   state.quest14Accepted = true;
+   clearLog();
+   log("\"That vault in the Ledger Vault,\" the guildmaster says, \"the one nobody's ever actually opened. There's a reason for that, and I want to know what it is.\"");
+   render();
+   autosave();
+}
+function reportQuest14(){
+   if(state.location !== 'gnomeguild' || !state.quest14Accepted || state.quest14Complete || !state.vaultKeeperDefeated) return;
+   state.quest14Complete = true;
+   state.popTabs += 250;
+   state.xp += 200;
+   state.bountyTokens += 19;
+   clearLog();
+   log("You tell the guildmaster what was actually behind that door. He doesn't ask you to repeat it. (+250 Pop Tabs, +200 XP, +19 Bounty Tokens)");
+   log("\"So there's a structure to all this,\" he says slowly. \"A chain of command. Which means somewhere, there's a top of it.\"");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
+/* Quest 15, "The Warren Answers" — the Mole Wars arc's own finale,
+offered once quest14Complete. The arc's second, bigger gauntlet
+('moleCouncil', gauntlet.js) — same scripted-approach shape as
+quest14's, staged at the Gearworks. warrenMother is deliberately the
+hardest single fight since gnomeKing (Act 1's own finale). */
+function acceptQuest15(){
+   if(state.location !== 'gnomeguild' || !state.quest14Complete || state.quest15Accepted || state.quest15Complete) return;
+   state.quest15Accepted = true;
+   clearLog();
+   log("\"Whoever's at the top of this, they're not hiding anymore,\" the guildmaster says. \"They know you're coming. Go find out if that matters.\"");
+   render();
+   autosave();
+}
+function reportQuest15(){
+   if(state.location !== 'gnomeguild' || !state.quest15Accepted || state.quest15Complete || !state.warrenMotherDefeated) return;
+   state.quest15Complete = true;
+   state.popTabs += 320;
+   state.xp += 260;
+   state.bountyTokens += 25;
+   clearLog();
+   log("You tell the guildmaster it's over — really over, this time. (+320 Pop Tabs, +260 XP, +25 Bounty Tokens)");
+   log("He's quiet for a long moment. \"The Mole Wars,\" he finally says, like he's trying the name out. \"Someone's going to write a song about this. Try not to let it go to your head.\"");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
 /* How many of PALACE_GUARDS (content.js) are down in the CURRENT
 uninterrupted gauntlet attempt — a plain transient variable, never
 saved, same convention combatSubView (combat.js) uses for UI/session
