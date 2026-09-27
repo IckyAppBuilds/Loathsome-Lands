@@ -69,6 +69,7 @@ const ZONE_TITLES = {
   bureau: 'The Bureau',
   warrensear: "The Warren's Ear", choir: 'The Choir', ledgervault: 'The Ledger Vault',
   emberwarren: 'The Ember Warren', foundry: 'The Foundry', gearworks: 'The Gearworks',
+  crystalcity: 'The Crystal City',
 };
 
 /* All PURE `state` reads used by two or more of the sync functions
@@ -128,6 +129,11 @@ function computeRenderContext(){
   moment the hub itself unlocks (quest11Complete), no per-district
   reveal layer needed inside it. */
   const inEmberWarrenArea = isEmberWarren || isFoundry || isGearworks;
+  /* Quest 16's own capstone reveal — a stub LEAF zone, not a hub with
+  sub-districts (see ZONE_DIFFICULTY's own comment, content.js), so
+  there's no "inCrystalCityArea" the way every other Act 2 zone has —
+  just this one flag, same shape as isCommons/isSewers/etc. */
+  const isCrystalCity = state.location === 'crystalcity';
   const isCasino = state.location === 'casino';
   const isNoticeBoard = state.location === 'noticeboard';
   const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot || isNoticeBoard;
@@ -248,6 +254,16 @@ function computeRenderContext(){
     : state.quest15Accepted ? 'active'
     : (state.quest14Complete ? 'offer' : 'locked');
 
+  /* Quest 16, "Breaking Through" — the Mole Wars arc's TRUE capstone.
+  Unlike quest9/quest12's own sequential stages, the 3 parts (a
+  guaranteed zone drop, a salvaged boss part, a bought part) can be
+  gathered in any order — 'active' just means "not all 3 yet",
+  regardless of which ones are already in hand. */
+  const quest16State = state.quest16Complete ? 'complete'
+    : heldAllDrilldozerParts() ? 'ready'
+    : state.quest16Accepted ? 'active'
+    : (state.quest15Complete ? 'offer' : 'locked');
+
   /* Gauntlet approach-button visibility (gauntlet.js) — mirrors
   canApproachPalaceGate's own shape exactly: standing in the right
   zone, the right quest accepted, and not already cleared. */
@@ -269,6 +285,7 @@ function computeRenderContext(){
     isMudrootWarren, isRootCellar, isMudflats, isBureau, inMudrootWarrenArea,
     isWarrensEar, isChoir, isLedgerVault, inWarrensEarArea,
     isEmberWarren, isFoundry, isGearworks, inEmberWarrenArea,
+    isCrystalCity,
     isCasino, isNoticeBoard, inTownArea,
     questState, tinesHeld, tinesStillNeeded, canGive,
     quest2State, canReport,
@@ -277,7 +294,7 @@ function computeRenderContext(){
     quest5State, veinHeld, veinNeeded, canTurnInVein,
     quest6State, canReportGnomeKing,
     quest7State, palaceGateGearItem, canApproachPalaceGate,
-    quest10State, quest11State, quest12State, quest13State, quest14State, quest15State,
+    quest10State, quest11State, quest12State, quest13State, quest14State, quest15State, quest16State,
     canApproachLedgerCommittee, canApproachMoleCouncil,
     quest8State, quest9State, classQuestState,
   };
@@ -543,6 +560,9 @@ function syncBuildingScreens(ctx){
   document.getElementById('accept-quest15-btn').style.display = ctx.quest15State==='offer' ? '' : 'none';
   document.getElementById('report-quest15-btn').style.display = ctx.quest15State==='ready' ? '' : 'none';
   document.getElementById('report-quest15-btn').classList.toggle('btn-ready', ctx.quest15State==='ready');
+  document.getElementById('accept-quest16-btn').style.display = ctx.quest16State==='offer' ? '' : 'none';
+  document.getElementById('report-quest16-btn').style.display = ctx.quest16State==='ready' ? '' : 'none';
+  document.getElementById('report-quest16-btn').classList.toggle('btn-ready', ctx.quest16State==='ready');
 
   /* Gauntlet approach buttons (gauntlet.js) — same "always visible while
   standing there, win/lose/not-yet-fought alike" rule as palace-gate-row
@@ -584,6 +604,8 @@ function syncBuildingScreens(ctx){
   the Tinker's Workshop, per explicit correction. */
   document.getElementById('tinker-temper-block').style.display = (ctx.isTinker && !state.inCombat) ? 'block' : 'none';
   if(ctx.isTinker && !state.inCombat) renderTinkerTemperBlock();
+  document.getElementById('drive-shaft-block').style.display = (ctx.isTinker && !state.inCombat) ? 'block' : 'none';
+  if(ctx.isTinker && !state.inCombat) renderDriveShaftBlock();
 
   /* quest-box only takes up space when a building actually has something
   active or newly offered to say — a "locked, nothing yet" or "complete,
@@ -604,7 +626,8 @@ function syncBuildingScreens(ctx){
         || ctx.quest12State==='offer' || ctx.quest12State==='stage1' || ctx.quest12State==='stage2' || ctx.quest12State==='ready'
         || ctx.quest13State==='offer' || ctx.quest13State==='active' || ctx.quest13State==='ready'
         || ctx.quest14State==='offer' || ctx.quest14State==='active' || ctx.quest14State==='ready'
-        || ctx.quest15State==='offer' || ctx.quest15State==='active' || ctx.quest15State==='ready'))
+        || ctx.quest15State==='offer' || ctx.quest15State==='active' || ctx.quest15State==='ready'
+        || ctx.quest16State==='offer' || ctx.quest16State==='active' || ctx.quest16State==='ready'))
     || (ctx.isHoodoo && (ctx.quest3State==='offer' || ctx.quest3State==='active'))
     || (ctx.isTinker && (ctx.quest4State==='offer' || ctx.quest4State==='active' || ctx.quest5State==='offer' || ctx.quest5State==='active'))
   )) ? 'block' : 'none';
@@ -751,6 +774,18 @@ function syncBuildingScreens(ctx){
       document.getElementById('quest-name').textContent = 'Quest: The Warren Answers';
       document.getElementById('quest-desc').textContent = "It's over. Head back and tell the guildmaster.";
       document.getElementById('quest-progress').textContent = 'Ready to report.';
+    } else if(ctx.quest16State==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: Breaking Through';
+      document.getElementById('quest-desc').textContent = "The Mole Wars are over. What's UNDER them isn't done yet. Build something that can actually get through it.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(ctx.quest16State==='active'){
+      document.getElementById('quest-name').textContent = 'Quest: Breaking Through';
+      document.getElementById('quest-desc').textContent = "Three things, gathered three different ways: drill-plating off a slag-hauler in the Foundry, the tunnel warden's old rig (go find him again), and a drive shaft from the Tinker's Workshop back in Gladstone Hollow.";
+      document.getElementById('quest-progress').textContent = `Plating: ${countDrilldozerPlatingHeld()}/${DRILLDOZER_PLATING_NEEDED} — Rig: ${state.inventory.some(it=>it.key==='drillRig')?'✓':'not yet'} — Drive shaft: ${state.inventory.some(it=>it.key==='driveShaft')?'✓':'not yet'}`;
+    } else if(ctx.quest16State==='ready'){
+      document.getElementById('quest-name').textContent = 'Quest: Breaking Through';
+      document.getElementById('quest-desc').textContent = "Every part's in hand. Head back and tell the guildmaster it's ready to build.";
+      document.getElementById('quest-progress').textContent = 'Ready to report.';
     }
   } else if(ctx.isHoodoo){
     if(ctx.quest3State==='offer'){
@@ -856,6 +891,11 @@ function syncMapDrawer(ctx){
   document.getElementById('ztag-emberwarren').textContent = emberwarrenUnlocked ? 'You are here' : 'Locked';
   document.getElementById('ztag-emberwarren').style.display = emberwarrenUnlocked ? (ctx.inEmberWarrenArea ? 'block' : 'none') : 'block';
 
+  const crystalcityUnlocked = state.quest16Complete;
+  document.getElementById('zone-card-crystalcity').classList.toggle('locked', !crystalcityUnlocked);
+  document.getElementById('ztag-crystalcity').textContent = crystalcityUnlocked ? 'You are here' : 'Locked';
+  document.getElementById('ztag-crystalcity').style.display = crystalcityUnlocked ? (ctx.isCrystalCity ? 'block' : 'none') : 'block';
+
   /* Map drawer's Act 1/Act 2 tab split (mapTab, player-actions.js) — pure
   UI state, mirrors shopTab's own active/inactive button-class toggle. */
   document.getElementById('map-tab-act1-btn').classList.toggle('btn-primary', mapTab==='act1');
@@ -894,7 +934,7 @@ function syncCombatUI(ctx){
   hides the building's normal furniture; "Return to Map" isn't part of
   that screen either, hilo-bet-row's own "Leave Table" is. */
   const inConvertedClassArea = (ctx.isGarrison || ctx.isRoguesden || ctx.isSanctum) && state.quest7Complete && !(ctx.isRoguesden && state.hilo);
-  document.getElementById('explore-row').style.display = ((ctx.isCommons || ctx.isSewers || ctx.isQuarry || ctx.isVault || ctx.isRootCellar || ctx.isMudflats || ctx.isBureau || ctx.isChoir || ctx.isLedgerVault || ctx.isFoundry || ctx.isGearworks || inUnconvertedClassArea) && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('explore-row').style.display = ((ctx.isCommons || ctx.isSewers || ctx.isQuarry || ctx.isVault || ctx.isRootCellar || ctx.isMudflats || ctx.isBureau || ctx.isChoir || ctx.isLedgerVault || ctx.isFoundry || ctx.isGearworks || ctx.isCrystalCity || inUnconvertedClassArea) && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('class-area-row').style.display = (inConvertedClassArea && !state.inCombat) ? 'flex' : 'none';
   /* The Palace has no Explore row (it's not an ADVENTURE_ZONES entry —
   one scripted fight, not somewhere to wander) and palace-gate-row only
@@ -1035,7 +1075,7 @@ function renderSceneArt(ctx){
       /* Combined with quest9's own offer/ready states — this tile is
       "something to do at the Guild," not a marker for where quest9's
       combat stages actually are (those show no flag anywhere). */
-      gnomeguild: { flag: (ctx.quest8State==='offer' || ctx.quest9State==='offer' || ctx.quest10State==='offer' || ctx.quest11State==='offer' || ctx.quest12State==='offer' || ctx.quest13State==='offer' || ctx.quest14State==='offer' || ctx.quest15State==='offer') ? 'offer' : ((ctx.quest8State==='active' || ctx.quest9State==='ready' || ctx.quest10State==='ready' || ctx.quest11State==='ready' || ctx.quest12State==='ready' || ctx.quest13State==='ready' || ctx.quest14State==='ready' || ctx.quest15State==='ready') ? 'turnin' : null) },
+      gnomeguild: { flag: (ctx.quest8State==='offer' || ctx.quest9State==='offer' || ctx.quest10State==='offer' || ctx.quest11State==='offer' || ctx.quest12State==='offer' || ctx.quest13State==='offer' || ctx.quest14State==='offer' || ctx.quest15State==='offer' || ctx.quest16State==='offer') ? 'offer' : ((ctx.quest8State==='active' || ctx.quest9State==='ready' || ctx.quest10State==='ready' || ctx.quest11State==='ready' || ctx.quest12State==='ready' || ctx.quest13State==='ready' || ctx.quest14State==='ready' || ctx.quest15State==='ready' || ctx.quest16State==='ready') ? 'turnin' : null) },
       gnomeshop: {},
       gnometownlot: {},
     };
@@ -1085,13 +1125,19 @@ function renderSceneArt(ctx){
     document.getElementById('scene-art').innerHTML = artZoneLedgerVault();
     document.getElementById('victory-banner').style.display = 'none';
   } else if(ctx.isEmberWarren){
-    /* Unlike Mudroot Warren/the Warren's Ear above, both districts are
-    real and clickable the moment this hub itself unlocks (quest11Complete
-    already gated travel here) — no per-district reveal state to pass in. */
-    document.getElementById('scene-art').innerHTML = artEmberWarrenSquare();
+    /* Unlike Mudroot Warren/the Warren's Ear above, both the Foundry and
+    the Gearworks are real and clickable the moment this hub itself
+    unlocks (quest11Complete already gated travel here) — no per-tile
+    reveal state needed for either. The THIRD tile (the Crystal Breach,
+    quest16's own capstone reveal) still uses the reveal-not-marker
+    mechanism every hub before this one has used. */
+    document.getElementById('scene-art').innerHTML = artEmberWarrenSquare(state.quest16Complete);
     document.getElementById('victory-banner').style.display = 'none';
   } else if(ctx.isFoundry){
     document.getElementById('scene-art').innerHTML = artZoneFoundry();
+    document.getElementById('victory-banner').style.display = 'none';
+  } else if(ctx.isCrystalCity){
+    document.getElementById('scene-art').innerHTML = artZoneCrystalCity();
     document.getElementById('victory-banner').style.display = 'none';
   } else if(ctx.isGearworks){
     document.getElementById('scene-art').innerHTML = artZoneGearworks();
@@ -1164,6 +1210,20 @@ requirement). */
 function countVeinIngredientsHeld(){
   return veinIngredients.reduce((sum, v) =>
     sum + Math.min(VEIN_ITEM_COUNT_NEEDED, state.inventory.filter(it => it.key === v.item.key).length), 0);
+}
+
+/* Quest 16's own 3-way gather check — same clamped-count shape as
+countVeinIngredientsHeld() above for the guaranteed-drop part, plus a
+flat 1-or-0 for the salvaged part and the bought part (each only ever
+needs exactly one). Read by quest16State/reportQuest16() (guild.js) and
+the Guild's own quest-progress text. */
+function countDrilldozerPlatingHeld(){
+  return Math.min(DRILLDOZER_PLATING_NEEDED, state.inventory.filter(it => it.key === 'drillPlating').length);
+}
+function heldAllDrilldozerParts(){
+  return countDrilldozerPlatingHeld() >= DRILLDOZER_PLATING_NEEDED
+    && state.inventory.some(it => it.key === 'drillRig')
+    && state.inventory.some(it => it.key === 'driveShaft');
 }
 
 function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }

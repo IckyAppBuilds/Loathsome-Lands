@@ -437,12 +437,17 @@ fully-tempered (+5) items rather than another small nudge. Act 1's own
 zones (commons through vault) and the three Gnometropolis districts are
 untouched by this second pass — this is scoped to Act 2's Mole Wars
 content specifically, per explicit request. */
-const ZONE_DIFFICULTY = { commons:1, sewers:1.17, quarry:1.61, vault:2.01, garrison:2.48, roguesden:2.48, sanctum:2.48, palace:2.48, rootcellar:4.29, bureau:4.29, mudflats:4.97, choir:5.74, ledgervault:5.74, foundry:6.61, gearworks:6.61 };
+/* crystalcity (quest16's own capstone reveal) is deliberately its own
+LEAF zone, not a hub with sub-districts like every Act 2 area before
+it — a genuine "stub," per explicit instruction, meant to be expanded
+later rather than fully fleshed out now. Continues the difficulty
+ladder one more step past foundry/gearworks. */
+const ZONE_DIFFICULTY = { commons:1, sewers:1.17, quarry:1.61, vault:2.01, garrison:2.48, roguesden:2.48, sanctum:2.48, palace:2.48, rootcellar:4.29, bureau:4.29, mudflats:4.97, choir:5.74, ledgervault:5.74, foundry:6.61, gearworks:6.61, crystalcity:7.5 };
 
 /* Display names for each adventure zone, keyed by state.location/zone id —
 used by the Bounty Board (render.js) to spell out where a bounty's
 monster lives without hand-typing zone names in a second place. */
-const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace', rootcellar:'the Root Cellar', mudflats:'the Mudflats', bureau:'the Bureau', choir:'the Choir', ledgervault:'the Ledger Vault', foundry:'the Foundry', gearworks:'the Gearworks' };
+const ZONE_LABELS = { commons:'the Overgrown Commons', sewers:'the Dank Sewers', quarry:'the Clockwork Quarry', vault:'the Sunless Vault', garrison:'The Garrison', roguesden:"The Rogues' Den", sanctum:'The Arcane Sanctum', palace:'the Palace', rootcellar:'the Root Cellar', mudflats:'the Mudflats', bureau:'the Bureau', choir:'the Choir', ledgervault:'the Ledger Vault', foundry:'the Foundry', gearworks:'the Gearworks', crystalcity:'the Crystal City' };
 
 /* The Map's main chain, Gladstone Hollow through to Mudroot Warren, in
 travel order — travelCostFor() (town.js) prices a trip by the DISTANCE
@@ -459,7 +464,7 @@ distance purposes. 'town' itself is a special case travelCostFor()
 always prices at 0 regardless of distance — the trip home is always
 free (see forceHomeIfBroke()'s own comment, town.js), same as any move
 within a hub's own area (square<->district) already was. */
-const ZONE_ORDER = ['town', 'commons', 'sewers', 'quarry', 'vault', 'gnometropolis', 'mudrootwarren', 'warrensear', 'emberwarren'];
+const ZONE_ORDER = ['town', 'commons', 'sewers', 'quarry', 'vault', 'gnometropolis', 'mudrootwarren', 'warrensear', 'emberwarren', 'crystalcity'];
 
 /* Shown on each zone's card in the Map drawer (render.js) as a "Recommended
 level" guideline — deliberately advisory, not a hard gate like zone
@@ -526,6 +531,10 @@ const ZONE_LEVEL_RECOMMENDATION = {
    same as Mudroot Warren/Warren's Ear's own guessed numbers were
    caught and corrected above. */
    emberwarren: { min:18 },
+   /* A stub zone (deliberately just one leaf, no districts of its own
+   yet) — same "guessed, not simulated" caveat as emberwarren's own
+   entry above, continuing the same +2ish-per-step pattern. */
+   crystalcity: { min:24 },
 };
 
 /* Chance, per kill, that a monster's own rareDrop (defined per entry in
@@ -968,6 +977,26 @@ const veinIngredients = [
     item:{ name:"tangle of copper wiring", desc:"All three rats insist it was already like that.", type:"quest", key:"veinWiring", sell:4, icon:iconVeinWiring } },
    ];
 
+/* Quest 16, "Breaking Through" — the Mole Wars arc's own true capstone,
+one step past quest15. Per explicit request, its 3 parts are gathered
+three DIFFERENT ways rather than one repeated fetch loop: a guaranteed
+zone drop (same mechanism as veinIngredients above), a salvage re-hunt
+of an already-defeated boss (tunnelWardenSalvageHunt, combat.js —
+tunnelWarden himself, not a new monster, closing the loop on Act 2's
+very first named boss), and a straight currency purchase at the
+Tinker's Workshop (buyDriveShaft(), player-actions.js). All three are
+plain `type:'quest'` items, consumed together on report the same way
+turnInVein() consumes veinIngredients. */
+const DRILLDOZER_PLATING_NEEDED = 3;
+const drilldozerIngredients = [
+   { monsterName:"a slag-hauler, dragging a cart twice its own size",
+    item:{ name:"a scrap of drill-plating", desc:"Still cart-shaped, if you squint.", type:"quest", key:"drillPlating", sell:6, icon:iconOreGrit } },
+   ];
+const drillRigItem = { name:"the tunnel warden's own reinforced digging rig", desc:"Buried where you left him. Still runs.", type:"quest", key:"drillRig", sell:0, icon:iconGuardHelm };
+const DRIVE_SHAFT_COST_POPTABS = 220;
+const DRIVE_SHAFT_COST_BOUNTYTOKENS = 18;
+const driveShaftItem = { name:"a fresh drive shaft", desc:"Machined to spec. Smells like the forge it came out of.", type:"quest", key:"driveShaft", sell:0, icon:iconServoJoint };
+
 /* Which state flag has to be true before a given quest item (by its `key`)
 can be sold as junk — see isQuestItemSellable()/sellItemByName() in
 game.js. Built from the item lists above instead of hand-typed so a
@@ -977,6 +1006,9 @@ const QUEST_ITEM_COMPLETION_FLAG = {
    rakeTine: 'questComplete',
    ...Object.fromEntries(potionIngredients.map(p => [p.item.key, 'quest3Complete'])),
    ...Object.fromEntries(veinIngredients.map(v => [v.item.key, 'quest5Complete'])),
+   ...Object.fromEntries(drilldozerIngredients.map(d => [d.item.key, 'quest16Complete'])),
+   drillRig: 'quest16Complete',
+   driveShaft: 'quest16Complete',
 };
 
 /* ---------------- Class titles (level-10 Guild capstone, "The Adventurer's Trial") ---------------- */

@@ -84,6 +84,7 @@ function resetQuestsDev(){
       quest13Accepted: false, quest13Complete: false, quenchMasterDefeated: false,
       quest14Accepted: false, quest14Complete: false, vaultKeeperDefeated: false,
       quest15Accepted: false, quest15Complete: false, warrenMotherDefeated: false,
+      quest16Accepted: false, quest16Complete: false, drillRigSalvaged: false,
       classQuestAccepted: false, classQuestComplete: false, classTitle: null,
    });
    state.inventory = state.inventory.filter(it => it.type !== 'quest');
@@ -422,6 +423,38 @@ const QUEST_DEV_STAGES = [
       { label:'Warren-mother defeated (ready to turn in)', apply(){ Object.assign(state, { quest15Accepted:true, warrenMotherDefeated:true, quest15Complete:false }); } },
       { label:'Complete (Mole Wars arc finished)', apply(){ Object.assign(state, { quest15Accepted:true, warrenMotherDefeated:true, quest15Complete:true }); } },
       ], detect(){ if(state.quest15Complete) return 3; if(state.warrenMotherDefeated) return 2; if(state.quest15Accepted) return 1; return 0; } },
+
+   /* Quest 16's own 3 parts are gathered 3 different ways (a guaranteed
+   drop, a salvaged boss re-fight, a straight purchase) — its dev
+   stages push/strip the actual inventory items directly, same "each
+   stage sets every flag/item it implies" rule as every other stage
+   here, so jumping straight to "ready to turn in" doesn't leave the
+   Pack out of sync with what the quest thinks is held. */
+   { id:'quest16', label:'Gnome Guild: Breaking Through (Act 2 capstone)', stages: [
+      { label:'Not started', apply(){
+         Object.assign(state, { quest16Accepted:false, drillRigSalvaged:false, quest16Complete:false });
+         state.inventory = state.inventory.filter(it => !['drillPlating','drillRig','driveShaft'].includes(it.key));
+      } },
+      { label:'Accepted (0/3 parts)', apply(){
+         Object.assign(state, { quest16Accepted:true, drillRigSalvaged:false, quest16Complete:false });
+         state.inventory = state.inventory.filter(it => !['drillPlating','drillRig','driveShaft'].includes(it.key));
+      } },
+      { label:'All 3 parts held (ready to turn in)', apply(){
+         Object.assign(state, { quest16Accepted:true, drillRigSalvaged:true, quest16Complete:false });
+         state.inventory = state.inventory.filter(it => !['drillPlating','drillRig','driveShaft'].includes(it.key));
+         for(let n=0; n<DRILLDOZER_PLATING_NEEDED; n++) state.inventory.push({ ...drilldozerIngredients[0].item });
+         state.inventory.push({ ...drillRigItem }, { ...driveShaftItem });
+      } },
+      { label:'Complete (Crystal City open)', apply(){
+         Object.assign(state, { quest16Accepted:true, drillRigSalvaged:true, quest16Complete:true });
+         state.inventory = state.inventory.filter(it => !['drillPlating','drillRig','driveShaft'].includes(it.key));
+      } },
+      ], detect(){
+         if(state.quest16Complete) return 3;
+         if(state.quest16Accepted && heldAllDrilldozerParts()) return 2;
+         if(state.quest16Accepted) return 1;
+         return 0;
+      } },
 
    { id:'classquest', label:"Guild: The Adventurer's Trial (class)", stages: [
       { label:'Not accepted', apply(){ Object.assign(state, { classQuestAccepted:false, classQuestComplete:false, classTitle:null,

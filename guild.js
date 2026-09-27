@@ -403,6 +403,46 @@ function reportQuest15(){
    autosave();
 }
 
+/* Quest 16, "Breaking Through" — the Mole Wars arc's TRUE capstone,
+offered once quest15Complete. Unlike every quest before it, its 3 parts
+are gathered three genuinely different ways (per explicit request): a
+guaranteed zone drop (drilldozerIngredients, content.js/combat.js), a
+salvaged part off an already-defeated boss (tunnelWardenSalvageHunt,
+combat.js), and a straight currency purchase (buyDriveShaft(),
+player-actions.js). Completing it reveals the Crystal Breach tile in
+the Ember Warren's own square (artEmberWarrenSquare(), emberwarren-art.js)
+— a deliberately real, explorable STUB zone on the other side, not just
+an ending screen. */
+function acceptQuest16(){
+   if(state.location !== 'gnomeguild' || !state.quest15Complete || state.quest16Accepted || state.quest16Complete) return;
+   state.quest16Accepted = true;
+   clearLog();
+   log("\"The Mole Wars are over,\" the guildmaster says. \"What's under them isn't. Something big enough to shrug off everything we've thrown at it is still down there, past a wall nothing's cracked yet. Build something that can.\"");
+   render();
+   autosave();
+}
+function reportQuest16(){
+   if(state.location !== 'gnomeguild' || !state.quest16Accepted || state.quest16Complete || !heldAllDrilldozerParts()) return;
+   for(let n=0; n<DRILLDOZER_PLATING_NEEDED; n++){
+      const idx = state.inventory.findIndex(it => it.key === 'drillPlating');
+      if(idx !== -1) state.inventory.splice(idx,1);
+   }
+   ['drillRig', 'driveShaft'].forEach(key => {
+      const idx = state.inventory.findIndex(it => it.key === key);
+      if(idx !== -1) state.inventory.splice(idx,1);
+   });
+   state.quest16Complete = true;
+   state.popTabs += 400;
+   state.xp += 320;
+   state.bountyTokens += 30;
+   clearLog();
+   log("Plating, rig, drive shaft — the Tinker bolts all three together into something that looks less like a vehicle and more like a promise. (+400 Pop Tabs, +320 XP, +30 Bounty Tokens)");
+   log("The drilldozer breaks through the last wall of the Ember Warren in one long, grinding push — and the other side isn't rock at all. It's crystal, cut too clean to be natural, going down further than any torch can reach. \"That,\" the guildmaster says, staring at what you're describing, \"is not a Mole tunnel. Whatever you just found, it isn't ours to name.\" The Crystal City is now open — check the Map.");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
 /* How many of PALACE_GUARDS (content.js) are down in the CURRENT
 uninterrupted gauntlet attempt — a plain transient variable, never
 saved, same convention combatSubView (combat.js) uses for UI/session
@@ -501,6 +541,7 @@ function isBountyZoneUnlocked(zone){
       if(zone === 'choir') return state.tunnelMoleInformantDefeated;
       if(zone === 'ledgervault') return state.seniorClerkDefeated;
       if(zone === 'foundry' || zone === 'gearworks') return state.quest11Complete;
+      if(zone === 'crystalcity') return state.quest16Complete;
       return false;
    }
    if(zone === 'commons') return true;

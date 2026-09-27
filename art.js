@@ -670,6 +670,22 @@ function artWarrenMother(){
    return sceneWrap(`<ellipse cx="50" cy="72" rx="38" ry="24" fill="#2b2b28"/><ellipse cx="50" cy="46" rx="18" ry="15" fill="#2b2b28"/><path d="M36 40 Q28 26 14 29" fill="none" stroke-width="5"/><path d="M64 40 Q72 26 86 29" fill="none" stroke-width="5"/><circle cx="42" cy="46" r="4" fill="#d1a94e" stroke="none"/><circle cx="58" cy="46" r="4" fill="#d1a94e" stroke="none"/><path d="M20 82 Q10 90 8 100 M80 82 Q90 90 92 100 M50 96 Q50 106 50 112" stroke="#5f4632" stroke-width="3" fill="none"/>`, 0);
 }
 
+/* The Crystal City's own roster (crystalcity-content.js) — deliberately
+NOT the mole silhouette every other Act 2 monster has used up to now.
+Angular, faceted shapes instead of soft mole-ellipses signal "this is
+somewhere new" at a glance, same reasoning the Ember Warren's own
+forge-heat accents used one step earlier, just a bigger visual swing
+this time since it's a genuinely new area, not another warren. */
+function artCrystalSentinel(){
+   return sceneWrap(`<path d="M50 20 L74 46 L62 82 L38 82 L26 46 Z" fill="#3d5a80" opacity="0.85"/><path d="M50 20 L74 46 L50 52 Z" fill="#f4efe4" opacity="0.5"/><path d="M50 20 L26 46 L50 52 Z" fill="#8a8477" opacity="0.4"/><circle cx="50" cy="52" r="4" fill="#d1a94e" stroke="none"/><line x1="38" y1="82" x2="34" y2="96" stroke-width="3"/><line x1="62" y1="82" x2="66" y2="96" stroke-width="3"/>`, 0);
+}
+function artGeodeCrawler(){
+   return sceneWrap(`<path d="M18 78 L34 56 L50 66 L66 52 L84 78 Z" fill="#8a8477"/><path d="M30 74 L36 62 L44 70 Z" fill="#b06a97" opacity="0.8"/><path d="M52 70 L60 58 L68 68 Z" fill="#f4efe4" opacity="0.7"/><circle cx="40" cy="74" r="2" fill="#d1a94e" stroke="none"/><circle cx="60" cy="72" r="2" fill="#d1a94e" stroke="none"/>`, 0);
+}
+function artEchoWraith(){
+   return sceneWrap(`<path d="M50 22 Q68 30 66 54 Q64 78 50 84 Q36 78 34 54 Q32 30 50 22 Z" fill="#b06a97" opacity="0.55"/><path d="M46 26 Q64 34 62 58 Q60 82 46 88" fill="none" stroke="#3d5a80" stroke-width="2.5" opacity="0.6"/><circle cx="44" cy="44" r="3" fill="#f4efe4" stroke="none"/><circle cx="56" cy="44" r="3" fill="#f4efe4" stroke="none"/>`, 0);
+}
+
 /* ---------------- Zone backdrop art ---------------- */
 /* One scene per Act 1 adventure zone (ZONE_DIFFICULTY, content.js), shown
 between fights in place of artIdle() (see render.js) so each zone has
@@ -692,6 +708,14 @@ function artZoneQuarry(){
 }
 function artZoneVault(){
    return sceneWrap(`<rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.2"/><path d="M20 96 L20 30 Q50 6 80 30 L80 96" fill="none" stroke="#8a8477" stroke-width="7"/><line x1="48" y1="16" x2="52" y2="34"/><rect x="10" y="24" width="10" height="72" fill="#8a8477"/><rect x="80" y="24" width="10" height="72" fill="#8a8477"/><path d="M15 24 Q9 18 15 10 Q21 18 15 24 Z" fill="#d1a94e"/><circle cx="15" cy="8" r="3" fill="#d1a94e" stroke="none"/><circle cx="38" cy="88" r="4" fill="#d1a94e" stroke="none"/><circle cx="58" cy="92" r="3" fill="#d1a94e" stroke="none"/><circle cx="68" cy="86" r="4" fill="#b06a97" stroke="none"/><circle cx="48" cy="90" r="2.4" fill="#d1a94e" stroke="none"/>`, 0);
+}
+/* The Crystal City (quest16's own capstone reveal, crystalcity-content.js)
+— a stub zone with no hub-square art file of its own (it's a single
+leaf zone, not a district-bearing hub like every other Act 2 area), so
+its one backdrop lives directly here alongside Act 1's own four rather
+than getting a whole new paired art file for just one function. */
+function artZoneCrystalCity(){
+   return sceneWrap(`<rect x="0" y="0" width="100" height="100" fill="#3d5a80" opacity="0.12"/><path d="M50 8 L78 40 L64 92 L36 92 L22 40 Z" fill="none" stroke="#3d5a80" stroke-width="3"/><path d="M50 8 L50 92 M22 40 L78 40" stroke="#8a8477" stroke-width="1.6" opacity="0.6"/><circle cx="30" cy="60" r="2.4" fill="#d1a94e" stroke="none"/><circle cx="70" cy="66" r="2" fill="#b06a97" stroke="none"/><circle cx="50" cy="30" r="2.2" fill="#f4efe4" stroke="none"/>`, 0);
 }
 function artDefeated(monsterArtFn){
    const inner = monsterArtFn();

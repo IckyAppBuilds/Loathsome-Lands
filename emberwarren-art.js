@@ -5,15 +5,24 @@ makeFlag()/plate()/biGet()/sceneWrap() (art.js) without re-authoring
 any of it a third time.
 
 Unlike the Warren's Ear (which hides each district behind its own
-rare-hunt reveal), both of the Ember Warren's tiles are real, clickable
-districts from the very start — hub-level access is already gated by
-quest11Complete via travelTo() (town.js), so there's no need for a
-SECOND layer of per-tile gating once you're standing inside it. Same
-2-tile grid shape as artWarrensEarSquare(), no rest tile, no third
-district — nothing else here yet. */
-function artEmberWarrenSquare(){
-   return `<svg class="town-scene-svg" viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
-   <rect x="4" y="4" width="192" height="92" fill="none" stroke="#2b2b28" stroke-width="9" stroke-dasharray="17,4" stroke-linecap="butt" stroke-linejoin="miter"/>
+rare-hunt reveal), both the Foundry and the Gearworks are real,
+clickable districts from the very start — hub-level access is already
+gated by quest11Complete via travelTo() (town.js), so there's no need
+for a SECOND layer of per-tile gating on either of them.
+
+A THIRD tile was added on top of that original 2-tile grid (widened
+from 200x100 to 300x100) for quest16's own capstone reveal — same
+reveal-not-marker mechanism as every hub before this one (Mudroot
+Warren's rockpile becoming the Ember Warren's own door, mudroot-art.js):
+inert crystalline filler, embedded in the rock but not yet broken
+through, until state.quest16Complete flips it into a real
+data-action="crystalcity" tile. Angular/blue-purple rather than the
+brown mole-vocabulary the other two tiles use, on purpose — the same
+"this reads as somewhere new" signal artCrystalSentinel's own comment
+(art.js) uses. */
+function artEmberWarrenSquare(crystalBreachRevealed){
+   return `<svg class="town-scene-svg" viewBox="0 0 300 100" xmlns="http://www.w3.org/2000/svg" stroke="#2b2b28" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round">
+   <rect x="4" y="4" width="292" height="92" fill="none" stroke="#2b2b28" stroke-width="9" stroke-dasharray="17,4" stroke-linecap="butt" stroke-linejoin="miter"/>
    <g transform="translate(0,0)" class="building-hit" data-action="foundry">
    <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
    <path d="M18 84 L18 40 Q50 24 82 40 L82 84 Z" fill="#5f4632"/>
@@ -33,6 +42,19 @@ function artEmberWarrenSquare(){
    <line x1="61" y1="30" x2="66" y2="30" stroke="#d1a94e" stroke-width="2.5"/>
    ${plate("The Gearworks")}
    </g>
+   ${crystalBreachRevealed ? `
+   <g transform="translate(200,0)" class="building-hit" data-action="crystalcity">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <path d="M50 14 L76 42 L64 88 L36 88 L24 42 Z" fill="#3d5a80"/>
+   <path d="M50 14 L76 42 L50 46 Z" fill="#f4efe4" opacity="0.5"/>
+   <circle cx="50" cy="46" r="4" fill="#d1a94e" stroke="none"/>
+   ${plate("The Crystal City")}
+   </g>` : `
+   <g transform="translate(200,0)">
+   <rect x="0" y="0" width="100" height="100" fill="transparent" stroke="none"/>
+   <path d="M50 30 L68 52 L58 78 L42 78 L32 52 Z" fill="#8a8477" opacity="0.5"/>
+   <circle cx="50" cy="54" r="2.4" fill="#3d5a80" opacity="0.6" stroke="none"/>
+   </g>`}
    </svg>`;
 }
 

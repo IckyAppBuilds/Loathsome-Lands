@@ -240,6 +240,33 @@ function renderTinkerTemperBlock(){
   el.innerHTML = `<div class="block-title">Temper Gear</div>${rows}`;
 }
 
+/* Quest 16's own "buy a part with currency" leg — the third of its 3
+mixed collection methods (a guaranteed zone drop, a salvaged boss part,
+and this one), per explicit request. Lives at the Tinker's Workshop
+alongside gear tempering since both are "spend currency to get
+something built," rather than adding a whole new building for one
+purchase. Only shows up at all while the quest is actually active and
+the part isn't already held — same "nothing to do here" collapse
+renderTinkerTemperBlock() above uses. */
+function renderDriveShaftBlock(){
+  const el = document.getElementById('drive-shaft-block');
+  if(!el) return;
+  if(!state.quest16Accepted || state.quest16Complete){ el.innerHTML = ''; return; }
+  if(state.inventory.some(it => it.key === 'driveShaft')){
+    el.innerHTML = `<div class="block-title">Drilldozer Parts</div><div class="quest-desc">You've already got a drive shaft — one's all you need.</div>`;
+    return;
+  }
+  const canAfford = state.popTabs >= DRIVE_SHAFT_COST_POPTABS && state.bountyTokens >= DRIVE_SHAFT_COST_BOUNTYTOKENS;
+  el.innerHTML = `<div class="block-title">Drilldozer Parts</div>
+  <div class="equip-row">
+  <div style="flex:1;">
+  <div class="name">${driveShaftItem.name}</div>
+  <div class="desc">${driveShaftItem.desc}</div>
+  <button class="btn-secondary ${canAfford?'btn-ready':''}" ${canAfford?'':'disabled'} onclick="buyDriveShaft()">Buy — ${DRIVE_SHAFT_COST_POPTABS} Pop Tabs, ${DRIVE_SHAFT_COST_BOUNTYTOKENS} Bounty Tokens</button>
+  </div>
+  </div>`;
+}
+
 function renderQuestLogDrawer(){
   const activeEl = document.getElementById('quest-log-active');
   const completedEl = document.getElementById('quest-log-completed');
@@ -543,6 +570,22 @@ if(state.quest15Complete){
   <div class="quest-name">The Warren Answers</div>
   <div class="quest-desc">Head to the Gearworks and approach the council directly. This is the one that ends it.</div>
   <div class="quest-progress">${state.warrenMotherDefeated ? 'Ready to report back at the Guild.' : 'Not yet cleared.'}</div>
+  </div>`);
+}
+
+if(state.quest16Complete){
+  completedEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">Breaking Through</div>
+  <div class="quest-desc">The drilldozer broke through the last wall of the Ember Warren — and found crystal on the other side, not rock.</div>
+  <div class="quest-progress">Reward claimed: 400 Pop Tabs, 320 XP, 30 Bounty Tokens</div>
+  </div>`);
+} else if(state.quest16Accepted){
+  activeEntries.push(`
+  <div class="quest-log-entry">
+  <div class="quest-name">Breaking Through</div>
+  <div class="quest-desc">Three parts, three different ways: drill-plating off a slag-hauler in the Foundry, the tunnel warden's own rig (find him again, in the Root Cellar), and a drive shaft from the Tinker's Workshop.</div>
+  <div class="quest-progress">${heldAllDrilldozerParts() ? 'Ready to report back at the Guild.' : `Plating: ${countDrilldozerPlatingHeld()}/${DRILLDOZER_PLATING_NEEDED} — Rig: ${state.inventory.some(it=>it.key==='drillRig')?'✓':'not yet'} — Drive shaft: ${state.inventory.some(it=>it.key==='driveShaft')?'✓':'not yet'}`}</div>
   </div>`);
 }
 

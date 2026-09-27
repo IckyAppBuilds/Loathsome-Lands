@@ -40,6 +40,7 @@ document.getElementById('scene-art').addEventListener('click', function(e){
    else if(action === 'emberwarren') travelTo('emberwarren');
    else if(action === 'foundry') travelTo('foundry');
    else if(action === 'gearworks') travelTo('gearworks');
+   else if(action === 'crystalcity') travelTo('crystalcity');
 });
 
 /* Seed a brand-new run: starter gear (equipped) and a couple of starter

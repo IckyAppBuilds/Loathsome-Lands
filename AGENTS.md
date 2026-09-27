@@ -1,7 +1,7 @@
 # The Loathsome Lands — file map
 
 A single-page browser RPG. No build step, no bundler, no modules — plain
-HTML/CSS/`<script>` tags, all globals. 35 JS files load in a specific
+HTML/CSS/`<script>` tags, all globals. 36 JS files load in a specific
 order (see `index.html`'s `<script>` block, which documents this inline
 too):
 
@@ -9,12 +9,12 @@ too):
 supabase (CDN)
 -> core.js -> icons.js -> art.js -> gnometropolis-art.js -> mudroot-art.js
 -> warrensear-art.js -> emberwarren-art.js -> content.js -> mudroot-content.js
--> warrensear-content.js -> emberwarren-content.js -> gauntlet.js -> act2-shop.js
--> item-tiers.js -> render.js -> render-shop.js -> render-character.js
--> class-spells.js -> dev-tools.js -> auth.js -> save.js -> player-actions.js
--> tutorial.js -> changelog.js -> hubs.js -> combat.js -> town.js -> casino.js
--> hilo.js -> class-trial.js -> guild.js -> gnometropolis.js -> economy.js
--> noticeboard.js -> boot.js
+-> warrensear-content.js -> emberwarren-content.js -> gauntlet.js
+-> crystalcity-content.js -> act2-shop.js -> item-tiers.js -> render.js
+-> render-shop.js -> render-character.js -> class-spells.js -> dev-tools.js
+-> auth.js -> save.js -> player-actions.js -> tutorial.js -> changelog.js
+-> hubs.js -> combat.js -> town.js -> casino.js -> hilo.js -> class-trial.js
+-> guild.js -> gnometropolis.js -> economy.js -> noticeboard.js -> boot.js
 ```
 
 Act 2's own files slot in alongside their Act 1 counterpart rather than
@@ -123,7 +123,11 @@ portrait. New Act 1 monster art goes here directly; Act 2's own
 monster art (the Mudroot Warren roster) also lives here rather than
 splitting across files — this project's own established precedent is
 centralizing ALL monster art in art.js regardless of which zone/file
-the monster's own data table lives in.
+the monster's own data table lives in. Also holds `artZoneCrystalCity()`
+(quest16) alongside Act 1's own 4 zone backdrops — the Crystal City is
+a leaf zone with no paired hub-square art file of its own, so its one
+backdrop lives here rather than in a whole new file for a single
+function.
 
 ## gnometropolis-art.js — Act 2 town hub art
 `artGnometropolisSquare(buildingIndicators, campCooldownText, lotTier)`
@@ -181,15 +185,20 @@ already uses. Also the two district backdrops (`artZoneChoir`/
 Touch this file when: changing the Warren's Ear square's own
 layout/reveal logic, or its two district backdrops.
 
-## emberwarren-art.js — The Ember Warren art (Act 2, quest11)
-`artEmberWarrenSquare()` — the same tight 2-tile hub shape as
-warrensear-art.js, one step past the Warren's Ear, but unlike it,
-BOTH tiles (the Foundry/the Gearworks) are real, clickable districts
+## emberwarren-art.js — The Ember Warren art (Act 2, quest11/16)
+`artEmberWarrenSquare(crystalBreachRevealed)` — originally a tight
+2-tile hub shape like warrensear-art.js, one step past the Warren's Ear,
+with BOTH original tiles (the Foundry/the Gearworks) real and clickable
 from the moment the hub itself unlocks — no per-district reveal state
-to thread through, since `quest11Complete` already gates reaching the
-hub at all (travelTo(), town.js). Also the two district backdrops
-(`artZoneFoundry`/`artZoneGearworks`). Loads after
-art.js/mudroot-art.js/warrensear-art.js.
+needed for either, since `quest11Complete` already gates reaching the
+hub at all (travelTo(), town.js). Widened to a THIRD tile (200x100 ->
+300x100 viewBox) for quest16's own capstone reveal — same reveal-not-
+marker mechanism as every hub before it: inert crystalline filler until
+`state.quest16Complete`, then a real `data-action="crystalcity"` door.
+Also the district backdrops (`artZoneFoundry`/`artZoneGearworks`) — the
+Crystal City's own backdrop lives in art.js instead, since it's a leaf
+zone with no hub-square file of its own (see art.js's section). Loads
+after art.js/mudroot-art.js/warrensear-art.js.
 
 Touch this file when: changing the Ember Warren square's own layout,
 or its two district backdrops.
@@ -335,6 +344,22 @@ file's own `GAUNTLETS` registry references BY VALUE at parse time).
 Touch this file when: adding a new multi-boss gauntlet, or changing how
 an existing one's guards/finalBoss/approach/reset mechanics work.
 
+## crystalcity-content.js — The Crystal City (Act 2 capstone, quest16) monster data
+`crystalCityMonsters` (3 regulars — `crystalSentinel`/`geodeCrawler`/
+`echoWraith` — same `.push()`-onto-`monsters`/`BOUNTY_TEMPLATES` shape
+as every other zone's own roster; gearDrop bonus +10, one step past the
+Ember Warren's own +9). Deliberately a STUB, same as Mudroot Warren/the
+Ember Warren before their own first quest — no rare hunt/boss of its
+own yet. First zone with a genuinely new visual identity (angular
+crystalline shapes, not the mole silhouette every Act 2 monster before
+it used — see the comment above `artCrystalSentinel`, art.js) signaling
+this is the first taste of whatever comes after the Mole Wars, not
+another warren. Also extends `noncombatEvents`/`hazardEvents` with a
+`crystalcity` entry. Loads after content.js/icons.js/art.js.
+
+Touch this file when: adding/rebalancing a Crystal City monster, or
+(eventually) its own first quest/rare hunt.
+
 ## act2-shop.js — Act 2 Shop (Gnometropolis) gear + food ladder
 `act2GearItemsTier1/2/3/4` and `act2FoodItemsTier1/2` — a structurally
 separate ladder from content.js's own `shopGearItems`/`shopFoodItems`
@@ -464,16 +489,19 @@ class-skill upgrade block is displayed.
 (reset every quest flag back to never-started — quest7 through quest15
 were silently missing from this entirely until this session, despite
 its own doc comment already claiming full coverage; fixed alongside
-adding quest13-15, and now also calls `resetAllGauntlets()`,
-gauntlet.js)/`resetToNewGameDev` (the "Full Reset (New Game)" button —
-wipes to `createDefaultState()` then replays `startFreshGame()`), the
-direct state setters (Biscuits/Pop Tabs/level/stats/items/etc.),
-`applyStatusEffectDev`/`DEV_STATUS_EFFECTS` (apply burn/poison/freeze
-directly — `state.playerStatusEffect`, core.js — without needing to
-actually get hit by one of the handful of bosses that inflict it), and
-`QUEST_DEV_STAGES`/`setQuestStageDev` (quest8 through quest15 were also
+adding quest13-15, extended again for quest16, and now also calls
+`resetAllGauntlets()`, gauntlet.js)/`resetToNewGameDev` (the "Full
+Reset (New Game)" button — wipes to `createDefaultState()` then
+replays `startFreshGame()`), the direct state setters (Biscuits/Pop
+Tabs/level/stats/items/etc.), `applyStatusEffectDev`/
+`DEV_STATUS_EFFECTS` (apply burn/poison/freeze directly —
+`state.playerStatusEffect`, core.js — without needing to actually get
+hit by one of the handful of bosses that inflict it), and
+`QUEST_DEV_STAGES`/`setQuestStageDev` (quest8 through quest16 were also
 entirely missing until this session — every Act 2 quest was reachable
-only by actually playing through it, with zero dev shortcut). Never
+only by actually playing through it, with zero dev shortcut; quest16's
+own stages push/strip its 3 gathered-3-different-ways items directly
+so the Pack stays in sync with whatever stage is jumped to). Never
 touched by normal gameplay work otherwise — the cleanest single-concern
 file in the project.
 
@@ -531,6 +559,12 @@ requirement. Equipped-only by choice, not necessity — gear no longer
 groups/stacks in the Pack at all (`groupInventoryByName()`,
 render-shop.js), so a Pack item would be just as safe to temper; the
 Tinker's Workshop's own workflow just never needed that yet.
+
+Also `buyDriveShaft()` — quest16's own "buy a part with currency" leg,
+alongside tempering at the Tinker's Workshop for the same "this is
+where things get built" reasoning, rather than a dedicated new
+building for one purchase. Its UI (`renderDriveShaftBlock()`) lives in
+render-character.js next to `renderTinkerTemperBlock()`.
 
 Touch this file when: changing equip/use-item/stat-point/temper logic.
 
@@ -809,7 +843,19 @@ flow.
   arc's own finale, a second and bigger gauntlet
   (`approachGauntlet('moleCouncil')`) staged at the Gearworks, culminating
   in `warrenMother` — the hardest single fight since `gnomeKing`, Act
-  1's own finale).
+  1's own finale), and quest16 "Breaking Through"
+  (`acceptQuest16`/`reportQuest16` — the Mole Wars arc's TRUE capstone,
+  one step past quest15. Its 3 parts are gathered three DIFFERENT ways
+  by explicit request: a guaranteed zone drop
+  (`drilldozerIngredients`, content.js), a salvaged re-fight of
+  quest9's own first boss (`tunnelWardenSalvageHunt`, combat.js —
+  `state.drillRigSalvaged`, separate from `tunnelWardenDefeated`,
+  distinguishes the salvage kill from the original), and a straight
+  currency purchase (`buyDriveShaft()`, player-actions.js, at the
+  Tinker's Workshop). `heldAllDrilldozerParts()`/
+  `countDrilldozerPlatingHeld()` (render.js) check holdings; reporting
+  reveals the Crystal Breach tile in the Ember Warren's own square —
+  a real explorable stub zone, not just an ending screen).
 - **Bounty Board**: `isBountyZoneUnlocked`/`rollNewBounty`/
   `checkBountyDayReset`/`ensureActiveBounty`/`isBountyReady`/
   `formatBountyTimeLeft`/`claimBounty`/`updateBountyTimerDisplay`. Its
@@ -819,7 +865,9 @@ flow.
   own districts (`choir`/`ledgervault`, each gated on its own rare
   hunt — the exact same gate `travelTo()` itself uses, town.js), and
   the Ember Warren's own (`foundry`/`gearworks`, gated on
-  `quest11Complete`) once quest7Complete —
+  `quest11Complete`), and the Crystal City (`crystalcity`, gated on
+  `quest16Complete` — wired in from the START this time, learning from
+  the gap below) once quest7Complete —
   `isBountyZoneUnlocked()` is the single place that pool is defined.
   Choir/ledgervault/foundry/gearworks were all missing from this
   function entirely until this session — every kill in any of those

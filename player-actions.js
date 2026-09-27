@@ -194,3 +194,24 @@ function temperEquippedItem(slot){
    render();
    autosave();
 }
+
+/* Quest 16's own "buy a part" leg — see renderDriveShaftBlock()'s own
+comment, render-character.js, for why this lives at the Tinker's
+Workshop alongside tempering rather than a dedicated new building.
+Also Tinker's-Workshop-only by the same "this is where things get
+built" convention temperEquippedItem() above already established, even
+though nothing here technically requires standing there — refusing
+outside it keeps both of this building's own actions consistent. */
+function buyDriveShaft(){
+   if(state.location !== 'tinker') return;
+   if(!state.quest16Accepted || state.quest16Complete) return;
+   if(state.inventory.some(it => it.key === 'driveShaft')) return;
+   if(state.popTabs < DRIVE_SHAFT_COST_POPTABS || state.bountyTokens < DRIVE_SHAFT_COST_BOUNTYTOKENS) return;
+   state.popTabs -= DRIVE_SHAFT_COST_POPTABS;
+   state.bountyTokens -= DRIVE_SHAFT_COST_BOUNTYTOKENS;
+   state.inventory.push({ ...driveShaftItem });
+   clearLog();
+   log(`The Tinker hands over a freshly-machined drive shaft, still warm. (-${DRIVE_SHAFT_COST_POPTABS} Pop Tabs, -${DRIVE_SHAFT_COST_BOUNTYTOKENS} Bounty Tokens)`);
+   render();
+   autosave();
+}

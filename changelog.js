@@ -11,6 +11,11 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 6, date: 'September 27', title: 'Breaking Through', items: [
+      'New quest at the Gnome Guild: "Breaking Through" — the Mole Wars arc\'s real capstone. Build a drilldozer out of three parts, gathered three completely different ways.',
+      "New zone: the Crystal City, reached through a new tile in the Ember Warren once the drilldozer breaks through. Something down there isn't Mole-built.",
+      "The Tinker's Workshop now sells a drive shaft, if you've got the Pop Tabs and Bounty Tokens for it.",
+      ]},
    { id: 5, date: 'September 26', title: 'The Mole Wars Continue', items: [
       'Three new quests at the Gnome Guild: "Quenched," "What the Vault Was Guarding," and "The Warren Answers" — a harder arc that closes out the Mole Wars so far.',
       "Bosses can now freeze you, sapping your own damage for a few attacks — joining burn and poison as the third status effect.",

@@ -195,6 +195,16 @@ function createDefaultState(){
      quest15Accepted: false,
      quest15Complete: false,
      warrenMotherDefeated: false,
+     /* Quest 16, "Breaking Through" — the Mole Wars arc's TRUE capstone,
+     offered once quest15Complete. drillRigSalvaged is separate from
+     tunnelWardenDefeated (which stays true throughout) — it's what
+     tells winCombat() (combat.js) this specific tunnelWarden kill was
+     the SALVAGE re-fight, not the original one from quest9. Completing
+     it reveals the Crystal Breach tile in the Ember Warren's own
+     square. */
+     quest16Accepted: false,
+     quest16Complete: false,
+     drillRigSalvaged: false,
      classQuestAccepted: false,
      classQuestComplete: false,
      classTitle: null,

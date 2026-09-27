@@ -160,6 +160,12 @@ function travelTo(dest){
    both districts are real the moment the hub itself is — no second
    per-district gate needed here. */
    if(dest === 'emberwarren' && !state.quest11Complete) return;
+   /* The Crystal City (quest16) — unlocked once quest16Complete, the
+   same flag that flips the Ember Warren's own third tile from inert
+   crystalline filler into the real Crystal Breach (emberwarren-art.js).
+   A leaf zone, not a hub — nothing gates a sub-district here since
+   there isn't one yet (deliberately a stub). */
+   if(dest === 'crystalcity' && !state.quest16Complete) return;
    regenBiscuits();
    if(forceHomeIfBroke()) return;
    const cost = travelCostFor(dest);
@@ -334,6 +340,12 @@ function travelTo(dest){
       state.victoryMonster = null;
       clearLog();
       log("You push into a chamber of turning gears and hissing pipework, every part of it built by something that clearly knew what it was doing." + costSuffix);
+   } else if(dest === 'crystalcity'){
+      state.location = 'crystalcity';
+      state.showVictory = false;
+      state.victoryMonster = null;
+      clearLog();
+      log("The drilldozer's own breach hole opens onto light that isn't torchlight, isn't daylight, isn't anything you've got a name for — just light, coming up through crystal cut too clean to be natural." + costSuffix);
    }
    /* No homeTown update here anymore — merely walking into either
    square doesn't claim it as home. restAtInn() sets 'town' and

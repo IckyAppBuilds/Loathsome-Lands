@@ -5,7 +5,7 @@ districts (reached from that town square via travelTo(), gnometropolis.js)
 took its place as the actual adventuring locations; 'palace' is
 deliberately excluded -- it's a single scripted fight (approachPalaceGate(),
 guild.js), not somewhere to wander and roll random encounters. */
-const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault', 'garrison', 'roguesden', 'sanctum', 'rootcellar', 'mudflats', 'bureau', 'choir', 'ledgervault', 'foundry', 'gearworks'];
+const ADVENTURE_ZONES = ['commons', 'sewers', 'quarry', 'vault', 'garrison', 'roguesden', 'sanctum', 'rootcellar', 'mudflats', 'bureau', 'choir', 'ledgervault', 'foundry', 'gearworks', 'crystalcity'];
 
 /* Garrison/Rogues' Den/Arcane Sanctum's exploration role is temporary —
 before quest7Complete they're real adventure zones (each district's
@@ -161,6 +161,20 @@ content.js). */
 const quenchMasterHunt = state.location==='foundry' && state.quest13Accepted && !state.quenchMasterDefeated;
    if(quenchMasterHunt && Math.random() < QUENCH_MASTER_SPAWN_CHANCE){
       startCombat(quenchMaster);
+      render();
+      return;
+   }
+
+/* Quest 16's own "salvage" part — the SAME tunnelWarden template
+(quest9's first boss, mudroot-content.js), not a new monster, closing
+the loop on Act 2's very first named fight for its own finale. Gated on
+tunnelWardenDefeated already being true (he's already been beaten once
+for real; this is a deliberate re-fight) — winCombat()'s own
+wasTunnelWarden branch tells the two apart by checking which was true
+BEFORE this kill, not by a separate spawn flag. */
+const tunnelWardenSalvageHunt = state.location==='rootcellar' && state.quest16Accepted && state.tunnelWardenDefeated && !state.drillRigSalvaged;
+   if(tunnelWardenSalvageHunt && Math.random() < TUNNEL_WARDEN_SPAWN_CHANCE){
+      startCombat(tunnelWarden);
       render();
       return;
    }
@@ -804,6 +818,17 @@ function winCombat(){
    palaceGauntletProgress (guild.js) exactly once per guard kill. */
    const palaceGuardIndex = !!state.monster.rare ? PALACE_GUARDS.findIndex(g => g.name === state.monster.name) : -1;
    const wasPalaceGuard = palaceGuardIndex !== -1;
+   /* Captured BEFORE the wasTunnelWarden branch below mutates
+   state.tunnelWardenDefeated — true on ANY re-fight of him (used for
+   picking the "again" flavor line below, regardless of whether the
+   salvage part was already claimed on an even earlier re-fight). */
+   const wasTunnelWardenRekill = !!state.monster.rare && state.monster.name === tunnelWarden.name && state.tunnelWardenDefeated;
+   /* Stricter than the rekill check above — only true on the ONE
+   re-fight that should actually grant the salvage part. Without the
+   !drillRigSalvaged guard here, fighting him a third time (after
+   already salvaging the part once) would silently hand over a
+   duplicate drillRig every time. */
+   const wasTunnelWardenSalvage = wasTunnelWardenRekill && !state.drillRigSalvaged;
    /* Rake tines are a quest item (key:'rakeTine') and the feral lawn gnome's
    ONLY loot entry — so without this gate they'd drop via the generic 70%
    roll below even before the quest is accepted or after it's turned in,
@@ -822,6 +847,14 @@ const isRakeTineLoot = state.monster.loot && state.monster.loot.key==='rakeTine'
    keeps happening on matching kills until that many are held. */
 const needsVeinIngredient = veinIngredient && state.quest5Accepted && !state.quest5Complete
    && state.inventory.filter(it => it.key === veinIngredient.item.key).length < VEIN_ITEM_COUNT_NEEDED;
+   /* Quest 16's own guaranteed-drop part — same multi-copy shape as
+   needsVeinIngredient above, just a single-entry array (only one
+   monster, the slag-hauler, drops it) since the other two parts are
+   collected entirely differently (a salvage re-hunt, a straight
+   purchase — see drilldozerIngredients' own comment, content.js). */
+   const drilldozerIngredient = drilldozerIngredients.find(d => d.monsterName === state.monster.name);
+   const needsDrilldozerIngredient = drilldozerIngredient && state.quest16Accepted && !state.quest16Complete
+   && state.inventory.filter(it => it.key === drilldozerIngredient.item.key).length < DRILLDOZER_PLATING_NEEDED;
    /* The three Gnometropolis district guardians (content.js) always carry
    their class's PALACE_GATE_GEAR item as state.monster.loot (see that
    file's comment) — this is what turns it into a guaranteed drop instead
@@ -831,6 +864,8 @@ const needsVeinIngredient = veinIngredient && state.quest5Accepted && !state.que
    ? potionIngredient.item
       : needsVeinIngredient
    ? veinIngredient.item
+      : needsDrilldozerIngredient
+   ? drilldozerIngredient.item
       : isRakeTineLoot
    ? (isNeededQuestItem ? state.monster.loot : null) /* never drops outside the quest window */
       : isDistrictGuardianKill
@@ -899,7 +934,10 @@ clearLog();
       log(`You defeat ${defeatedName}! The Sanctum's wards flicker and go dark. (+${xpGain} XP)`);
    } else if(wasTunnelWarden){
       state.tunnelWardenDefeated = true;
-      log(`You defeat ${defeatedName}! Something further in goes very quiet, like it just noticed you're still coming. (+${xpGain} XP)`);
+      if(wasTunnelWardenSalvage) state.drillRigSalvaged = true;
+      log(wasTunnelWardenRekill
+          ? `You defeat ${defeatedName} again! His old rig is still down here, exactly where you left him. (+${xpGain} XP)`
+          : `You defeat ${defeatedName}! Something further in goes very quiet, like it just noticed you're still coming. (+${xpGain} XP)`);
    } else if(wasWarrenScout){
       state.warrenScoutDefeated = true;
       log(`You defeat ${defeatedName}! Whatever it was watching for, it isn't reporting back now. (+${xpGain} XP)`);
@@ -956,6 +994,17 @@ clearLog();
    empty (and never read) for the wasBuildingTrialFight case above,
    since none of those bosses carry loot/rareDrop/gearDrop anyway. */
    const drops = [];
+   /* wasTunnelWardenSalvage's own drop -- tunnelWarden.loot is null (he's
+   a pure quest-hunt boss, no normal loot table), so this can't just
+   ride the generic lootRoll mechanism above; granted directly here,
+   same "collect it in drops[] too" pattern every other drop below
+   follows so the victory banner shows it correctly. */
+   if(wasTunnelWardenSalvage){
+      const rigItem = {...drillRigItem};
+      state.inventory.push(rigItem);
+      drops.push(rigItem);
+      log(`You pry loose: ${drillRigItem.name}.`);
+   }
    if(lootRoll){
       const lootedItem = {...lootRoll};
       state.inventory.push(lootedItem);
