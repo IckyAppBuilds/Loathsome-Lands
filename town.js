@@ -597,10 +597,11 @@ potionIngredients.forEach(p=>{
 state.quest3Complete = true;
    state.popTabs += 20;
    state.xp += 35;
+   state.adventures += 20;
    if(!state.spellsKnown.includes('bottledfury')) state.spellsKnown.push('bottledfury');
 
 clearLog();
-   log("The Hoodoo Doctor tips every ingredient into the pot at once. It hisses, glows, and settles into a single humming bottle. (+20 Pop Tabs, +35 XP)");
+   log("The Hoodoo Doctor tips every ingredient into the pot at once. It hisses, glows, and settles into a single humming bottle. (+20 Pop Tabs, +35 XP, +20 Biscuits)");
    log("\"There,\" she says, pressing it into your hands. \"Bottled Fury. You'll know when to use it.\" You've learned the spell.");
    checkLevelUp();
    render();
@@ -653,7 +654,8 @@ if(state.questTinesGiven >= QUEST_TINES_NEEDED){
    state.questComplete = true;
    state.popTabs += 15;
    state.xp += 25;
-   log("The rake is whole again! Gaffer Thistlewick hands you 15 Pop Tabs and thanks you properly. (+15 Pop Tabs, +25 XP)");
+   state.adventures += 20;
+   log("The rake is whole again! Gaffer Thistlewick hands you 15 Pop Tabs and thanks you properly. (+15 Pop Tabs, +25 XP, +20 Biscuits)");
    checkLevelUp();
    autosave();
 }

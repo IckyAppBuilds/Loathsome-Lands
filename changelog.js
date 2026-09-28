@@ -11,6 +11,9 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 8, date: 'September 28', title: 'A Fuller Pack, Early On', items: [
+      "The first few quests — Gaffer Thistlewick's rake tines, hunting the gnome commander, and the Hoodoo Doctor's potion — now also hand over some extra Biscuits, on top of their usual Pop Tabs and XP.",
+      ]},
    { id: 7, date: 'September 28', title: 'Hexpert: Illusion & Deepened Spells', items: [
       "New Hexpert spell at the Arcane Sanctum: Illusion — split into flickering copies of yourself for a big dodge boost, same trick as a Card Shark's Smoke Screen.",
       "New at the Arcane Sanctum: pay Pop Tabs to deepen any spell you already know to Level 2, permanently boosting its own effect by 45%.",

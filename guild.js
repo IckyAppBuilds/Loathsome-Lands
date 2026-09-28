@@ -62,8 +62,9 @@ function reportCommanderKill(){
    state.quest2Complete = true;
    state.popTabs += 30;
    state.xp += 50;
+   state.adventures += 25;
    clearLog();
-   log("You describe the fight in more detail than the guildmaster asked for. He hands over your reward regardless. (+30 Pop Tabs, +50 XP)");
+   log("You describe the fight in more detail than the guildmaster asked for. He hands over your reward regardless. (+30 Pop Tabs, +50 XP, +25 Biscuits)");
    log("As you turn to leave, he adds: \"...and since you're clearly not afraid of gnomes, the sewers under the square are yours to deal with too, if you're feeling brave.\"");
    checkLevelUp();
    render();

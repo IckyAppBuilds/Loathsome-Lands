@@ -319,7 +319,7 @@ if(state.questComplete){
   <div class="quest-log-entry">
   <div class="quest-name">A Proper Rake</div>
   <div class="quest-desc">You gathered the gnome-stolen rake tines and Gaffer Thistlewick put his rake back together.</div>
-  <div class="quest-progress">Reward claimed: 15 Pop Tabs, 25 XP</div>
+  <div class="quest-progress">Reward claimed: 15 Pop Tabs, 25 XP, 20 Biscuits</div>
   </div>`);
 } else if(state.questAccepted){
   activeEntries.push(`
@@ -335,7 +335,7 @@ if(state.quest2Complete){
   <div class="quest-log-entry">
   <div class="quest-name">The Gnome Commander</div>
   <div class="quest-desc">You hunted down and defeated the rare gnome commander terrorizing the Overgrown Commons.</div>
-  <div class="quest-progress">Reward claimed: 30 Pop Tabs, 50 XP</div>
+  <div class="quest-progress">Reward claimed: 30 Pop Tabs, 50 XP, 25 Biscuits</div>
   </div>`);
 } else if(state.quest2Accepted){
   activeEntries.push(`
@@ -351,7 +351,7 @@ if(state.quest3Complete){
   <div class="quest-log-entry">
   <div class="quest-name">A Proper Potion</div>
   <div class="quest-desc">You gathered ingredients from the Overgrown Commons and the Dank Sewers so the Hoodoo Doctor could brew Bottled Fury.</div>
-  <div class="quest-progress">Reward claimed: 20 Pop Tabs, 35 XP, the Bottled Fury spell</div>
+  <div class="quest-progress">Reward claimed: 20 Pop Tabs, 35 XP, 20 Biscuits, the Bottled Fury spell</div>
   </div>`);
 } else if(state.quest3Accepted){
   activeEntries.push(`
