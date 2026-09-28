@@ -167,7 +167,10 @@ const gnomeCommander = {
    skills:[ { type:'buff', chance:0.20, buffMult:1.6, buffTurns:2, flavor:"rallies the gnomes for one more push" } ],
    art: artGnomeCommander, loot:null
 };
-const COMMANDER_SPAWN_CHANCE = 0.05;
+const COMMANDER_SPAWN_CHANCE = 0.03; /* was 0.05 -- lowered per explicit
+feedback that the earliest rare hunts (this one/diggerBot/gnomeKingsCaptain)
+were showing up too readily for a brand-new player's first taste of the
+"rare spawn" mechanic. */
 
 /* Rare hunt target for the Tinker's quest, "Gears in the Dark" — spawns in
 the Dank Sewers while state.quest4Accepted is true and the quest isn't
@@ -180,7 +183,7 @@ const diggerBot = {
    skills:[ { type:'bolt', chance:0.22, boltMin:7, boltMax:12, flavor:"vents a scalding jet of built-up steam" } ],
    art: artDiggerBot, loot:null
 };
-const DIGGERBOT_SPAWN_CHANCE = 0.05;
+const DIGGERBOT_SPAWN_CHANCE = 0.03; /* was 0.05 -- see COMMANDER_SPAWN_CHANCE's own comment above. */
 
 /* Rare hunt target for the Guild's quest 6, "The Gnome King's Throne" —
 spawns in the Sunless Vault while state.quest6Accepted is true and the
@@ -204,7 +207,7 @@ const gnomeKingsCaptain = {
    skills:[ { type:'heal', chance:0.20, healMin:10, healMax:16, flavor:"digs in and patches his wounds, buying the King more time" } ],
    art: artGnomeKingsCaptain, loot:null
 };
-const VAULT_CAPTAIN_SPAWN_CHANCE = 0.05;
+const VAULT_CAPTAIN_SPAWN_CHANCE = 0.03; /* was 0.05 -- see COMMANDER_SPAWN_CHANCE's own comment above. */
 
 /* THE REAL Gnome King — Act 1's true finale boss, and a retcon in his own
 right: he was never the one fought in the Sunless Vault (that was always
