@@ -840,8 +840,10 @@ page, see castSpell()'s top-line gate.
 class's existing mechanic (Meathead melee damage/Card Shark sneak
 attack/Hexpert spell damage) for the next few fights.
 - 'shout'  — Meathead-exclusive; see its own entry below.
-- 'evade'  — Card Shark-exclusive (Smoke Screen, below); see its own
-entry for why this one breaks from every type above it.
+- 'evade'  — Card Shark's Smoke Screen and Hexpert's Illusion (below)
+both use this type, sharing one mechanic and one underlying flag
+(state.evasionActive) since a player only ever has one class at a
+time; see its own entry for why this one breaks from every type above it.
 'heal'/'ward'/'buff'/'shout' never cost a turn (no monsterRetaliate()
 call) and are castable both mid-combat and from the Character page
 (renderCastableSpellsBlock(), class-spells.js) — a deliberate choice:
@@ -861,18 +863,19 @@ change to CLASS_SPELL_LOCATION needed, just who's allowed to learn
 them there).
 
 `learnLocation`, where present, overrides CLASS_SPELL_LOCATION's default
-building for that class — used by the 3 Act 2 spells below (stubbornrecovery/
-smokescreen/arcanelance) so they're taught at each class's new Gnometropolis
-building (garrison/roguesden/sanctum) instead of that class's original
-Act 1 trainer, without changing where the ORIGINAL 6 spells above are
-still taught. renderClassSpellList() (class-spells.js) filters on this
-same effective location too, so a building's list only ever shows spells
-actually learnable there, never a spell that would silently refuse when
-clicked from the wrong building. Each of the 3 fills in the one spell
-TYPE its class didn't already have — Meathead had no heal, Card Shark
-had no ward, Hexpert had no class-exclusive damage spell (Hex Bolt is
-everyone's) — rather than doubling up on a type/mechanic each class
-already owns.
+building for that class — used by the Act 2 spells below (stubbornrecovery/
+smokescreen/arcanelance/illusion) so they're taught at each class's new
+Gnometropolis building (garrison/roguesden/sanctum) instead of that
+class's original Act 1 trainer, without changing where the ORIGINAL 6
+spells above are still taught. renderClassSpellList() (class-spells.js)
+filters on this same effective location too, so a building's list only
+ever shows spells actually learnable there, never a spell that would
+silently refuse when clicked from the wrong building. Meathead/Card
+Shark each fill in the one spell TYPE their class didn't already have
+(heal/ward respectively); Hexpert gets TWO Act 2 spells instead of one
+— Arcane Lance (its own class-exclusive damage type, since Hex Bolt is
+everyone's) AND Illusion (evasion, matching what Smoke Screen already
+gave Card Shark) — a deliberate asymmetry, not an oversight.
 
 'shout' (Meathead's, below) is its own type — same "grant a shield"
 shape as 'ward' above, but small and mostly flat rather than
@@ -886,16 +889,17 @@ cast like every other class-exclusive ability. Priced/costed to match
 Warding Charm (the spell it's mechanically closest to), not the pricier
 buff-spell tier.
 
-'evade' (Smoke Screen, Card Shark's Act 2 spell) was originally a plain
-'ward' — a shield, same as everything else that "defends." Reworked per
-explicit correction: a shield doesn't fit an evasive class the way a
-dodge boost does, and a shield that just sits there mid-fight doesn't
-create any real decision. castSpell() now grants a large, temporary
-boost to the player's own dodge chance (playerDodgeChance(), combat.js
-— the one place both monsterAutoAttack() and a monster's own 'bolt'
-skill roll it) instead of touching state.shield at all. Two rules make
-it a genuine tool rather than a free stat stick:
-- Combat-only (state.smokeScreenActive is reset every time endCombat()
+'evade' (Smoke Screen, Card Shark's Act 2 spell — and now Illusion,
+Hexpert's second Act 2 spell, mechanically identical) was originally a
+plain 'ward' — a shield, same as everything else that "defends."
+Reworked per explicit correction: a shield doesn't fit an evasive class
+the way a dodge boost does, and a shield that just sits there mid-fight
+doesn't create any real decision. castSpell() now grants a large,
+temporary boost to the player's own dodge chance (playerDodgeChance(),
+combat.js — the one place both monsterAutoAttack() and a monster's own
+'bolt' skill roll it) instead of touching state.shield at all. Two
+rules make it a genuine tool rather than a free stat stick:
+- Combat-only (state.evasionActive is reset every time endCombat()
   fires, same funnel winCombat()/playerFlee()/checkDefeat() all use for
   classBuffFightsLeft) — cast it mid-fight and it's gone the moment
   that fight ends, never carried into the next encounter the way
@@ -925,6 +929,14 @@ const spells = [
    { id:'stubbornrecovery', name:'Stubborn Recovery', desc:"You refuse to go down like that. Grit your teeth, shake it off, and keep going.", type:'heal', healValue:35, mpCost:8, price:300, classRequired:'Meathead', learnLocation:'garrison', icon: iconStubbornRecovery },
    { id:'smokescreen', name:'Smoke Screen', desc:"Kick up a cloud of grit and vanish into it — your dodge goes way up for the rest of this fight, as long as you don't swing back. One attack and the cloud clears.", type:'evade', mpCost:20, price:300, classRequired:'Card Shark', learnLocation:'roguesden', icon: iconSmokeScreen },
    { id:'arcanelance', name:'Arcane Lance', desc:"No flourish, no misdirection — just a thin, precise lance of raw arcane force.", type:'damage', dmgMin:14, dmgMax:22, mpCost:8, price:350, classRequired:'Hexpert', learnLocation:'sanctum', icon: iconArcaneLance },
+   /* Hexpert's SECOND Act 2 spell — added alongside Arcane Lance rather
+   than replacing it, per explicit request, so Hexpert gets both the
+   offense (Arcane Lance) and the utility tool (Illusion) Card
+   Shark/Meathead each only got one of. Mechanically identical to Smoke
+   Screen (same 'evade' type, same EVASION_DODGE_BONUS/CAP, content.js)
+   — see state.evasionActive's own comment, core.js, for why the two
+   safely share one underlying flag despite being different spells. */
+   { id:'illusion', name:'Illusion', desc:"Split yourself into a dozen flickering copies — your dodge goes way up for the rest of this fight, as long as you don't swing back. One attack and the illusion collapses.", type:'evade', mpCost:20, price:300, classRequired:'Hexpert', learnLocation:'sanctum', icon: iconIllusion },
    ];
 /* How many upcoming fights a class buff spell's effect lasts, set into
 state.classBuffFightsLeft on cast and ticked down once per completed
@@ -1037,16 +1049,33 @@ Casino, not in combat, felt off next to Meathead/Hexpert's both being
 combat bonuses. */
 const CARD_SHARK_DOUBLE_ATTACK_CHANCE = [0, 0.01, 0.02, 0.03];
 const HEXPERT_SPELL_DMG_BONUS = [0, 3, 6, 9]; /* flat bonus added to spell damage */
-/* Smoke Screen's own dodge boost (playerDodgeChance(), combat.js) — a
-flat add-on to the normal Zip-based roll, not a classSkillLevel-indexed
-array like the three constants above. Smoke Screen isn't amplifying an
-existing per-class mechanic the way Adrenaline Rush/Loaded Dice/Arcane
-Focus amplify one of these, it's introducing a standalone evasion
-window, so there's no existing base value for classSkillLevel to scale.
-Capped well short of 1 (SMOKE_SCREEN_DODGE_CAP) so "heal safely" still
-carries a sliver of real risk rather than becoming true invincibility. */
-const SMOKE_SCREEN_DODGE_BONUS = 0.5;
-const SMOKE_SCREEN_DODGE_CAP = 0.92;
+/* The shared 'evade' spell mechanic's own dodge boost
+(playerDodgeChance(), combat.js) — a flat add-on to the normal
+Zip-based roll, not a classSkillLevel-indexed array like the three
+constants above. An 'evade' spell isn't amplifying an existing
+per-class mechanic the way Adrenaline Rush/Loaded Dice/Arcane Focus
+amplify one of these, it's introducing a standalone evasion window, so
+there's no existing base value for classSkillLevel to scale. Capped
+well short of 1 (EVASION_DODGE_CAP) so "heal safely" still carries a
+sliver of real risk rather than becoming true invincibility. Renamed
+from SMOKE_SCREEN_DODGE_BONUS/CAP once Illusion (Hexpert's own Act 2
+evasion spell, below) started sharing the exact same mechanic — the
+old names would have been a lie the moment a second spell used them. */
+const EVASION_DODGE_BONUS = 0.5;
+const EVASION_DODGE_CAP = 0.92;
+/* The Level 2 spell-upgrade system, Hexpert-only, purchasable at the
+Arcane Sanctum for every spell they know regardless of which building
+originally taught it — per explicit request. One flat tier per spell
+(no deeper ladder): SPELL_UPGRADE_MULTIPLIER scales whichever single
+number is that spell's own "effect" (damage roll, heal value, shield
+amount, buff duration, or evasion's own dodge bonus — see castSpell(),
+combat.js, for exactly where each type applies it). Cost scales off the
+spell's own mpCost rather than a hand-typed price per spell, so a
+future spell needs no separate upgrade-cost entry to slot into this. */
+const SPELL_UPGRADE_MULTIPLIER = 1.45;
+const SPELL_UPGRADE_BASE_COST = 200;
+const SPELL_UPGRADE_COST_PER_MP = 20;
+function spellUpgradeCost(spell){ return SPELL_UPGRADE_BASE_COST + spell.mpCost * SPELL_UPGRADE_COST_PER_MP; }
 /* Cost to go from `level` to `level+1` for the shared class-skill counter
 above — quadratic, same style as buildingUpgradeCost() below: 150/600/1350
 Pop Tabs. One cost curve shared across all 3 classes' single skill level. */

@@ -125,7 +125,7 @@ function serializeState(){
    allItemDefs() gap above. */
 const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
        lastRegenAt, lastMpRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
-       spellsKnown, questTinesGiven, questAccepted, questComplete, quest2Accepted,
+       spellsKnown, spellsUpgraded, questTinesGiven, questAccepted, questComplete, quest2Accepted,
        commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
        quest4Accepted, quest4RareDefeated, quest4Complete,
        quest5Accepted, quest5Complete,
@@ -149,7 +149,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
    return {
       hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
       lastRegenAt, lastMpRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
-      spellsKnown, questTinesGiven, questAccepted, questComplete, quest2Accepted,
+      spellsKnown, spellsUpgraded, questTinesGiven, questAccepted, questComplete, quest2Accepted,
       commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
       quest4Accepted, quest4RareDefeated, quest4Complete,
       quest5Accepted, quest5Complete,
@@ -180,6 +180,12 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
 function hydrateState(saved){
    Object.assign(state, saved);
    state.spellsKnown = Array.isArray(saved.spellsKnown) ? saved.spellsKnown.filter(id => spells.some(s=>s.id===id)) : [];
+   /* Same filtering as spellsKnown above (and same reasoning — a save
+   from before this field existed just gets []). Not cross-checked
+   against spellsKnown itself (an upgraded-but-no-longer-known spell is
+   a no-op everywhere it's read, never a bug), keeping this parallel
+   rather than dependent. */
+   state.spellsUpgraded = Array.isArray(saved.spellsUpgraded) ? saved.spellsUpgraded.filter(id => spells.some(s=>s.id===id)) : [];
    state.equipment = {};
    SLOT_ORDER.forEach(slot => { state.equipment[slot] = hydrateItem(saved.equipment && saved.equipment[slot]); });
    state.inventory = (saved.inventory || []).map(hydrateItem).filter(Boolean);

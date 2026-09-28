@@ -92,8 +92,10 @@ new `<script>` tag for a new file.
   Tabs/Bounty Tokens, level/xp, the four core stats (beef/zip/grit/
   hoodoo), equipment, inventory, `location`, all six main quest flags
   plus the class-capstone Trial (now 3 tiers — see guild.js), Town
-  Lot/building-upgrade levels, the active bounty, and the rare-drops
-  log. `const state = createDefaultState();` is the live global; calling
+  Lot/building-upgrade levels, the active bounty, `spellsUpgraded` (a
+  Hexpert's Sanctum-bought "Level 2" spells — permanent progression, so
+  unlike `state.evasionActive` it IS part of `serializeState()`), and
+  the rare-drops log. `const state = createDefaultState();` is the live global; calling
   the factory again (see `resetToNewGameDev()`, dev-tools.js) is how a
   full reset works without needing to reassign the `const` binding.
   This is the object `serializeState()`/`hydrateState()` (save.js)
@@ -227,7 +229,20 @@ more +1 secondary stat on top of the previous tier's own bonuses, all
 gated by Shop level via `SHOP_LEVEL_GEAR_TIER2/3/4`, see
 `getAvailableShopItems()` in economy.js), `STAT_ROTATION` (which
 secondary stat a tier-2/3/4 item/drop gets, cycled per primary stat),
-`shopBuyItems`, `spells`, `potionIngredients`, `veinIngredients`,
+`shopBuyItems`, `spells` (each with a `type` —
+`'damage'|'heal'|'ward'|'buff'|'shout'|'evade'` — and a `classRequired`/
+`learnLocation` pair gating who can learn it and where; Hexpert is the
+only class with two Act 2 spells, `arcanelance` (damage) and
+`illusion` (evade, added alongside it by explicit request rather than
+replacing it — Meathead/Card Shark still get exactly one Act 2 spell
+each) — `illusion` shares Card Shark's `smokescreen` mechanic exactly,
+via the shared `state.evasionActive` flag, combat.js), `SPELL_UPGRADE_
+MULTIPLIER`/`SPELL_UPGRADE_BASE_COST`/`SPELL_UPGRADE_COST_PER_MP`/
+`spellUpgradeCost(spell)` (Hexpert's Arcane-Sanctum-only "Level 2"
+spell upgrade, `state.spellsUpgraded`/`upgradeSpell()`, combat.js — a
+flat +45% bump to each spell's own effect: damage/heal/ward magnitude,
+buff duration in fights, or evade's dodge bonus specifically),
+`potionIngredients`, `veinIngredients`,
 `CLASS_TITLES` + each class's skill-bonus constants
 (`MEATHEAD_DAMAGE_BONUS`/`CARD_SHARK_PAYOUT_BONUS`/`HEXPERT_SPELL_DMG_BONUS`
 + `classSkillCost()`), casino odds/flavor lines, `BOUNTY_TEMPLATES`, and
@@ -479,10 +494,16 @@ the same `castSpell()`, and both also call `isSpellCurrentlyUsable()`,
 render-character.js, so a known spell whose `classRequired` no longer
 matches `state.classTitle` — reachable via the dev tools' class
 override, not real play — is hidden instead of showing a Cast button
-that always silently refuses).
+that always silently refuses). `renderSpellUpgradeBlock(containerId)`
+— Arcane-Sanctum-only, Hexpert-only "Deepen Your Spells" shop, listing
+EVERY spell in `state.spellsKnown` (not filtered by `learnLocation`,
+since the point is upgrading a spell no matter where it was learned)
+with a Level 2 buy button (`upgradeSpell(id)`, combat.js,
+`spellUpgradeCost()`, content.js) that becomes a disabled "Upgraded"
+label once bought (`state.spellsUpgraded`).
 
-Touch this file when: changing how a class spell trainer or the
-class-skill upgrade block is displayed.
+Touch this file when: changing how a class spell trainer, the
+class-skill upgrade block, or the spell-upgrade block is displayed.
 
 ## dev-tools.js — `isDevAccount()`-gated cheats
 `DEV_USERNAMES`/`isDevAccount()`, `resetLevelDev`/`resetQuestsDev`
@@ -525,7 +546,9 @@ Account drawer's non-dev-tool content.
 
 ## save.js — the state<->save round-trip
 `allItemDefs`/`itemByName`/`serializeItem`/`hydrateItem`,
-`serializeState()`/`hydrateState()`, `saveGame`/`loadGame`/
+`serializeState()`/`hydrateState()` (round-trips `state.spellsUpgraded`
+alongside `state.spellsKnown`, same shape/hydrate-filter — dropping any
+id that no longer matches a real `spells[]` entry), `saveGame`/`loadGame`/
 `manualSaveGame`/`manualLoadGame`/`autosave()` (debounced).
 
 Touch this file when: changing what gets saved/loaded — and remember
@@ -637,17 +660,28 @@ apply to whatever it's about to deal that turn; called at the start of
 every player action that costs a turn — `playerAttack`/a damage
 spell/`useItemInCombat` — so it ticks down on "a set number of
 attacks" regardless of hit/miss/item use)/`playerAttack`/
-`openSpellMenu`/`closeSpellMenu`/`useItemInCombat`/`castSpell`/
+`openSpellMenu`/`closeSpellMenu`/`useItemInCombat`/`castSpell` (its `'evade'` branch sets `state.evasionActive` to the
+CAST SPELL'S OWN ID, not a boolean — Card Shark's Smoke Screen and
+Hexpert's Illusion, content.js, are two different spells sharing this
+one flag, so it has to be an id to know which spell's flavor
+text/Level-2-upgrade-bonus actually applies; `playerDodgeChance()`
+reads it, `evasionFlavorNoun()` turns it into "the smoke"/"the
+illusion" for log lines, `isSpellUpgraded(id)` checks
+`state.spellsUpgraded`)/
 `CLASS_SPELL_LOCATION`/`CLASS_SPELL_TRAINER`/`learnSpell` (a spell's
 own `learnLocation` — content.js's `spells[]` — overrides
 `CLASS_SPELL_LOCATION`'s default, letting the same class have spells
 taught in two different buildings, its Act 1 trainer and its Act 2
-one)/`playerFlee`/`rollGearDropTier` (scales a monster's authored
+one — Hexpert is the first class with TWO Act 2 spells, Arcane Lance
+AND Illusion, both taught at the Sanctum)/`playerFlee`/`rollGearDropTier` (scales a monster's authored
 tier-1 gearDrop up 0-2 tiers, `GEAR_DROP_TIER_CHANCE`)/`winCombat`
 (rolls lootRoll/rareRoll/gearRoll independently on every kill — see
 the comment above monsters[], content.js, for what each one is)/
 `endCombat` (also clears `state.playerStatusEffect` — scoped to a
-single fight, same as `state.smokeScreenActive`)/`DEFEAT_WAKE_UP_LOCATION`
+single fight, same as `state.evasionActive`)/`upgradeSpell(id)`
+(Arcane Sanctum + Hexpert-only — permanently deepens one already-known
+spell to "Level 2," `state.spellsUpgraded`/`spellUpgradeCost()`,
+content.js, for `SPELL_UPGRADE_MULTIPLIER`)/`DEFEAT_WAKE_UP_LOCATION`
 (keyed by `state.homeTown` — the place name AND rest-building a
 defeat's own wake-up line mentions, kept in sync with wherever
 `checkDefeat()` actually teleports the player)/`checkDefeat`/
@@ -656,7 +690,7 @@ defeat's own wake-up line mentions, kept in sync with wherever
 `state.playerStatusEffect` itself (`null`, or `{type:'burn'|'poison'|
 'freeze', turnsLeft, dmgPerTurn, dmgReduction}`) lives on `state`
 (core.js) but is deliberately NOT part of `serializeState()`/
-`hydrateState()` (save.js) — same reasoning as `state.smokeScreenActive`
+`hydrateState()` (save.js) — same reasoning as `state.evasionActive`
 not being saved either: it only ever matters mid-fight, and a reload
 never resumes mid-fight. Only one slot — a fresh `'debuff'` skill use
 always overwrites, never stacks.

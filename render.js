@@ -451,8 +451,10 @@ function syncBuildingScreens(ctx){
   if(ctx.isSanctum && !state.inCombat && state.quest7Complete){
     renderClassSpellList('sanctum-spell-list', 'Hexpert');
     renderClassSkillUpgrade('sanctum-classskill-block', 'Hexpert');
+    renderSpellUpgradeBlock('sanctum-spell-upgrade-block');
   } else {
     document.getElementById('sanctum-classskill-block').style.display = 'none';
+    document.getElementById('sanctum-spell-upgrade-block').style.display = 'none';
   }
 
   document.getElementById('noticeboard-row').style.display = (ctx.isNoticeBoard && !state.inCombat) ? 'flex' : 'none';

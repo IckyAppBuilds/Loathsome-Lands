@@ -55,14 +55,20 @@ function renderSpellMenu(){
       div.className = 'shop-item';
       const iconSvg = spell.icon ? spell.icon() : '';
       const canCast = state.mp >= spell.mpCost;
-      /* Smoke Screen specifically shows "Active" while state.smokeScreenActive
-      is already true, same "tell the player there's nothing left to do
-      here" signal the Known/Fully-trained buttons elsewhere use — recasting
-      would just re-confirm the same flag, so there's no reason to invite it. */
-      const btn = (spell.type==='evade' && state.smokeScreenActive)
+      /* An evade spell (Smoke Screen/Illusion) shows "Active" while IT
+      specifically is the one state.evasionActive names — same "tell
+      the player there's nothing left to do here" signal the
+      Known/Fully-trained buttons elsewhere use — recasting would just
+      re-confirm the same flag, so there's no reason to invite it. */
+      const btn = (spell.type==='evade' && state.evasionActive === spell.id)
       ? `<button class="btn-secondary" disabled>Active</button>`
         : `<button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${spell.mpCost} MP</button>`;
-      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div>${btn}</div>`;
+      /* Small "Lv.2" tag for a Hexpert's own Sanctum-upgraded spells
+      (state.spellsUpgraded, upgradeSpell(), combat.js) — same qty-badge
+      class this file already uses for the Pack's own ×N/+N inline
+      markers, just reused here for a compact upgrade indicator. */
+      const lvBadge = state.spellsUpgraded.includes(spell.id) ? ` <span class="qty-badge">Lv.2</span>` : '';
+      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}${lvBadge}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div>${btn}</div>`;
       list.appendChild(div);
     });
   }

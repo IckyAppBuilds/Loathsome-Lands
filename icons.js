@@ -327,4 +327,11 @@ function iconSmokeScreen(){
 function iconArcaneLance(){
      return iconWrap(`<path d="M30 6 L34 40 L30 54 L26 40 Z" fill="#3d5a80"/><path d="M22 16 L30 6 L38 16" fill="none" stroke="#d1a94e" stroke-width="3"/><circle cx="30" cy="40" r="3" fill="#d1a94e" stroke="none"/>`);
 }
+/* Hexpert's own Act 2 evasion spell — two overlapping, offset copies of
+the same silhouette (one solid, one faded) rather than iconSmokeScreen's
+cloud motif, since Illusion works the same way mechanically but reads
+as "which one is real" rather than "hidden in cover". */
+function iconIllusion(){
+     return iconWrap(`<ellipse cx="24" cy="30" rx="10" ry="14" fill="#b06a97" opacity="0.35"/><ellipse cx="34" cy="26" rx="10" ry="14" fill="#b06a97" opacity="0.85"/><circle cx="31" cy="22" r="1.8" fill="#f4efe4" stroke="none"/><circle cx="37" cy="22" r="1.8" fill="#f4efe4" stroke="none"/>`);
+}
 

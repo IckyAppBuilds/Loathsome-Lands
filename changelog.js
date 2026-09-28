@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 7, date: 'September 28', title: 'Hexpert: Illusion & Deepened Spells', items: [
+      "New Hexpert spell at the Arcane Sanctum: Illusion — split into flickering copies of yourself for a big dodge boost, same trick as a Card Shark's Smoke Screen.",
+      "New at the Arcane Sanctum: pay Pop Tabs to deepen any spell you already know to Level 2, permanently boosting its own effect by 45%.",
+      ]},
    { id: 6, date: 'September 27', title: 'Breaking Through', items: [
       'New quest at the Gnome Guild: "Breaking Through" — the Mole Wars arc\'s real capstone. Build a drilldozer out of three parts, gathered three completely different ways.',
       "New zone: the Crystal City, reached through a new tile in the Ember Warren once the drilldozer breaks through. Something down there isn't Mole-built.",

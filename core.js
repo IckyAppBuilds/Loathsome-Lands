@@ -236,15 +236,23 @@ function createDefaultState(){
         CLASS_BUFF_FIGHTS (content.js) on cast, ticked down by 1 (never
         below 0) once per completed fight — see endCombat(), combat.js. */
      classBuffFightsLeft: 0,
-     /* Smoke Screen (Card Shark's 'evade' spell, content.js) — true for the
-        rest of the CURRENT fight only, unlike classBuffFightsLeft above.
-        Cleared by endCombat() (so it never survives into the next fight)
-        and by playerAttack()/a cast damage spell (so swinging back breaks
-        it immediately) — see castSpell(), combat.js. Deliberately not part
-        of serializeState() (save.js): same reasoning as state.inCombat/
-        state.monster not being saved either — this only ever matters
-        mid-fight, and a reload never resumes mid-fight. */
-     smokeScreenActive: false,
+     /* The shared 'evade' spell mechanic (Card Shark's Smoke Screen,
+        Hexpert's Illusion — content.js) — null, or the id of whichever
+        evade spell is currently active ('smokescreen'/'illusion'), for
+        the rest of the CURRENT fight only, unlike classBuffFightsLeft
+        above. Storing the id rather than a plain boolean is what lets
+        the two spells share this one flag safely (a player only ever
+        has one class, so only one of the two could ever be known/cast
+        anyway) while still picking the right flavor text and the right
+        per-spell upgrade check (state.spellsUpgraded, below) at the
+        point it's actually read. Cleared by endCombat() (so it never
+        survives into the next fight) and by playerAttack()/a cast
+        damage spell (so swinging back breaks it immediately) — see
+        castSpell(), combat.js. Deliberately not part of serializeState()
+        (save.js): same reasoning as state.inCombat/state.monster not
+        being saved either — this only ever matters mid-fight, and a
+        reload never resumes mid-fight. */
+     evasionActive: null,
      /* A boss's own 'debuff' skill (useMonsterSkill(), combat.js) inflicts
         this instead of just attacking that turn -- null, or
         { type:'burn'|'poison'|'freeze', turnsLeft, dmgPerTurn, dmgReduction }.
@@ -253,8 +261,17 @@ function createDefaultState(){
         player's own next N turns (Attack/a damage spell/an item use — the
         same "turns that cost a turn" set monsterRetaliate() already keys
         off of), not real-time turns. Same not-saved reasoning as
-        smokeScreenActive right above — this only ever matters mid-fight. */
+        evasionActive right above — this only ever matters mid-fight. */
      playerStatusEffect: null,
+     /* Which spells (by id) have been leveled up to "Level 2" — Hexpert's
+        own Arcane Sanctum-exclusive upgrade, per explicit request: EVERY
+        spell a Hexpert knows is eligible, not just the ones actually
+        taught there, and unlike state.spellsKnown this is a genuine
+        permanent progression choice, so — unlike evasionActive/
+        playerStatusEffect above — it IS part of serializeState() (save.js).
+        See SPELL_UPGRADE_MULTIPLIER's own comment (content.js) for what
+        it actually does to each spell type. */
+     spellsUpgraded: [],
      /* The highest CHANGELOG entry id (changelog.js) this player has
         already been shown, checked once per login (checkChangelogOnLogin(),
         called from enterGameAfterAuth(), auth.js) — null covers both a

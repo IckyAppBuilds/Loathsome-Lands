@@ -287,16 +287,34 @@ function monsterRetaliate(){
 }
 
 /* Shared by monsterAutoAttack() and useMonsterSkill()'s 'bolt' branch
-below — the normal Zip-based roll, plus SMOKE_SCREEN_DODGE_BONUS
-(content.js) on top while state.smokeScreenActive (castSpell()'s
-'evade' branch below), capped at SMOKE_SCREEN_DODGE_CAP instead of the
-normal 0.5 ceiling so Smoke Screen actually delivers the "dramatic"
-boost it's meant to. */
+below — the normal Zip-based roll, plus EVASION_DODGE_BONUS
+(content.js) on top while state.evasionActive holds either evade
+spell's own id (castSpell()'s 'evade' branch below), capped at
+EVASION_DODGE_CAP instead of the normal 0.5 ceiling so Smoke Screen/
+Illusion actually deliver the "dramatic" boost they're meant to.
+Whichever spell is active gets its own Level 2 check here
+(state.spellsUpgraded, core.js) — the bonus itself is what a Hexpert's
+Sanctum-bought Illusion upgrade actually scales, since 'evade' has no
+other single number to bump the way damage/heal/ward do. */
 function playerDodgeChance(){
    const eff = getEffectiveStats();
    const base = Math.min(0.5, statBonus(eff.zip)*0.03);
-   if(!state.smokeScreenActive) return base;
-   return Math.min(SMOKE_SCREEN_DODGE_CAP, base + SMOKE_SCREEN_DODGE_BONUS);
+   if(!state.evasionActive) return base;
+   const bonus = state.spellsUpgraded.includes(state.evasionActive) ? EVASION_DODGE_BONUS * SPELL_UPGRADE_MULTIPLIER : EVASION_DODGE_BONUS;
+   return Math.min(EVASION_DODGE_CAP, base + bonus);
+}
+/* "the smoke"/"the illusion" — the one word that differs between Smoke
+Screen's and Illusion's own dodge-flavor log lines below, keyed off
+state.evasionActive's own id rather than duplicating each full
+sentence per spell. */
+function evasionFlavorNoun(){
+   return state.evasionActive === 'illusion' ? 'the illusion' : 'the smoke';
+}
+/* Shared by every branch in castSpell() below that scales its own
+effect off SPELL_UPGRADE_MULTIPLIER (content.js) — Hexpert's Level 2
+Arcane Sanctum upgrade, per spell id. */
+function isSpellUpgraded(id){
+   return state.spellsUpgraded.includes(id);
 }
 
 /* A monster's default turn: try to hit the player, worn down by the
@@ -305,8 +323,8 @@ player's own Zip-based dodge chance same as always. Boosted by a prior
 useMonsterSkill() below) until it ticks back down to 0. */
 function monsterAutoAttack(){
    if(Math.random() < playerDodgeChance()){
-      log(state.smokeScreenActive
-          ? `Still hidden in the smoke, you dodge ${state.monster.name}'s counterattack completely.`
+      log(state.evasionActive
+          ? `Still hidden in ${evasionFlavorNoun()}, you dodge ${state.monster.name}'s counterattack completely.`
           : `You dodge ${state.monster.name}'s counterattack completely.`);
       tickMonsterBuff();
       return;
@@ -391,8 +409,8 @@ function useMonsterSkill(skill){
       log(`${capitalize(state.monster.name)} ${skill.flavor}.`);
    } else if(skill.type==='bolt'){
       if(Math.random() < playerDodgeChance()){
-         log(state.smokeScreenActive
-             ? `Still hidden in the smoke, you dodge ${state.monster.name}'s ${skill.flavor} completely.`
+         log(state.evasionActive
+             ? `Still hidden in ${evasionFlavorNoun()}, you dodge ${state.monster.name}'s ${skill.flavor} completely.`
              : `You dodge ${state.monster.name}'s ${skill.flavor} completely.`);
       } else {
          const dmg = randInt(skill.boltMin, skill.boltMax);
@@ -406,13 +424,15 @@ function useMonsterSkill(skill){
 
 function playerAttack(){
    if(!state.inCombat) return;
-   /* Smoke Screen (castSpell()'s 'evade' branch) breaks the instant you
-   swing back — cleared before anything else below so this same attack's
-   own retaliation roll (monsterRetaliate(), further down) resolves at
-   normal odds, not the boosted ones. */
-   if(state.smokeScreenActive){
-      state.smokeScreenActive = false;
-      log("Swinging back gives away your position — the smoke clears.");
+   /* The active evade spell (castSpell()'s 'evade' branch) breaks the
+   instant you swing back — cleared before anything else below so this
+   same attack's own retaliation roll (monsterRetaliate(), further
+   down) resolves at normal odds, not the boosted ones. */
+   if(state.evasionActive){
+      log(state.evasionActive === 'illusion'
+          ? "Swinging back gives away which copy is real — the illusion collapses."
+          : "Swinging back gives away your position — the smoke clears.");
+      state.evasionActive = null;
    }
    /* A lingering boss debuff (state.playerStatusEffect) ticks on THIS
    turn regardless of what happens next — before the miss roll, so a
@@ -588,11 +608,13 @@ state.mp -= spell.mpCost;
 if(spell.type==='damage'){
    /* Same "your own aggression breaks the cloud" rule playerAttack() enforces
    — a damage spell costs a turn and provokes retaliation just like a
-   physical Attack, so it closes the Smoke Screen window exactly the same
-   way (see SMOKE_SCREEN_DODGE_BONUS's own comment, content.js). */
-   if(state.smokeScreenActive){
-      state.smokeScreenActive = false;
-      log("Swinging back gives away your position — the smoke clears.");
+   physical Attack, so it closes the evade window exactly the same way
+   (see EVASION_DODGE_BONUS's own comment, content.js). */
+   if(state.evasionActive){
+      log(state.evasionActive === 'illusion'
+          ? "Swinging back gives away which copy is real — the illusion collapses."
+          : "Swinging back gives away your position — the smoke clears.");
+      state.evasionActive = null;
    }
    /* Same per-turn debuff tick as playerAttack() — a damage spell costs
    a turn exactly like a physical Attack, so it ticks state.playerStatus
@@ -602,6 +624,12 @@ if(spell.type==='damage'){
    if(spellStatusFx.defeated){ checkDefeat(); render(); return; }
    let dmg = Math.round((randInt(spell.dmgMin, spell.dmgMax) + (state.level-1) + statBonus(eff.hoodoo)) * spellStatusFx.dmgMult);
    if(state.classTitle === 'Hexpert') dmg += HEXPERT_SPELL_DMG_BONUS[state.classSkillLevel];
+   /* This spell's own Level 2 upgrade (SPELL_UPGRADE_MULTIPLIER,
+   content.js) — applied here, after the flat class bonus but before
+   the Arcane Focus multiplier below, so it scales the base roll +
+   passive bonus together, same ordering reasoning as that multiplier's
+   own comment just below. */
+   if(isSpellUpgraded(spell.id)) dmg = Math.round(dmg * SPELL_UPGRADE_MULTIPLIER);
    /* Arcane Focus buff (content.js's spells[], classRequired:'Hexpert') —
    applied AFTER the flat HEXPERT_SPELL_DMG_BONUS line above so the
    multiplier scales the whole total (base roll + passive bonus), not
@@ -629,8 +657,14 @@ if(spell.type==='damage'){
    }
    monsterRetaliate();
 } else if(spell.type==='heal'){
+   /* SPELL_UPGRADE_MULTIPLIER (content.js) applies to whichever single
+   number IS that spell's own effect — for 'heal' that's healValue
+   itself. Same isSpellUpgraded() check reused across every branch
+   below rather than re-deriving state.spellsUpgraded.includes(spell.id)
+   each time. */
+   const healAmt = Math.round(spell.healValue * (isSpellUpgraded(spell.id) ? SPELL_UPGRADE_MULTIPLIER : 1));
    const before = state.hp;
-   state.hp = Math.min(state.maxHp, state.hp+spell.healValue);
+   state.hp = Math.min(state.maxHp, state.hp+healAmt);
    log(`You cast ${spell.name} and patch yourself up. (+${state.hp-before} HP)`);
 } else if(spell.type==='ward'){
    /* Grants a persistent shield (applyDamageToPlayer(), above) instead of
@@ -638,12 +672,18 @@ if(spell.type==='damage'){
    by classSkillLevel for a Hexpert (same lever that boosts their spell-
    damage bonus). Stacks on repeat casts; only spent when something
    actually hits. */
-   const shieldAmount = 8 + statBonus(eff.hoodoo)*2 + (state.classTitle==='Hexpert' ? state.classSkillLevel*10 : 0);
+   let shieldAmount = 8 + statBonus(eff.hoodoo)*2 + (state.classTitle==='Hexpert' ? state.classSkillLevel*10 : 0);
+   if(isSpellUpgraded(spell.id)) shieldAmount = Math.round(shieldAmount * SPELL_UPGRADE_MULTIPLIER);
    state.shield += shieldAmount;
    log(`You cast ${spell.name} — a shimmering barrier settles over you. (+${shieldAmount} Shield)`);
 } else if(spell.type==='buff'){
-   state.classBuffFightsLeft = CLASS_BUFF_FIGHTS;
-   log(`You cast ${spell.name} — the next ${CLASS_BUFF_FIGHTS} fights are yours.`);
+   /* 'buff' has no single magnitude to scale the way heal/ward/damage
+   do (its own effect — e.g. Arcane Focus's spell-damage multiplier —
+   is hardcoded where THAT effect actually applies, not here), so its
+   own Level 2 upgrade instead extends how long it lasts. */
+   const buffFights = isSpellUpgraded(spell.id) ? Math.ceil(CLASS_BUFF_FIGHTS * SPELL_UPGRADE_MULTIPLIER) : CLASS_BUFF_FIGHTS;
+   state.classBuffFightsLeft = buffFights;
+   log(`You cast ${spell.name} — the next ${buffFights} fights are yours.`);
 } else if(spell.type==='shout'){
    /* Meathead-exclusive — a small, mostly-flat shield, NOT scaled off
    statBonus(beef) the way 'ward' scales off Hoodoo. Beef is this class's
@@ -657,15 +697,21 @@ if(spell.type==='damage'){
    state.shield += shieldAmount;
    log(`You let out a bone-rattling shout, bracing for whatever's coming. (+${shieldAmount} Shield)`);
 } else if(spell.type==='evade'){
-   /* Smoke Screen — see SMOKE_SCREEN_DODGE_BONUS's own comment (content.js)
-   for the full reasoning. Sets a plain flag rather than a fights-left
-   counter like 'buff' above: this doesn't persist past the current
-   fight at all, so there's nothing to count down — endCombat() clears
-   it unconditionally the moment this encounter ends, and playerAttack()/
-   the 'damage' branch above clear it early if the player swings back
-   first. Re-casting while already active just re-confirms it (harmless). */
-   state.smokeScreenActive = true;
-   log(`You cast ${spell.name} — kick up a cloud of grit and vanish into it. Don't swing back if you want to stay hidden.`);
+   /* Smoke Screen/Illusion — see EVASION_DODGE_BONUS's own comment
+   (content.js) for the full reasoning. Stores the spell's own id
+   rather than a plain flag (state.evasionActive's own comment, core.js)
+   — that's what lets playerDodgeChance() apply the RIGHT spell's Level
+   2 upgrade, and evasionFlavorNoun() pick the right flavor word. No
+   fights-left counter like 'buff' above: this doesn't persist past the
+   current fight at all, so there's nothing to count down — endCombat()
+   clears it unconditionally the moment this encounter ends, and
+   playerAttack()/the 'damage' branch above clear it early if the
+   player swings back first. Re-casting while already active just
+   re-confirms it (harmless). */
+   state.evasionActive = spell.id;
+   log(spell.id==='illusion'
+       ? `You cast ${spell.name} — a dozen flickering copies of yourself scatter outward. Don't swing back if you want them to hold.`
+       : `You cast ${spell.name} — kick up a cloud of grit and vanish into it. Don't swing back if you want to stay hidden.`);
 }
 
 if(state.inCombat){
@@ -722,6 +768,28 @@ function learnSpell(id){
    log(`${CLASS_SPELL_TRAINER[requiredLocation] || 'The Hoodoo Doctor'} teaches you ${spell.name}. (-${price} Pop Tabs)`);
    render();
 }
+
+/* Hexpert's own Level 2 spell upgrade, Arcane Sanctum-exclusive per
+explicit request — covers EVERY spell a Hexpert knows, not just the
+ones actually taught at the Sanctum (Hex Bolt/Bottled Fury/Mending
+Charm/Warding Charm were all learned elsewhere; a Hexpert's own
+Arcane Focus/Arcane Lance/Illusion were learned at Hoodoo/here).
+spellUpgradeCost()/SPELL_UPGRADE_MULTIPLIER (content.js) — one flat
+tier, applied per spell type in castSpell()'s own branches above. */
+function upgradeSpell(id){
+   if(state.location !== 'sanctum' || state.classTitle !== 'Hexpert') return;
+   const spell = spells.find(s=>s.id===id);
+   if(!spell || !state.spellsKnown.includes(id) || state.spellsUpgraded.includes(id)) return;
+   const cost = spellUpgradeCost(spell);
+   if(state.popTabs < cost) return;
+   state.popTabs -= cost;
+   state.spellsUpgraded.push(id);
+   clearLog();
+   log(`${spell.name} deepens — its own effect grows by ${Math.round((SPELL_UPGRADE_MULTIPLIER-1)*100)}%. (-${cost} Pop Tabs)`);
+   render();
+   autosave();
+}
+
 function playerFlee(){
    if(!state.inCombat) return;
    const eff = getEffectiveStats();
@@ -1074,13 +1142,14 @@ function endCombat(){
    action that doesn't end the fight (a normal attack, a non-lethal spell)
    never reaches endCombat() at all, so it can't double-decrement. */
    if(state.classBuffFightsLeft > 0) state.classBuffFightsLeft--;
-   /* Smoke Screen (state.smokeScreenActive, castSpell()'s 'evade' branch)
-   is scoped to a single fight, unlike the multi-fight classBuffFightsLeft
-   above — this same funnel point guarantees it never survives into the
-   next encounter regardless of how this one ended. */
-   state.smokeScreenActive = false;
+   /* Smoke Screen/Illusion (state.evasionActive, castSpell()'s 'evade'
+   branch) is scoped to a single fight, unlike the multi-fight
+   classBuffFightsLeft above — this same funnel point guarantees it
+   never survives into the next encounter regardless of how this one
+   ended. */
+   state.evasionActive = null;
    /* state.playerStatusEffect (a boss's own 'debuff' skill) is scoped to
-   a single fight same as smokeScreenActive right above — a burn caught
+   a single fight same as evasionActive right above — a burn caught
    in one fight shouldn't still be ticking in the next, unrelated one. */
    state.playerStatusEffect = null;
 }

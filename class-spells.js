@@ -86,6 +86,42 @@ function renderClassSkillUpgrade(containerId, classTitle){
    el.innerHTML = html;
 }
 
+/* Hexpert's own Level 2 spell-upgrade shop, Arcane Sanctum-exclusive
+per explicit request — lists EVERY spell the player currently knows
+(state.spellsKnown), not just the ones actually taught here, since the
+point is deepening spells learned anywhere (Hex Bolt/Bottled Fury/
+Mending Charm/Warding Charm at Hoodoo, Arcane Focus/Arcane Lance/
+Illusion at Hoodoo/here). A Hexpert can only ever know Hexpert-eligible
+spells to begin with (learnSpell()'s own classRequired gate, combat.js),
+so no extra type filter is needed beyond "known". One flat tier per
+spell (state.spellsUpgraded, core.js) — once bought, that row just
+shows "Upgraded", same shape the Class Skill block above uses once
+fully trained. */
+function renderSpellUpgradeBlock(containerId){
+   const el = document.getElementById(containerId);
+   if(!el) return;
+   if(state.classTitle !== 'Hexpert' || state.spellsKnown.length===0){
+      el.style.display = 'none';
+      el.innerHTML = '';
+      return;
+   }
+   el.style.display = 'block';
+   const known = state.spellsKnown.map(id => spells.find(s=>s.id===id)).filter(Boolean);
+   const rows = known.map(spell=>{
+      const iconSvg = spell.icon ? spell.icon() : '';
+      const upgraded = state.spellsUpgraded.includes(spell.id);
+      const btn = upgraded
+      ? `<button class="btn-secondary" disabled>Upgraded</button>`
+        : (()=>{
+           const cost = spellUpgradeCost(spell);
+           const canAfford = state.popTabs >= cost;
+           return `<button class="btn-secondary ${canAfford?'btn-ready':''}" ${canAfford?'':'disabled'} onclick="upgradeSpell('${spell.id}')">Level 2 — ${cost} Pop Tabs</button>`;
+        })();
+      return `<div class="shop-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}${upgraded?' <span class="qty-badge">Lv.2</span>':''}</div><div class="desc">${spell.desc}</div>${btn}</div></div>`;
+   }).join('');
+   el.innerHTML = `<div class="block-title">Deepen Your Spells</div>${rows}`;
+}
+
 /* Character drawer block for casting any KNOWN non-damage spell —
 'damage' spells need a monster to target and still only show in the
 in-combat Use menu (renderSpellMenu(), render-character.js); every
@@ -100,10 +136,10 @@ the filter itself is just "non-damage AND known," not "class-exclusive
 AND known," so it stays correct if a future non-class-exclusive
 non-damage spell is ever added.
 
-'evade' (Smoke Screen) is excluded here too, same reasoning as 'damage'
-— it needs a CURRENT fight to apply to (state.smokeScreenActive means
-nothing outside combat), so it only ever shows in the in-combat Use
-menu's own "Buffs & Support" section, never here. */
+'evade' (Smoke Screen/Illusion) is excluded here too, same reasoning as
+'damage' — it needs a CURRENT fight to apply to (state.evasionActive
+means nothing outside combat), so it only ever shows in the in-combat
+Use menu's own "Buffs & Support" section, never here. */
 function renderCastableSpellsBlock(){
    const el = document.getElementById('castable-spells-block');
    if(!el) return;
@@ -125,7 +161,10 @@ function renderCastableSpellsBlock(){
    const rows = castable.map(spell=>{
       const iconSvg = spell.icon ? spell.icon() : '';
       const canCast = state.mp >= spell.mpCost;
-      return `<div class="shop-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div><button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${spell.mpCost} MP</button></div></div>`;
+      /* Same "Lv.2" tag as renderSpellMenu()'s own Buffs & Support rows
+      (render-character.js) for a Hexpert's Sanctum-upgraded spells. */
+      const lvBadge = state.spellsUpgraded.includes(spell.id) ? ` <span class="qty-badge">Lv.2</span>` : '';
+      return `<div class="shop-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}${lvBadge}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div><button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${spell.mpCost} MP</button></div></div>`;
    }).join('');
    el.innerHTML = `<div class="block-title">Spells</div>${statusLine}${rows}`;
 }
