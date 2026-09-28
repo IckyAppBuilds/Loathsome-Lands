@@ -527,7 +527,7 @@ function upgradeBuilding(key){
 }
 
 function acceptQuest4(){
-   if(state.location !== 'tinker' || !state.quest2Complete || state.quest4Accepted || state.quest4Complete) return;
+   if(state.location !== 'tinker' || !state.quest3Complete || state.quest4Accepted || state.quest4Complete) return;
    state.quest4Accepted = true;
    clearLog();
    log("The Tinker accepts your quest: strange clockwork parts keep turning up in the Dank Sewers. Find whatever's shedding them and put a stop to it. It won't be easy to find — you'll have to keep adventuring down there.");

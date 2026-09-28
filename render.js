@@ -150,7 +150,7 @@ function computeRenderContext(){
   const ingredientsHeld = countPotionIngredientsHeld();
   const canBrew = isHoodoo && quest3State==='active' && ingredientsHeld === potionIngredients.length;
 
-  const quest4State = state.quest4Complete ? 'complete' : (state.quest4Accepted ? 'active' : (state.quest2Complete ? 'offer' : 'locked'));
+  const quest4State = state.quest4Complete ? 'complete' : (state.quest4Accepted ? 'active' : (state.quest3Complete ? 'offer' : 'locked'));
   const canReportDigger = isTinker && quest4State==='active' && state.quest4RareDefeated;
 
   const quest5State = state.quest5Complete ? 'complete' : (state.quest5Accepted ? 'active' : (state.quest4Complete ? 'offer' : 'locked'));
