@@ -94,8 +94,9 @@ function reportGnomeKingKill(){
    state.quest6Complete = true;
    state.popTabs += 50;
    state.xp += 70;
+   state.adventures += 40;
    clearLog();
-   log("You describe the fight in the throne room in more detail than the guildmaster expected. He's practically speechless. (+50 Pop Tabs, +70 XP)");
+   log("You describe the fight in the throne room in more detail than the guildmaster expected. He's practically speechless. (+50 Pop Tabs, +70 XP, +40 Biscuits)");
    log("\"Gnometropolis,\" he finally says. \"The whole hidden gnome capital, right under the Vault. It's yours to explore now, if you're brave enough.\" A beat, then his face falls — the throne was already empty. \"The King got away, behind the palace gate at the heart of the city. There's clearly more to this than a captain guarding an empty chair.\" Gnometropolis is now open — check the Map.");
    checkLevelUp();
    render();
@@ -129,8 +130,9 @@ function reportGnomeKingDefeat(){
    state.quest7Complete = true;
    state.popTabs += 150;
    state.xp += 200;
+   state.adventures += 75;
    clearLog();
-   log("You lay it out for the guildmaster, plainly: the King is dead, and Gnometropolis is yours in every way that matters now. He's got no jokes for this one. (+150 Pop Tabs, +200 XP)");
+   log("You lay it out for the guildmaster, plainly: the King is dead, and Gnometropolis is yours in every way that matters now. He's got no jokes for this one. (+150 Pop Tabs, +200 XP, +75 Biscuits)");
    log("\"That's Act One, done,\" he says, like he's still working out what that means. \"The capital's yours. What comes next... honestly, nobody's sure yet. But the door's open.\"");
    checkLevelUp();
    render();
@@ -184,8 +186,9 @@ function reportQuest8(){
    state.quest8Complete = true;
    state.popTabs += 40;
    state.xp += 30;
+   state.adventures += 20;
    clearLog();
-   log("You sign the ledger. Gnometropolis is officially, on paper, yours to run. (+40 Pop Tabs, +30 XP)");
+   log("You sign the ledger. Gnometropolis is officially, on paper, yours to run. (+40 Pop Tabs, +30 XP, +20 Biscuits)");
    log("The guildmaster looks almost nervous. \"Something's been digging under the throne room since the King fell. Wasn't there before. Might want to look into that, when you get a chance.\"");
    checkLevelUp();
    render();
@@ -213,8 +216,9 @@ function reportQuest9(){
    state.quest9Complete = true;
    state.popTabs += 90;
    state.xp += 70;
+   state.adventures += 35;
    clearLog();
-   log("You lay it all out for the guildmaster — what you found, what you fought, how far down it went. (+90 Pop Tabs, +70 XP)");
+   log("You lay it all out for the guildmaster — what you found, what you fought, how far down it went. (+90 Pop Tabs, +70 XP, +35 Biscuits)");
    log("The guildmaster doesn't look reassured. \"That's not a den. That's an outpost. Which means there's more of them, and something they're all listening to. We're not done here.\"");
    checkLevelUp();
    render();
@@ -244,8 +248,9 @@ function reportQuest10(){
    state.quest10Complete = true;
    state.popTabs += 140;
    state.xp += 110;
+   state.adventures += 45;
    clearLog();
-   log("You lay out what you found — and how you found it. (+140 Pop Tabs, +110 XP)");
+   log("You lay out what you found — and how you found it. (+140 Pop Tabs, +110 XP, +45 Biscuits)");
    log(state.quest10Path === 'informant'
        ? "The guildmaster nods slowly. \"Someone talked. That's one way to do it — messier than paperwork, but it works.\" He doesn't ask what happened to the one who talked."
        : "The guildmaster flips through the ledger you brought back, longer than he needs to. \"Paper trail. Should've guessed. This place runs on more of it than anyone down there would admit.\"");
@@ -281,8 +286,9 @@ function reportQuest11(){
    state.quest11Complete = true;
    state.popTabs += 170;
    state.xp += 130;
+   state.adventures += 50;
    clearLog();
-   log("Both accounted for, finally. (+170 Pop Tabs, +130 XP)");
+   log("Both accounted for, finally. (+170 Pop Tabs, +130 XP, +50 Biscuits)");
    log("The guildmaster is quiet for a moment. \"Good. Now — that root-door in Mudroot Warren that never opened onto anything. It just opened onto something. You're going to want to see it.\"");
    checkLevelUp();
    render();
@@ -311,8 +317,9 @@ function reportQuest12(){
    state.quest12Complete = true;
    state.popTabs += 190;
    state.xp += 150;
+   state.adventures += 55;
    clearLog();
-   log("You lay out the whole chain, start to finish. (+190 Pop Tabs, +150 XP)");
+   log("You lay out the whole chain, start to finish. (+190 Pop Tabs, +150 XP, +55 Biscuits)");
    log("The guildmaster is quiet for a second. \"So that's where it all went. All that paperwork was never just paperwork. Feels almost obvious, in hindsight.\"");
    checkLevelUp();
    render();
@@ -336,8 +343,9 @@ function reportQuest13(){
    state.quest13Complete = true;
    state.popTabs += 220;
    state.xp += 175;
+   state.adventures += 60;
    clearLog();
-   log("You describe the trough, the cold, the way it locked your own joints up before you got clear of it. (+220 Pop Tabs, +175 XP)");
+   log("You describe the trough, the cold, the way it locked your own joints up before you got clear of it. (+220 Pop Tabs, +175 XP, +60 Biscuits)");
    log("The guildmaster doesn't look reassured. \"That's not a work hazard. That's a weapon somebody built on purpose. Watch yourself down there.\"");
    checkLevelUp();
    render();
@@ -363,8 +371,9 @@ function reportQuest14(){
    state.quest14Complete = true;
    state.popTabs += 250;
    state.xp += 200;
+   state.adventures += 65;
    clearLog();
-   log("You tell the guildmaster what was actually behind that door. He doesn't ask you to repeat it. (+250 Pop Tabs, +200 XP)");
+   log("You tell the guildmaster what was actually behind that door. He doesn't ask you to repeat it. (+250 Pop Tabs, +200 XP, +65 Biscuits)");
    log("\"So there's a structure to all this,\" he says slowly. \"A chain of command. Which means somewhere, there's a top of it.\"");
    checkLevelUp();
    render();
@@ -389,8 +398,9 @@ function reportQuest15(){
    state.quest15Complete = true;
    state.popTabs += 320;
    state.xp += 260;
+   state.adventures += 90;
    clearLog();
-   log("You tell the guildmaster it's over — really over, this time. (+320 Pop Tabs, +260 XP)");
+   log("You tell the guildmaster it's over — really over, this time. (+320 Pop Tabs, +260 XP, +90 Biscuits)");
    log("He's quiet for a long moment. \"The Mole Wars,\" he finally says, like he's trying the name out. \"Someone's going to write a song about this. Try not to let it go to your head.\"");
    checkLevelUp();
    render();
@@ -428,8 +438,9 @@ function reportQuest16(){
    state.quest16Complete = true;
    state.popTabs += 400;
    state.xp += 320;
+   state.adventures += 100;
    clearLog();
-   log("Plating, rig, drive shaft — the Tinker bolts all three together into something that looks less like a vehicle and more like a promise. (+400 Pop Tabs, +320 XP)");
+   log("Plating, rig, drive shaft — the Tinker bolts all three together into something that looks less like a vehicle and more like a promise. (+400 Pop Tabs, +320 XP, +100 Biscuits)");
    log("The drilldozer breaks through the last wall of the Ember Warren in one long, grinding push — and the other side isn't rock at all. It's crystal, cut too clean to be natural, going down further than any torch can reach. \"That,\" the guildmaster says, staring at what you're describing, \"is not a Mole tunnel. Whatever you just found, it isn't ours to name.\" The Crystal City is now open — check the Map.");
    checkLevelUp();
    render();

@@ -539,8 +539,9 @@ function reportDiggerBotKill(){
    state.quest4Complete = true;
    state.popTabs += 30;
    state.xp += 45;
+   state.adventures += 25;
    clearLog();
-   log("You describe the sparking, thrashing mess you fought in the sewers. The Tinker's eyes go wide with delight rather than concern. (+30 Pop Tabs, +45 XP)");
+   log("You describe the sparking, thrashing mess you fought in the sewers. The Tinker's eyes go wide with delight rather than concern. (+30 Pop Tabs, +45 XP, +25 Biscuits)");
    log("\"That's one of mine,\" they admit. \"Well — was. Come look at this.\" They trace its wiring back to a sealed service tunnel you'd never have noticed. \"The old Clockwork Quarry. Go on, it's yours to poke around in now.\"");
    checkLevelUp();
    render();
@@ -568,9 +569,10 @@ veinIngredients.forEach(v=>{
 state.quest5Complete = true;
    state.popTabs += 40;
    state.xp += 60;
+   state.adventures += 30;
 
 clearLog();
-   log("The Tinker spreads every piece out on the workbench and goes very quiet for a long moment. (+40 Pop Tabs, +60 XP)");
+   log("The Tinker spreads every piece out on the workbench and goes very quiet for a long moment. (+40 Pop Tabs, +60 XP, +30 Biscuits)");
    log("\"They all trace back to the same place,\" they finally say, pointing at a hand-drawn map. \"Something sealed under the Quarry floor. I'd want someone capable checking it out. That's you, I suppose.\" The Sunless Vault is now open — check the Map.");
    checkLevelUp();
    render();

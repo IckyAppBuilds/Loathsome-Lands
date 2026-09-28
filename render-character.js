@@ -367,7 +367,7 @@ if(state.quest4Complete){
   <div class="quest-log-entry">
   <div class="quest-name">What the Sewers Shed</div>
   <div class="quest-desc">You hunted down and defeated the runaway digger-bot loose in the Dank Sewers, and the Tinker opened up the Clockwork Quarry.</div>
-  <div class="quest-progress">Reward claimed: 30 Pop Tabs, 45 XP</div>
+  <div class="quest-progress">Reward claimed: 30 Pop Tabs, 45 XP, 25 Biscuits</div>
   </div>`);
 } else if(state.quest4Accepted){
   activeEntries.push(`
@@ -383,7 +383,7 @@ if(state.quest5Complete){
   <div class="quest-log-entry">
   <div class="quest-name">The Vein</div>
   <div class="quest-desc">You gathered clockwork parts from the Clockwork Quarry and the Dank Sewers so the Tinker could trace the old vein of gnome-tech — straight to the Sunless Vault.</div>
-  <div class="quest-progress">Reward claimed: 40 Pop Tabs, 60 XP</div>
+  <div class="quest-progress">Reward claimed: 40 Pop Tabs, 60 XP, 30 Biscuits</div>
   </div>`);
 } else if(state.quest5Accepted){
   activeEntries.push(`
@@ -399,7 +399,7 @@ if(state.quest6Complete){
   <div class="quest-log-entry">
   <div class="quest-name">The Gnome King's Throne</div>
   <div class="quest-desc">You hunted down and defeated the Gnome King's rear-guard captain, deep in the Sunless Vault, and uncovered Gnometropolis beneath it — though the King himself had already fled deeper in.</div>
-  <div class="quest-progress">Reward claimed: 50 Pop Tabs, 70 XP</div>
+  <div class="quest-progress">Reward claimed: 50 Pop Tabs, 70 XP, 40 Biscuits</div>
   </div>`);
 } else if(state.quest6Accepted){
   activeEntries.push(`
@@ -419,7 +419,7 @@ if(state.quest7Complete){
   <div class="quest-log-entry">
   <div class="quest-name">The Gnome King's Court</div>
   <div class="quest-desc">You forced the palace gate in Gnometropolis and struck down the real Gnome King. Act One is done — Gnometropolis is yours.</div>
-  <div class="quest-progress">Reward claimed: 150 Pop Tabs, 200 XP</div>
+  <div class="quest-progress">Reward claimed: 150 Pop Tabs, 200 XP, 75 Biscuits</div>
   </div>`);
 } else if(state.quest7RareDefeated){
   activeEntries.push(`
@@ -450,7 +450,7 @@ if(state.quest8Complete){
   <div class="quest-log-entry">
   <div class="quest-name">New Digs</div>
   <div class="quest-desc">You signed the ledger and made it official — Gnometropolis is yours to run.</div>
-  <div class="quest-progress">Reward claimed: 40 Pop Tabs, 30 XP</div>
+  <div class="quest-progress">Reward claimed: 40 Pop Tabs, 30 XP, 20 Biscuits</div>
   </div>`);
 } else if(state.quest8Accepted){
   activeEntries.push(`
@@ -466,7 +466,7 @@ if(state.quest9Complete){
   <div class="quest-log-entry">
   <div class="quest-name">What the Throne Room Opened</div>
   <div class="quest-desc">You found what was living under the throne room, fought your way past it, and reported back. It wasn't alone down there.</div>
-  <div class="quest-progress">Reward claimed: 90 Pop Tabs, 70 XP</div>
+  <div class="quest-progress">Reward claimed: 90 Pop Tabs, 70 XP, 35 Biscuits</div>
   </div>`);
 } else if(state.quest9Accepted){
   const quest9ProgressLog = state.warrenScoutDefeated ? 'Ready to report back at the Guild.'
@@ -485,7 +485,7 @@ if(state.quest10Complete){
   <div class="quest-log-entry">
   <div class="quest-name">Whatever's Listening</div>
   <div class="quest-desc">You found a way to whatever's coordinating the outposts, and told the guildmaster what you learned.</div>
-  <div class="quest-progress">Reward claimed: 140 Pop Tabs, 110 XP</div>
+  <div class="quest-progress">Reward claimed: 140 Pop Tabs, 110 XP, 45 Biscuits</div>
   </div>`);
 } else if(state.quest10Accepted){
   activeEntries.push(`
@@ -501,7 +501,7 @@ if(state.quest11Complete){
   <div class="quest-log-entry">
   <div class="quest-name">Loose Ends</div>
   <div class="quest-desc">Both of them, accounted for — not just whichever talked first.</div>
-  <div class="quest-progress">Reward claimed: 170 Pop Tabs, 130 XP</div>
+  <div class="quest-progress">Reward claimed: 170 Pop Tabs, 130 XP, 50 Biscuits</div>
   </div>`);
 } else if(state.quest11Accepted){
   const bothAccountedFor = state.tunnelMoleInformantDefeated && state.seniorClerkDefeated;
@@ -519,7 +519,7 @@ if(state.quest12Complete){
   <div class="quest-log-entry">
   <div class="quest-name">Chain of Custody</div>
   <div class="quest-desc">The whole chain, start to finish — the Ember Warren's shipments, and who was quietly receiving them.</div>
-  <div class="quest-progress">Reward claimed: 190 Pop Tabs, 150 XP</div>
+  <div class="quest-progress">Reward claimed: 190 Pop Tabs, 150 XP, 55 Biscuits</div>
   </div>`);
 } else if(state.quest12Accepted){
   const stage2 = state.gearworksForemanDefeated;
@@ -536,7 +536,7 @@ if(state.quest13Complete){
   <div class="quest-log-entry">
   <div class="quest-name">Quenched</div>
   <div class="quest-desc">Whatever was running hot in the Foundry, it's been found and put down.</div>
-  <div class="quest-progress">Reward claimed: 220 Pop Tabs, 175 XP</div>
+  <div class="quest-progress">Reward claimed: 220 Pop Tabs, 175 XP, 60 Biscuits</div>
   </div>`);
 } else if(state.quest13Accepted){
   activeEntries.push(`
@@ -552,7 +552,7 @@ if(state.quest14Complete){
   <div class="quest-log-entry">
   <div class="quest-name">What the Vault Was Guarding</div>
   <div class="quest-desc">The one door in the Ledger Vault that was never meant to open — opened.</div>
-  <div class="quest-progress">Reward claimed: 250 Pop Tabs, 200 XP</div>
+  <div class="quest-progress">Reward claimed: 250 Pop Tabs, 200 XP, 65 Biscuits</div>
   </div>`);
 } else if(state.quest14Accepted){
   activeEntries.push(`
@@ -568,7 +568,7 @@ if(state.quest15Complete){
   <div class="quest-log-entry">
   <div class="quest-name">The Warren Answers</div>
   <div class="quest-desc">The Mole Wars, however anyone ends up telling it, end here.</div>
-  <div class="quest-progress">Reward claimed: 320 Pop Tabs, 260 XP</div>
+  <div class="quest-progress">Reward claimed: 320 Pop Tabs, 260 XP, 90 Biscuits</div>
   </div>`);
 } else if(state.quest15Accepted){
   activeEntries.push(`
@@ -584,7 +584,7 @@ if(state.quest16Complete){
   <div class="quest-log-entry">
   <div class="quest-name">Breaking Through</div>
   <div class="quest-desc">The drilldozer broke through the last wall of the Ember Warren — and found crystal on the other side, not rock.</div>
-  <div class="quest-progress">Reward claimed: 400 Pop Tabs, 320 XP</div>
+  <div class="quest-progress">Reward claimed: 400 Pop Tabs, 320 XP, 100 Biscuits</div>
   </div>`);
 } else if(state.quest16Accepted){
   activeEntries.push(`

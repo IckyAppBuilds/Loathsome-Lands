@@ -11,6 +11,9 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 9, date: 'September 28', title: 'Every Quest Feeds the Habit', items: [
+      "Every quest turn-in now hands over some extra Biscuits, not just the first few — the reward climbs alongside each quest's own Pop Tabs and XP, all the way up to Breaking Through.",
+      ]},
    { id: 8, date: 'September 28', title: 'A Fuller Pack, Early On', items: [
       "The first few quests — Gaffer Thistlewick's rake tines, hunting the gnome commander, and the Hoodoo Doctor's potion — now also hand over some extra Biscuits, on top of their usual Pop Tabs and XP.",
       ]},
