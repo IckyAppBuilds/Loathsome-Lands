@@ -419,7 +419,7 @@ if(state.quest7Complete){
   <div class="quest-log-entry">
   <div class="quest-name">The Gnome King's Court</div>
   <div class="quest-desc">You forced the palace gate in Gnometropolis and struck down the real Gnome King. Act One is done — Gnometropolis is yours.</div>
-  <div class="quest-progress">Reward claimed: 150 Pop Tabs, 200 XP, 20 Bounty Tokens</div>
+  <div class="quest-progress">Reward claimed: 150 Pop Tabs, 200 XP</div>
   </div>`);
 } else if(state.quest7RareDefeated){
   activeEntries.push(`
@@ -485,7 +485,7 @@ if(state.quest10Complete){
   <div class="quest-log-entry">
   <div class="quest-name">Whatever's Listening</div>
   <div class="quest-desc">You found a way to whatever's coordinating the outposts, and told the guildmaster what you learned.</div>
-  <div class="quest-progress">Reward claimed: 140 Pop Tabs, 110 XP, 10 Bounty Tokens</div>
+  <div class="quest-progress">Reward claimed: 140 Pop Tabs, 110 XP</div>
   </div>`);
 } else if(state.quest10Accepted){
   activeEntries.push(`
@@ -501,7 +501,7 @@ if(state.quest11Complete){
   <div class="quest-log-entry">
   <div class="quest-name">Loose Ends</div>
   <div class="quest-desc">Both of them, accounted for — not just whichever talked first.</div>
-  <div class="quest-progress">Reward claimed: 170 Pop Tabs, 130 XP, 12 Bounty Tokens</div>
+  <div class="quest-progress">Reward claimed: 170 Pop Tabs, 130 XP</div>
   </div>`);
 } else if(state.quest11Accepted){
   const bothAccountedFor = state.tunnelMoleInformantDefeated && state.seniorClerkDefeated;
@@ -519,7 +519,7 @@ if(state.quest12Complete){
   <div class="quest-log-entry">
   <div class="quest-name">Chain of Custody</div>
   <div class="quest-desc">The whole chain, start to finish — the Ember Warren's shipments, and who was quietly receiving them.</div>
-  <div class="quest-progress">Reward claimed: 190 Pop Tabs, 150 XP, 14 Bounty Tokens</div>
+  <div class="quest-progress">Reward claimed: 190 Pop Tabs, 150 XP</div>
   </div>`);
 } else if(state.quest12Accepted){
   const stage2 = state.gearworksForemanDefeated;
@@ -536,7 +536,7 @@ if(state.quest13Complete){
   <div class="quest-log-entry">
   <div class="quest-name">Quenched</div>
   <div class="quest-desc">Whatever was running hot in the Foundry, it's been found and put down.</div>
-  <div class="quest-progress">Reward claimed: 220 Pop Tabs, 175 XP, 17 Bounty Tokens</div>
+  <div class="quest-progress">Reward claimed: 220 Pop Tabs, 175 XP</div>
   </div>`);
 } else if(state.quest13Accepted){
   activeEntries.push(`
@@ -552,7 +552,7 @@ if(state.quest14Complete){
   <div class="quest-log-entry">
   <div class="quest-name">What the Vault Was Guarding</div>
   <div class="quest-desc">The one door in the Ledger Vault that was never meant to open — opened.</div>
-  <div class="quest-progress">Reward claimed: 250 Pop Tabs, 200 XP, 19 Bounty Tokens</div>
+  <div class="quest-progress">Reward claimed: 250 Pop Tabs, 200 XP</div>
   </div>`);
 } else if(state.quest14Accepted){
   activeEntries.push(`
@@ -568,7 +568,7 @@ if(state.quest15Complete){
   <div class="quest-log-entry">
   <div class="quest-name">The Warren Answers</div>
   <div class="quest-desc">The Mole Wars, however anyone ends up telling it, end here.</div>
-  <div class="quest-progress">Reward claimed: 320 Pop Tabs, 260 XP, 25 Bounty Tokens</div>
+  <div class="quest-progress">Reward claimed: 320 Pop Tabs, 260 XP</div>
   </div>`);
 } else if(state.quest15Accepted){
   activeEntries.push(`
@@ -584,7 +584,7 @@ if(state.quest16Complete){
   <div class="quest-log-entry">
   <div class="quest-name">Breaking Through</div>
   <div class="quest-desc">The drilldozer broke through the last wall of the Ember Warren — and found crystal on the other side, not rock.</div>
-  <div class="quest-progress">Reward claimed: 400 Pop Tabs, 320 XP, 30 Bounty Tokens</div>
+  <div class="quest-progress">Reward claimed: 400 Pop Tabs, 320 XP</div>
   </div>`);
 } else if(state.quest16Accepted){
   activeEntries.push(`
