@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 10, date: 'September 28', title: 'A Reason to Come Back Tomorrow', items: [
+      "New: a daily login bonus. Log in on consecutive days for an escalating Pop Tabs/Biscuits reward, topping out with a Bounty Tokens bonus every 7th day.",
+      "Miss a single day and your streak survives — miss two in a row and it resets.",
+      ]},
    { id: 9, date: 'September 28', title: 'Every Quest Feeds the Habit', items: [
       "Every quest turn-in now hands over some extra Biscuits, not just the first few — the reward climbs alongside each quest's own Pop Tabs and XP, all the way up to Breaking Through.",
       ]},
@@ -97,6 +101,18 @@ function closeChangelog(){
       state.lastSeenChangelogVersion = CHANGELOG_LATEST_ID;
       autosave();
    }
+   /* Pre-existing bug, fixed in passing: this never reset
+   changelogEntriesShown, so if a login had only partially caught up
+   (checkChangelogOnLogin() narrowed it to just the unseen entries), the
+   NEXT manual "What's New" reopen (openChangelog()) would keep showing
+   that same stale partial list forever instead of the full history its
+   own doc comment promises — renderChangelog()'s fallback to the full
+   CHANGELOG only ever triggers when this is empty. */
+   changelogEntriesShown = [];
+   /* If checkDailyStreakOnLogin() (dailystreak.js) also granted a reward
+   this same login, it deferred showing its own popup until this one
+   closed — do that now. A no-op if there's nothing pending. */
+   maybeShowDailyStreakPopup();
 }
 
 function renderChangelog(){

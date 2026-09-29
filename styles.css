@@ -902,3 +902,28 @@ since its content needs to fit and scroll on a short phone screen. */
   padding:0 18px 18px;
   flex-shrink:0;
 }
+
+#daily-streak-screen{
+  position:absolute; inset:0; z-index:21;
+  background:var(--white);
+  background-image: radial-gradient(circle, #2b2b2809 1px, transparent 1px);
+  background-size: 14px 14px;
+  display:none;
+  flex-direction:column;
+}
+.streak-day-badge{
+  font-weight:700;
+  font-size:1.3rem;
+  color:var(--blue);
+  margin:8px 0 12px;
+}
+.streak-reward-line{
+  font-size:0.95rem;
+  line-height:1.55;
+}
+.streak-milestone-note{
+  margin-top:14px;
+  font-size:0.84rem;
+  color:var(--green);
+  font-weight:600;
+}

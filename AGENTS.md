@@ -1,7 +1,7 @@
 # The Loathsome Lands — file map
 
 A single-page browser RPG. No build step, no bundler, no modules — plain
-HTML/CSS/`<script>` tags, all globals. 36 JS files load in a specific
+HTML/CSS/`<script>` tags, all globals. 37 JS files load in a specific
 order (see `index.html`'s `<script>` block, which documents this inline
 too):
 
@@ -13,8 +13,9 @@ supabase (CDN)
 -> crystalcity-content.js -> act2-shop.js -> item-tiers.js -> render.js
 -> render-shop.js -> render-character.js -> class-spells.js -> dev-tools.js
 -> auth.js -> save.js -> player-actions.js -> tutorial.js -> changelog.js
--> hubs.js -> combat.js -> town.js -> casino.js -> hilo.js -> class-trial.js
--> guild.js -> gnometropolis.js -> economy.js -> noticeboard.js -> boot.js
+-> dailystreak.js -> hubs.js -> combat.js -> town.js -> casino.js -> hilo.js
+-> class-trial.js -> guild.js -> gnometropolis.js -> economy.js
+-> noticeboard.js -> boot.js
 ```
 
 Act 2's own files slot in alongside their Act 1 counterpart rather than
@@ -536,7 +537,12 @@ quest ships without them.
 `authSetView`/`renderAuthUI`/`renderAuthForms`/`acctMsg`/`showGate`/
 `closeGate`/`renderGate`/`playAsGuest`/`enterGameAfterAuth` (calls
 `checkChangelogOnLogin()`, changelog.js, in its `loaded===true` branch
-only),
+only, but calls `checkDailyStreakOnLogin()`/`maybeShowDailyStreakPopup()`
+(dailystreak.js) in BOTH branches — a brand-new character's first
+session still starts the login streak at Day 1, unlike the changelog,
+which has nothing to catch up on yet. Neither ever reaches a guest,
+since `playAsGuest()` calls `startFreshGame()` directly rather than
+through this function),
 `doRegister`/`doLogin`/`doForgotPassword`/`doLogout`, and
 `renderAccountTab()` (calls into dev-tools.js; also renders the "🗞
 What's New" button, `openChangelog()`, changelog.js).
@@ -616,9 +622,51 @@ mirroring `openTutorial()`'s own "always restarts at step 1" behavior.
 `null` (a save from before this field existed, or a genuinely new
 character) is treated as "show everything once," not "already caught
 up" — see `state.lastSeenChangelogVersion`'s own comment, core.js.
+`closeChangelog()` also resets `changelogEntriesShown = []` (a real bug
+fix, found while adding dailystreak.js below — without this, a partial
+login-triggered catch-up left a stale subset behind that a LATER manual
+"What's New" reopen would keep re-showing forever instead of the full
+history its own doc comment above promises) and, since the two overlays
+would otherwise render stacked on top of each other, calls
+`maybeShowDailyStreakPopup()` (dailystreak.js) to reveal that popup if
+one was deferred waiting for this one to close.
 
 Touch this file when: writing a new changelog entry after a
 player-facing change ships, or changing the overlay's own mechanics.
+
+## dailystreak.js — daily login streak
+`DAILY_STREAK_REWARDS` — a 7-entry table (Pop Tabs + Biscuits, day 7
+also throwing in Bounty Tokens as a weekly milestone) — pure data, same
+"new concern, new file" convention as changelog.js/tutorial.js, whose
+overlay shape (`#changelog-screen`'s open/close/render pattern) this
+mirrors for its own `#daily-streak-screen`. Built per explicit direction
+to give players a reason to come back tomorrow that isn't just "Biscuits
+finished refilling" — the only other real-time pacing mechanic in the
+whole game. `checkDailyStreakOnLogin()` is the one real piece of logic:
+compares today's `toDateString()` against `state.lastLoginRewardDateKey`
+(core.js/save.js, same "compare calendar days" convention as
+`state.bountyDayKey`, guild.js) to grant at most once per real day, with
+a ONE-DAY GRACE — missing exactly one day still continues
+`state.dailyStreakCount`, missing two or more resets it to 1 — per
+explicit direction over a stricter "any missed day resets it" model.
+`state.dailyStreakCount` climbs indefinitely (so "Day 12!" can be shown)
+even though the actual reward tier cycles back through
+`DAILY_STREAK_REWARDS`' own 7 entries every week via a modulo. Called
+from BOTH branches of `enterGameAfterAuth()` (auth.js) — see that
+function's own comment for why, unlike the changelog, this also fires
+for a brand-new character's first-ever session.
+`pendingDailyStreakReward`/`maybeShowDailyStreakPopup()`/
+`openDailyStreakPopup()`/`closeDailyStreakPopup()`/
+`renderDailyStreakPopup()` — the reward is granted immediately regardless
+of whether its popup can show right away; `maybeShowDailyStreakPopup()`
+defers to let the "What's New" changelog overlay show first if
+`checkChangelogOnLogin()` (changelog.js) also just opened it this same
+login, since both are full-screen overlays that would otherwise stack —
+`closeChangelog()`'s own call to this same function is what reveals the
+deferred popup once the player dismisses that one.
+
+Touch this file when: changing the daily login streak's own reward
+table, grace-period rule, or overlay mechanics.
 
 ## hubs.js — town hub registry
 `HUB_TOWNS` — one entry per persistent hub (`town`/`gnometropolis`/
@@ -1070,7 +1118,9 @@ near the section it belongs to.
 - Add a dev/cheat tool -> **dev-tools.js** (+ its hook in
   `renderAccountTab()`, auth.js).
 - Change the tutorial -> **tutorial.js**. Change the Notice Board ->
-  **noticeboard.js**.
+  **noticeboard.js**. Change the "What's New" changelog ->
+  **changelog.js**. Change the daily login streak's reward table or
+  grace-period rule -> **dailystreak.js**.
 - + the `onclick=`/new DOM element in **index.html** if it's a
   brand-new button/screen.
 

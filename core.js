@@ -281,6 +281,22 @@ function createDefaultState(){
         "silently already caught up"). Unlike playerStatusEffect above,
         THIS one is saved — see serializeState()/hydrateState(), save.js. */
      lastSeenChangelogVersion: null,
+     /* Daily login streak (dailystreak.js) — checkDailyStreakOnLogin(),
+        called right alongside checkChangelogOnLogin() from
+        enterGameAfterAuth() (auth.js), grants an escalating Pop
+        Tabs/Biscuits/Bounty Tokens reward once per real calendar day and
+        pops its own overlay. dailyStreakCount counts UP indefinitely (so
+        "Day 12!" can be shown) even though the actual reward tier cycles
+        through DAILY_STREAK_REWARDS' own 7 entries via a modulo — see that
+        array's own comment. lastLoginRewardDateKey is a toDateString()
+        string (same "compare calendar days, not exact timestamps"
+        convention as state.bountyDayKey, guild.js) used both to guard
+        against granting twice in one day and to compute the gap since the
+        last login for the streak's own one-day-grace rule. null on a
+        brand-new character or a save that predates this field — both
+        treated as "no streak yet," same as lastSeenChangelogVersion above. */
+     dailyStreakCount: 0,
+     lastLoginRewardDateKey: null,
      /* Bounty board (The Guild) — one active bounty at a time, auto-refreshed
         on claim or expiry (see ensureActiveBounty()/claimBounty() in
         guild.js). null until the player's first visit rolls one, or once

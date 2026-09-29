@@ -145,7 +145,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        classBuffFightsLeft,
        activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
        lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
-       lastSeenChangelogVersion } = state;
+       lastSeenChangelogVersion, dailyStreakCount, lastLoginRewardDateKey } = state;
    return {
       hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
       lastRegenAt, lastMpRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
@@ -169,7 +169,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
       classBuffFightsLeft,
       activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
       lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
-      lastSeenChangelogVersion,
+      lastSeenChangelogVersion, dailyStreakCount, lastLoginRewardDateKey,
       equipment: Object.fromEntries(
          SLOT_ORDER.map(slot => [slot, serializeItem(state.equipment[slot])])
          ),
@@ -208,6 +208,10 @@ state.activeBounty = saved.activeBounty || null;
    state.bountiesClaimedToday = typeof saved.bountiesClaimedToday === 'number' ? saved.bountiesClaimedToday : 0;
    state.bountyDayKey = typeof saved.bountyDayKey === 'string' ? saved.bountyDayKey : null;
    state.bountyTokens = typeof saved.bountyTokens === 'number' ? saved.bountyTokens : 0;
+   /* Daily login streak (dailystreak.js) — same "give an older save a sane
+   default" fallback as every other field on this stretch. */
+   state.dailyStreakCount = typeof saved.dailyStreakCount === 'number' ? saved.dailyStreakCount : 0;
+   state.lastLoginRewardDateKey = typeof saved.lastLoginRewardDateKey === 'string' ? saved.lastLoginRewardDateKey : null;
    state.rareDropsSeen = Array.isArray(saved.rareDropsSeen) ? saved.rareDropsSeen : [];
    state.allRaresBonusClaimed = !!saved.allRaresBonusClaimed;
    /* Town Lot — added after this function was first written, same reasoning

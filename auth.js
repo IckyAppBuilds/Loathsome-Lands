@@ -98,7 +98,15 @@ guest). `loaded` says whether an existing save was found and hydrated.
 checkChangelogOnLogin() (changelog.js) only ever fires in the `loaded`
 branch — a returning player is the only one who could have "missed"
 anything; a brand-new character (the `else` branch) has no history to
-catch up on, and a guest never reaches this function at all. */
+catch up on, and a guest never reaches this function at all.
+
+checkDailyStreakOnLogin() (dailystreak.js) fires in BOTH branches instead
+— unlike the changelog, a brand-new character's very first session is
+still meant to start the streak at "Day 1", not skip it. maybeShowDailyStreakPopup()
+right after opens its own overlay immediately unless checkChangelogOnLogin()
+just opened its own — in that case closeChangelog() calls it again once
+the player dismisses that one, so the two never show stacked on top of
+each other. */
 function enterGameAfterAuth(loaded){
    closeGate();
    if(loaded){
@@ -111,6 +119,8 @@ function enterGameAfterAuth(loaded){
    } else {
       startFreshGame();
    }
+   checkDailyStreakOnLogin();
+   maybeShowDailyStreakPopup();
 }
 
 /* ---------------- Account drawer (available during play regardless of guest/signed-in status) ---------------- */
