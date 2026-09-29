@@ -11,6 +11,9 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 12, date: 'September 28', title: 'Armor, Everywhere', items: [
+      "Armor isn't just for a handful of bosses anymore — every single monster in the game now carries some, scaled to how tough it already is. The toughest fights carry noticeably more of it than a wild encounter of similar strength.",
+      ]},
    { id: 11, date: 'September 28', title: 'Armor Enters the Fray', items: [
       "New: Armor. A handful of tough bosses (the Gnome King, the warren-mother, and others) now carry real armor that blunts every hit — and gear can now roll it too, so you can start building some of your own.",
       "Every monster in the game now runs on the same kind of stats you do (Beef, Zip, Grit) instead of hidden numbers — a big step toward being able to tune fights more precisely going forward.",

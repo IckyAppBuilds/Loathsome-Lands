@@ -41,86 +41,86 @@ stat, reused across every drop that carries that stat: of the Badger
 (beef), of the Weasel (zip), of the Tortoise
 (grit), of the Loon (hoodoo). */
 const monsters = [
-   { name:"a disgruntled compost gnome", beef:1, zip:0, grit:6, hoodoo:0, armor:0, xp:3, zone:"commons",
+   { name:"a disgruntled compost gnome", beef:1, zip:0, grit:6, hoodoo:0, xp:3, zone:"commons",
     art: artCompostGnome, loot:{name:"fistful of righteous soil", desc:"Smells like victory and mulch.", type:"junk", sell:1, icon:iconSoil},
     rareDrop:{name:"gnome-sized medal of composting excellence", desc:"Awarded by nobody. Cherished anyway.", type:"junk", sell:10, icon:iconFigurine},
     gearDrop:{name:"compost-crusted trowel of the Badger", desc:"Sharpened on rocks, mostly by accident.", type:"equip", slot:"weapon", bonus:{beef:1}, tier:'common', icon:iconRakeShank} },
-   { name:"a feral lawn gnome, off its stake", beef:2, zip:0, grit:6, hoodoo:0, armor:0, xp:4, zone:"commons",
+   { name:"a feral lawn gnome, off its stake", beef:2, zip:0, grit:6, hoodoo:0, xp:4, zone:"commons",
     art: artGnomeFeral, loot:{name:"bent rake tine", desc:"Still menacing, somehow.", type:"quest", key:"rakeTine", sell:2, icon:iconRakeTine},
     rareDrop:{name:"stake-shaped good luck charm", desc:"Whittled by whoever this gnome escaped from.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
     gearDrop:{name:"stake-notched shin guard of the Weasel", desc:"Salvaged off the stake it was chained to.", type:"equip", slot:"legs", bonus:{zip:1}, tier:'common', icon:iconShinGuard} },
-   { name:"a fishing gnome with an empty bucket", beef:1, zip:0, grit:7, hoodoo:0, armor:0, xp:4, zone:"commons",
+   { name:"a fishing gnome with an empty bucket", beef:1, zip:0, grit:7, hoodoo:0, xp:4, zone:"commons",
     art: artGnomeFishing, loot:{name:"suspiciously confident lure", desc:"Has never once caught anything.", type:"junk", sell:2, icon:iconLure},
     rareDrop:{name:"actually-lucky fishing lure", desc:"This one's clearly caught something, at some point.", type:"junk", sell:11, icon:iconFigurine},
     gearDrop:{name:"waterlogged fishing hat of the Tortoise", desc:"Smells like pond. You get used to it.", type:"equip", slot:"head", bonus:{grit:1}, tier:'common', icon:iconPotLid} },
-   { name:"a gnome cavalry unit, mounted on a garden snail", beef:2, zip:0, grit:8, hoodoo:0, armor:0, xp:5, zone:"commons",
+   { name:"a gnome cavalry unit, mounted on a garden snail", beef:2, zip:0, grit:8, hoodoo:0, xp:5, zone:"commons",
     art: artGnomeSnail, loot:{name:"spiral shell fragment", desc:"Still faintly slimy.", type:"junk", sell:3, icon:iconShellFragment},
     rareDrop:{name:"snail-slime polished pebble", desc:"Smooth as glass. Smells faintly of victory.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
     gearDrop:{name:"snail-shell breastplate of the Tortoise", desc:"Surprisingly load-bearing, for a shell.", type:"equip", slot:"chest", bonus:{grit:1}, tier:'common', icon:iconVest} },
-   { name:"the self-appointed gnome sergeant", beef:3, zip:0, grit:10, hoodoo:0, armor:0, xp:7, zone:"commons",
+   { name:"the self-appointed gnome sergeant", beef:3, zip:0, grit:10, hoodoo:0, xp:7, zone:"commons",
     art: artGnomeSergeant, loot:{name:"tiny sergeant's whistle", desc:"Blowing it clears your head a little.", type:"mp", value:4, icon:iconWhistle},
     rareDrop:{name:"the sergeant's secret stash of medals", desc:"Every one of them self-awarded.", type:"junk", sell:12, icon:iconFigurine},
     gearDrop:{name:"sergeant's spit-shined boots of the Weasel", desc:"Standard issue. Aggressively polished.", type:"equip", slot:"boots", bonus:{zip:1}, tier:'common', icon:iconSpringBoots} },
-   { name:"a sewer rat with delusions of grandeur", beef:3, zip:0, grit:9, hoodoo:0, armor:0, xp:6, zone:"sewers",
+   { name:"a sewer rat with delusions of grandeur", beef:3, zip:0, grit:9, hoodoo:0, xp:6, zone:"sewers",
     art: artSewerRat, loot:{name:"slightly damp rat tail", desc:"You're not sure why you kept this.", type:"junk", sell:2, icon:iconRatTail},
     rareDrop:{name:"rat king's tiny crown", desc:"Delusions of grandeur, it turns out, were warranted.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
     gearDrop:{name:"rat-gnawed divining rod of the Loon", desc:"Points at whatever it feels like, confidently.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, tier:'common', icon:iconWandStick} },
-   { name:"a rat wearing a bottlecap as a helmet", beef:3, zip:0, grit:11, hoodoo:0, armor:0, xp:7, zone:"sewers",
+   { name:"a rat wearing a bottlecap as a helmet", beef:3, zip:0, grit:11, hoodoo:0, xp:7, zone:"sewers",
     art: artRatHelmet, loot:{name:"dented bottlecap helmet", desc:"Barely fits a rat. Definitely doesn't fit you.", type:"junk", sell:3, icon:iconBottlecapHelmet},
     rareDrop:{name:"helmet dented in a suspiciously lucky pattern", desc:"Every dent lines up with a near-miss.", type:"junk", sell:15, icon:iconFigurine},
     gearDrop:{name:"bottlecap-studded skullcap of the Tortoise", desc:"Rat-sized, once. Stretched since.", type:"equip", slot:"head", bonus:{grit:2}, tier:'common', icon:iconPotLid} },
-   { name:"a positively enormous sewer rat", beef:4, zip:0, grit:13, hoodoo:0, armor:0, xp:9, zone:"sewers",
+   { name:"a positively enormous sewer rat", beef:4, zip:0, grit:13, hoodoo:0, xp:9, zone:"sewers",
     art: artGiantSewerRat, loot:{name:"rat-gnawed pipe fitting", desc:"Chewed clean through solid metal. Concerning.", type:"junk", sell:4, icon:iconPipeFitting},
     rareDrop:{name:"glowing sewer pearl", desc:"You don't ask how it got down here. Or how it glows.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
     gearDrop:{name:"rat-hide vest of the Tortoise", desc:"Roomier than you'd expect. Best not to think why.", type:"equip", slot:"chest", bonus:{grit:2}, tier:'common', icon:iconVest} },
-   { name:"three rats in a trenchcoat, unconvincingly", beef:3, zip:0, grit:11, hoodoo:0, armor:0, xp:8, zone:"sewers",
+   { name:"three rats in a trenchcoat, unconvincingly", beef:3, zip:0, grit:11, hoodoo:0, xp:8, zone:"sewers",
     art: artRatTrenchcoat, loot:{name:"comically oversized coat button", desc:"None of the three rats will admit to owning this.", type:"junk", sell:3, icon:iconCoatButton},
     rareDrop:{name:"the trenchcoat's secret inside pocket, still full", desc:"Whatever they were hiding, it's yours now.", type:"junk", sell:16, icon:iconFigurine},
     gearDrop:{name:"trenchcoat's spare trouser leg of the Weasel", desc:"The other two rats never noticed it was missing.", type:"equip", slot:"legs", bonus:{zip:2}, tier:'common', icon:iconQuickstepTrousers} },
-   { name:"a wind-up quarry drone, badly wound", beef:4, zip:0, grit:11, hoodoo:0, armor:0, xp:10, zone:"quarry",
+   { name:"a wind-up quarry drone, badly wound", beef:4, zip:0, grit:11, hoodoo:0, xp:10, zone:"quarry",
     art: artQuarryDrone, loot:{name:"stripped brass gear", desc:"Still spins if you flick it. Mostly for fun now.", type:"junk", sell:4, icon:iconGear},
     rareDrop:{name:"drone's still-humming power core", desc:"Warm, faintly ticking, best not examined too closely.", type:"junk", sell:19, icon:iconFigurine},
     gearDrop:{name:"drone's stripped control wand of the Loon", desc:"Still beeps if you squeeze it just right.", type:"equip", slot:"weapon", bonus:{hoodoo:3}, tier:'common', icon:iconVizierScepter} },
-   { name:"a gnome surveyor squinting at an upside-down map", beef:3, zip:0, grit:11, hoodoo:0, armor:0, xp:9, zone:"quarry",
+   { name:"a gnome surveyor squinting at an upside-down map", beef:3, zip:0, grit:11, hoodoo:0, xp:9, zone:"quarry",
     art: artGnomeSurveyor, loot:{name:"crumpled survey map", desc:"Confidently wrong about where you are.", type:"junk", sell:3, icon:iconSurveyMap},
     rareDrop:{name:"compass that always points to safety", desc:"Not north. Safety. Somehow more useful.", type:"luck", hpValue:12, mpValue:6, icon:iconClover},
     gearDrop:{name:"surveyor's dented hard-hat of the Tortoise", desc:"Confidently the wrong size. Sturdy anyway.", type:"equip", slot:"head", bonus:{grit:3}, tier:'common', icon:iconGuardHelm} },
-   { name:"a pickaxe golem, held together by spite", beef:4, zip:0, grit:14, hoodoo:0, armor:0, xp:13, zone:"quarry",
+   { name:"a pickaxe golem, held together by spite", beef:4, zip:0, grit:14, hoodoo:0, xp:13, zone:"quarry",
     art: artPickaxeGolem, loot:{name:"chipped pickaxe head", desc:"Has seen better decades.", type:"junk", sell:5, icon:iconPickaxeHead},
     rareDrop:{name:"fist-sized nugget of pure stubbornness", desc:"Heavier than it should be. Refuses to be dropped.", type:"junk", sell:20, icon:iconFigurine},
     gearDrop:{name:"golem's chipped chest-plating of the Tortoise", desc:"Held together by spite, same as the rest of it.", type:"equip", slot:"chest", bonus:{grit:3}, tier:'common', icon:iconClockworkPlate} },
-   { name:"a rock-crusted quarry rat, huge for some reason", beef:4, zip:0, grit:12, hoodoo:0, armor:0, xp:11, zone:"quarry",
+   { name:"a rock-crusted quarry rat, huge for some reason", beef:4, zip:0, grit:12, hoodoo:0, xp:11, zone:"quarry",
     art: artQuarryRat, loot:{name:"fistful of ore-flecked grit", desc:"Somewhere between dirt and treasure. Mostly dirt.", type:"junk", sell:4, icon:iconOreGrit},
     rareDrop:{name:"rat-gnawed lucky pebble (not a rabbit's foot)", desc:"The rat was very clear on that point, somehow.", type:"luck", hpValue:12, mpValue:6, icon:iconClover},
     gearDrop:{name:"ore-crusted quarry boots of the Weasel", desc:"Better footing than they have any right to give.", type:"equip", slot:"boots", bonus:{zip:3}, tier:'common', icon:iconGripBoots} },
-   { name:"a vault wisp, humming with old magic", beef:4, zip:0, grit:14, hoodoo:0, armor:0, xp:15, zone:"vault",
+   { name:"a vault wisp, humming with old magic", beef:4, zip:0, grit:14, hoodoo:0, xp:15, zone:"vault",
     art: artVaultWisp, loot:{name:"sliver of captured light", desc:"Warm to the touch. Slightly judgmental.", type:"junk", sell:6, icon:iconCapturedLight},
     rareDrop:{name:"captured wisp of pure luck", desc:"It flickers approvingly whenever you make a good call.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
     gearDrop:{name:"wisp-charred conducting rod of the Loon", desc:"Still warm. Hums when you're not paying attention.", type:"equip", slot:"weapon", bonus:{hoodoo:4}, tier:'common', icon:iconHeirloomRod} },
-   { name:"a stone sentinel, one eye still lit", beef:5, zip:0, grit:16, hoodoo:0, armor:0, xp:18, zone:"vault",
+   { name:"a stone sentinel, one eye still lit", beef:5, zip:0, grit:16, hoodoo:0, xp:18, zone:"vault",
     art: artStoneSentinel, loot:{name:"fractured sentinel eye", desc:"Stopped watching. Eventually.", type:"junk", sell:7, icon:iconSentinelEye},
     rareDrop:{name:"the sentinel's other eye, still watching", desc:"You can feel it tracking you from the bottom of your pack.", type:"junk", sell:26, icon:iconFigurine},
     gearDrop:{name:"sentinel's cracked faceplate of the Tortoise", desc:"One eye socket. Still watching, faithfully.", type:"equip", slot:"head", bonus:{grit:4}, tier:'common', icon:iconChampionCrown} },
-   { name:"a hoard-rat, absolutely covered in gold flecks", beef:4, zip:0, grit:14, hoodoo:0, armor:0, xp:14, zone:"vault",art: artHoardRat, loot:{name:"gold-dusted whisker", desc:"Rich by rat standards.", type:"junk", sell:6, icon:iconGoldWhisker},
+   { name:"a hoard-rat, absolutely covered in gold flecks", beef:4, zip:0, grit:14, hoodoo:0, xp:14, zone:"vault",art: artHoardRat, loot:{name:"gold-dusted whisker", desc:"Rich by rat standards.", type:"junk", sell:6, icon:iconGoldWhisker},
     rareDrop:{name:"fistful of the hoard-rat's actual hoard", desc:"It was surprisingly well-organized, for a rat.", type:"junk", sell:28, icon:iconFigurine},
     gearDrop:{name:"gold-flecked greaves of the Weasel", desc:"Surprisingly light, for how much they're worth.", type:"equip", slot:"legs", bonus:{zip:4}, tier:'common', icon:iconBurrowGreaves} },
-   { name:"an animated suit of ceremonial armor, empty inside", beef:5, zip:0, grit:17, hoodoo:0, armor:0, xp:20, zone:"vault",
+   { name:"an animated suit of ceremonial armor, empty inside", beef:5, zip:0, grit:17, hoodoo:0, xp:20, zone:"vault",
     art: artCeremonialArmor, loot:{name:"dented ceremonial gauntlet", desc:"Once belonged to somebody important, probably.", type:"junk", sell:8, icon:iconCeremonialGauntlet},
     rareDrop:{name:"ceremonial luck-charm, still humming with old magic", desc:"Whoever it was made for never got to keep it.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
     gearDrop:{name:"scrap of animated ceremonial mail of the Tortoise", desc:"Keeps twitching like it's still wearing someone.", type:"equip", slot:"chest", bonus:{grit:4}, tier:'common', icon:iconAdventurerCuirass} },
-   { name:"a gnome vizier, draped in stolen finery", beef:5, zip:0, grit:16, hoodoo:0, armor:0, xp:19, zone:"sanctum",
+   { name:"a gnome vizier, draped in stolen finery", beef:5, zip:0, grit:16, hoodoo:0, xp:19, zone:"sanctum",
     art: artGnomeVizier, loot:{name:"vizier's confiscated ledger", desc:"Every debt in Gnometropolis, written in tiny cramped handwriting.", type:"junk", sell:9, icon:iconVizierLedger},
     rareDrop:{name:"vizier's uncanny hunch, bottled", desc:"It practically whispers good advice.", type:"luck", hpValue:18, mpValue:9, icon:iconClover},
     gearDrop:{name:"vizier's confiscated cane-wand of the Loon", desc:"Equal parts walking stick and unlicensed magic.", type:"equip", slot:"weapon", bonus:{hoodoo:5}, tier:'common', icon:iconWandStick} },
-   { name:"a heavily-armored gnome guard", beef:6, zip:0, grit:19, hoodoo:0, armor:0, xp:23, zone:"garrison",
+   { name:"a heavily-armored gnome guard", beef:6, zip:0, grit:19, hoodoo:0, xp:23, zone:"garrison",
     art: artGnomeGuard, loot:{name:"dented guard-captain's shield-boss", desc:"Scratched from decades of very small, very serious duels.", type:"junk", sell:10, icon:iconShieldBoss},
     rareDrop:{name:"the guard-captain's ceremonial sash", desc:"Awarded for uninterrupted vigilance. Interrupted now.", type:"junk", sell:32, icon:iconFigurine},
     gearDrop:{name:"guard's dented vambrace-plating of the Tortoise", desc:"Decades of very small, very serious duels.", type:"equip", slot:"chest", bonus:{grit:5}, tier:'common', icon:iconClockworkPlate} },
-   { name:"a burrowing tunnel-worm, gnome-bred", beef:6, zip:0, grit:18, hoodoo:0, armor:0, xp:21, zone:"roguesden",
+   { name:"a burrowing tunnel-worm, gnome-bred", beef:6, zip:0, grit:18, hoodoo:0, xp:21, zone:"roguesden",
     art: artBurrowWorm, loot:{name:"chitinous burrow-shell fragment", desc:"Warm from the tunnel. You don't ask why.", type:"junk", sell:9, icon:iconBurrowShell},
     rareDrop:{name:"burrow-worm's lucky cast-off tooth", desc:"Smooth, oddly warm, and very possibly why you're still standing.", type:"luck", hpValue:19, mpValue:9, icon:iconClover},
     gearDrop:{name:"worm-chewed tunneling boots of the Weasel", desc:"Already broken in. Not by you.", type:"equip", slot:"boots", bonus:{zip:5}, tier:'common', icon:iconBlessedBoots} },
-   { name:"a rogue clockwork automaton, sparking wildly", beef:6, zip:0, grit:20, hoodoo:0, armor:0, xp:26, zone:"roguesden",
+   { name:"a rogue clockwork automaton, sparking wildly", beef:6, zip:0, grit:20, hoodoo:0, xp:26, zone:"roguesden",
     art: artFeralAutomaton, loot:{name:"scorched servo joint", desc:"Still twitches, if you're not careful.", type:"junk", sell:11, icon:iconServoJoint},
     rareDrop:{name:"the automaton's still-warm power cell", desc:"Hums like it's not entirely done working yet.", type:"junk", sell:34, icon:iconFigurine},
     gearDrop:{name:"automaton's salvaged headplate of the Tortoise", desc:"Still sparks a little when it rains.", type:"equip", slot:"head", bonus:{grit:5}, tier:'common', icon:iconGuardHelm} },
@@ -133,23 +133,23 @@ const monsters = [
    chest/boots for Sanctum alongside its weapon; legs for Rogues' Den
    alongside its boots/head) so a full clear of a district doesn't just
    hand back 3 copies of the same slot. */
-   { name:"a gnome drill sergeant, all bark and boot-camp", beef:5, zip:0, grit:18, hoodoo:0, armor:0, xp:22, zone:"garrison",
+   { name:"a gnome drill sergeant, all bark and boot-camp", beef:5, zip:0, grit:18, hoodoo:0, xp:22, zone:"garrison",
     art: artGnomeDrillSergeant, loot:{name:"sergeant's dog-eared drill roster", desc:"Every recruit's name, and a demerit next to most of them.", type:"junk", sell:9, icon:iconDrillRoster},
     rareDrop:{name:"the sergeant's secret medal stash, garrison edition", desc:"Every one of them self-awarded. Some things never change.", type:"junk", sell:31, icon:iconFigurine},
     gearDrop:{name:"sergeant's barked-order banner-lance of the Badger", desc:"Doubles as a pointer for yelling at recruits.", type:"equip", slot:"weapon", bonus:{beef:5}, tier:'common', icon:iconBannerLance} },
-   { name:"a gnome siege-crew, operating a catapult built for one", beef:6, zip:0, grit:20, hoodoo:0, armor:0, xp:25, zone:"garrison",
+   { name:"a gnome siege-crew, operating a catapult built for one", beef:6, zip:0, grit:20, hoodoo:0, xp:25, zone:"garrison",
     art: artGnomeSiegeCrew, loot:{name:"splintered catapult peg", desc:"Load-bearing, allegedly.", type:"junk", sell:11, icon:iconCatapultPeg},
     rareDrop:{name:"the siege-crew's lucky firing pin", desc:"Pulled from a shot that somehow landed exactly right.", type:"luck", hpValue:20, mpValue:10, icon:iconClover},
     gearDrop:{name:"siege-crew's scorched greaves of the Weasel", desc:"Singed. Still faster than running barefoot.", type:"equip", slot:"boots", bonus:{zip:5}, tier:'common', icon:iconScorchedGreaves} },
-   { name:"an apprentice hex-weaver, sparks flying every wrong direction", beef:5, zip:0, grit:17, hoodoo:0, armor:0, xp:20, zone:"sanctum",
+   { name:"an apprentice hex-weaver, sparks flying every wrong direction", beef:5, zip:0, grit:17, hoodoo:0, xp:20, zone:"sanctum",
     art: artHexWeaver, loot:{name:"singed spellbook page", desc:"The diagram is half-right. That's the problem.", type:"junk", sell:9, icon:iconSpellbookPage},
     rareDrop:{name:"hex-weaver's stabilized spark, bottled", desc:"Finally behaving itself, for once.", type:"luck", hpValue:19, mpValue:10, icon:iconClover},
     gearDrop:{name:"apprentice's scorch-marked robe-plating of the Tortoise", desc:"Fire-proofed the hard way, one mistake at a time.", type:"equip", slot:"chest", bonus:{grit:5}, tier:'common', icon:iconScorchRobe} },
-   { name:"a gnome familiar, three sizes too ambitious", beef:5, zip:0, grit:16, hoodoo:0, armor:0, xp:19, zone:"sanctum",
+   { name:"a gnome familiar, three sizes too ambitious", beef:5, zip:0, grit:16, hoodoo:0, xp:19, zone:"sanctum",
     art: artGnomeFamiliar, loot:{name:"familiar's shed feather-scale", desc:"Not quite a feather. Not quite a scale either.", type:"junk", sell:8, icon:iconFeatherScale},
     rareDrop:{name:"the familiar's uncanny premonition, bottled", desc:"It saw this coming. It always does.", type:"luck", hpValue:19, mpValue:9, icon:iconClover},
     gearDrop:{name:"familiar-warded slippers of the Weasel", desc:"Land softer than they have any right to.", type:"equip", slot:"boots", bonus:{zip:5}, tier:'common', icon:iconWardedSlippers} },
-   { name:"a masked gnome pickpocket, light-fingered and lighter-footed", beef:6, zip:0, grit:19, hoodoo:0, armor:0, xp:24, zone:"roguesden",
+   { name:"a masked gnome pickpocket, light-fingered and lighter-footed", beef:6, zip:0, grit:19, hoodoo:0, xp:24, zone:"roguesden",
     art: artGnomePickpocket, loot:{name:"pilfered coin purse, mostly empty", desc:"Somebody's definitely going to notice this is missing.", type:"junk", sell:10, icon:iconCoinPurse},
     rareDrop:{name:"the pickpocket's lucky lifted button", desc:"Not sure whose coat this came off of. Not asking.", type:"luck", hpValue:20, mpValue:10, icon:iconClover},
     gearDrop:{name:"pickpocket's cutpurse leggings of the Weasel", desc:"Built for running, mostly away.", type:"equip", slot:"legs", bonus:{zip:5}, tier:'common', icon:iconCutpurseLeggings} },
@@ -163,7 +163,7 @@ combat code was needed, just data. Picked to fit each one's own flavor:
 a commander rallies, a captain guarding a retreat digs in and heals, a
 rogue enforcer is hard to pin down, etc. */
 const gnomeCommander = {
-   name:"the gnome commander", beef:5, zip:0, grit:20, hoodoo:0, armor:0, xp:20, rare:true, zone:"commons",
+   name:"the gnome commander", beef:5, zip:0, grit:20, hoodoo:0, xp:20, rare:true, zone:"commons",
    skills:[ { type:'buff', chance:0.20, buffMult:1.6, buffTurns:2, flavor:"rallies the gnomes for one more push" } ],
    art: artGnomeCommander, loot:null
 };
@@ -179,7 +179,7 @@ diggerBotHunt in goAdventuring()). Tuned tougher (higher HP) than
 gnomeCommander to keep it a step up in difficulty even though all
 three named hunts now share the same DIGGERBOT_SPAWN_CHANCE. */
 const diggerBot = {
-   name:"a runaway digger-bot, venting steam", beef:5, zip:0, grit:22, hoodoo:0, armor:0, xp:22, rare:true, zone:"sewers",
+   name:"a runaway digger-bot, venting steam", beef:5, zip:0, grit:22, hoodoo:0, xp:22, rare:true, zone:"sewers",
    skills:[ { type:'bolt', chance:0.22, boltMin:7, boltMax:12, flavor:"vents a scalding jet of built-up steam" } ],
    art: artDiggerBot, loot:null
 };
@@ -203,7 +203,7 @@ of a much bigger XP/Pop Tab payout. art points at a not-yet-written
 artGnomeKingsCaptain() (art.js, separate task) — referenced by name now
 so that task knows what to add. */
 const gnomeKingsCaptain = {
-   name:"the gnome king's captain, left to guard the retreat", beef:7, zip:0, grit:26, hoodoo:0, armor:0, xp:35, rare:true, zone:"vault",
+   name:"the gnome king's captain, left to guard the retreat", beef:7, zip:0, grit:26, hoodoo:0, xp:35, rare:true, zone:"vault",
    skills:[ { type:'heal', chance:0.20, healMin:10, healMax:16, flavor:"digs in and patches his wounds, buying the King more time" } ],
    art: artGnomeKingsCaptain, loot:null
 };
@@ -270,21 +270,21 @@ buffer/bolter, and a hard-to-hit evasive finisher, in that order, so the
 gauntlet's own difficulty curve mirrors gnomeKing's own buff+bolt kit
 by the time you reach him. */
 const palaceGuard1 = {
-   name:"the outer gate sentinel, first line of a crumbling watch", beef:6, zip:0, grit:20, hoodoo:0, armor:0, xp:25, rare:true, zone:"palace",
+   name:"the outer gate sentinel, first line of a crumbling watch", beef:6, zip:0, grit:20, hoodoo:0, xp:25, rare:true, zone:"palace",
    art: artPalaceGuard1, loot:null
 };
 const palaceGuard2 = {
-   name:"the inner ward-keeper, humming with old wards", beef:6, zip:0, grit:22, hoodoo:0, armor:0, xp:30, rare:true, zone:"palace",
+   name:"the inner ward-keeper, humming with old wards", beef:6, zip:0, grit:22, hoodoo:0, xp:30, rare:true, zone:"palace",
    skills:[ { type:'heal', chance:0.20, healMin:8, healMax:14, flavor:"leans on an old ward and stitches herself back together" } ],
    art: artPalaceGuard2, loot:null
 };
 const palaceGuard3 = {
-   name:"the throne room usher, unnervingly polite", beef:7, zip:0, grit:25, hoodoo:0, armor:0, xp:35, rare:true, zone:"palace",
+   name:"the throne room usher, unnervingly polite", beef:7, zip:0, grit:25, hoodoo:0, xp:35, rare:true, zone:"palace",
    skills:[ { type:'buff', chance:0.20, buffMult:1.5, buffTurns:2, flavor:"straightens his collar and gets, somehow, more intense" } ],
    art: artPalaceGuard3, loot:null
 };
 const palaceGuard4 = {
-   name:"the King's champion, undefeated and insufferable about it", beef:8, zip:0, grit:28, hoodoo:0, armor:0, xp:45, rare:true, zone:"palace",
+   name:"the King's champion, undefeated and insufferable about it", beef:8, zip:0, grit:28, hoodoo:0, xp:45, rare:true, zone:"palace",
    skills:[
       { type:'buff', chance:0.18, buffMult:1.6, buffTurns:2, flavor:"warms up with a few showboating practice swings" },
       { type:'bolt', chance:0.15, boltMin:10, boltMax:16, flavor:"hurls a trophy javelin clean across the throne room" },
@@ -292,7 +292,7 @@ const palaceGuard4 = {
    art: artPalaceGuard4, loot:null
 };
 const palaceGuard5 = {
-   name:"the King's own shadow, never quite where you last saw it", beef:8, zip:7, grit:26, hoodoo:0, armor:0, xp:50, rare:true, zone:"palace",
+   name:"the King's own shadow, never quite where you last saw it", beef:8, zip:7, grit:26, hoodoo:0, xp:50, rare:true, zone:"palace",
    art: artPalaceGuard5, loot:null
 };
 const PALACE_GUARDS = [palaceGuard1, palaceGuard2, palaceGuard3, palaceGuard4, palaceGuard5];
@@ -304,7 +304,7 @@ stacking a skills[] kit on top of already being the highest raw hp/atk.
 No sustain (unlike hoodooChampion) — he's meant to be rushed down before
 his own buff+bolt combo snowballs, not out-attritioned. */
 const gnomeKing = {
-   name:"the gnome king, throned in scavenged gold", beef:9, zip:0, grit:32, hoodoo:0, armor:8, xp:70, rare:true, zone:"palace",
+   name:"the gnome king, throned in scavenged gold", beef:9, zip:0, grit:32, hoodoo:0, xp:70, rare:true, zone:"palace",
    skills:[
       { type:'buff', chance:0.15, buffMult:1.7, buffTurns:3, flavor:"rallies the last of his gnomes for one final push" },
       { type:'bolt', chance:0.20, boltMin:14, boltMax:20, flavor:"hurls a scavenged treasure-shard, crackling with stolen magic" },
@@ -337,7 +337,7 @@ gnometropolis since he fights there and this one doesn't fight in any
 zone at all) — no other trick, just raw power, matching the class
 fantasy. */
 const trialChampion = {
-   name:"the Guild's Trial Examiner, unbeaten and unimpressed", beef:9, zip:0, grit:31, hoodoo:0, armor:5, xp:50, rare:true,
+   name:"the Guild's Trial Examiner, unbeaten and unimpressed", beef:9, zip:0, grit:31, hoodoo:0, xp:50, rare:true,
    art: artTrialChampion, loot:null
 };
 
@@ -355,7 +355,7 @@ first attack (monsterAutoAttack(), combat.js) lands as a guaranteed
 double-damage opening hit, same flavor as the player's own version
 guaranteeing a crit on the opening sneak attack. */
 const casinoChampion = {
-   name:"the Casino's own card shark, impossible to pin down", beef:7, zip:7, grit:25, hoodoo:0, armor:5, xp:50, rare:true,
+   name:"the Casino's own card shark, impossible to pin down", beef:7, zip:7, grit:25, hoodoo:0, xp:50, rare:true,
    buffTurnsLeft:1, buffMult:2, art: artCasinoChampion, loot:null
 };
 
@@ -371,7 +371,7 @@ fight with a plain Attack doesn't count, preserving the "prove your
 hoodoo" flavor without requiring Hoodoo stat investment (any class can
 buy Hex Bolt for 15 Pop Tabs and finish the job with it). */
 const hoodooChampion = {
-   name:"a spirit summoned from the bottom of the pot", beef:6, zip:0, grit:28, hoodoo:0, armor:5, xp:50, rare:true,
+   name:"a spirit summoned from the bottom of the pot", beef:6, zip:0, grit:28, hoodoo:0, xp:50, rare:true,
    skills:[
       { type:'heal', chance:0.18, healMin:12, healMax:20, flavor:"mutters over its own embers and knits its wounds shut" },
       { type:'buff', chance:0.12, buffMult:1.6, buffTurns:3, flavor:"traces a sigil in the air, crackling with borrowed power" },
@@ -1156,7 +1156,7 @@ const GARRISON_GUARDIAN_SPAWN_CHANCE = 0.05;
 const ROGUESDEN_ENFORCER_SPAWN_CHANCE = 0.05;
 const ARCANE_SANCTUM_GUARDIAN_SPAWN_CHANCE = 0.05;
 const garrisonGuardian = {
-   name:"the Garrison's watch-captain, built like a slammed door", beef:6, zip:0, grit:25, hoodoo:0, armor:5, xp:45, rare:true, zone:"garrison",
+   name:"the Garrison's watch-captain, built like a slammed door", beef:6, zip:0, grit:25, hoodoo:0, xp:45, rare:true, zone:"garrison",
    skills:[ { type:'buff', chance:0.20, buffMult:1.6, buffTurns:2, flavor:"braces like a slammed door and hits back twice as hard" } ],
    art: artGarrisonGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Meathead')
 };
@@ -1175,12 +1175,12 @@ matches its own zone's regular monsters (garrison/roguesden/sanctum
 above) — it had drifted to +1, a leftover from before the per-zone
 gearDrop scaling existed, fixed alongside that same correction. */
 const roguesDenEnforcer = {
-   name:"the Rogues' Den enforcer, already taking side bets on you", beef:6, zip:6, grit:25, hoodoo:0, armor:5, xp:45, rare:true, zone:"roguesden",
+   name:"the Rogues' Den enforcer, already taking side bets on you", beef:6, zip:6, grit:25, hoodoo:0, xp:45, rare:true, zone:"roguesden",
    art: artRoguesDenEnforcer, loot: PALACE_GATE_GEAR.find(g => g.class === 'Card Shark'),
    gearDrop:{name:"the enforcer's own marked deck, edges filed sharp", desc:"Every card's a threat, if you know how to throw it.", type:"equip", slot:"weapon", bonus:{zip:5}, tier:'common', icon: iconCheatersDeck}
 };
 const arcaneSanctumGuardian = {
-   name:"the Arcane Sanctum's warden, muttering an unfinished spell", beef:6, zip:0, grit:25, hoodoo:0, armor:5, xp:45, rare:true, zone:"sanctum",
+   name:"the Arcane Sanctum's warden, muttering an unfinished spell", beef:6, zip:0, grit:25, hoodoo:0, xp:45, rare:true, zone:"sanctum",
    skills:[ { type:'bolt', chance:0.25, boltMin:12, boltMax:18, flavor:"finally finishes the spell, unleashing a burst of raw arcane energy" } ],
    art: artArcaneSanctumGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Hexpert')
 };
@@ -1485,9 +1485,7 @@ const MONSTER_DODGE_COEFFICIENT = 0.03;
 const MONSTER_DODGE_CAP = 0.5;
 
 /* Armor — a brand new mitigation stat, shared by both the player (gear-only,
-see STAT_LABELS/SPENDABLE_STAT_KEYS, core.js) and monsters (a new stat block
-field, defaulting to 0 on every existing monster — see AGENTS.md for which
-handful of marquee bosses got a real starting value). armorDamageReduction()
+see STAT_LABELS/SPENDABLE_STAT_KEYS, core.js) and monsters. armorDamageReduction()
 (combat.js) reuses statBonus()'s own superlinear curve — each point is worth
 MORE, same as beef/zip/grit/hoodoo already are — but the result is capped at
 ARMOR_REDUCTION_CAP, so in practice reduction climbs quickly at low-to-
@@ -1495,6 +1493,26 @@ moderate armor and then hard-flatlines at the ceiling rather than ever
 reaching (or exceeding) 100%. */
 const ARMOR_REDUCTION_COEFFICIENT = 0.02;
 const ARMOR_REDUCTION_CAP = 0.6;
+
+/* A monster's own armor is NOT an authored field (unlike beef/zip/grit/
+hoodoo above) — it's derived purely from grit + whether it's rare:true,
+by deriveMonsterCombatStats() (combat.js), the same place hp/atk/dodge
+already get derived. This was tried the other way first (a hand-picked
+armor:N literal on a short list of "marquee" bosses, 0 on everyone else)
+and replaced with this formula specifically so the WHOLE bestiary gets a
+real, consistent armor value from exactly 2 tunable constants instead of
+dozens of one-off literals or an ever-growing hand-picked exception list.
+Rare monsters get a noticeably steeper per-grit rate than regular trash —
+same reasoning dodgeChance/skills[] always used (a boss should feel
+different from a wild encounter of similar raw toughness), just applied
+here as a multiplier instead of a per-monster flag. Sanity-checked
+against the real data: weakest trash (grit~6) -> armor 1 (~2% mitigation,
+negligible); toughest regular trash (grit~26) -> armor 4 (~11%); the
+earliest rare hunt (grit 20) -> armor 5 (~14%); the single highest-grit
+monster in the game, warrenMother (grit 37) -> armor 9 (~28%) — climbs
+with difficulty at both ends without ever approaching ARMOR_REDUCTION_CAP. */
+const MONSTER_ARMOR_PER_GRIT = 0.15;
+const MONSTER_RARE_ARMOR_PER_GRIT = 0.25;
 
 /* The Inn — chance restAtInn() (game.js) restores the player without
 consuming a Biscuit. 1.0 at max level = rest is always free. */

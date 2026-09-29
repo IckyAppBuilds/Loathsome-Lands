@@ -231,27 +231,34 @@ tier via `GEAR_DROP_TIER_CHANCE`/`rollGearDropTier()` — see combat.js).
 Every monster/boss across ALL FIVE monster-data files (this one,
 mudroot-content.js, warrensear-content.js, emberwarren-content.js,
 crystalcity-content.js — 77 objects total) is authored as a
-`beef`/`zip`/`grit`/`hoodoo`/`armor` stat block, mirroring the player's
-own 4 stats plus the new armor stat, REPLACING the old raw
-`hp`/`atkMin`/`atkMax`(/ad hoc `dodgeChance`) fields entirely —
-`deriveMonsterCombatStats()` (combat.js) turns these into the numbers
-`startCombat()` actually spawns with, via `statBonus()` same as every
-player formula. `hoodoo` is present in the data shape but has NO
-mechanical effect yet (a monster's `skills[]` keep their own
-hand-authored heal/bolt/debuff magnitude regardless of hoodoo — scaling
-those off it is an intentionally out-of-scope follow-up). `armor`
-defaults to 0 on every entry except 9 hand-picked marquee bosses
-(`gnomeKing`/`warrenMother`/`vaultKeeper`/the three Adventurer's Trial
-champions/the three Gnometropolis district guardians), each given a
-small, conservative starting value (5-12) as a visible proof the knob
-works — same "revisit with real play data" caveat
-`ZONE_LEVEL_RECOMMENDATION`'s own comments already use elsewhere for a
-guessed-not-simulated number. The migration itself was formula-based
-(inverting each monster's OLD authored hp/atkMin/atkMax/dodgeChance
-through the same derive formulas to reproduce today's effective
-difficulty as closely as the math allows, not hand-retuned) —
-`xp`/`rare`/`skills[]`/`loot`/`rareDrop`/`gearDrop`/`art`/`zone`/`name`
-were untouched by it.
+`beef`/`zip`/`grit`/`hoodoo` stat block, mirroring the player's own 4
+stats, REPLACING the old raw `hp`/`atkMin`/`atkMax`(/ad hoc
+`dodgeChance`) fields entirely — `deriveMonsterCombatStats()`
+(combat.js) turns these into the numbers `startCombat()` actually
+spawns with, via `statBonus()` same as every player formula. `hoodoo`
+is present in the data shape but has NO mechanical effect yet (a
+monster's `skills[]` keep their own hand-authored heal/bolt/debuff
+magnitude regardless of hoodoo — scaling those off it is an
+intentionally out-of-scope follow-up). The migration itself was
+formula-based (inverting each monster's OLD authored
+hp/atkMin/atkMax/dodgeChance through the same derive formulas to
+reproduce today's effective difficulty as closely as the math allows,
+not hand-retuned) — `xp`/`rare`/`skills[]`/`loot`/`rareDrop`/`gearDrop`/
+`art`/`zone`/`name` were untouched by it.
+
+**`armor` is deliberately NOT part of a monster's authored data at
+all** — no `armor:` field lives on any of the 77 objects. It's derived
+purely from `grit` + whether the monster is `rare:true`, by
+`deriveMonsterCombatStats()`, exactly like hp/atk/dodge already are:
+`MONSTER_ARMOR_PER_GRIT` (regular trash) / `MONSTER_RARE_ARMOR_PER_GRIT`
+(any rare monster — steeper, since a boss should feel tougher than a
+wild encounter of similar raw grit) — two tunable constants,
+content.js, control the WHOLE bestiary's armor curve at once. This
+replaced an earlier version (shipped, then superseded the same session)
+that hand-picked a literal `armor:N` on 9 "marquee" bosses and left
+everyone else at 0 — moved to a pure derivation specifically so the
+entire bestiary gets a real, consistent value with zero per-monster
+authoring, rather than an ever-growing hand-picked exception list.
 
 The named bosses — every one of them (`gnomeCommander`/`diggerBot`/
 `gnomeKingsCaptain`/`gnomeKing`/the Adventurer's Trial's three themed
@@ -279,9 +286,13 @@ stat doesn't fit without restructuring the tier system itself. A SHOP
 purchase's own secondary roll is a separate, simpler mechanism —
 `rollShopGearStats()`, economy.js — which DOES include armor in its
 candidate pool), `MONSTER_HP_PER_GRIT`/`MONSTER_ATK_PER_BEEF`/
-`MONSTER_ATK_SPREAD`/`MONSTER_DODGE_COEFFICIENT`/`MONSTER_DODGE_CAP`
+`MONSTER_ATK_SPREAD`/`MONSTER_DODGE_COEFFICIENT`/`MONSTER_DODGE_CAP`/
+`MONSTER_ARMOR_PER_GRIT`/`MONSTER_RARE_ARMOR_PER_GRIT`
 (the monster-stat-block derive formula's own tuning knobs — see
-`deriveMonsterCombatStats()`, combat.js) and `ARMOR_REDUCTION_
+`deriveMonsterCombatStats()`, combat.js — the last two are the entire
+tunable armor curve for the whole bestiary: a monster's armor is
+`grit * one of these two`, never an authored field, `rare:true`
+monsters using the steeper rate) and `ARMOR_REDUCTION_
 COEFFICIENT`/`ARMOR_REDUCTION_CAP` (armor's own mitigation-fraction
 formula, shared by both the player and monsters — see
 `armorDamageReduction()`, combat.js — reuses `statBonus()`'s own
@@ -325,8 +336,9 @@ zones on the main chain (not a district) get added here, in order.
 content.js's own `monsters[]`, `.push()`ed onto that same array at the
 bottom of this file rather than duplicating combat.js's zone filter),
 quest9's two rare hunt targets (`tunnelWarden`/`warrenScout` — same
-`rare:true`/`skills[]`/`beef`/`zip`/`grit`/`hoodoo`/`armor` stat-block
-shape as content.js's own named bosses, spawned by
+`rare:true`/`skills[]`/`beef`/`zip`/`grit`/`hoodoo` stat-block shape as
+content.js's own named bosses (armor is never authored — see armor's
+own comment above), spawned by
 `tunnelWardenHunt`/`warrenScoutHunt` in
 `goAdventuring()`, combat.js) plus their own spawn-chance constants,
 and extends content.js's `noncombatEvents`/`hazardEvents` with entries
@@ -765,13 +777,18 @@ pure class-trainer buildings; see gnometropolis.js)/`goAdventuring()`
 `bureauQuartermasterHunt` — each a simple "quest accepted, not
 complete, not already found" boolean checked against a per-target
 spawn chance), `startCombat` (derives a template's real hp/atkMin/
-atkMax/dodgeChance from its `beef`/`zip`/`grit` stat block via
+atkMax/dodgeChance/armor from its `beef`/`zip`/`grit` stat block via
 `deriveMonsterCombatStats()` right before applying `ZONE_DIFFICULTY` —
-armor passes through unscaled, same treatment `dodgeChance` always
-got)/`deriveMonsterCombatStats(m)` (the monster-stat-block formula
-shapes, mirroring the player's own maxHp/dodge formulas — no "level"
-term, since monsters don't level; `hoodoo` is deliberately unread
-here)/`armorDamageReduction(armor)` (shared by both damage functions
+dodgeChance/armor both pass through unscaled, same treatment
+`dodgeChance` always got)/`deriveMonsterCombatStats(m)` (the
+monster-stat-block formula shapes, mirroring the player's own
+maxHp/dodge formulas — no "level" term, since monsters don't level;
+`hoodoo` is deliberately unread here; armor is derived from `grit` +
+`m.rare` — a `rare:true` monster uses a steeper per-grit rate than
+regular trash, `MONSTER_ARMOR_PER_GRIT`/`MONSTER_RARE_ARMOR_PER_GRIT`,
+content.js — armor is NEVER read off the template itself, it has no
+authored armor field at all)/`armorDamageReduction(armor)` (shared by
+both damage functions
 below — reuses `statBonus()`'s own curve, capped at
 `ARMOR_REDUCTION_CAP`, content.js)/`applyDamageToPlayer`/
 `applyDamageToMonster` (both mitigate via `armorDamageReduction()`

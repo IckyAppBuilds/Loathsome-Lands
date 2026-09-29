@@ -221,14 +221,24 @@ as every player-side formula. No "level" term — unlike the player, a
 monster's own stats don't grow over time, so its combat numbers are pure
 functions of grit/beef/zip. hoodoo is deliberately unused here (see its
 own comment, content.js) — a monster's skills[] keep their own
-hand-authored magnitude regardless of hoodoo. */
+hand-authored magnitude regardless of hoodoo.
+
+armor is derived here too (from grit + m.rare), NOT read off an authored
+field — a monster object never carries its own armor: N literal at all.
+Rare monsters use a steeper per-grit rate (MONSTER_RARE_ARMOR_PER_GRIT)
+than regular trash (MONSTER_ARMOR_PER_GRIT), same "a boss should feel
+different from a wild encounter of similar toughness" reasoning
+dodgeChance/skills[] already apply via other means — see the constants'
+own comment, content.js, for why this replaced an earlier hand-picked-
+per-boss version. */
 function deriveMonsterCombatStats(m){
    const hp = Math.max(1, Math.round(statBonus(m.grit || 0) * MONSTER_HP_PER_GRIT));
    const atkCenter = statBonus(m.beef || 0) * MONSTER_ATK_PER_BEEF;
    const atkMin = Math.max(1, Math.round(atkCenter * (1 - MONSTER_ATK_SPREAD)));
    const atkMax = Math.max(atkMin, Math.round(atkCenter * (1 + MONSTER_ATK_SPREAD)));
    const dodgeChance = Math.min(MONSTER_DODGE_CAP, statBonus(m.zip || 0) * MONSTER_DODGE_COEFFICIENT);
-   return { hp, atkMin, atkMax, dodgeChance };
+   const armor = Math.round((m.grit || 0) * (m.rare ? MONSTER_RARE_ARMOR_PER_GRIT : MONSTER_ARMOR_PER_GRIT));
+   return { hp, atkMin, atkMax, dodgeChance, armor };
 }
 
 /* Shared by applyDamageToPlayer()/applyDamageToMonster() below — armor's
@@ -260,7 +270,7 @@ const mult = ZONE_DIFFICULTY[template.zone] || 1;
    /* dodgeChance/armor stay unscaled by mult — same treatment the old
    dodgeChance field always got (it passed through the old {...template}
    spread untouched; only hp/atk/xp were ever multiplied). */
-   state.monster = { ...template, hp, maxHp: hp, atkMin, atkMax, xp, dodgeChance: derived.dodgeChance, armor: template.armor || 0 };
+   state.monster = { ...template, hp, maxHp: hp, atkMin, atkMax, xp, dodgeChance: derived.dodgeChance, armor: derived.armor };
    state.inCombat = true;
    combatSubView = 'main';
    log(template.rare

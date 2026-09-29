@@ -11,27 +11,27 @@ monsters[] — reusing existing icons throughout, same established
 convention. gearDrop bonus values continue the same per-zone ladder
 (+8 — one step past rootcellar/mudflats/bureau's own +6/+7). */
 const warrensEarMonsters = [
-   { name:"a mole cantor, humming the wrong note on purpose", beef:8, zip:0, grit:24, hoodoo:0, armor:0, xp:38, zone:"choir",
+   { name:"a mole cantor, humming the wrong note on purpose", beef:8, zip:0, grit:24, hoodoo:0, xp:38, zone:"choir",
     art: artMoleCantor, loot:{name:"cantor's cracked pitch-stone", desc:"Hums back at you, slightly out of tune.", type:"junk", sell:15, icon:iconWhistle},
     rareDrop:{name:"the cantor's own perfect note, bottled", desc:"You've never heard silence sound so loud.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"cantor's resonant collar-plate of the Tortoise", desc:"Hums faintly whenever something's listening back.", type:"equip", slot:"chest", bonus:{grit:8}, tier:'common', icon:iconVest} },
-   { name:"an echo-mole, never quite where the sound says it is", beef:7, zip:0, grit:23, hoodoo:0, armor:0, xp:36, zone:"choir",
+   { name:"an echo-mole, never quite where the sound says it is", beef:7, zip:0, grit:23, hoodoo:0, xp:36, zone:"choir",
     art: artEchoMole, loot:{name:"warped echo-shell fragment", desc:"Whispers back whatever you last said, badly.", type:"junk", sell:14, icon:iconShellFragment},
     rareDrop:{name:"an echo that arrived before the sound did", desc:"You're choosing not to think about that too hard.", type:"luck", hpValue:26, mpValue:13, icon:iconClover},
     gearDrop:{name:"echo-mole's mis-timed warpaint wand of the Loon", desc:"Casts the spell a half-second before you finish it.", type:"equip", slot:"weapon", bonus:{hoodoo:8}, tier:'common', icon:iconWandStick} },
-   { name:"a listening-post sentry, all ears and no eyes", beef:8, zip:0, grit:25, hoodoo:0, armor:0, xp:40, zone:"choir",
+   { name:"a listening-post sentry, all ears and no eyes", beef:8, zip:0, grit:25, hoodoo:0, xp:40, zone:"choir",
     art: artListeningSentry, loot:{name:"sentry's oversized cupped ear", desc:"Still twitching toward the last thing that moved.", type:"junk", sell:16, icon:iconSentinelEye},
     rareDrop:{name:"the sentry's own uncanny early warning", desc:"You start hearing trouble a beat before it arrives.", type:"junk", sell:46, icon:iconFigurine},
     gearDrop:{name:"sentry's cupped-ear pauldron of the Tortoise", desc:"Hears everything. Blocks most of it, too.", type:"equip", slot:"head", bonus:{grit:8}, tier:'common', icon:iconGuardHelm} },
-   { name:"an archivist-mole, buried under three ledgers at once", beef:8, zip:0, grit:24, hoodoo:0, armor:0, xp:39, zone:"ledgervault",
+   { name:"an archivist-mole, buried under three ledgers at once", beef:8, zip:0, grit:24, hoodoo:0, xp:39, zone:"ledgervault",
     art: artArchivistMole, loot:{name:"triple-cross-referenced ledger scrap", desc:"References two other ledgers you'll never find.", type:"junk", sell:15, icon:iconVizierLedger},
     rareDrop:{name:"a ledger entry that approves itself, recursively", desc:"It's been auditing itself for years. It's winning.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"archivist's ledger-strapped greaves of the Weasel", desc:"Every step filed in triplicate.", type:"equip", slot:"legs", bonus:{zip:8}, tier:'common', icon:iconQuickstepTrousers} },
-   { name:"a vault clerk, stamping things that don't need stamping", beef:7, zip:0, grit:23, hoodoo:0, armor:0, xp:37, zone:"ledgervault",
+   { name:"a vault clerk, stamping things that don't need stamping", beef:7, zip:0, grit:23, hoodoo:0, xp:37, zone:"ledgervault",
     art: artVaultClerk, loot:{name:"over-stamped requisition form", desc:"Approved, denied, and approved again.", type:"junk", sell:14, icon:iconCoinPurse},
     rareDrop:{name:"the clerk's own personal rubber stamp of destiny", desc:"Whatever it stamps next, apparently, happens.", type:"luck", hpValue:26, mpValue:13, icon:iconClover},
     gearDrop:{name:"clerk's ink-stained boots of the Weasel", desc:"Tracks ink into every room you enter after this.", type:"equip", slot:"boots", bonus:{zip:8}, tier:'common', icon:iconGripBoots} },
-   { name:"an auditor-in-chief, radiating quiet disapproval", beef:8, zip:0, grit:25, hoodoo:0, armor:0, xp:41, zone:"ledgervault",
+   { name:"an auditor-in-chief, radiating quiet disapproval", beef:8, zip:0, grit:25, hoodoo:0, xp:41, zone:"ledgervault",
     art: artAuditorInChief, loot:{name:"auditor-in-chief's own red pen", desc:"Never runs out of ink. Never runs out of complaints.", type:"junk", sell:16, icon:iconDrillRoster},
     rareDrop:{name:"a complaint filed against the concept of complaints", desc:"It's somehow already been escalated.", type:"junk", sell:46, icon:iconFigurine},
     gearDrop:{name:"auditor-in-chief's own weapon-grade clipboard of the Badger", desc:"Objectively the most feared object in the building.", type:"equip", slot:"weapon", bonus:{beef:8}, tier:'common', icon:iconRakeShank} },
@@ -52,11 +52,11 @@ already a dedicated quest reward. */
 const TUNNEL_MOLE_INFORMANT_SPAWN_CHANCE = 0.05;
 const SENIOR_CLERK_SPAWN_CHANCE = 0.05;
 const tunnelMoleInformant = {
-   name:"a nervous tunnel-mole informant", beef:7, zip:5, grit:26, hoodoo:0, armor:0, xp:48, rare:true, zone:"rootcellar",
+   name:"a nervous tunnel-mole informant", beef:7, zip:5, grit:26, hoodoo:0, xp:48, rare:true, zone:"rootcellar",
    art: artTunnelMoleInformant, loot:null
 };
 const seniorClerk = {
-   name:"a senior clerk, guarding a very particular ledger", beef:7, zip:0, grit:26, hoodoo:0, armor:0, xp:48, rare:true, zone:"bureau",
+   name:"a senior clerk, guarding a very particular ledger", beef:7, zip:0, grit:26, hoodoo:0, xp:48, rare:true, zone:"bureau",
    skills:[ { type:'heal', chance:0.20, healMin:12, healMax:18, flavor:"cites a procedural delay and buys itself time" } ],
    art: artSeniorClerk, loot:null
 };
@@ -71,12 +71,12 @@ time. committeeAuditor is the one guard standing between the door and
 vaultKeeper; no loot/rareDrop on either, same reasoning as every other
 named quest-hunt boss. */
 const committeeAuditor = {
-   name:"a committee auditor, cross-referencing you against three different ledgers", beef:9, zip:0, grit:29, hoodoo:0, armor:0, xp:45, rare:true, zone:"ledgervault",
+   name:"a committee auditor, cross-referencing you against three different ledgers", beef:9, zip:0, grit:29, hoodoo:0, xp:45, rare:true, zone:"ledgervault",
    skills:[ { type:'buff', chance:0.20, buffMult:1.5, buffTurns:2, flavor:"finds a discrepancy in your favor, then immediately revokes it" } ],
    art: artCommitteeAuditor, loot:null
 };
 const vaultKeeper = {
-   name:"the vault keeper, the only door in the Warren's Ear that was never meant to open", beef:9, zip:0, grit:31, hoodoo:0, armor:10, xp:68, rare:true, zone:"ledgervault",
+   name:"the vault keeper, the only door in the Warren's Ear that was never meant to open", beef:9, zip:0, grit:31, hoodoo:0, xp:68, rare:true, zone:"ledgervault",
    skills:[ { type:'heal', chance:0.20, healMin:14, healMax:20, flavor:"seals itself back up along an old, familiar seam" } ],
    art: artVaultKeeper, loot:null
 };

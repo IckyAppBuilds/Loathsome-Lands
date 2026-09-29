@@ -11,27 +11,27 @@ monsters[] — reusing existing icons throughout, same established
 convention. gearDrop bonus values continue the same per-zone ladder
 (+9 — one step past choir/ledgervault's own +8). */
 const emberWarrenMonsters = [
-   { name:"a soot-caked forge-mole, sparks catching in its fur", beef:8, zip:0, grit:25, hoodoo:0, armor:0, xp:41, zone:"foundry",
+   { name:"a soot-caked forge-mole, sparks catching in its fur", beef:8, zip:0, grit:25, hoodoo:0, xp:41, zone:"foundry",
     art: artForgeMole, loot:{name:"a fistful of clinker-slag", desc:"Still warm. Still stuck to itself.", type:"junk", sell:17, icon:iconOreGrit},
     rareDrop:{name:"a coal seam that never quite burns out", desc:"You've been carrying an ember for three days now.", type:"junk", sell:47, icon:iconFigurine},
     gearDrop:{name:"forge-mole's quench-tempered tongs of the Badger", desc:"Still smells faintly of the last thing it grabbed.", type:"equip", slot:"weapon", bonus:{beef:9}, tier:'common', icon:iconRakeShank} },
-   { name:"a bellows-mole, wheezing out gouts of forge-heat", beef:8, zip:0, grit:24, hoodoo:0, armor:0, xp:39, zone:"foundry",
+   { name:"a bellows-mole, wheezing out gouts of forge-heat", beef:8, zip:0, grit:24, hoodoo:0, xp:39, zone:"foundry",
     art: artBellowsMole, loot:{name:"a dented iron pipe fitting", desc:"Was part of something load-bearing, probably.", type:"junk", sell:16, icon:iconPipeFitting},
     rareDrop:{name:"a lungful of air that's never once cooled", desc:"You breathe out and the room gets warmer.", type:"luck", hpValue:28, mpValue:14, icon:iconClover},
     gearDrop:{name:"bellows-mole's rivet-seamed hide plating of the Tortoise", desc:"Built to take the heat nobody else in the room can.", type:"equip", slot:"chest", bonus:{grit:9}, tier:'common', icon:iconClockworkPlate} },
-   { name:"a slag-hauler, dragging a cart twice its own size", beef:8, zip:0, grit:26, hoodoo:0, armor:0, xp:43, zone:"foundry",
+   { name:"a slag-hauler, dragging a cart twice its own size", beef:8, zip:0, grit:26, hoodoo:0, xp:43, zone:"foundry",
     art: artSlagHauler, loot:{name:"a chunk of still-glowing slag", desc:"Cooling, technically. Not fast enough to matter yet.", type:"junk", sell:18, icon:iconCapturedLight},
     rareDrop:{name:"the cart's own unbreakable axle", desc:"Outlasted three haulers and counting.", type:"junk", sell:49, icon:iconFigurine},
     gearDrop:{name:"hauler's cart-track leg braces of the Weasel", desc:"Built for hauling twice your own weight, uphill, forever.", type:"equip", slot:"legs", bonus:{zip:9}, tier:'common', icon:iconShinGuard} },
-   { name:"a cog-fitter, three thumbs and all of them precise", beef:8, zip:0, grit:24, hoodoo:0, armor:0, xp:40, zone:"gearworks",
+   { name:"a cog-fitter, three thumbs and all of them precise", beef:8, zip:0, grit:24, hoodoo:0, xp:40, zone:"gearworks",
     art: artCogFitter, loot:{name:"an unmatched brass cog", desc:"Fits nothing you own. Fits something, somewhere.", type:"junk", sell:17, icon:iconGear},
     rareDrop:{name:"the one gear that keeps the whole line running", desc:"Nobody's dared remove it to check what happens.", type:"junk", sell:48, icon:iconFigurine},
     gearDrop:{name:"cog-fitter's precision-ground faceguard of the Tortoise", desc:"Doesn't miss a spec. Doesn't miss a hit, either.", type:"equip", slot:"head", bonus:{grit:9}, tier:'common', icon:iconGuardHelm} },
-   { name:"a pressure-mole, hissing steam from somewhere it shouldn't", beef:8, zip:0, grit:25, hoodoo:0, armor:0, xp:42, zone:"gearworks",
+   { name:"a pressure-mole, hissing steam from somewhere it shouldn't", beef:8, zip:0, grit:25, hoodoo:0, xp:42, zone:"gearworks",
     art: artPressureMole, loot:{name:"a servo joint, still twitching", desc:"Not plugged into anything anymore. Hasn't noticed.", type:"junk", sell:17, icon:iconServoJoint},
     rareDrop:{name:"a full head of steam with nowhere left to go", desc:"You feel unreasonably ready for a fight.", type:"luck", hpValue:28, mpValue:14, icon:iconClover},
     gearDrop:{name:"pressure-mole's steam-sealed boot plating of the Weasel", desc:"Vents just enough to keep you moving.", type:"equip", slot:"boots", bonus:{zip:9}, tier:'common', icon:iconGripBoots} },
-   { name:"a line-runner, built for squeezing between conveyor belts", beef:8, zip:0, grit:23, hoodoo:0, armor:0, xp:38, zone:"gearworks",
+   { name:"a line-runner, built for squeezing between conveyor belts", beef:8, zip:0, grit:23, hoodoo:0, xp:38, zone:"gearworks",
     art: artLineRunner, loot:{name:"a pickaxe head, worn down to a nub", desc:"Traded in for something faster months ago.", type:"junk", sell:16, icon:iconPickaxeHead},
     rareDrop:{name:"the fastest lap time the line's ever clocked", desc:"Nobody's beaten it since. You might.", type:"junk", sell:46, icon:iconFigurine},
     gearDrop:{name:"line-runner's quick-swap coupling-flail of the Weasel", desc:"Built to disconnect from anything, fast, on purpose.", type:"equip", slot:"weapon", bonus:{zip:9}, tier:'common', icon:iconDiceFlail} },
@@ -56,12 +56,12 @@ reward. */
 const GEARWORKS_FOREMAN_SPAWN_CHANCE = 0.05;
 const BUREAU_QUARTERMASTER_SPAWN_CHANCE = 0.05;
 const gearworksForeman = {
-   name:"the line foreman, clipboard in one hand and a wrench in the other", beef:8, zip:0, grit:28, hoodoo:0, armor:0, xp:55, rare:true, zone:"gearworks",
+   name:"the line foreman, clipboard in one hand and a wrench in the other", beef:8, zip:0, grit:28, hoodoo:0, xp:55, rare:true, zone:"gearworks",
    skills:[ { type:'debuff', chance:0.22, debuffType:'burn', debuffTurns:3, dmgPerTurn:7, flavor:"shoves you into a live vent, sparks catching on your sleeve" } ],
    art: artGearworksForeman, loot:null
 };
 const bureauQuartermaster = {
-   name:"the quartermaster, three ledgers behind and somehow ahead of you", beef:8, zip:0, grit:28, hoodoo:0, armor:0, xp:55, rare:true, zone:"bureau",
+   name:"the quartermaster, three ledgers behind and somehow ahead of you", beef:8, zip:0, grit:28, hoodoo:0, xp:55, rare:true, zone:"bureau",
    skills:[ { type:'debuff', chance:0.22, debuffType:'poison', debuffTurns:4, dmgPerTurn:5, flavor:"jabs you with a corroded filing spike, something on it clearly not ink" } ],
    art: artBureauQuartermaster, loot:null
 };
@@ -74,7 +74,7 @@ the Foundry's own forge-heat theme from the opposite angle burn does:
 rapid quenching seizes the joints instead of scorching them. */
 const QUENCH_MASTER_SPAWN_CHANCE = 0.05;
 const quenchMaster = {
-   name:"the quench-master, apron scorched black from decades at the trough", beef:9, zip:0, grit:30, hoodoo:0, armor:0, xp:62, rare:true, zone:"foundry",
+   name:"the quench-master, apron scorched black from decades at the trough", beef:9, zip:0, grit:30, hoodoo:0, xp:62, rare:true, zone:"foundry",
    skills:[ { type:'debuff', chance:0.24, debuffType:'freeze', debuffTurns:3, dmgReduction:0.35, flavor:"plunges you into the quenching trough — your joints seize as the cold locks them up" } ],
    art: artQuenchMaster, loot:null
 };
@@ -89,16 +89,16 @@ finale design (Act 1), just with the newer debuff mechanic standing in
 for the bolt. No loot/rareDrop on any of the three, same reasoning as
 every other named quest-hunt boss. */
 const tunnelCaptain = {
-   name:"a tunnel captain, dug in and dug in deep", beef:9, zip:6, grit:30, hoodoo:0, armor:0, xp:50, rare:true, zone:"gearworks",
+   name:"a tunnel captain, dug in and dug in deep", beef:9, zip:6, grit:30, hoodoo:0, xp:50, rare:true, zone:"gearworks",
    art: artTunnelCaptain, loot:null
 };
 const foundryMarshal = {
-   name:"a foundry marshal, still glowing faintly from the last shift", beef:10, zip:0, grit:32, hoodoo:0, armor:0, xp:58, rare:true, zone:"gearworks",
+   name:"a foundry marshal, still glowing faintly from the last shift", beef:10, zip:0, grit:32, hoodoo:0, xp:58, rare:true, zone:"gearworks",
    skills:[ { type:'debuff', chance:0.24, debuffType:'burn', debuffTurns:3, dmgPerTurn:8, flavor:"brands you with a slag-iron still hot from the forge" } ],
    art: artFoundryMarshal, loot:null
 };
 const warrenMother = {
-   name:"the warren-mother, matriarch of every tunnel you've ever walked through", beef:10, zip:0, grit:37, hoodoo:0, armor:12, xp:90, rare:true, zone:"gearworks",
+   name:"the warren-mother, matriarch of every tunnel you've ever walked through", beef:10, zip:0, grit:37, hoodoo:0, xp:90, rare:true, zone:"gearworks",
    skills:[
       { type:'buff', chance:0.15, buffMult:1.7, buffTurns:3, flavor:"calls every last tunnel to answer at once" },
       { type:'debuff', chance:0.20, debuffType:'freeze', debuffTurns:3, dmgReduction:0.4, flavor:"the ground itself locks around your legs, cold and absolute" },
