@@ -353,14 +353,29 @@ function createDefaultState(){
 const state = createDefaultState();
 
 /* Fun names for the four core stats. Beef = melee punch, Zip = speed/evasion,
-   Grit = toughness (raises max HP), Hoodoo = odd mystical aptitude (raises max MP). */
-const STAT_LABELS = { beef:'Beef', zip:'Zip', grit:'Grit', hoodoo:'Hoodoo' };
+   Grit = toughness (raises max HP), Hoodoo = odd mystical aptitude (raises max MP).
+   Armor is a 5th entry here too, for display only — see SPENDABLE_STAT_KEYS
+   below for why it never becomes a stat-point spend option. */
+const STAT_LABELS = { beef:'Beef', zip:'Zip', grit:'Grit', hoodoo:'Hoodoo', armor:'Armor' };
 const STAT_HINTS = {
      beef:'Hit harder in a fight.',
      zip:'Dodge attacks and flee more often.',
      grit:'Tougher constitution — raises max HP.',
-     hoodoo:'A knack for the weird — raises max MP.'
+     hoodoo:'A knack for the weird — raises max MP.',
+     armor:'Reduces damage taken from every hit.',
 };
+/* Armor is gear-only, by design — it flows through getEffectiveStats()'s
+   already-generic equipment-merge loop (player-actions.js) purely as an
+   item.bonus key, and never lives in state.stats at all (createDefaultState()
+   below, dev-tools.js's stat reset, and town.js's respec all stay untouched
+   because of this). STAT_LABELS above still needs an 'armor' entry so any
+   item.bonus display (item-tiers.js, render-shop.js, render-character.js)
+   can label it generically the same way it labels beef/zip/grit/hoodoo — but
+   renderStatsBlock()'s stat-point spend buttons (render-character.js) and
+   spendStatPoint()'s own guard (player-actions.js) iterate/check THIS list
+   instead of STAT_LABELS, which is what actually keeps "Armor +1" from ever
+   showing up as something a level-up point can buy. */
+const SPENDABLE_STAT_KEYS = ['beef', 'zip', 'grit', 'hoodoo'];
 const SLOT_LABELS = { head:'Head', chest:'Chest', legs:'Legs', boots:'Boots', weapon:'Weapon' };
 const SLOT_ORDER = ['head','chest','legs','boots','weapon'];
 

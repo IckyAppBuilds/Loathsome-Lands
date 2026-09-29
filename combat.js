@@ -193,10 +193,12 @@ const roll = Math.random();
       const pool = hazardEvents[state.location] || hazardEvents.commons;
       const evt = pool[Math.floor(Math.random()*pool.length)];
       const dmg = randInt(evt.dmg[0], evt.dmg[1]);
-      const { absorbed, remaining } = applyDamageToPlayer(dmg);
-      log(absorbed > 0
-          ? `${evt.text} (-${dmg} HP — your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'})`
-          : `${evt.text} (-${dmg} HP)`, 'damage');
+      const { dmg: mitigatedDmg, absorbed, remaining } = applyDamageToPlayer(dmg);
+      const armorClause = mitigatedDmg < dmg ? ` — armor blunts it to ${mitigatedDmg}` : '';
+      const shieldClause = absorbed > 0
+         ? `${armorClause ? ',' : ' —'} your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'}`
+         : '';
+      log(`${evt.text} (-${dmg} HP${armorClause}${shieldClause})`, 'damage');
       checkDefeat();
    } else {
       const pool = noncombatEvents[state.location] || noncombatEvents.commons;
@@ -212,19 +214,53 @@ convention as devMode. Reset to 'main' whenever combat starts/ends so a
 leftover open spellbook never bleeds into the next fight. */
 let combatSubView = 'main';
 
+/* Turns a monster template's beef/zip/grit/hoodoo (content.js — replaced
+the old raw hp/atkMin/atkMax/dodgeChance fields entirely) into the numbers
+startCombat() below actually spawns with, via statBonus() (core.js) same
+as every player-side formula. No "level" term — unlike the player, a
+monster's own stats don't grow over time, so its combat numbers are pure
+functions of grit/beef/zip. hoodoo is deliberately unused here (see its
+own comment, content.js) — a monster's skills[] keep their own
+hand-authored magnitude regardless of hoodoo. */
+function deriveMonsterCombatStats(m){
+   const hp = Math.max(1, Math.round(statBonus(m.grit || 0) * MONSTER_HP_PER_GRIT));
+   const atkCenter = statBonus(m.beef || 0) * MONSTER_ATK_PER_BEEF;
+   const atkMin = Math.max(1, Math.round(atkCenter * (1 - MONSTER_ATK_SPREAD)));
+   const atkMax = Math.max(atkMin, Math.round(atkCenter * (1 + MONSTER_ATK_SPREAD)));
+   const dodgeChance = Math.min(MONSTER_DODGE_CAP, statBonus(m.zip || 0) * MONSTER_DODGE_COEFFICIENT);
+   return { hp, atkMin, atkMax, dodgeChance };
+}
+
+/* Shared by applyDamageToPlayer()/applyDamageToMonster() below — armor's
+own damage-mitigation fraction (0..ARMOR_REDUCTION_CAP, content.js), reusing
+statBonus()'s own superlinear curve so armor "feels like" every other stat
+at low-to-moderate values, but hard-capped so a hit can never be reduced
+to nothing (see armor's own comment, content.js, for why this still reads
+as "diminishing returns" in practice despite statBonus() itself being an
+increasing-returns curve). */
+function armorDamageReduction(armor){
+   return Math.min(ARMOR_REDUCTION_CAP, statBonus(armor || 0) * ARMOR_REDUCTION_COEFFICIENT);
+}
+
 function startCombat(forceTemplate){
    const pool = monsters.filter(m => m.zone === state.location);
    const template = forceTemplate || pool[Math.floor(Math.random()*pool.length)];
-   /* Scale the template's base hp/atk/xp by its zone's ZONE_DIFFICULTY
+   /* Scale the template's derived hp/atk/xp by its zone's ZONE_DIFFICULTY
    multiplier (content.js) — this is what actually makes later areas
    tougher than earlier ones; the template itself is left untouched so
-   the next spawn re-reads the same baseline. */
+   the next spawn re-reads the same baseline. Derive from stats BEFORE
+   applying mult, same order the old raw-number version always used (mult
+   applied to the final hp/atk, never to some earlier pre-formula value). */
 const mult = ZONE_DIFFICULTY[template.zone] || 1;
-   const hp = Math.max(1, Math.round(template.hp * mult));
-   const atkMin = Math.max(1, Math.round(template.atkMin * mult));
-   const atkMax = Math.max(atkMin, Math.round(template.atkMax * mult));
+   const derived = deriveMonsterCombatStats(template);
+   const hp = Math.max(1, Math.round(derived.hp * mult));
+   const atkMin = Math.max(1, Math.round(derived.atkMin * mult));
+   const atkMax = Math.max(atkMin, Math.round(derived.atkMax * mult));
    const xp = Math.max(1, Math.round(template.xp * mult));
-   state.monster = { ...template, hp, maxHp: hp, atkMin, atkMax, xp };
+   /* dodgeChance/armor stay unscaled by mult — same treatment the old
+   dodgeChance field always got (it passed through the old {...template}
+   spread untouched; only hp/atk/xp were ever multiplied). */
+   state.monster = { ...template, hp, maxHp: hp, atkMin, atkMax, xp, dodgeChance: derived.dodgeChance, armor: template.armor || 0 };
    state.inCombat = true;
    combatSubView = 'main';
    log(template.rare
@@ -236,17 +272,29 @@ const mult = ZONE_DIFFICULTY[template.zone] || 1;
        : `A wild ${state.monster.name} shuffles into view!`);
 }
 
-/* Shared "player takes damage" resolution — state.shield (granted by
-Warding Charm or Shout, both cast via castSpell() below) absorbs first,
-hp only takes what's left over. Every place the player loses HP to an
-attack or hazard routes through this so a shield protects reliably
-regardless of source. */
-function applyDamageToPlayer(dmg){
+/* Shared "player takes damage" resolution — armor (getEffectiveStats().armor,
+gear-only, see core.js's SPENDABLE_STAT_KEYS comment) mitigates the RAW hit
+first via armorDamageReduction() above, floored at 1 so it can never fully
+negate a REAL hit (rawDmg<=0 stays exactly 0 rather than being floored up to
+1 — the floor exists to stop armor from erasing an attack, not to invent
+damage out of a monster that dealt none to begin with, e.g. a scripted
+atkMin:0 test stand-in); state.shield (granted by Warding Charm or Shout,
+both cast via castSpell() below) then absorbs what's left of THAT reduced
+amount, hp only takes whatever's left after both. Applying armor before
+shield means armor also stretches a shield's effective duration rather than
+just overlapping it. Every place the player loses HP to an attack, a boss
+debuff's own damage-over-time (applyPlayerStatusEffectForTurn() below), or a
+hazard routes through this so armor/a shield protects reliably regardless
+of source. Returns the actual post-armor `dmg` too, so a caller's own log
+line can report what really landed rather than the pre-mitigation raw hit. */
+function applyDamageToPlayer(rawDmg){
+   const eff = getEffectiveStats();
+   const dmg = rawDmg <= 0 ? 0 : Math.max(1, Math.round(rawDmg * (1 - armorDamageReduction(eff.armor))));
    const absorbed = Math.min(state.shield, dmg);
    state.shield -= absorbed;
    const remaining = dmg - absorbed;
    state.hp = Math.max(0, state.hp - remaining);
-   return { absorbed, remaining };
+   return { dmg, absorbed, remaining };
 }
 
 /* Shared "monster takes damage" resolution, mirroring applyDamageToPlayer()
@@ -257,12 +305,24 @@ so any future evasive monster gets this for free from either source.
 guaranteedHit skips the roll entirely for a landed sneak attack —
 "catching them off guard" shouldn't then let them dodge the very swing
 that caught them off guard. */
-function applyDamageToMonster(dmg, guaranteedHit){
+function applyDamageToMonster(rawDmg, guaranteedHit){
    if(!guaranteedHit && state.monster.dodgeChance && Math.random() < state.monster.dodgeChance){
       return { dodged: true, dealt: 0 };
    }
-   state.monster.hp = Math.max(0, state.monster.hp - dmg);
-   return { dodged: false, dealt: dmg };
+   /* Armor (state.monster.armor — new stat block field, content.js/
+   startCombat() above) mitigates the raw hit the same way the player's own
+   armor does, floored at 1 so it can never fully negate a REAL swing —
+   same rawDmg<=0 exception as applyDamageToPlayer()'s own comment above,
+   so a genuinely 0-damage hit (a scripted atkMin:0 test stand-in; no real
+   monster can roll this, since deriveMonsterCombatStats() already floors
+   atkMin at 1) stays 0 rather than manufacturing a hit out of nothing.
+   Every caller (playerAttack()'s primary swing and Card Shark's second
+   swing, castSpell()'s 'damage' branch) needs to log the RETURNED `dealt`
+   amount, not its own local pre-mitigation damage variable, or the log
+   text and the monster's actual HP change would disagree. */
+   const dealt = rawDmg <= 0 ? 0 : Math.max(1, Math.round(rawDmg * (1 - armorDamageReduction(state.monster.armor))));
+   state.monster.hp = Math.max(0, state.monster.hp - dealt);
+   return { dodged: false, dealt };
 }
 
 /* Shared "monster gets a turn" resolution, used after every combat action
@@ -331,10 +391,15 @@ function monsterAutoAttack(){
    }
    let mdmg = randInt(state.monster.atkMin, state.monster.atkMax);
    if(state.monster.buffTurnsLeft > 0) mdmg = Math.round(mdmg * (state.monster.buffMult || 1.5));
-   const { absorbed, remaining } = applyDamageToPlayer(mdmg);
-   log(absorbed > 0
-       ? `${capitalize(state.monster.name)} retaliates for ${mdmg} damage — your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'}.`
-       : `${capitalize(state.monster.name)} retaliates for ${mdmg} damage.`, 'damage');
+   const { dmg, absorbed, remaining } = applyDamageToPlayer(mdmg);
+   /* Composed rather than nested ternaries so all 4 combinations (neither/
+   armor only/shield only/both mitigating) read cleanly — armor blunts the
+   RAW mdmg first, then a shield absorbs whatever's left of that. */
+   const armorClause = dmg < mdmg ? ` Armor blunts it to ${dmg}.` : '';
+   const shieldClause = absorbed > 0
+      ? ` Your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'}.`
+      : '';
+   log(`${capitalize(state.monster.name)} retaliates for ${mdmg} damage.${armorClause}${shieldClause}`, 'damage');
    tickMonsterBuff();
 }
 
@@ -374,11 +439,13 @@ function applyPlayerStatusEffectForTurn(){
       dmgMult = 1 - fx.dmgReduction;
       log(`The cold still in your limbs saps the swing (${fx.turnsLeft} attack${fx.turnsLeft===1?'':'s'} left).`);
    } else {
-      const { absorbed, remaining } = applyDamageToPlayer(fx.dmgPerTurn);
+      const { dmg, absorbed, remaining } = applyDamageToPlayer(fx.dmgPerTurn);
       const label = fx.type === 'burn' ? 'burn' : 'poison';
-      log(absorbed > 0
-          ? `The ${label} still in you deals ${fx.dmgPerTurn} damage — your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'} (${fx.turnsLeft} attack${fx.turnsLeft===1?'':'s'} left).`
-          : `The ${label} still in you deals ${fx.dmgPerTurn} damage (${fx.turnsLeft} attack${fx.turnsLeft===1?'':'s'} left).`, 'damage');
+      const armorClause = dmg < fx.dmgPerTurn ? ` Armor blunts it to ${dmg}.` : '';
+      const shieldClause = absorbed > 0
+         ? ` Your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'}.`
+         : '';
+      log(`The ${label} still in you deals ${fx.dmgPerTurn} damage.${armorClause}${shieldClause} (${fx.turnsLeft} attack${fx.turnsLeft===1?'':'s'} left).`, 'damage');
    }
    fx.turnsLeft--;
    if(fx.turnsLeft <= 0) state.playerStatusEffect = null;
@@ -414,10 +481,12 @@ function useMonsterSkill(skill){
              : `You dodge ${state.monster.name}'s ${skill.flavor} completely.`);
       } else {
          const dmg = randInt(skill.boltMin, skill.boltMax);
-         const { absorbed, remaining } = applyDamageToPlayer(dmg);
-         log(absorbed > 0
-             ? `${capitalize(state.monster.name)} ${skill.flavor} for ${dmg} damage — your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'}.`
-             : `${capitalize(state.monster.name)} ${skill.flavor} for ${dmg} damage.`, 'damage');
+         const { dmg: mitigatedDmg, absorbed, remaining } = applyDamageToPlayer(dmg);
+         const armorClause = mitigatedDmg < dmg ? ` Armor blunts it to ${mitigatedDmg}.` : '';
+         const shieldClause = absorbed > 0
+            ? ` Your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'}.`
+            : '';
+         log(`${capitalize(state.monster.name)} ${skill.flavor} for ${dmg} damage.${armorClause}${shieldClause}`, 'damage');
       }
    }
 }
@@ -491,13 +560,13 @@ function playerAttack(){
       || (sneakAttackChance > 0 && Math.random() < sneakAttackChance);
    if(sneakAttackLands) dmg = Math.round(dmg * 2);
 
-   const { dodged } = applyDamageToMonster(dmg, sneakAttackLands);
+   const { dodged, dealt } = applyDamageToMonster(dmg, sneakAttackLands);
    if(dodged){
       log(`${capitalize(state.monster.name)} slips out of the way — ${weaponName} finds nothing but air.`);
    } else {
       log(sneakAttackLands
-          ? `You catch ${state.monster.name} completely off guard with ${weaponName} — a critical opening strike for ${dmg} damage!`
-          : `You strike ${state.monster.name} with ${weaponName} for ${dmg} damage.`);
+          ? `You catch ${state.monster.name} completely off guard with ${weaponName} — a critical opening strike for ${dealt} damage!`
+          : `You strike ${state.monster.name} with ${weaponName} for ${dealt} damage.`);
       if(state.monster.hp<=0){
          winCombat();
          return;
@@ -517,11 +586,11 @@ function playerAttack(){
    only, same "landing it denies retaliation" rule as before. */
    if(state.classTitle === 'Card Shark' && Math.random() < CARD_SHARK_DOUBLE_ATTACK_CHANCE[state.classSkillLevel]){
       const dmg2 = Math.round((randInt(3,7) + (state.level-1) + statBonus(eff.beef)) * statusFx.dmgMult);
-      const { dodged: dodged2 } = applyDamageToMonster(dmg2, false);
+      const { dodged: dodged2, dealt: dealt2 } = applyDamageToMonster(dmg2, false);
       if(dodged2){
          log(`Quick as a card trick, you come back around for a second swing with ${weaponName} — ${state.monster.name} slips out of the way again.`);
       } else {
-         log(`Quick as a card trick, you swing ${weaponName} again for ${dmg2} damage.`);
+         log(`Quick as a card trick, you swing ${weaponName} again for ${dealt2} damage.`);
          if(state.monster.hp<=0){
             winCombat();
             return;
@@ -636,11 +705,11 @@ if(spell.type==='damage'){
    just the base roll — chosen to mirror how Adrenaline Rush stacks on
    top of MEATHEAD_DAMAGE_BONUS in playerAttack() rather than diverge. */
    if(state.classBuffFightsLeft > 0 && state.classTitle === 'Hexpert') dmg = Math.round(dmg * 1.5);
-   const { dodged } = applyDamageToMonster(dmg, false);
+   const { dodged, dealt } = applyDamageToMonster(dmg, false);
    if(dodged){
       log(`You cast ${spell.name}, but ${state.monster.name} isn't where the bolt lands.`);
    } else {
-      log(`You cast ${spell.name} — ${capitalize(state.monster.name)} takes ${dmg} damage.`);
+      log(`You cast ${spell.name} — ${capitalize(state.monster.name)} takes ${dealt} damage.`);
       if(state.monster.hp<=0){
          /* Checked before winCombat() (so !state.classQuestComplete still reads
          pre-victory state) but logged after — winCombat() calls clearLog()
@@ -806,10 +875,12 @@ function playerFlee(){
       if(wasBuildingTrialFight) state.location = 'town';
    } else {
       const mdmg = randInt(state.monster.atkMin, state.monster.atkMax);
-      const { absorbed, remaining } = applyDamageToPlayer(mdmg);
-      log(absorbed > 0
-          ? `You fail to escape. ${capitalize(state.monster.name)} gets a free hit for ${mdmg} — your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'}.`
-          : `You fail to escape. ${capitalize(state.monster.name)} gets a free hit for ${mdmg}.`, 'damage');
+      const { dmg, absorbed, remaining } = applyDamageToPlayer(mdmg);
+      const armorClause = dmg < mdmg ? ` Armor blunts it to ${dmg}.` : '';
+      const shieldClause = absorbed > 0
+         ? ` Your shield absorbs ${absorbed}${remaining>0 ? `, ${remaining} gets through` : ' entirely'}.`
+         : '';
+      log(`You fail to escape. ${capitalize(state.monster.name)} gets a free hit for ${mdmg}.${armorClause}${shieldClause}`, 'damage');
       checkDefeat();
    }
    render();

@@ -104,6 +104,20 @@ new `<script>` tag for a new file.
 - `STAT_LABELS`/`STAT_HINTS`/`SLOT_LABELS`/`SLOT_ORDER` constants, and
   `statBonus(value)` — the shared superlinear stat-scaling helper (each
   point is worth more than the last; used by combat.js/player-actions.js).
+  `STAT_LABELS`/`STAT_HINTS` now include a 5th entry, `armor` — added so
+  ANY `item.bonus` key (item-tiers.js/render-shop.js/render-character.js/
+  economy.js all label a bonus generically via `STAT_LABELS[k]`) displays
+  correctly, but armor is gear-only, never a spendable base stat. See
+  `SPENDABLE_STAT_KEYS = ['beef','zip','grit','hoodoo']`, right below
+  `STAT_LABELS` — `renderStatsBlock()` (render-character.js) and
+  `spendStatPoint()`'s own guard (player-actions.js) iterate/check THIS
+  list instead of `STAT_LABELS`, which is what actually keeps an "Armor
+  +1" button from ever appearing. Armor flows through
+  `getEffectiveStats()`'s already-generic equipment-merge loop
+  (player-actions.js) with zero changes needed there — it never lives in
+  `state.stats` at all, so `createDefaultState()` below, `dev-tools.js`'s
+  stat reset, and `brewStatResetPotion()`'s respec (town.js) needed no
+  changes either.
 
 Touch this file when: adding a new save field, changing the Supabase
 project URL/key, or changing stat-scaling math.
@@ -212,12 +226,40 @@ or its two district backdrops.
 stat modifier per the comment above `monsters[]`, authored as the
 tier-1/1-stat baseline; `RARE_DROP_CHANCE`/`GEAR_DROP_CHANCE` roll each
 independently in `winCombat()`, and a dropped gearDrop then rolls a
-tier via `GEAR_DROP_TIER_CHANCE`/`rollGearDropTier()` — see combat.js),
-the named bosses — every one of them (`gnomeCommander`/`diggerBot`/
+tier via `GEAR_DROP_TIER_CHANCE`/`rollGearDropTier()` — see combat.js).
+
+Every monster/boss across ALL FIVE monster-data files (this one,
+mudroot-content.js, warrensear-content.js, emberwarren-content.js,
+crystalcity-content.js — 77 objects total) is authored as a
+`beef`/`zip`/`grit`/`hoodoo`/`armor` stat block, mirroring the player's
+own 4 stats plus the new armor stat, REPLACING the old raw
+`hp`/`atkMin`/`atkMax`(/ad hoc `dodgeChance`) fields entirely —
+`deriveMonsterCombatStats()` (combat.js) turns these into the numbers
+`startCombat()` actually spawns with, via `statBonus()` same as every
+player formula. `hoodoo` is present in the data shape but has NO
+mechanical effect yet (a monster's `skills[]` keep their own
+hand-authored heal/bolt/debuff magnitude regardless of hoodoo — scaling
+those off it is an intentionally out-of-scope follow-up). `armor`
+defaults to 0 on every entry except 9 hand-picked marquee bosses
+(`gnomeKing`/`warrenMother`/`vaultKeeper`/the three Adventurer's Trial
+champions/the three Gnometropolis district guardians), each given a
+small, conservative starting value (5-12) as a visible proof the knob
+works — same "revisit with real play data" caveat
+`ZONE_LEVEL_RECOMMENDATION`'s own comments already use elsewhere for a
+guessed-not-simulated number. The migration itself was formula-based
+(inverting each monster's OLD authored hp/atkMin/atkMax/dodgeChance
+through the same derive formulas to reproduce today's effective
+difficulty as closely as the math allows, not hand-retuned) —
+`xp`/`rare`/`skills[]`/`loot`/`rareDrop`/`gearDrop`/`art`/`zone`/`name`
+were untouched by it.
+
+The named bosses — every one of them (`gnomeCommander`/`diggerBot`/
 `gnomeKingsCaptain`/`gnomeKing`/the Adventurer's Trial's three themed
 fights, `trialChampion`/`casinoChampion`/`hoodooChampion`/the three
-Gnometropolis district guardians) carries its own `skills[]` and/or
-`dodgeChance` giving it one signature mechanic (a rally buff, a self-
+Gnometropolis district guardians) carries its own `skills[]` and/or a
+real `zip` (driving `deriveMonsterCombatStats()`'s own dodge formula,
+replacing the old ad hoc `dodgeChance` field 6 of them used to author
+directly) giving it one signature mechanic (a rally buff, a self-
 heal, an elemental bolt, evasion, or some combination — see the comment
 above `gnomeCommander` for the full rundown and reasoning) dispatched
 generically by combat.js's `monsterRetaliate()`/`useMonsterSkill()`,
@@ -229,8 +271,22 @@ constants, `ZONE_DIFFICULTY`/`ZONE_LABELS`, `noncombatEvents`/
 more +1 secondary stat on top of the previous tier's own bonuses, all
 gated by Shop level via `SHOP_LEVEL_GEAR_TIER2/3/4`, see
 `getAvailableShopItems()` in economy.js), `STAT_ROTATION` (which
-secondary stat a tier-2/3/4 item/drop gets, cycled per primary stat),
-`shopBuyItems`, `spells` (each with a `type` —
+secondary stat a MONSTER GEARDROP's tier-2/3/4 roll gets,
+`rollGearDropTier()`, combat.js — cycled per primary stat; still only
+the original 4 stats, deliberately NOT extended to include `armor` —
+its 3-slot rotation IS the "tier 4 = all 4 stats" guarantee, and a 5th
+stat doesn't fit without restructuring the tier system itself. A SHOP
+purchase's own secondary roll is a separate, simpler mechanism —
+`rollShopGearStats()`, economy.js — which DOES include armor in its
+candidate pool), `MONSTER_HP_PER_GRIT`/`MONSTER_ATK_PER_BEEF`/
+`MONSTER_ATK_SPREAD`/`MONSTER_DODGE_COEFFICIENT`/`MONSTER_DODGE_CAP`
+(the monster-stat-block derive formula's own tuning knobs — see
+`deriveMonsterCombatStats()`, combat.js) and `ARMOR_REDUCTION_
+COEFFICIENT`/`ARMOR_REDUCTION_CAP` (armor's own mitigation-fraction
+formula, shared by both the player and monsters — see
+`armorDamageReduction()`, combat.js — reuses `statBonus()`'s own
+superlinear curve, capped so it hard-flatlines instead of ever
+approaching 100%), `shopBuyItems`, `spells` (each with a `type` —
 `'damage'|'heal'|'ward'|'buff'|'shout'|'evade'` — and a `classRequired`/
 `learnLocation` pair gating who can learn it and where; Hexpert is the
 only class with two Act 2 spells, `arcanelance` (damage) and
@@ -269,8 +325,9 @@ zones on the main chain (not a district) get added here, in order.
 content.js's own `monsters[]`, `.push()`ed onto that same array at the
 bottom of this file rather than duplicating combat.js's zone filter),
 quest9's two rare hunt targets (`tunnelWarden`/`warrenScout` — same
-`rare:true`/`skills[]`/`dodgeChance` shape as content.js's own named
-bosses, spawned by `tunnelWardenHunt`/`warrenScoutHunt` in
+`rare:true`/`skills[]`/`beef`/`zip`/`grit`/`hoodoo`/`armor` stat-block
+shape as content.js's own named bosses, spawned by
+`tunnelWardenHunt`/`warrenScoutHunt` in
 `goAdventuring()`, combat.js) plus their own spawn-chance constants,
 and extends content.js's `noncombatEvents`/`hazardEvents` with entries
 for `rootcellar`/`mudflats`/`bureau` (`Object.assign()`, since those
@@ -418,6 +475,10 @@ raise the gate) or by `temperEquippedItem()` (player-actions.js, the
 pre-temper value, so tempering doesn't either). statReq/statKey are
 kept in the returned shape but are always 0/null now — dropped as a
 requirement entirely, callers that still check them just no-op.
+Fully generic over whatever key `Object.keys(item.bonus)[0]` happens to
+be — confirmed to need zero changes when `armor` (core.js) was added as
+a 5th possible bonus stat, since it never special-cases the 4 original
+stat names by string.
 
 Pure throughout: every function here only reads its `item` argument,
 never `state` — comparing a requirement against the player's actual
@@ -471,7 +532,11 @@ Town Lot screen's layout or wording needs to change.
 ## render-character.js — progression screens
 `renderSpellMenu`, `renderCharacterDrawer` + its sub-blocks
 (`renderRareFindsBlock`/`renderStatsBlock`/`renderEquipmentBlock`), and
-`renderQuestLogDrawer`.
+`renderQuestLogDrawer`. `renderStatsBlock()` iterates
+`SPENDABLE_STAT_KEYS` (core.js), not `STAT_LABELS`, for the 4
+spend-a-point rows — armor gets its own separate read-only row instead
+(no base/bonus split, no button), shown only once `getEffectiveStats().armor`
+is actually nonzero.
 
 Touch this file when: the Character drawer or Quest Log's layout or
 wording needs to change.
@@ -567,7 +632,10 @@ silently resets on the next reload.
 `equipItem` (refuses below the item's own level/stat requirement —
 `getGearRequirements()`, item-tiers.js — with a log message rather than
 a silent no-op)/`unequipItem`, `getEffectiveStats`/`recomputeMaxStats`/
-`spendStatPoint`, `temperEquippedItem(slot)` — Bounty Tokens' first
+`spendStatPoint` (guards on `SPENDABLE_STAT_KEYS.includes(stat)`, core.js
+— not `STAT_LABELS[stat]`, so `armor` can never be spent as a stat
+point even though it's labeled for display purposes elsewhere),
+`temperEquippedItem(slot)` — Bounty Tokens' first
 real sink (per explicit direction; `TEMPER_BASE_COST`/
 `TEMPER_STAT_MULTIPLIER`/`TEMPER_MAX_LEVEL`/`temperCost(level)`,
 content.js), permanently multiplying every stat an equipped item
@@ -696,8 +764,23 @@ pure class-trainer buildings; see gnometropolis.js)/`goAdventuring()`
 `tunnelMoleInformantHunt`/`seniorClerkHunt`/`gearworksForemanHunt`/
 `bureauQuartermasterHunt` — each a simple "quest accepted, not
 complete, not already found" boolean checked against a per-target
-spawn chance), `startCombat`/`applyDamageToPlayer`/
-`applyDamageToMonster`/`monsterRetaliate`/`monsterAutoAttack`/
+spawn chance), `startCombat` (derives a template's real hp/atkMin/
+atkMax/dodgeChance from its `beef`/`zip`/`grit` stat block via
+`deriveMonsterCombatStats()` right before applying `ZONE_DIFFICULTY` —
+armor passes through unscaled, same treatment `dodgeChance` always
+got)/`deriveMonsterCombatStats(m)` (the monster-stat-block formula
+shapes, mirroring the player's own maxHp/dodge formulas — no "level"
+term, since monsters don't level; `hoodoo` is deliberately unread
+here)/`armorDamageReduction(armor)` (shared by both damage functions
+below — reuses `statBonus()`'s own curve, capped at
+`ARMOR_REDUCTION_CAP`, content.js)/`applyDamageToPlayer`/
+`applyDamageToMonster` (both mitigate via `armorDamageReduction()`
+before anything else — shield absorption for the player, the dodge
+roll for a monster already happened/happens first — floored at 1 UNLESS
+the raw incoming damage was already `<=0`, in which case it stays 0
+rather than manufacturing a hit out of nothing; both return the actual
+post-armor amount, and every caller logs THAT, not its own
+pre-mitigation local variable)/`monsterRetaliate`/`monsterAutoAttack`/
 `tickMonsterBuff`/`useMonsterSkill` (dispatches a monster's own
 `skills[]` entry by `type` — `'heal'`/`'buff'`/`'bolt'`/`'debuff'`, the
 last of which sets `state.playerStatusEffect` instead of attacking that
@@ -1010,7 +1093,13 @@ own equip rows both key off array index for exactly this reason) —
 `getAvailableShopItems`/
 `rollShopGearStats` (rerolls tier-2/3+ gear's secondary stat(s) fresh
 on every purchase — the primary stat/value is fixed by the definition,
-only which OTHER stat(s) it gets is random; shared by both shops)/
+only which OTHER stat(s) it gets is random; shared by both shops — its
+candidate pool is `['beef','zip','grit','hoodoo','armor']`, so a
+tier-4 item no longer guarantees all 4 of the original stats every
+time, since 3 secondaries now come from a pool of 4 remaining
+candidates instead of exactly 3; monster gearDrop rolls,
+`rollGearDropTier()`, stay on the original 4-stat `STAT_ROTATION`,
+content.js — see that constant's own comment for why)/
 `buyItemByName`/`buyGnomeShopItemByName` (the Act 2 Shop's own
 purchase function — reads `getAvailableGnomeShopItems()`, act2-shop.js,
 and gates on `state.location==='gnomeshop'` instead), `randInt`, the

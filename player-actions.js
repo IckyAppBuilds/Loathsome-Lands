@@ -101,7 +101,7 @@ function recomputeMaxStats(){
 }
 
 function spendStatPoint(stat){
-   if(state.statPoints<=0 || !STAT_LABELS[stat]) return;
+   if(state.statPoints<=0 || !SPENDABLE_STAT_KEYS.includes(stat)) return;
    state.stats[stat]++;
    state.statPoints--;
    recomputeMaxStats();

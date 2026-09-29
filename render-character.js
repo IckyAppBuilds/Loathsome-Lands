@@ -151,7 +151,7 @@ function renderStatsBlock(){
   const pointsNote = state.statPoints>0
   ? `<div class="stat-points-note">${state.statPoints} stat point${state.statPoints>1?'s':''} to spend!</div>`
     : '';
-  const rows = Object.keys(STAT_LABELS).map(key=>{
+  const rows = SPENDABLE_STAT_KEYS.map(key=>{
     const base = state.stats[key];
     const bonus = eff[key] - base;
     const bonusText = bonus>0 ? ` <span class="qty-badge">+${bonus}</span>` : '';
@@ -167,7 +167,21 @@ function renderStatsBlock(){
     ${btn}
     </div>`;
   }).join('');
-  el.innerHTML = `<div class="block-title">Stats</div>${pointsNote}${rows}`;
+  /* Armor is gear-only (SPENDABLE_STAT_KEYS above deliberately excludes it
+  — see its own comment, core.js) — its own read-only row, no base/bonus
+  split (there's no state.stats.armor to split against) and never a spend
+  button, just today's total from equipped gear. Only shown once it's
+  actually nonzero, since a fresh character has no armor-granting gear
+  yet and an always-"0" row would just be clutter until it means
+  something. */
+  const armorRow = eff.armor > 0 ? `<div class="stat-row">
+  <div style="flex:1;">
+  <div class="stat-row-label">${STAT_LABELS.armor}</div>
+  <div class="stat-row-hint">${STAT_HINTS.armor}</div>
+  </div>
+  <div class="stat-row-value">${eff.armor}</div>
+  </div>` : '';
+  el.innerHTML = `<div class="block-title">Stats</div>${pointsNote}${rows}${armorRow}`;
 }
 
 function renderEquipmentBlock(){
