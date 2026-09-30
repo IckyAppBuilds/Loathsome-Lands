@@ -300,9 +300,17 @@ function buildSellSection(sellFn){
     if(item.type!=='equip') return;
     const iconSvg = item.icon ? item.icon() : '';
     const unitSell = getItemSellValue(item);
+    /* Per explicit request — the Sell tab never showed an item's own
+    stats before (only its flavor desc + price), unlike every other
+    listing (Pack, Shop, Equipment). Same "each stat on its own line"
+    formatting as those, so a multi-stat item reads the same way here
+    too, right before deciding whether to sell it. */
+    const bonusText = item.bonus && Object.keys(item.bonus).length
+      ? '<br>' + Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join('<br>')
+      : '';
     const div = document.createElement('div');
     div.className = 'shop-item';
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}</div><div class="desc">${item.desc} (${unitSell} Pop Tab${unitSell>1?'s':''})</div><button class="btn-secondary" onclick="sellEquipItemByIndex(${idx})">Sell — ${unitSell} Pop Tabs</button></div>`;
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}</div><div class="desc">${item.desc}${bonusText}<br>(${unitSell} Pop Tab${unitSell>1?'s':''})</div><button class="btn-secondary" onclick="sellEquipItemByIndex(${idx})">Sell — ${unitSell} Pop Tabs</button></div>`;
     equipRows.push({ name: item.name, div });
   });
 
