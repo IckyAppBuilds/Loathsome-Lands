@@ -209,13 +209,15 @@ function renderShopItemRow(def, buyFn){
       : ` (${Object.entries(def.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`;
   }
   /* Armor itself is never randomized (ensureGearArmor(), item-tiers.js —
-  a flat, deterministic per-tier amount), unlike the secondary stat(s)
-  above, so it's safe to name plainly here even before purchase —
-  spliced in just before bonusTag's own closing paren, or as its own
-  fresh parenthetical for a flavor-only equip item with no other bonus
-  at all (bonusTag still empty at this point in that case). */
-  if(def.type === 'equip'){
-    const armorNote = `guaranteed +${GEAR_ARMOR_BY_TIER[def.tier] || 1} Armor`;
+  deterministic off tier/level requirement/class weight), unlike the
+  secondary stat(s) above, so it's safe to name plainly here even
+  before purchase — spliced in just before bonusTag's own closing
+  paren, or as its own fresh parenthetical for a flavor-only equip item
+  with no other bonus at all (bonusTag still empty at this point in
+  that case). Weapons never get armor at all (per explicit correction —
+  offense, not protection), so this is skipped for them entirely. */
+  if(def.type === 'equip' && def.slot !== 'weapon'){
+    const armorNote = `guaranteed +${ensureGearArmor({ ...def }).bonus.armor} Armor`;
     bonusTag = bonusTag.endsWith(')') ? bonusTag.slice(0, -1) + `, ${armorNote})` : ` (${armorNote})`;
   }
   /* Purchasing itself is only gated on Pop Tabs — an item can be bought

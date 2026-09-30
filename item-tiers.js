@@ -81,9 +81,24 @@ dominant factor, same climbing curve every other stat gets), and its
 armor class weight (ARMOR_CLASS_WEIGHT, content.js — Meathead's Heavy
 gear protects noticeably more per item than Hexpert's Light gear,
 universal/un-classed items like starterGear get no weight adjustment
-at all). */
+at all).
+
+Weapons are excluded entirely, per explicit correction — a weapon is
+offense, not protection, and armor never belonged on it conceptually
+even though nothing stopped it from getting one before this shipped.
+Also strips `bonus.armor` from a weapon that already has one — the one
+retroactive cleanup an older save's weapon (hydrateItem(), save.js)
+needs, since simply no-op'ing here would leave that armor sitting on
+it forever instead of actually removing it. */
 function ensureGearArmor(item){
    if(!item || item.type !== 'equip') return item;
+   if(item.slot === 'weapon'){
+      if(item.bonus && item.bonus.armor !== undefined){
+         const { armor, ...rest } = item.bonus;
+         item.bonus = rest;
+      }
+      return item;
+   }
    if(item.bonus && item.bonus.armor !== undefined) return item;
    const req = getGearRequirements(item);
    const tierBase = GEAR_ARMOR_BY_TIER[item.tier] || 1;

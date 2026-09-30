@@ -589,6 +589,21 @@ Light per class, 1x for universal/un-classed items like starterGear).
 (player-actions.js) actually gates on, so the Pack/Shop text never
 promises something the Equip button doesn't enforce.
 
+**Weapons never get armor at all**, per explicit correction — offense,
+not protection. `ensureGearArmor()` short-circuits on `item.slot ===
+'weapon'` before doing any of the above, and ALSO strips `bonus.armor`
+off a weapon that already has one (the one retroactive cleanup an
+older save's weapon needs, since every other equip item's armor is
+additive-only/never-overwritten — see the "only sets when missing"
+paragraph above — a weapon needed the opposite: always remove, since
+nothing after this point should ever put it back). `hydrateItem()`
+(save.js) runs this on every load, so an existing save's weapons clean
+themselves up automatically; nothing in content.js/act2-shop.js ever
+authored a literal `armor:N` on a weapon to begin with (it was always
+derived), so no data file needed a matching change. The shop preview's
+"guaranteed +N Armor" note (`renderShopItemRow()`, render-shop.js) is
+skipped entirely for `slot==='weapon'` rows for the same reason.
+
 Pure throughout: every function here only reads its `item` argument,
 never `state` — comparing a requirement against the player's actual
 level is left to each caller (equipItem(); the Pack/Shop listings' own

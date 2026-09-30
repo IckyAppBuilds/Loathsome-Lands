@@ -11,6 +11,9 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 18, date: 'September 30', title: 'Weapons Are For Hitting Things', items: [
+      "Weapons no longer carry an armor bonus — that was never the point of a weapon. Already-owned weapons with armor on them lose it automatically next time you log in; every other stat they carry is untouched.",
+      ]},
    { id: 17, date: 'September 30', title: 'Armor Classes', items: [
       "Gear now belongs to a class: Meatheads wear Heavy gear, Card Sharks wear Medium, Hexperts wear Light — each protects a different amount, and you can only equip your own.",
       "Already got something on that doesn't match? It's grandfathered in — nothing gets stripped off, the restriction just applies to what you equip from here on.",
