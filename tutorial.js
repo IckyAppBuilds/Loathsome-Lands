@@ -28,7 +28,7 @@ const TUTORIAL_STEPS = [
    { title: 'Adventuring & Combat', body: [
       'Open the Map tab to travel to the Overgrown Commons (and zones you’ll unlock later), then tap Adventure!',
       'Fights are turn-based: Attack, Use a spell or item once you’ve got one, or Flee.',
-      'Nobody’s perfect — your own swings can miss, and Zip lets you dodge or flee more often. A shield (🛡, shown next to your HP) soaks up damage before your HP does, if you’ve got one.',
+      'Nobody’s perfect — your own swings can miss, and Zip lets you dodge or flee more often. Zip also works as accuracy: the more you’ve got, the more it cancels out a slippery monster’s own dodge chance (and vice versa, if the monster’s the nimble one). A shield (🛡, shown next to your HP) soaks up damage before your HP does, if you’ve got one.',
       'Defeated monsters sometimes drop loot — sell the junk at the Shop, and hang onto anything quest-related.',
       ]},
    { title: 'Quests & Leveling Up', body: [

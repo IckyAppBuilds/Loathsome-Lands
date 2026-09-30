@@ -352,14 +352,17 @@ function createDefaultState(){
 }
 const state = createDefaultState();
 
-/* Fun names for the four core stats. Beef = melee punch, Zip = speed/evasion,
+/* Fun names for the four core stats. Beef = melee punch, Zip = speed/evasion
+   AND accuracy (raises your own dodge chance AND cancels out some of
+   whoever you're fighting's own dodge chance — zipDodgeAndAccuracy(),
+   combat.js — the same number does both jobs, on both sides of a fight),
    Grit = toughness (raises max HP), Hoodoo = odd mystical aptitude (raises max MP).
    Armor is a 5th entry here too, for display only — see SPENDABLE_STAT_KEYS
    below for why it never becomes a stat-point spend option. */
 const STAT_LABELS = { beef:'Beef', zip:'Zip', grit:'Grit', hoodoo:'Hoodoo', armor:'Armor' };
 const STAT_HINTS = {
      beef:'Hit harder in a fight.',
-     zip:'Dodge attacks and flee more often.',
+     zip:'Dodge attacks, flee more often, and gain accuracy against a slippery target.',
      grit:'Tougher constitution — raises max HP.',
      hoodoo:'A knack for the weird — raises max MP.',
      armor:'Reduces damage taken from every hit.',
