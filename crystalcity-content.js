@@ -11,15 +11,15 @@ const crystalCityMonsters = [
    { name:"a crystal sentinel, refracting every strike before it lands", beef:8, zip:0, grit:26, hoodoo:0, xp:44, zone:"crystalcity",
     art: artCrystalSentinel, loot:{name:"a shard of prismatic crystal", desc:"Splits the torchlight into every color at once.", type:"junk", sell:19, icon:iconCapturedLight},
     rareDrop:{name:"a refracted echo of the blow that should have landed", desc:"You're choosing not to think about that too hard, again.", type:"junk", sell:52, icon:iconFigurine},
-    gearDrop:{name:"sentinel's refracting carapace-plate of the Tortoise", desc:"Bends light around the wearer. Bends blows around them too, mostly.", type:"equip", slot:"chest", bonus:{grit:10}, tier:'common', icon:iconClockworkPlate} },
+    gearDrop:{name:"sentinel's refracting carapace-plate of the Badger", desc:"Bends light around the wearer. Bends blows around them too, mostly.", type:"equip", slot:"chest", bonus:{beef:10}, classRequired:'Meathead', tier:'common', icon:iconClockworkPlate} },
    { name:"a geode crawler, seams cracking with inner light", beef:8, zip:0, grit:25, hoodoo:0, xp:42, zone:"crystalcity",
     art: artGeodeCrawler, loot:{name:"a chunk of raw geode, still warm", desc:"Warm from something that isn't friction.", type:"junk", sell:18, icon:iconVeinGemstone},
     rareDrop:{name:"a geode that never stops glowing", desc:"You've stopped asking what's feeding it.", type:"luck", hpValue:30, mpValue:15, icon:iconClover},
-    gearDrop:{name:"crawler's cracked-seam greaves of the Weasel", desc:"Light leaks out of every joint. Somehow doesn't slow you down.", type:"equip", slot:"legs", bonus:{zip:10}, tier:'common', icon:iconShinGuard} },
+    gearDrop:{name:"crawler's cracked-seam greaves of the Weasel", desc:"Light leaks out of every joint. Somehow doesn't slow you down.", type:"equip", slot:"legs", bonus:{zip:10}, classRequired:'Card Shark', tier:'common', icon:iconShinGuard} },
    { name:"an echo wraith, bent from light that took a wrong turn", beef:9, zip:0, grit:27, hoodoo:0, xp:46, zone:"crystalcity",
     art: artEchoWraith, loot:{name:"a sliver of bent light, somehow still cold", desc:"Doesn't warm up no matter how long you hold it.", type:"junk", sell:20, icon:iconCapturedLight},
     rareDrop:{name:"an echo that arrived from somewhere that hasn't happened yet", desc:"You've decided not to ask it any questions.", type:"junk", sell:54, icon:iconFigurine},
-    gearDrop:{name:"wraith-bent focus rod of the Loon", desc:"Casts the spell, then casts it again, slightly earlier.", type:"equip", slot:"weapon", bonus:{hoodoo:10}, tier:'common', icon:iconWandStick} },
+    gearDrop:{name:"wraith-bent focus rod of the Loon", desc:"Casts the spell, then casts it again, slightly earlier.", type:"equip", slot:"weapon", bonus:{hoodoo:10}, classRequired:'Hexpert', tier:'common', icon:iconWandStick} },
    ];
 
 monsters.push(...crystalCityMonsters);

@@ -485,7 +485,7 @@ increments palaceGauntletProgress on a win. */
 function approachPalaceGate(){
    if(state.inCombat !== false || state.location !== 'palace' || !state.quest7Accepted || state.quest7RareDefeated) return;
    if(palaceGauntletProgress === 0){
-      const gearNeeded = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
+      const gearNeeded = PALACE_GATE_GEAR.find(g => g.classRequired === state.classTitle);
       if(!gearNeeded || state.equipment[gearNeeded.slot]?.name !== gearNeeded.name){
          clearLog();
          log(gearNeeded

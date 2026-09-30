@@ -78,11 +78,13 @@ INVENTORY_SECTIONS.forEach(section=>{
         : `<button class="btn-secondary" onclick="useItem(${firstIdx})">Use</button>`;
     } else if(item.type==='equip'){
       /* getGearRequirements() (item-tiers.js) derives both checks from
-      the item's own bonus — same requirement equipItem() (player-
-      actions.js) itself enforces, so the button's disabled state never
-      disagrees with what actually happens on click. */
+      the item's own bonus, and the classRequired check mirrors
+      equipItem()'s own armor-classes gate (player-actions.js) — same
+      requirements equipItem() itself enforces, so the button's disabled
+      state never disagrees with what actually happens on click. */
       const req = getGearRequirements(item);
-      const meetsReq = state.level >= req.levelReq && (!req.statKey || state.stats[req.statKey] >= req.statReq);
+      const meetsReq = state.level >= req.levelReq && (!req.statKey || state.stats[req.statKey] >= req.statReq)
+         && (!item.classRequired || !state.classTitle || item.classRequired === state.classTitle);
       btn = `<button class="btn-secondary" ${meetsReq?'':'disabled'} onclick="equipItem(${firstIdx})">Equip</button>`;
     }
     const iconSvg = item.icon ? item.icon() : '';

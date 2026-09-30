@@ -330,9 +330,51 @@ tables (`buildingUpgradeCost()`, `LOT_TIER_COST` — both quadratic) plus
 each building's per-level effect constants (`GAFFER_BISCUIT_MAX_BONUS`
 etc.) and `STAT_RESET_BASE_PRICE`/`STAT_RESET_PRICE_MULT`.
 
+**Armor classes (Heavy/Medium/Light per class)**: any equip item
+(weapon included) can carry `classRequired` — `'Meathead'`/`'Card
+Shark'`/`'Hexpert'`, same field the `spells[]` list above already uses
+for the same concept — read/enforced by `equipItem()` (player-
+actions.js) and the shop filters (`filterByClass()`, economy.js).
+Absent/undefined means universal (starterGear stays this way — no
+stats, nothing to restrict). `CLASS_SIGNATURE_STAT` (next to
+`CLASS_TITLES`) is that pairing read the other way round — a class-
+tagged item's PRIMARY stat is always its class's own signature stat
+(`beef`/Meathead, `zip`/Card Shark, `hoodoo`/Hexpert; grit/Bulwark has
+no entry since Bulwark isn't a reachable class). `ARMOR_CLASS_WEIGHT`
+(`Meathead:1.4`/`'Card Shark':1.0`/`Hexpert:0.7`) is the actual
+Heavy>Medium>Light multiplier on an item's armor VALUE
+(`ensureGearArmor()`, item-tiers.js); `ARMOR_WEIGHT_LABEL` is purely
+cosmetic, for showing "Heavy"/"Medium"/"Light" next to an item's class
+in the UI (`gearRequirementText()`, item-tiers.js).
+
+The gate only fires on a NEW equip action — already-equipped/owned
+mismatched gear from before this feature shipped is grandfathered in
+on purpose, and the gate itself no-ops entirely while
+`state.classTitle` is still null (pre-Trial, before ~level 10), so a
+new character isn't locked out of every piece of gear before they've
+even picked a class.
+
+`shopGearItems`/Tier2/3/4's weapon rows already had one distinct item
+per class (Beef/Hoodoo/Zip-primary) before this feature — those just
+got tagged as-is. head/chest/legs/boots used to be ONE universal item
+per slot; each is now THREE near-identical class variants (same desc/
+icon, reusing the gearDrop "of the ___" animal-suffix naming below) so
+a class can only buy the variant tagged for it — this is why the Act 1
+shop's armor rows tripled in count. `act2GearItemsTier1-4` (act2-
+shop.js) mirrors this exactly. Monster `gearDrop`s were NOT tripled —
+each existing drop was just reassigned a class + matching primary stat,
+distributed evenly per zone, since a loot pool spread across many
+monsters/zones only needs a roughly even 3-way split, not 3x the drops
+per monster. `PALACE_GATE_GEAR` already had this exact class/primary-
+stat pairing from the start (just renamed from `class` to
+`classRequired` for consistency) — nothing else about it changed.
+
 Touch this file when: adding or rebalancing a monster, item, spell, shop
 listing, casino odds, or a cost/bonus curve. Rarely needs a matching
 change elsewhere unless you're adding a new mechanic, not just new data.
+New class-tagged armor/weapon gear needs `classRequired` set to a real
+class and its primary stat matching `CLASS_SIGNATURE_STAT[classRequired]`
+— nothing enforces that pairing at runtime, it's a content convention.
 Every equip/consumable item should carry an explicit `tier` field (see
 item-tiers.js below) — 'poor'/'common'/'uncommon'/'rare'/'epic'; quest
 items and ordinary junk loot don't need one, they're derived from `type`.
@@ -469,6 +511,11 @@ Town Lot building level (`state.gnomeBuildingUpgrades.gnomeshop`,
 role `SHOP_LEVEL_GEAR_TIER2/3/4` (content.js) plays for Gladstone's own
 Shop, just a separate progression track. Read by `renderGnomeShop()`
 (render-shop.js) and `buyGnomeShopItemByName()` (economy.js).
+`getAvailableGnomeShopItems()` runs its result through `filterByClass()`
+(economy.js) same as Act 1's shop — every armor/weapon row here carries
+`classRequired` (see content.js's own armor-classes paragraph above),
+head/chest/legs/boots each tripled into one variant per class same as
+Act 1's own tiers.
 
 Touch this file when: adding/rebalancing an Act 2 Shop gear or food
 item, or changing its own unlock-level gating.
@@ -505,10 +552,9 @@ stat names by string.
 
 Also `GEAR_ARMOR_BY_TIER` and `ensureGearArmor(item)` — per explicit
 request ("armor should be on every piece of gear"), EVERY equip item
-guarantees a tier-based armor value, flat per tier
-(`GEAR_ARMOR_BY_TIER`), rather than being authored per-item or left to
-chance as a possible random secondary stat (an earlier, since-replaced
-version of this rolled armor as one of `rollShopGearStats()`'s
+guarantees an armor value, rather than being authored per-item or left
+to chance as a possible random secondary stat (an earlier, since-
+replaced version of this rolled armor as one of `rollShopGearStats()`'s
 candidates, economy.js). `ensureGearArmor()` is called at every point
 a gear item actually enters/re-enters the player's possession —
 `rollShopGearStats()` (economy.js), `rollGearDropTier()` and
@@ -524,6 +570,24 @@ save/load round trip (a real bug, caught by test-temper-gear.js's own
 round-trip check before this shipped). Appends armor AFTER an item's
 existing bonus keys when it IS adding it, so `getGearRequirements()`
 above never mistakes it for the primary stat.
+
+**The armor VALUE itself** (armor-classes feature) is no longer flat
+per rarity tier — `GEAR_ARMOR_BY_TIER` is now just the small BASE
+component. `ensureGearArmor()` calls `getGearRequirements(item)`
+*before* adding armor to `bonus` (so it still reads the real primary
+stat), then does `tierBase + floor(levelReq * ARMOR_PER_LEVELREQ)` —
+the dominant factor, same climbing curve every other stat already gets
+off level requirement/zone depth — then multiplies by
+`ARMOR_CLASS_WEIGHT[item.classRequired]` (content.js — Heavy/Medium/
+Light per class, 1x for universal/un-classed items like starterGear).
+`ARMOR_PER_LEVELREQ` is a small tunable constant right next to
+`GEAR_ARMOR_BY_TIER`, same "one easy-to-retune knob" philosophy.
+
+`gearRequirementText(item)` also now appends a class clause when
+`item.classRequired` is set (`", Meathead (Heavy) only"`, reading
+`ARMOR_WEIGHT_LABEL`, content.js) — surfaces exactly what `equipItem()`
+(player-actions.js) actually gates on, so the Pack/Shop text never
+promises something the Equip button doesn't enforce.
 
 Pure throughout: every function here only reads its `item` argument,
 never `state` — comparing a requirement against the player's actual
@@ -576,6 +640,15 @@ the Shop cluster (`shopTab`/`setShopTab`/
 (spell list + the stat-reset "Unravelling Draught" section),
 `BUILDING_EFFECT_INFO`/`shopTierUnlockNames()`/`buildingEffectDesc()`,
 and `renderTownLot`.
+
+`renderInventory`'s Equip-button `meetsReq` check also now mirrors
+`equipItem()`'s armor-classes gate (player-actions.js) —
+`!item.classRequired || !state.classTitle || item.classRequired ===
+state.classTitle` — so the button's disabled state never disagrees
+with what a click actually does. `renderShopItemRow`/`renderShop` need
+no equivalent change: the catalog handed to them is already pre-
+filtered by class (`filterByClass()`, economy.js), so an off-class item
+never appears as a row to begin with.
 
 Touch this file when: the Pack, Shop, Bounty Board, Hoodoo Doctor's, or
 Town Lot screen's layout or wording needs to change.
@@ -681,8 +754,13 @@ silently resets on the next reload.
 ## player-actions.js — drawers, equip/use-item, stat points
 `DRAWER_IDS`/`toggleDrawer`/`openDrawer`/`closeAllDrawers`, `useItem`/
 `equipItem` (refuses below the item's own level/stat requirement —
-`getGearRequirements()`, item-tiers.js — with a log message rather than
-a silent no-op)/`unequipItem`, `getEffectiveStats`/`recomputeMaxStats`/
+`getGearRequirements()`, item-tiers.js — or when `item.classRequired`
+doesn't match `state.classTitle` (armor-classes feature — a no-op
+whenever `state.classTitle` is still null, pre-Trial, so a new
+character isn't locked out of everything before picking a class; only
+ever blocks a NEW equip, never touches already-equipped mismatched
+gear, which is grandfathered in on purpose) — with a log message
+rather than a silent no-op)/`unequipItem`, `getEffectiveStats`/`recomputeMaxStats`/
 `spendStatPoint` (guards on `SPENDABLE_STAT_KEYS.includes(stat)`, core.js
 — not `STAT_LABELS[stat]`, so `armor` can never be spent as a stat
 point even though it's labeled for display purposes elsewhere),
@@ -1156,6 +1234,11 @@ grouped/stacked anywhere (two same-named, same-tier drops can still
 carry different rolled secondary stats or `temperLevel` —
 `groupInventoryByName()`, render-shop.js, and `buildSellSection()`'s
 own equip rows both key off array index for exactly this reason) —
+`filterByClass(items)` (armor-classes feature — keeps an item if
+`!item.classRequired || !state.classTitle || item.classRequired ===
+state.classTitle`, same permissive pre-Trial fallback as `equipItem()`'s
+own gate, player-actions.js; called by both `getAvailableShopItems`
+below AND `getAvailableGnomeShopItems()`, act2-shop.js)/
 `getAvailableShopItems`/
 `rollShopGearStats` (rerolls tier-2/3+ gear's secondary stat(s) fresh
 on every purchase — the primary stat/value is fixed by the definition,

@@ -41,31 +41,55 @@ function getItemTier(item){
 than authoring an `armor:N` literal on every equip item across content.js/
 act2-shop.js/every monster's own gearDrop (the same one-off-exception
 problem the monster-stat armor migration specifically moved away from),
-armor is DERIVED from an item's own tier, exactly once, at the handful
-of points a gear item actually enters the player's possession. Flat
-per-tier amount rather than scaling off the item's own primary stat
-value — deliberately simple and easy to re-tune as one small table. */
+armor is DERIVED, exactly once, at the handful of points a gear item
+actually enters the player's possession. GEAR_ARMOR_BY_TIER is just the
+small rarity-based BASE component now — see ensureGearArmor() below for
+how it combines with level requirement and armor class into the item's
+real armor value. Deliberately simple and easy to re-tune as one small
+table, same as before. */
 const GEAR_ARMOR_BY_TIER = { poor:1, common:1, uncommon:2, rare:3, epic:4, legendary:5 };
+
+/* How much armor's value climbs per point of the item's own level
+requirement (getGearRequirements() below) — per explicit request, armor
+should scale with level requirement/drop zone the same way every other
+stat already does, not stay flat-per-rarity-tier forever. Tunable, same
+"one small easy-to-retune constant" philosophy as GEAR_ARMOR_BY_TIER. */
+const ARMOR_PER_LEVELREQ = 0.5;
 
 /* Only sets armor when it's genuinely MISSING — never overwrites an
 existing value, however it got there. This matters: temperEquippedItem()
 (player-actions.js) multiplies every key already in item.bonus,
 including armor, so an already-tempered item's armor is boosted well
-above this function's own base tier amount — hydrateItem() (save.js)
-calls this on every single load, and unconditionally overwriting would
+above this function's own base amount — hydrateItem() (save.js) calls
+this on every single load, and unconditionally overwriting would
 silently reset a tempered item's armor back to its un-tempered floor on
 every save/load round trip (a real bug, caught by test-temper-gear.js's
 own round-trip check). Appends armor AFTER the item's existing bonus
 keys when it does need adding, so an item with a real primary stat
 never has armor mistaken for it by getGearRequirements() below (which
 always reads Object.keys(item.bonus)[0] — insertion order matters
-here). Non-equip items (junk/quest/consumables) pass through untouched.
-Mutates the item in place (so callers that already hold a reference see
-the update) and returns it for convenient chaining. */
+here, and is also why getGearRequirements() is called BEFORE armor is
+added below, not after). Non-equip items (junk/quest/consumables) pass
+through untouched. Mutates the item in place (so callers that already
+hold a reference see the update) and returns it for convenient
+chaining.
+
+The armor VALUE itself now factors in three things, per the armor-
+classes feature: the item's own rarity tier (GEAR_ARMOR_BY_TIER, the
+base), its level requirement/zone depth (ARMOR_PER_LEVELREQ — the
+dominant factor, same climbing curve every other stat gets), and its
+armor class weight (ARMOR_CLASS_WEIGHT, content.js — Meathead's Heavy
+gear protects noticeably more per item than Hexpert's Light gear,
+universal/un-classed items like starterGear get no weight adjustment
+at all). */
 function ensureGearArmor(item){
    if(!item || item.type !== 'equip') return item;
    if(item.bonus && item.bonus.armor !== undefined) return item;
-   item.bonus = { ...(item.bonus || {}), armor: GEAR_ARMOR_BY_TIER[item.tier] || 1 };
+   const req = getGearRequirements(item);
+   const tierBase = GEAR_ARMOR_BY_TIER[item.tier] || 1;
+   const levelScaled = tierBase + Math.floor(req.levelReq * ARMOR_PER_LEVELREQ);
+   const weight = item.classRequired ? (ARMOR_CLASS_WEIGHT[item.classRequired] || 1) : 1;
+   item.bonus = { ...(item.bonus || {}), armor: Math.max(1, Math.round(levelScaled * weight)) };
    return item;
 }
 
@@ -147,14 +171,19 @@ function getGearRequirements(item){
    };
 }
 
-/* Short " — Requires Lv.X, Y base Stat" suffix for an equip item's desc
-line (Pack/Shop listings) — blank for starterGear/anything else with
-nothing worth requiring (levelReq<=1 and no statReq). */
+/* Short " — Requires Lv.X, Y base Stat, Class (Weight) only" suffix for
+an equip item's desc line (Pack/Shop listings) — blank for starterGear/
+anything else with nothing worth requiring (levelReq<=1, no statReq,
+and no classRequired). The class clause surfaces exactly what
+equipItem() (player-actions.js) actually gates on, so the Pack/Shop
+text never promises something the Equip button doesn't enforce. */
 function gearRequirementText(item){
    const req = getGearRequirements(item);
-   if(req.levelReq <= 1 && req.statReq <= 0) return '';
+   const classPart = item && item.classRequired ? `${item.classRequired} (${ARMOR_WEIGHT_LABEL[item.classRequired] || ''}) only` : '';
+   if(req.levelReq <= 1 && req.statReq <= 0 && !classPart) return '';
    const statPart = req.statKey ? `, ${req.statReq} base ${STAT_LABELS[req.statKey]}` : '';
-   return ` — Requires Lv.${req.levelReq}${statPart}`;
+   const classSuffix = classPart ? `, ${classPart}` : '';
+   return ` — Requires Lv.${req.levelReq}${statPart}${classSuffix}`;
 }
 
 /* Short "(+N HP)"/"(+N MP)"/"(+N HP, +N MP)" suffix for an hp/mp/luck

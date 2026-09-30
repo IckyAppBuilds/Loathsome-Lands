@@ -44,86 +44,86 @@ const monsters = [
    { name:"a disgruntled compost gnome", beef:1, zip:0, grit:6, hoodoo:0, xp:3, zone:"commons",
     art: artCompostGnome, loot:{name:"fistful of righteous soil", desc:"Smells like victory and mulch.", type:"junk", sell:1, icon:iconSoil},
     rareDrop:{name:"gnome-sized medal of composting excellence", desc:"Awarded by nobody. Cherished anyway.", type:"junk", sell:10, icon:iconFigurine},
-    gearDrop:{name:"compost-crusted trowel of the Badger", desc:"Sharpened on rocks, mostly by accident.", type:"equip", slot:"weapon", bonus:{beef:1}, tier:'common', icon:iconRakeShank} },
+    gearDrop:{name:"compost-crusted trowel of the Badger", desc:"Sharpened on rocks, mostly by accident.", type:"equip", slot:"weapon", bonus:{beef:1}, classRequired:'Meathead', tier:'common', icon:iconRakeShank} },
    { name:"a feral lawn gnome, off its stake", beef:2, zip:0, grit:6, hoodoo:0, xp:4, zone:"commons",
     art: artGnomeFeral, loot:{name:"bent rake tine", desc:"Still menacing, somehow.", type:"quest", key:"rakeTine", sell:2, icon:iconRakeTine},
     rareDrop:{name:"stake-shaped good luck charm", desc:"Whittled by whoever this gnome escaped from.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
-    gearDrop:{name:"stake-notched shin guard of the Weasel", desc:"Salvaged off the stake it was chained to.", type:"equip", slot:"legs", bonus:{zip:1}, tier:'common', icon:iconShinGuard} },
+    gearDrop:{name:"stake-notched shin guard of the Weasel", desc:"Salvaged off the stake it was chained to.", type:"equip", slot:"legs", bonus:{zip:1}, classRequired:'Card Shark', tier:'common', icon:iconShinGuard} },
    { name:"a fishing gnome with an empty bucket", beef:1, zip:0, grit:7, hoodoo:0, xp:4, zone:"commons",
     art: artGnomeFishing, loot:{name:"suspiciously confident lure", desc:"Has never once caught anything.", type:"junk", sell:2, icon:iconLure},
     rareDrop:{name:"actually-lucky fishing lure", desc:"This one's clearly caught something, at some point.", type:"junk", sell:11, icon:iconFigurine},
-    gearDrop:{name:"waterlogged fishing hat of the Tortoise", desc:"Smells like pond. You get used to it.", type:"equip", slot:"head", bonus:{grit:1}, tier:'common', icon:iconPotLid} },
+    gearDrop:{name:"waterlogged fishing hat of the Loon", desc:"Smells like pond. You get used to it.", type:"equip", slot:"head", bonus:{hoodoo:1}, classRequired:'Hexpert', tier:'common', icon:iconPotLid} },
    { name:"a gnome cavalry unit, mounted on a garden snail", beef:2, zip:0, grit:8, hoodoo:0, xp:5, zone:"commons",
     art: artGnomeSnail, loot:{name:"spiral shell fragment", desc:"Still faintly slimy.", type:"junk", sell:3, icon:iconShellFragment},
     rareDrop:{name:"snail-slime polished pebble", desc:"Smooth as glass. Smells faintly of victory.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
-    gearDrop:{name:"snail-shell breastplate of the Tortoise", desc:"Surprisingly load-bearing, for a shell.", type:"equip", slot:"chest", bonus:{grit:1}, tier:'common', icon:iconVest} },
+    gearDrop:{name:"snail-shell breastplate of the Badger", desc:"Surprisingly load-bearing, for a shell.", type:"equip", slot:"chest", bonus:{beef:1}, classRequired:'Meathead', tier:'common', icon:iconVest} },
    { name:"the self-appointed gnome sergeant", beef:3, zip:0, grit:10, hoodoo:0, xp:7, zone:"commons",
     art: artGnomeSergeant, loot:{name:"tiny sergeant's whistle", desc:"Blowing it clears your head a little.", type:"mp", value:4, icon:iconWhistle},
     rareDrop:{name:"the sergeant's secret stash of medals", desc:"Every one of them self-awarded.", type:"junk", sell:12, icon:iconFigurine},
-    gearDrop:{name:"sergeant's spit-shined boots of the Weasel", desc:"Standard issue. Aggressively polished.", type:"equip", slot:"boots", bonus:{zip:1}, tier:'common', icon:iconSpringBoots} },
+    gearDrop:{name:"sergeant's spit-shined boots of the Weasel", desc:"Standard issue. Aggressively polished.", type:"equip", slot:"boots", bonus:{zip:1}, classRequired:'Card Shark', tier:'common', icon:iconSpringBoots} },
    { name:"a sewer rat with delusions of grandeur", beef:3, zip:0, grit:9, hoodoo:0, xp:6, zone:"sewers",
     art: artSewerRat, loot:{name:"slightly damp rat tail", desc:"You're not sure why you kept this.", type:"junk", sell:2, icon:iconRatTail},
     rareDrop:{name:"rat king's tiny crown", desc:"Delusions of grandeur, it turns out, were warranted.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
-    gearDrop:{name:"rat-gnawed divining rod of the Loon", desc:"Points at whatever it feels like, confidently.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, tier:'common', icon:iconWandStick} },
+    gearDrop:{name:"rat-gnawed divining rod of the Loon", desc:"Points at whatever it feels like, confidently.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, classRequired:'Hexpert', tier:'common', icon:iconWandStick} },
    { name:"a rat wearing a bottlecap as a helmet", beef:3, zip:0, grit:11, hoodoo:0, xp:7, zone:"sewers",
     art: artRatHelmet, loot:{name:"dented bottlecap helmet", desc:"Barely fits a rat. Definitely doesn't fit you.", type:"junk", sell:3, icon:iconBottlecapHelmet},
     rareDrop:{name:"helmet dented in a suspiciously lucky pattern", desc:"Every dent lines up with a near-miss.", type:"junk", sell:15, icon:iconFigurine},
-    gearDrop:{name:"bottlecap-studded skullcap of the Tortoise", desc:"Rat-sized, once. Stretched since.", type:"equip", slot:"head", bonus:{grit:2}, tier:'common', icon:iconPotLid} },
+    gearDrop:{name:"bottlecap-studded skullcap of the Badger", desc:"Rat-sized, once. Stretched since.", type:"equip", slot:"head", bonus:{beef:2}, classRequired:'Meathead', tier:'common', icon:iconPotLid} },
    { name:"a positively enormous sewer rat", beef:4, zip:0, grit:13, hoodoo:0, xp:9, zone:"sewers",
     art: artGiantSewerRat, loot:{name:"rat-gnawed pipe fitting", desc:"Chewed clean through solid metal. Concerning.", type:"junk", sell:4, icon:iconPipeFitting},
     rareDrop:{name:"glowing sewer pearl", desc:"You don't ask how it got down here. Or how it glows.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
-    gearDrop:{name:"rat-hide vest of the Tortoise", desc:"Roomier than you'd expect. Best not to think why.", type:"equip", slot:"chest", bonus:{grit:2}, tier:'common', icon:iconVest} },
+    gearDrop:{name:"rat-hide vest of the Weasel", desc:"Roomier than you'd expect. Best not to think why.", type:"equip", slot:"chest", bonus:{zip:2}, classRequired:'Card Shark', tier:'common', icon:iconVest} },
    { name:"three rats in a trenchcoat, unconvincingly", beef:3, zip:0, grit:11, hoodoo:0, xp:8, zone:"sewers",
     art: artRatTrenchcoat, loot:{name:"comically oversized coat button", desc:"None of the three rats will admit to owning this.", type:"junk", sell:3, icon:iconCoatButton},
     rareDrop:{name:"the trenchcoat's secret inside pocket, still full", desc:"Whatever they were hiding, it's yours now.", type:"junk", sell:16, icon:iconFigurine},
-    gearDrop:{name:"trenchcoat's spare trouser leg of the Weasel", desc:"The other two rats never noticed it was missing.", type:"equip", slot:"legs", bonus:{zip:2}, tier:'common', icon:iconQuickstepTrousers} },
+    gearDrop:{name:"trenchcoat's spare trouser leg of the Loon", desc:"The other two rats never noticed it was missing.", type:"equip", slot:"legs", bonus:{hoodoo:2}, classRequired:'Hexpert', tier:'common', icon:iconQuickstepTrousers} },
    { name:"a wind-up quarry drone, badly wound", beef:4, zip:0, grit:11, hoodoo:0, xp:10, zone:"quarry",
     art: artQuarryDrone, loot:{name:"stripped brass gear", desc:"Still spins if you flick it. Mostly for fun now.", type:"junk", sell:4, icon:iconGear},
     rareDrop:{name:"drone's still-humming power core", desc:"Warm, faintly ticking, best not examined too closely.", type:"junk", sell:19, icon:iconFigurine},
-    gearDrop:{name:"drone's stripped control wand of the Loon", desc:"Still beeps if you squeeze it just right.", type:"equip", slot:"weapon", bonus:{hoodoo:3}, tier:'common', icon:iconVizierScepter} },
+    gearDrop:{name:"drone's stripped control wand of the Badger", desc:"Still beeps if you squeeze it just right.", type:"equip", slot:"weapon", bonus:{beef:3}, classRequired:'Meathead', tier:'common', icon:iconVizierScepter} },
    { name:"a gnome surveyor squinting at an upside-down map", beef:3, zip:0, grit:11, hoodoo:0, xp:9, zone:"quarry",
     art: artGnomeSurveyor, loot:{name:"crumpled survey map", desc:"Confidently wrong about where you are.", type:"junk", sell:3, icon:iconSurveyMap},
     rareDrop:{name:"compass that always points to safety", desc:"Not north. Safety. Somehow more useful.", type:"luck", hpValue:12, mpValue:6, icon:iconClover},
-    gearDrop:{name:"surveyor's dented hard-hat of the Tortoise", desc:"Confidently the wrong size. Sturdy anyway.", type:"equip", slot:"head", bonus:{grit:3}, tier:'common', icon:iconGuardHelm} },
+    gearDrop:{name:"surveyor's dented hard-hat of the Weasel", desc:"Confidently the wrong size. Sturdy anyway.", type:"equip", slot:"head", bonus:{zip:3}, classRequired:'Card Shark', tier:'common', icon:iconGuardHelm} },
    { name:"a pickaxe golem, held together by spite", beef:4, zip:0, grit:14, hoodoo:0, xp:13, zone:"quarry",
     art: artPickaxeGolem, loot:{name:"chipped pickaxe head", desc:"Has seen better decades.", type:"junk", sell:5, icon:iconPickaxeHead},
     rareDrop:{name:"fist-sized nugget of pure stubbornness", desc:"Heavier than it should be. Refuses to be dropped.", type:"junk", sell:20, icon:iconFigurine},
-    gearDrop:{name:"golem's chipped chest-plating of the Tortoise", desc:"Held together by spite, same as the rest of it.", type:"equip", slot:"chest", bonus:{grit:3}, tier:'common', icon:iconClockworkPlate} },
+    gearDrop:{name:"golem's chipped chest-plating of the Loon", desc:"Held together by spite, same as the rest of it.", type:"equip", slot:"chest", bonus:{hoodoo:3}, classRequired:'Hexpert', tier:'common', icon:iconClockworkPlate} },
    { name:"a rock-crusted quarry rat, huge for some reason", beef:4, zip:0, grit:12, hoodoo:0, xp:11, zone:"quarry",
     art: artQuarryRat, loot:{name:"fistful of ore-flecked grit", desc:"Somewhere between dirt and treasure. Mostly dirt.", type:"junk", sell:4, icon:iconOreGrit},
     rareDrop:{name:"rat-gnawed lucky pebble (not a rabbit's foot)", desc:"The rat was very clear on that point, somehow.", type:"luck", hpValue:12, mpValue:6, icon:iconClover},
-    gearDrop:{name:"ore-crusted quarry boots of the Weasel", desc:"Better footing than they have any right to give.", type:"equip", slot:"boots", bonus:{zip:3}, tier:'common', icon:iconGripBoots} },
+    gearDrop:{name:"ore-crusted quarry boots of the Badger", desc:"Better footing than they have any right to give.", type:"equip", slot:"boots", bonus:{beef:3}, classRequired:'Meathead', tier:'common', icon:iconGripBoots} },
    { name:"a vault wisp, humming with old magic", beef:4, zip:0, grit:14, hoodoo:0, xp:15, zone:"vault",
     art: artVaultWisp, loot:{name:"sliver of captured light", desc:"Warm to the touch. Slightly judgmental.", type:"junk", sell:6, icon:iconCapturedLight},
     rareDrop:{name:"captured wisp of pure luck", desc:"It flickers approvingly whenever you make a good call.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
-    gearDrop:{name:"wisp-charred conducting rod of the Loon", desc:"Still warm. Hums when you're not paying attention.", type:"equip", slot:"weapon", bonus:{hoodoo:4}, tier:'common', icon:iconHeirloomRod} },
+    gearDrop:{name:"wisp-charred conducting rod of the Weasel", desc:"Still warm. Hums when you're not paying attention.", type:"equip", slot:"weapon", bonus:{zip:4}, classRequired:'Card Shark', tier:'common', icon:iconHeirloomRod} },
    { name:"a stone sentinel, one eye still lit", beef:5, zip:0, grit:16, hoodoo:0, xp:18, zone:"vault",
     art: artStoneSentinel, loot:{name:"fractured sentinel eye", desc:"Stopped watching. Eventually.", type:"junk", sell:7, icon:iconSentinelEye},
     rareDrop:{name:"the sentinel's other eye, still watching", desc:"You can feel it tracking you from the bottom of your pack.", type:"junk", sell:26, icon:iconFigurine},
-    gearDrop:{name:"sentinel's cracked faceplate of the Tortoise", desc:"One eye socket. Still watching, faithfully.", type:"equip", slot:"head", bonus:{grit:4}, tier:'common', icon:iconChampionCrown} },
+    gearDrop:{name:"sentinel's cracked faceplate of the Loon", desc:"One eye socket. Still watching, faithfully.", type:"equip", slot:"head", bonus:{hoodoo:4}, classRequired:'Hexpert', tier:'common', icon:iconChampionCrown} },
    { name:"a hoard-rat, absolutely covered in gold flecks", beef:4, zip:0, grit:14, hoodoo:0, xp:14, zone:"vault",art: artHoardRat, loot:{name:"gold-dusted whisker", desc:"Rich by rat standards.", type:"junk", sell:6, icon:iconGoldWhisker},
     rareDrop:{name:"fistful of the hoard-rat's actual hoard", desc:"It was surprisingly well-organized, for a rat.", type:"junk", sell:28, icon:iconFigurine},
-    gearDrop:{name:"gold-flecked greaves of the Weasel", desc:"Surprisingly light, for how much they're worth.", type:"equip", slot:"legs", bonus:{zip:4}, tier:'common', icon:iconBurrowGreaves} },
+    gearDrop:{name:"gold-flecked greaves of the Badger", desc:"Surprisingly light, for how much they're worth.", type:"equip", slot:"legs", bonus:{beef:4}, classRequired:'Meathead', tier:'common', icon:iconBurrowGreaves} },
    { name:"an animated suit of ceremonial armor, empty inside", beef:5, zip:0, grit:17, hoodoo:0, xp:20, zone:"vault",
     art: artCeremonialArmor, loot:{name:"dented ceremonial gauntlet", desc:"Once belonged to somebody important, probably.", type:"junk", sell:8, icon:iconCeremonialGauntlet},
     rareDrop:{name:"ceremonial luck-charm, still humming with old magic", desc:"Whoever it was made for never got to keep it.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
-    gearDrop:{name:"scrap of animated ceremonial mail of the Tortoise", desc:"Keeps twitching like it's still wearing someone.", type:"equip", slot:"chest", bonus:{grit:4}, tier:'common', icon:iconAdventurerCuirass} },
+    gearDrop:{name:"scrap of animated ceremonial mail of the Weasel", desc:"Keeps twitching like it's still wearing someone.", type:"equip", slot:"chest", bonus:{zip:4}, classRequired:'Card Shark', tier:'common', icon:iconAdventurerCuirass} },
    { name:"a gnome vizier, draped in stolen finery", beef:5, zip:0, grit:16, hoodoo:0, xp:19, zone:"sanctum",
     art: artGnomeVizier, loot:{name:"vizier's confiscated ledger", desc:"Every debt in Gnometropolis, written in tiny cramped handwriting.", type:"junk", sell:9, icon:iconVizierLedger},
     rareDrop:{name:"vizier's uncanny hunch, bottled", desc:"It practically whispers good advice.", type:"luck", hpValue:18, mpValue:9, icon:iconClover},
-    gearDrop:{name:"vizier's confiscated cane-wand of the Loon", desc:"Equal parts walking stick and unlicensed magic.", type:"equip", slot:"weapon", bonus:{hoodoo:5}, tier:'common', icon:iconWandStick} },
+    gearDrop:{name:"vizier's confiscated cane-wand of the Loon", desc:"Equal parts walking stick and unlicensed magic.", type:"equip", slot:"weapon", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconWandStick} },
    { name:"a heavily-armored gnome guard", beef:6, zip:0, grit:19, hoodoo:0, xp:23, zone:"garrison",
     art: artGnomeGuard, loot:{name:"dented guard-captain's shield-boss", desc:"Scratched from decades of very small, very serious duels.", type:"junk", sell:10, icon:iconShieldBoss},
     rareDrop:{name:"the guard-captain's ceremonial sash", desc:"Awarded for uninterrupted vigilance. Interrupted now.", type:"junk", sell:32, icon:iconFigurine},
-    gearDrop:{name:"guard's dented vambrace-plating of the Tortoise", desc:"Decades of very small, very serious duels.", type:"equip", slot:"chest", bonus:{grit:5}, tier:'common', icon:iconClockworkPlate} },
+    gearDrop:{name:"guard's dented vambrace-plating of the Badger", desc:"Decades of very small, very serious duels.", type:"equip", slot:"chest", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconClockworkPlate} },
    { name:"a burrowing tunnel-worm, gnome-bred", beef:6, zip:0, grit:18, hoodoo:0, xp:21, zone:"roguesden",
     art: artBurrowWorm, loot:{name:"chitinous burrow-shell fragment", desc:"Warm from the tunnel. You don't ask why.", type:"junk", sell:9, icon:iconBurrowShell},
     rareDrop:{name:"burrow-worm's lucky cast-off tooth", desc:"Smooth, oddly warm, and very possibly why you're still standing.", type:"luck", hpValue:19, mpValue:9, icon:iconClover},
-    gearDrop:{name:"worm-chewed tunneling boots of the Weasel", desc:"Already broken in. Not by you.", type:"equip", slot:"boots", bonus:{zip:5}, tier:'common', icon:iconBlessedBoots} },
+    gearDrop:{name:"worm-chewed tunneling boots of the Weasel", desc:"Already broken in. Not by you.", type:"equip", slot:"boots", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconBlessedBoots} },
    { name:"a rogue clockwork automaton, sparking wildly", beef:6, zip:0, grit:20, hoodoo:0, xp:26, zone:"roguesden",
     art: artFeralAutomaton, loot:{name:"scorched servo joint", desc:"Still twitches, if you're not careful.", type:"junk", sell:11, icon:iconServoJoint},
     rareDrop:{name:"the automaton's still-warm power cell", desc:"Hums like it's not entirely done working yet.", type:"junk", sell:34, icon:iconFigurine},
-    gearDrop:{name:"automaton's salvaged headplate of the Tortoise", desc:"Still sparks a little when it rains.", type:"equip", slot:"head", bonus:{grit:5}, tier:'common', icon:iconGuardHelm} },
+    gearDrop:{name:"automaton's salvaged headplate of the Loon", desc:"Still sparks a little when it rains.", type:"equip", slot:"head", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconGuardHelm} },
    /* Rounds the Garrison/Rogues' Den/Arcane Sanctum rosters out to 3
    regular monsters apiece (they launched with just 1/2/1) so each
    district has its own proper set instead of feeling like a rare-hunt
@@ -136,23 +136,23 @@ const monsters = [
    { name:"a gnome drill sergeant, all bark and boot-camp", beef:5, zip:0, grit:18, hoodoo:0, xp:22, zone:"garrison",
     art: artGnomeDrillSergeant, loot:{name:"sergeant's dog-eared drill roster", desc:"Every recruit's name, and a demerit next to most of them.", type:"junk", sell:9, icon:iconDrillRoster},
     rareDrop:{name:"the sergeant's secret medal stash, garrison edition", desc:"Every one of them self-awarded. Some things never change.", type:"junk", sell:31, icon:iconFigurine},
-    gearDrop:{name:"sergeant's barked-order banner-lance of the Badger", desc:"Doubles as a pointer for yelling at recruits.", type:"equip", slot:"weapon", bonus:{beef:5}, tier:'common', icon:iconBannerLance} },
+    gearDrop:{name:"sergeant's barked-order banner-lance of the Badger", desc:"Doubles as a pointer for yelling at recruits.", type:"equip", slot:"weapon", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconBannerLance} },
    { name:"a gnome siege-crew, operating a catapult built for one", beef:6, zip:0, grit:20, hoodoo:0, xp:25, zone:"garrison",
     art: artGnomeSiegeCrew, loot:{name:"splintered catapult peg", desc:"Load-bearing, allegedly.", type:"junk", sell:11, icon:iconCatapultPeg},
     rareDrop:{name:"the siege-crew's lucky firing pin", desc:"Pulled from a shot that somehow landed exactly right.", type:"luck", hpValue:20, mpValue:10, icon:iconClover},
-    gearDrop:{name:"siege-crew's scorched greaves of the Weasel", desc:"Singed. Still faster than running barefoot.", type:"equip", slot:"boots", bonus:{zip:5}, tier:'common', icon:iconScorchedGreaves} },
+    gearDrop:{name:"siege-crew's scorched greaves of the Weasel", desc:"Singed. Still faster than running barefoot.", type:"equip", slot:"boots", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconScorchedGreaves} },
    { name:"an apprentice hex-weaver, sparks flying every wrong direction", beef:5, zip:0, grit:17, hoodoo:0, xp:20, zone:"sanctum",
     art: artHexWeaver, loot:{name:"singed spellbook page", desc:"The diagram is half-right. That's the problem.", type:"junk", sell:9, icon:iconSpellbookPage},
     rareDrop:{name:"hex-weaver's stabilized spark, bottled", desc:"Finally behaving itself, for once.", type:"luck", hpValue:19, mpValue:10, icon:iconClover},
-    gearDrop:{name:"apprentice's scorch-marked robe-plating of the Tortoise", desc:"Fire-proofed the hard way, one mistake at a time.", type:"equip", slot:"chest", bonus:{grit:5}, tier:'common', icon:iconScorchRobe} },
+    gearDrop:{name:"apprentice's scorch-marked robe-plating of the Loon", desc:"Fire-proofed the hard way, one mistake at a time.", type:"equip", slot:"chest", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconScorchRobe} },
    { name:"a gnome familiar, three sizes too ambitious", beef:5, zip:0, grit:16, hoodoo:0, xp:19, zone:"sanctum",
     art: artGnomeFamiliar, loot:{name:"familiar's shed feather-scale", desc:"Not quite a feather. Not quite a scale either.", type:"junk", sell:8, icon:iconFeatherScale},
     rareDrop:{name:"the familiar's uncanny premonition, bottled", desc:"It saw this coming. It always does.", type:"luck", hpValue:19, mpValue:9, icon:iconClover},
-    gearDrop:{name:"familiar-warded slippers of the Weasel", desc:"Land softer than they have any right to.", type:"equip", slot:"boots", bonus:{zip:5}, tier:'common', icon:iconWardedSlippers} },
+    gearDrop:{name:"familiar-warded slippers of the Badger", desc:"Land softer than they have any right to.", type:"equip", slot:"boots", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconWardedSlippers} },
    { name:"a masked gnome pickpocket, light-fingered and lighter-footed", beef:6, zip:0, grit:19, hoodoo:0, xp:24, zone:"roguesden",
     art: artGnomePickpocket, loot:{name:"pilfered coin purse, mostly empty", desc:"Somebody's definitely going to notice this is missing.", type:"junk", sell:10, icon:iconCoinPurse},
     rareDrop:{name:"the pickpocket's lucky lifted button", desc:"Not sure whose coat this came off of. Not asking.", type:"luck", hpValue:20, mpValue:10, icon:iconClover},
-    gearDrop:{name:"pickpocket's cutpurse leggings of the Weasel", desc:"Built for running, mostly away.", type:"equip", slot:"legs", bonus:{zip:5}, tier:'common', icon:iconCutpurseLeggings} },
+    gearDrop:{name:"pickpocket's cutpurse leggings of the Weasel", desc:"Built for running, mostly away.", type:"equip", slot:"legs", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconCutpurseLeggings} },
    ];
 
 /* Every named boss below (gnomeCommander through arcaneSanctumGuardian)
@@ -680,19 +680,33 @@ const starterGear = {
 /* Shop-buyable upgrades, one or two per slot, each granting +1 to a stat —
 tier 1 of 3: exactly 1 stat per item. shopGearItemsTier2/Tier3 below each
 add one more stat on top (2 and 3 respectively), so stat COUNT climbs
-with tier the same way price/bonus magnitude already does. */
+with tier the same way price/bonus magnitude already does.
+
+Every item here carries `classRequired` (see CLASS_SIGNATURE_STAT,
+above CLASS_TITLES) — the weapon slot already had one distinct,
+already-flavored item per class (Beef/Hoodoo/Zip), so those three just
+get tagged as-is. Head/chest/legs/boots used to be ONE universal item
+per slot; each is now THREE near-identical variants, one per class,
+sharing the same desc/icon and reusing the gearDrop "of the ___" animal
+suffix (item-tiers.js's naming convention, previously gearDrop-only) so
+the shop stays consistent with what monsters drop — a class can only
+buy the variant tagged for it (getAvailableShopItems(), economy.js). */
 const shopGearItems = [
-   { name:"rake tine repurposed as a shank", desc:"Sharper than it has any right to be.", type:"equip", slot:"weapon", bonus:{beef:1}, price:12, tier:'common', icon: iconRakeShank },
-   { name:"wand-shaped stick, allegedly magic", desc:"The gnome who sold it swore up and down.", type:"equip", slot:"weapon", bonus:{hoodoo:1}, price:12, tier:'common', icon: iconWandStick },
-   /* Card Shark's own weapon line — Zip-primary, same price/tier as the
-   Beef/Hoodoo weapons above it. Weapon slot gets a third entry at every
-   tier from here on (see shopGearItemsTier2/3/4 below), rounding out
-   all three classes' own weapon type instead of just Meathead/Hexpert's. */
-   { name:"a deck shanked into a makeshift blade", desc:"Every card's an ace, if you throw it right.", type:"equip", slot:"weapon", bonus:{zip:1}, price:12, tier:'common', icon: iconCardShank },
-   { name:"dented pot-lid helmet", desc:"Rings like a bell if you get hit. You get used to it.", type:"equip", slot:"head", bonus:{grit:1}, price:10, tier:'common', icon: iconPotLid },
-   { name:"patched burlap vest", desc:"Itchy. Surprisingly sturdy.", type:"equip", slot:"chest", bonus:{grit:1}, price:12, tier:'common', icon: iconVest },
-   { name:"shin guards whittled from a fence post", desc:"Splintery, but they hold.", type:"equip", slot:"legs", bonus:{zip:1}, price:10, tier:'common', icon: iconShinGuard },
-   { name:"boots with suspiciously good grip", desc:"You don't ask where they came from.", type:"equip", slot:"boots", bonus:{zip:1}, price:10, tier:'common', icon: iconGripBoots },
+   { name:"rake tine repurposed as a shank", desc:"Sharper than it has any right to be.", type:"equip", slot:"weapon", bonus:{beef:1}, classRequired:'Meathead', price:12, tier:'common', icon: iconRakeShank },
+   { name:"wand-shaped stick, allegedly magic", desc:"The gnome who sold it swore up and down.", type:"equip", slot:"weapon", bonus:{hoodoo:1}, classRequired:'Hexpert', price:12, tier:'common', icon: iconWandStick },
+   { name:"a deck shanked into a makeshift blade", desc:"Every card's an ace, if you throw it right.", type:"equip", slot:"weapon", bonus:{zip:1}, classRequired:'Card Shark', price:12, tier:'common', icon: iconCardShank },
+   { name:"dented pot-lid helmet of the Badger", desc:"Rings like a bell if you get hit. You get used to it.", type:"equip", slot:"head", bonus:{beef:1}, classRequired:'Meathead', price:10, tier:'common', icon: iconPotLid },
+   { name:"dented pot-lid helmet of the Weasel", desc:"Rings like a bell if you get hit. You get used to it.", type:"equip", slot:"head", bonus:{zip:1}, classRequired:'Card Shark', price:10, tier:'common', icon: iconPotLid },
+   { name:"dented pot-lid helmet of the Loon", desc:"Rings like a bell if you get hit. You get used to it.", type:"equip", slot:"head", bonus:{hoodoo:1}, classRequired:'Hexpert', price:10, tier:'common', icon: iconPotLid },
+   { name:"patched burlap vest of the Badger", desc:"Itchy. Surprisingly sturdy.", type:"equip", slot:"chest", bonus:{beef:1}, classRequired:'Meathead', price:12, tier:'common', icon: iconVest },
+   { name:"patched burlap vest of the Weasel", desc:"Itchy. Surprisingly sturdy.", type:"equip", slot:"chest", bonus:{zip:1}, classRequired:'Card Shark', price:12, tier:'common', icon: iconVest },
+   { name:"patched burlap vest of the Loon", desc:"Itchy. Surprisingly sturdy.", type:"equip", slot:"chest", bonus:{hoodoo:1}, classRequired:'Hexpert', price:12, tier:'common', icon: iconVest },
+   { name:"shin guards whittled from a fence post of the Badger", desc:"Splintery, but they hold.", type:"equip", slot:"legs", bonus:{beef:1}, classRequired:'Meathead', price:10, tier:'common', icon: iconShinGuard },
+   { name:"shin guards whittled from a fence post of the Weasel", desc:"Splintery, but they hold.", type:"equip", slot:"legs", bonus:{zip:1}, classRequired:'Card Shark', price:10, tier:'common', icon: iconShinGuard },
+   { name:"shin guards whittled from a fence post of the Loon", desc:"Splintery, but they hold.", type:"equip", slot:"legs", bonus:{hoodoo:1}, classRequired:'Hexpert', price:10, tier:'common', icon: iconShinGuard },
+   { name:"boots with suspiciously good grip of the Badger", desc:"You don't ask where they came from.", type:"equip", slot:"boots", bonus:{beef:1}, classRequired:'Meathead', price:10, tier:'common', icon: iconGripBoots },
+   { name:"boots with suspiciously good grip of the Weasel", desc:"You don't ask where they came from.", type:"equip", slot:"boots", bonus:{zip:1}, classRequired:'Card Shark', price:10, tier:'common', icon: iconGripBoots },
+   { name:"boots with suspiciously good grip of the Loon", desc:"You don't ask where they came from.", type:"equip", slot:"boots", bonus:{hoodoo:1}, classRequired:'Hexpert', price:10, tier:'common', icon: iconGripBoots },
    ];
 
 const shopBuyItems = [
@@ -732,13 +746,21 @@ Weapon slot gets three entries, same as shopGearItems' tier-1 weapons —
 Beef-, Hoodoo-, and Zip-primary — so a melee, spellcasting, or Card
 Shark build each have their own weapon at every tier, not just tier 1. */
 const shopGearItemsTier2 = [
-   { name:"scepter looted from the vizier's chambers", desc:"Still radiates a faint, smug authority.", type:"equip", slot:"weapon", bonus:{hoodoo:2, grit:1}, price:40, tier:'uncommon', icon: iconVizierScepter },
-   { name:"guard-captain's confiscated cleaver", desc:"Standard issue, before it wasn't standard issue anymore.", type:"equip", slot:"weapon", bonus:{beef:2, zip:1}, price:38, tier:'uncommon', icon: iconGuardCleaver },
-   { name:"loaded dice on a length of chain", desc:"Comes up snake eyes for whoever's on the other end.", type:"equip", slot:"weapon", bonus:{zip:2, hoodoo:1}, price:40, tier:'uncommon', icon: iconDiceFlail },
-   { name:"guard-captain's dented helm", desc:"Reinforced. Dented anyway.", type:"equip", slot:"head", bonus:{grit:2, beef:1}, price:38, tier:'uncommon', icon: iconGuardHelm },
-   { name:"clockwork-plated chestpiece", desc:"Ticks faintly whenever your heart rate spikes.", type:"equip", slot:"chest", bonus:{grit:2, hoodoo:1}, price:42, tier:'uncommon', icon: iconClockworkPlate },
-   { name:"burrow-worm hide greaves", desc:"Flexible enough to squeeze through a tunnel-worm's old digs.", type:"equip", slot:"legs", bonus:{zip:2, grit:1}, price:36, tier:'uncommon', icon: iconBurrowGreaves },
-   { name:"spring-loaded gnome-tech boots", desc:"Every step has a little more bounce than it should.", type:"equip", slot:"boots", bonus:{zip:2, beef:1}, price:44, tier:'uncommon', icon: iconSpringBoots },
+   { name:"scepter looted from the vizier's chambers", desc:"Still radiates a faint, smug authority.", type:"equip", slot:"weapon", bonus:{hoodoo:2, grit:1}, classRequired:'Hexpert', price:40, tier:'uncommon', icon: iconVizierScepter },
+   { name:"guard-captain's confiscated cleaver", desc:"Standard issue, before it wasn't standard issue anymore.", type:"equip", slot:"weapon", bonus:{beef:2, zip:1}, classRequired:'Meathead', price:38, tier:'uncommon', icon: iconGuardCleaver },
+   { name:"loaded dice on a length of chain", desc:"Comes up snake eyes for whoever's on the other end.", type:"equip", slot:"weapon", bonus:{zip:2, hoodoo:1}, classRequired:'Card Shark', price:40, tier:'uncommon', icon: iconDiceFlail },
+   { name:"guard-captain's dented helm of the Badger", desc:"Reinforced. Dented anyway.", type:"equip", slot:"head", bonus:{beef:2, grit:1}, classRequired:'Meathead', price:38, tier:'uncommon', icon: iconGuardHelm },
+   { name:"guard-captain's dented helm of the Weasel", desc:"Reinforced. Dented anyway.", type:"equip", slot:"head", bonus:{zip:2, grit:1}, classRequired:'Card Shark', price:38, tier:'uncommon', icon: iconGuardHelm },
+   { name:"guard-captain's dented helm of the Loon", desc:"Reinforced. Dented anyway.", type:"equip", slot:"head", bonus:{hoodoo:2, grit:1}, classRequired:'Hexpert', price:38, tier:'uncommon', icon: iconGuardHelm },
+   { name:"clockwork-plated chestpiece of the Badger", desc:"Ticks faintly whenever your heart rate spikes.", type:"equip", slot:"chest", bonus:{beef:2, grit:1}, classRequired:'Meathead', price:42, tier:'uncommon', icon: iconClockworkPlate },
+   { name:"clockwork-plated chestpiece of the Weasel", desc:"Ticks faintly whenever your heart rate spikes.", type:"equip", slot:"chest", bonus:{zip:2, grit:1}, classRequired:'Card Shark', price:42, tier:'uncommon', icon: iconClockworkPlate },
+   { name:"clockwork-plated chestpiece of the Loon", desc:"Ticks faintly whenever your heart rate spikes.", type:"equip", slot:"chest", bonus:{hoodoo:2, grit:1}, classRequired:'Hexpert', price:42, tier:'uncommon', icon: iconClockworkPlate },
+   { name:"burrow-worm hide greaves of the Badger", desc:"Flexible enough to squeeze through a tunnel-worm's old digs.", type:"equip", slot:"legs", bonus:{beef:2, grit:1}, classRequired:'Meathead', price:36, tier:'uncommon', icon: iconBurrowGreaves },
+   { name:"burrow-worm hide greaves of the Weasel", desc:"Flexible enough to squeeze through a tunnel-worm's old digs.", type:"equip", slot:"legs", bonus:{zip:2, grit:1}, classRequired:'Card Shark', price:36, tier:'uncommon', icon: iconBurrowGreaves },
+   { name:"burrow-worm hide greaves of the Loon", desc:"Flexible enough to squeeze through a tunnel-worm's old digs.", type:"equip", slot:"legs", bonus:{hoodoo:2, grit:1}, classRequired:'Hexpert', price:36, tier:'uncommon', icon: iconBurrowGreaves },
+   { name:"spring-loaded gnome-tech boots of the Badger", desc:"Every step has a little more bounce than it should.", type:"equip", slot:"boots", bonus:{beef:2, grit:1}, classRequired:'Meathead', price:44, tier:'uncommon', icon: iconSpringBoots },
+   { name:"spring-loaded gnome-tech boots of the Weasel", desc:"Every step has a little more bounce than it should.", type:"equip", slot:"boots", bonus:{zip:2, grit:1}, classRequired:'Card Shark', price:44, tier:'uncommon', icon: iconSpringBoots },
+   { name:"spring-loaded gnome-tech boots of the Loon", desc:"Every step has a little more bounce than it should.", type:"equip", slot:"boots", bonus:{hoodoo:2, grit:1}, classRequired:'Hexpert', price:44, tier:'uncommon', icon: iconSpringBoots },
    ];
 
 /* ---------------- Shop upgrade tiers ---------------- */
@@ -787,13 +809,21 @@ applied to every item so the tier's internal price spread is unchanged. */
 convention, just one more of them. Same three-weapons pattern as tier
 1/2 — Beef-, Hoodoo-, and Zip-primary. */
 const shopGearItemsTier3 = [
-   { name:"heirloom hoodoo rod, mostly legitimate", desc:"The provenance is fuzzy. The results aren't.", type:"equip", slot:"weapon", bonus:{hoodoo:3, grit:1, zip:1}, price:100, tier:'rare', icon: iconHeirloomRod },
-   { name:"heirloom war-cleaver, mostly legitimate", desc:"Family heirloom. Allegedly.", type:"equip", slot:"weapon", bonus:{beef:3, zip:1, grit:1}, price:95, tier:'rare', icon: iconHeirloomCleaver },
-   { name:"an ace-tipped blade, palmed from the deck", desc:"Nobody notices a card missing until it's too late.", type:"equip", slot:"weapon", bonus:{zip:3, hoodoo:1, beef:1}, price:95, tier:'rare', icon: iconAceBlade },
-   { name:"champion's dented crown, repurposed", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{grit:3, hoodoo:1, beef:1}, price:85, tier:'rare', icon: iconChampionCrown },
-   { name:"reinforced adventurer's cuirass", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{grit:3, beef:1, zip:1}, price:95, tier:'rare', icon: iconAdventurerCuirass },
-   { name:"tailored pair of quick-step trousers", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{zip:3, grit:1, hoodoo:1}, price:80, tier:'rare', icon: iconQuickstepTrousers },
-   { name:"boots blessed by a mildly competent hoodoo doctor", desc:"\"Mildly\" is doing some work in that sentence.", type:"equip", slot:"boots", bonus:{zip:3, hoodoo:1, beef:1}, price:90, tier:'rare', icon: iconBlessedBoots },
+   { name:"heirloom hoodoo rod, mostly legitimate", desc:"The provenance is fuzzy. The results aren't.", type:"equip", slot:"weapon", bonus:{hoodoo:3, grit:1, zip:1}, classRequired:'Hexpert', price:100, tier:'rare', icon: iconHeirloomRod },
+   { name:"heirloom war-cleaver, mostly legitimate", desc:"Family heirloom. Allegedly.", type:"equip", slot:"weapon", bonus:{beef:3, zip:1, grit:1}, classRequired:'Meathead', price:95, tier:'rare', icon: iconHeirloomCleaver },
+   { name:"an ace-tipped blade, palmed from the deck", desc:"Nobody notices a card missing until it's too late.", type:"equip", slot:"weapon", bonus:{zip:3, hoodoo:1, beef:1}, classRequired:'Card Shark', price:95, tier:'rare', icon: iconAceBlade },
+   { name:"champion's dented crown, repurposed, of the Badger", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{beef:3, grit:1, zip:1}, classRequired:'Meathead', price:85, tier:'rare', icon: iconChampionCrown },
+   { name:"champion's dented crown, repurposed, of the Weasel", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{zip:3, grit:1, hoodoo:1}, classRequired:'Card Shark', price:85, tier:'rare', icon: iconChampionCrown },
+   { name:"champion's dented crown, repurposed, of the Loon", desc:"Whoever wore it first isn't asking for it back.", type:"equip", slot:"head", bonus:{hoodoo:3, grit:1, beef:1}, classRequired:'Hexpert', price:85, tier:'rare', icon: iconChampionCrown },
+   { name:"reinforced adventurer's cuirass of the Badger", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{beef:3, grit:1, zip:1}, classRequired:'Meathead', price:95, tier:'rare', icon: iconAdventurerCuirass },
+   { name:"reinforced adventurer's cuirass of the Weasel", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{zip:3, grit:1, hoodoo:1}, classRequired:'Card Shark', price:95, tier:'rare', icon: iconAdventurerCuirass },
+   { name:"reinforced adventurer's cuirass of the Loon", desc:"Actually built for this. A first, around here.", type:"equip", slot:"chest", bonus:{hoodoo:3, grit:1, beef:1}, classRequired:'Hexpert', price:95, tier:'rare', icon: iconAdventurerCuirass },
+   { name:"tailored pair of quick-step trousers of the Badger", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{beef:3, grit:1, zip:1}, classRequired:'Meathead', price:80, tier:'rare', icon: iconQuickstepTrousers },
+   { name:"tailored pair of quick-step trousers of the Weasel", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{zip:3, grit:1, hoodoo:1}, classRequired:'Card Shark', price:80, tier:'rare', icon: iconQuickstepTrousers },
+   { name:"tailored pair of quick-step trousers of the Loon", desc:"Somehow both stylish and functional.", type:"equip", slot:"legs", bonus:{hoodoo:3, grit:1, beef:1}, classRequired:'Hexpert', price:80, tier:'rare', icon: iconQuickstepTrousers },
+   { name:"boots blessed by a mildly competent hoodoo doctor, of the Badger", desc:"\"Mildly\" is doing some work in that sentence.", type:"equip", slot:"boots", bonus:{beef:3, grit:1, zip:1}, classRequired:'Meathead', price:90, tier:'rare', icon: iconBlessedBoots },
+   { name:"boots blessed by a mildly competent hoodoo doctor, of the Weasel", desc:"\"Mildly\" is doing some work in that sentence.", type:"equip", slot:"boots", bonus:{zip:3, grit:1, hoodoo:1}, classRequired:'Card Shark', price:90, tier:'rare', icon: iconBlessedBoots },
+   { name:"boots blessed by a mildly competent hoodoo doctor, of the Loon", desc:"\"Mildly\" is doing some work in that sentence.", type:"equip", slot:"boots", bonus:{hoodoo:3, grit:1, beef:1}, classRequired:'Hexpert', price:90, tier:'rare', icon: iconBlessedBoots },
    ];
 
 /* Fourth and top gear tier, unlocked at Shop level 3 (SHOP_LEVEL_GEAR_TIER4
@@ -813,13 +843,21 @@ Zip-primary — though at this tier all three necessarily touch all 4
 stats (primary+3 secondaries, and there are only 4 stats total), same as
 every other slot here; only which stat is primary still tells them apart. */
 const shopGearItemsTier4 = [
-   { name:"scepter reforged from the throne room's own gold", desc:"Melted down and reshaped before the guards even noticed it was gone.", type:"equip", slot:"weapon", bonus:{hoodoo:4, beef:1, zip:1, grit:1}, price:180, tier:'epic', icon: iconThroneScepter },
-   { name:"headsman's axe, liberated from the throne room", desc:"The guards really should've kept a closer eye on the ceremonial weapons rack.", type:"equip", slot:"weapon", bonus:{beef:4, zip:1, grit:1, hoodoo:1}, price:175, tier:'epic', icon: iconThroneAxe },
-   { name:"a royal flush, fanned into a killing blow", desc:"The house doesn't usually lose this hand.", type:"equip", slot:"weapon", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, price:170, tier:'epic', icon: iconRoyalFlushBlade },
-   { name:"crown stripped from the throne itself", desc:"Too big. You've stuffed it with rags to make it fit.", type:"equip", slot:"head", bonus:{grit:4, hoodoo:1, beef:1, zip:1}, price:150, tier:'epic', icon: iconStolenCrown },
-   { name:"plate forged in the palace's own furnace", desc:"Still warm, if you believe the gnome who sold it to you.", type:"equip", slot:"chest", bonus:{grit:4, hoodoo:1, beef:1, zip:1}, price:170, tier:'epic', icon: iconPalaceForgedPlate },
-   { name:"greaves stitched from a guard captain's dress uniform", desc:"Ceremonial. Somehow still holds up in a real fight.", type:"equip", slot:"legs", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, price:140, tier:'epic', icon: iconDressGreaves },
-   { name:"boots off the palace steward's own feet", desc:"He wasn't using them anymore. Long story.", type:"equip", slot:"boots", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, price:160, tier:'epic', icon: iconStewardBoots },
+   { name:"scepter reforged from the throne room's own gold", desc:"Melted down and reshaped before the guards even noticed it was gone.", type:"equip", slot:"weapon", bonus:{hoodoo:4, beef:1, zip:1, grit:1}, classRequired:'Hexpert', price:180, tier:'epic', icon: iconThroneScepter },
+   { name:"headsman's axe, liberated from the throne room", desc:"The guards really should've kept a closer eye on the ceremonial weapons rack.", type:"equip", slot:"weapon", bonus:{beef:4, zip:1, grit:1, hoodoo:1}, classRequired:'Meathead', price:175, tier:'epic', icon: iconThroneAxe },
+   { name:"a royal flush, fanned into a killing blow", desc:"The house doesn't usually lose this hand.", type:"equip", slot:"weapon", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, classRequired:'Card Shark', price:170, tier:'epic', icon: iconRoyalFlushBlade },
+   { name:"crown stripped from the throne itself, of the Badger", desc:"Too big. You've stuffed it with rags to make it fit.", type:"equip", slot:"head", bonus:{beef:4, grit:1, hoodoo:1, zip:1}, classRequired:'Meathead', price:150, tier:'epic', icon: iconStolenCrown },
+   { name:"crown stripped from the throne itself, of the Weasel", desc:"Too big. You've stuffed it with rags to make it fit.", type:"equip", slot:"head", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, classRequired:'Card Shark', price:150, tier:'epic', icon: iconStolenCrown },
+   { name:"crown stripped from the throne itself, of the Loon", desc:"Too big. You've stuffed it with rags to make it fit.", type:"equip", slot:"head", bonus:{hoodoo:4, grit:1, beef:1, zip:1}, classRequired:'Hexpert', price:150, tier:'epic', icon: iconStolenCrown },
+   { name:"plate forged in the palace's own furnace, of the Badger", desc:"Still warm, if you believe the gnome who sold it to you.", type:"equip", slot:"chest", bonus:{beef:4, grit:1, hoodoo:1, zip:1}, classRequired:'Meathead', price:170, tier:'epic', icon: iconPalaceForgedPlate },
+   { name:"plate forged in the palace's own furnace, of the Weasel", desc:"Still warm, if you believe the gnome who sold it to you.", type:"equip", slot:"chest", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, classRequired:'Card Shark', price:170, tier:'epic', icon: iconPalaceForgedPlate },
+   { name:"plate forged in the palace's own furnace, of the Loon", desc:"Still warm, if you believe the gnome who sold it to you.", type:"equip", slot:"chest", bonus:{hoodoo:4, grit:1, beef:1, zip:1}, classRequired:'Hexpert', price:170, tier:'epic', icon: iconPalaceForgedPlate },
+   { name:"greaves stitched from a guard captain's dress uniform, of the Badger", desc:"Ceremonial. Somehow still holds up in a real fight.", type:"equip", slot:"legs", bonus:{beef:4, grit:1, hoodoo:1, zip:1}, classRequired:'Meathead', price:140, tier:'epic', icon: iconDressGreaves },
+   { name:"greaves stitched from a guard captain's dress uniform, of the Weasel", desc:"Ceremonial. Somehow still holds up in a real fight.", type:"equip", slot:"legs", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, classRequired:'Card Shark', price:140, tier:'epic', icon: iconDressGreaves },
+   { name:"greaves stitched from a guard captain's dress uniform, of the Loon", desc:"Ceremonial. Somehow still holds up in a real fight.", type:"equip", slot:"legs", bonus:{hoodoo:4, grit:1, beef:1, zip:1}, classRequired:'Hexpert', price:140, tier:'epic', icon: iconDressGreaves },
+   { name:"boots off the palace steward's own feet, of the Badger", desc:"He wasn't using them anymore. Long story.", type:"equip", slot:"boots", bonus:{beef:4, grit:1, hoodoo:1, zip:1}, classRequired:'Meathead', price:160, tier:'epic', icon: iconStewardBoots },
+   { name:"boots off the palace steward's own feet, of the Weasel", desc:"He wasn't using them anymore. Long story.", type:"equip", slot:"boots", bonus:{zip:4, grit:1, hoodoo:1, beef:1}, classRequired:'Card Shark', price:160, tier:'epic', icon: iconStewardBoots },
+   { name:"boots off the palace steward's own feet, of the Loon", desc:"He wasn't using them anymore. Long story.", type:"equip", slot:"boots", bonus:{hoodoo:4, grit:1, beef:1, zip:1}, classRequired:'Hexpert', price:160, tier:'epic', icon: iconStewardBoots },
    ];
 
 /* ---------------- Spells (Hoodoo magic) ---------------- */
@@ -1031,6 +1069,35 @@ has invested the most points in (ties broken in this key order). Purely
 a title + a small stat nudge — see claimClassPath() for the mechanic. */
 const CLASS_TITLES = { beef:'Meathead', zip:'Card Shark', grit:'Bulwark', hoodoo:'Hexpert' };
 
+/* ---------------- Armor classes (Heavy/Medium/Light per class) ---------------- */
+/* Every equip item can now carry a `classRequired` field (equipItem(),
+player-actions.js, gates on it; same field name/shape the spells[] list
+above already uses for the same concept). Absent/undefined means
+universal — anyone can equip it, and the gate itself also no-ops
+entirely while state.classTitle is still null (pre-Trial), so a new
+character isn't locked out of every piece of gear in the game before
+they've even picked a class.
+
+CLASS_SIGNATURE_STAT is just CLASS_TITLES' own beef/zip/hoodoo pairing
+read the other way round: a class-tagged item's PRIMARY stat is always
+its class's signature stat, by design (rollShopGearStats/
+rollGearDropTier, economy.js/combat.js, still roll secondaries
+normally on top). Grit/Bulwark has no entry here since Bulwark isn't a
+reachable class (claimClassPath(), class-trial.js only accepts
+beef/zip/hoodoo) — grit still exists as a normal secondary-stat roll
+and still does its own job everywhere else (armor mitigation, max HP),
+it's just never a class-tagged item's primary.
+
+ARMOR_CLASS_WEIGHT is the actual Heavy>Medium>Light multiplier on an
+item's armor value (ensureGearArmor(), item-tiers.js) — Meathead gear
+protects noticeably more per item than Hexpert gear, same theme as the
+user's own "meathead does heavy armor" framing. ARMOR_WEIGHT_LABEL is
+purely cosmetic, for showing "Heavy"/"Medium"/"Light" next to an item's
+class in the UI (gearRequirementText(), item-tiers.js). */
+const CLASS_SIGNATURE_STAT = { Meathead:'beef', 'Card Shark':'zip', Hexpert:'hoodoo' };
+const ARMOR_WEIGHT_LABEL = { Meathead:'Heavy', 'Card Shark':'Medium', Hexpert:'Light' };
+const ARMOR_CLASS_WEIGHT = { Meathead:1.4, 'Card Shark':1.0, Hexpert:0.7 };
+
 /* Class-capstone combat skill — each renamed class (Meathead/Card Shark/
 Hexpert; Bulwark/grit is unchanged and out of scope) unlocks its own
 purchasable/levelable combat bonus once state.classTitle matches, bought
@@ -1096,7 +1163,9 @@ gnomeKing (above) is holed up behind the palace gate, and each class
 reaches him through a different one of these three items, checked by
 approachPalaceGate() (guild.js). Same equip-item shape as
 shopGearItemsTier3 above ({name, desc, type:'equip', slot, bonus, icon})
-plus one extra lookup field: `class` (matches state.classTitle). Each is
+plus one extra lookup field: `classRequired` (matches state.classTitle,
+same field name the equip-gate/spells use — see the armor-classes
+comment above CLASS_SIGNATURE_STAT below). Each is
 in a different equip slot on purpose — weapon/chest/head — so wearing
 one is a real trade-off against that slot's normal best-in-slot piece,
 not a free add-on. Bonuses are deliberately small (+2, half of
@@ -1113,9 +1182,9 @@ combat.js), which is why `price`/`building` no longer exist here.
 icon fields point at iconSiegeBreaker/iconGuardUniform/iconWardedSeal
 (icons.js). */
 const PALACE_GATE_GEAR = [
-   { name:"warlord's siege-breaker", desc:"Not subtle. Doesn't need to be.", type:"equip", slot:"weapon", bonus:{beef:2}, class:'Meathead', tier:'epic', icon: iconSiegeBreaker },
-   { name:"stolen palace-guard's uniform", desc:"Fits well enough, if nobody looks twice.", type:"equip", slot:"chest", bonus:{zip:2}, class:'Card Shark', tier:'epic', icon: iconGuardUniform },
-   { name:"warded seal, still humming", desc:"Warm to the touch. Getting warmer.", type:"equip", slot:"head", bonus:{hoodoo:2}, class:'Hexpert', tier:'epic', icon: iconWardedSeal },
+   { name:"warlord's siege-breaker", desc:"Not subtle. Doesn't need to be.", type:"equip", slot:"weapon", bonus:{beef:2}, classRequired:'Meathead', tier:'epic', icon: iconSiegeBreaker },
+   { name:"stolen palace-guard's uniform", desc:"Fits well enough, if nobody looks twice.", type:"equip", slot:"chest", bonus:{zip:2}, classRequired:'Card Shark', tier:'epic', icon: iconGuardUniform },
+   { name:"warded seal, still humming", desc:"Warm to the touch. Getting warmer.", type:"equip", slot:"head", bonus:{hoodoo:2}, classRequired:'Hexpert', tier:'epic', icon: iconWardedSeal },
    ];
 
 /* The three Gnometropolis district guardians — each one a rare encounter
@@ -1158,7 +1227,7 @@ const ARCANE_SANCTUM_GUARDIAN_SPAWN_CHANCE = 0.05;
 const garrisonGuardian = {
    name:"the Garrison's watch-captain, built like a slammed door", beef:6, zip:0, grit:25, hoodoo:0, xp:45, rare:true, zone:"garrison",
    skills:[ { type:'buff', chance:0.20, buffMult:1.6, buffTurns:2, flavor:"braces like a slammed door and hits back twice as hard" } ],
-   art: artGarrisonGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Meathead')
+   art: artGarrisonGuardian, loot: PALACE_GATE_GEAR.find(g => g.classRequired === 'Meathead')
 };
 /* Evasive rather than tanky/bursty like its two counterparts above —
 same dodgeChance mechanic casinoChampion uses (applyDamageToMonster(),
@@ -1176,13 +1245,13 @@ above) — it had drifted to +1, a leftover from before the per-zone
 gearDrop scaling existed, fixed alongside that same correction. */
 const roguesDenEnforcer = {
    name:"the Rogues' Den enforcer, already taking side bets on you", beef:6, zip:6, grit:25, hoodoo:0, xp:45, rare:true, zone:"roguesden",
-   art: artRoguesDenEnforcer, loot: PALACE_GATE_GEAR.find(g => g.class === 'Card Shark'),
-   gearDrop:{name:"the enforcer's own marked deck, edges filed sharp", desc:"Every card's a threat, if you know how to throw it.", type:"equip", slot:"weapon", bonus:{zip:5}, tier:'common', icon: iconCheatersDeck}
+   art: artRoguesDenEnforcer, loot: PALACE_GATE_GEAR.find(g => g.classRequired === 'Card Shark'),
+   gearDrop:{name:"the enforcer's own marked deck of the Loon", desc:"Every card's a threat, if you know how to throw it.", type:"equip", slot:"weapon", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconCheatersDeck}
 };
 const arcaneSanctumGuardian = {
    name:"the Arcane Sanctum's warden, muttering an unfinished spell", beef:6, zip:0, grit:25, hoodoo:0, xp:45, rare:true, zone:"sanctum",
    skills:[ { type:'bolt', chance:0.25, boltMin:12, boltMax:18, flavor:"finally finishes the spell, unleashing a burst of raw arcane energy" } ],
-   art: artArcaneSanctumGuardian, loot: PALACE_GATE_GEAR.find(g => g.class === 'Hexpert')
+   art: artArcaneSanctumGuardian, loot: PALACE_GATE_GEAR.find(g => g.classRequired === 'Hexpert')
 };
 
 /* ---------------- Casino: Blackjack ---------------- */

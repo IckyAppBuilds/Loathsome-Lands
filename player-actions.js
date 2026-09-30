@@ -131,6 +131,19 @@ function equipItem(idx){
       render();
       return;
    }
+   /* Armor-classes gate — item.classRequired (CLASS_SIGNATURE_STAT,
+   content.js). No-ops entirely while state.classTitle is still null
+   (pre-Trial, before ~level 10): a new character isn't locked out of
+   every piece of class-tagged gear before they've even picked a class.
+   Only blocks a NEW equip action — already-equipped/owned mismatched
+   gear from before this feature shipped is grandfathered in on
+   purpose, nothing here ever touches state.equipment directly. */
+   if(item.classRequired && state.classTitle && item.classRequired !== state.classTitle){
+      clearLog();
+      log(`${item.name} is ${item.classRequired} gear. You're a ${state.classTitle}.`);
+      render();
+      return;
+   }
    const slot = item.slot;
    const prev = state.equipment[slot];
    state.equipment[slot] = item;

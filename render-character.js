@@ -443,7 +443,7 @@ if(state.quest7Complete){
   <div class="quest-progress">Ready to report.</div>
   </div>`);
 } else if(state.quest7Accepted){
-  const quest7GearItem = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
+  const quest7GearItem = PALACE_GATE_GEAR.find(g => g.classRequired === state.classTitle);
   activeEntries.push(`
   <div class="quest-log-entry">
   <div class="quest-name">The Gnome King's Court</div>

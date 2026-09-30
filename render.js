@@ -172,7 +172,7 @@ function computeRenderContext(){
     : state.quest7Accepted ? 'active'
     : (state.quest6Complete && state.classTitle) ? 'offer'
     : 'locked';
-  const palaceGateGearItem = PALACE_GATE_GEAR.find(g => g.class === state.classTitle);
+  const palaceGateGearItem = PALACE_GATE_GEAR.find(g => g.classRequired === state.classTitle);
   const canApproachPalaceGate = isPalace && !state.inCombat && state.quest7Accepted && !state.quest7RareDefeated;
 
   /* Quest 8, "New Digs" — Act 2's opener, offered/turned in at the new

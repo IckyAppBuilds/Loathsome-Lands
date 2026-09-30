@@ -47,6 +47,13 @@ SEPARATE numeric field purely for this shop's own tier-grouping UI
 grouping needs a stable 1-4 order regardless of which rarity color a
 given tier happens to use.
 
+Every item carries `classRequired` (CLASS_SIGNATURE_STAT, content.js) —
+the weapon slot already had one distinct item per class at every tier;
+head/chest/legs/boots now each have 3 near-identical class variants
+(same desc/icon, "of the ___" animal suffix per item-tiers.js's naming
+convention) instead of 1 universal item, so a class can only buy the
+variant tagged for it (getAvailableGnomeShopItems() below).
+
 Icons deliberately reuse Act 1's own Tier 4 palace-relic set
 (iconThroneAxe/iconThroneScepter/iconRoyalFlushBlade/iconStolenCrown/
 iconPalaceForgedPlate/iconDressGreaves/iconStewardBoots) across all
@@ -57,33 +64,57 @@ slot per row across all 4 tiers (beef/hoodoo/zip weapons, then head/
 chest/legs/boots) for a stable, learnable shape as the player climbs
 the ladder. */
 const act2GearItemsTier1 = [
-   { name:"the fallen King's own war-pick", desc:"Still gaudy with gold leaf.", type:"equip", slot:"weapon", bonus:{beef:6}, price:300, tier:'common', act2Tier:1, icon: iconThroneAxe },
-   { name:"a looted arcane focus, still humming with stolen magic", desc:"Nobody's claimed it back yet.", type:"equip", slot:"weapon", bonus:{hoodoo:6}, price:300, tier:'common', act2Tier:1, icon: iconThroneScepter },
-   { name:"a card-table blade, plated in someone else's winnings", desc:"The house's cut, repurposed.", type:"equip", slot:"weapon", bonus:{zip:6}, price:300, tier:'common', act2Tier:1, icon: iconRoyalFlushBlade },
-   { name:"a conqueror's helm, scavenged gold hammered over old dents", desc:"The dents were already there.", type:"equip", slot:"head", bonus:{grit:6}, price:300, tier:'common', act2Tier:1, icon: iconStolenCrown },
-   { name:"plate stripped from the throne room's own honor guard", desc:"They weren't using it anymore.", type:"equip", slot:"chest", bonus:{grit:6}, price:300, tier:'common', act2Tier:1, icon: iconPalaceForgedPlate },
-   { name:"greaves looted from the palace armory, still polished", desc:"Someone kept these in good shape.", type:"equip", slot:"legs", bonus:{zip:6}, price:300, tier:'common', act2Tier:1, icon: iconDressGreaves },
-   { name:"the steward's own boots, resoled and reclaimed", desc:"Better fit than they had any right to be.", type:"equip", slot:"boots", bonus:{zip:6}, price:300, tier:'common', act2Tier:1, icon: iconStewardBoots },
+   { name:"the fallen King's own war-pick", desc:"Still gaudy with gold leaf.", type:"equip", slot:"weapon", bonus:{beef:6}, classRequired:'Meathead', price:300, tier:'common', act2Tier:1, icon: iconThroneAxe },
+   { name:"a looted arcane focus, still humming with stolen magic", desc:"Nobody's claimed it back yet.", type:"equip", slot:"weapon", bonus:{hoodoo:6}, classRequired:'Hexpert', price:300, tier:'common', act2Tier:1, icon: iconThroneScepter },
+   { name:"a card-table blade, plated in someone else's winnings", desc:"The house's cut, repurposed.", type:"equip", slot:"weapon", bonus:{zip:6}, classRequired:'Card Shark', price:300, tier:'common', act2Tier:1, icon: iconRoyalFlushBlade },
+   { name:"a conqueror's helm, scavenged gold hammered over old dents, of the Badger", desc:"The dents were already there.", type:"equip", slot:"head", bonus:{beef:6}, classRequired:'Meathead', price:300, tier:'common', act2Tier:1, icon: iconStolenCrown },
+   { name:"a conqueror's helm, scavenged gold hammered over old dents, of the Weasel", desc:"The dents were already there.", type:"equip", slot:"head", bonus:{zip:6}, classRequired:'Card Shark', price:300, tier:'common', act2Tier:1, icon: iconStolenCrown },
+   { name:"a conqueror's helm, scavenged gold hammered over old dents, of the Loon", desc:"The dents were already there.", type:"equip", slot:"head", bonus:{hoodoo:6}, classRequired:'Hexpert', price:300, tier:'common', act2Tier:1, icon: iconStolenCrown },
+   { name:"plate stripped from the throne room's own honor guard, of the Badger", desc:"They weren't using it anymore.", type:"equip", slot:"chest", bonus:{beef:6}, classRequired:'Meathead', price:300, tier:'common', act2Tier:1, icon: iconPalaceForgedPlate },
+   { name:"plate stripped from the throne room's own honor guard, of the Weasel", desc:"They weren't using it anymore.", type:"equip", slot:"chest", bonus:{zip:6}, classRequired:'Card Shark', price:300, tier:'common', act2Tier:1, icon: iconPalaceForgedPlate },
+   { name:"plate stripped from the throne room's own honor guard, of the Loon", desc:"They weren't using it anymore.", type:"equip", slot:"chest", bonus:{hoodoo:6}, classRequired:'Hexpert', price:300, tier:'common', act2Tier:1, icon: iconPalaceForgedPlate },
+   { name:"greaves looted from the palace armory, still polished, of the Badger", desc:"Someone kept these in good shape.", type:"equip", slot:"legs", bonus:{beef:6}, classRequired:'Meathead', price:300, tier:'common', act2Tier:1, icon: iconDressGreaves },
+   { name:"greaves looted from the palace armory, still polished, of the Weasel", desc:"Someone kept these in good shape.", type:"equip", slot:"legs", bonus:{zip:6}, classRequired:'Card Shark', price:300, tier:'common', act2Tier:1, icon: iconDressGreaves },
+   { name:"greaves looted from the palace armory, still polished, of the Loon", desc:"Someone kept these in good shape.", type:"equip", slot:"legs", bonus:{hoodoo:6}, classRequired:'Hexpert', price:300, tier:'common', act2Tier:1, icon: iconDressGreaves },
+   { name:"the steward's own boots, resoled and reclaimed, of the Badger", desc:"Better fit than they had any right to be.", type:"equip", slot:"boots", bonus:{beef:6}, classRequired:'Meathead', price:300, tier:'common', act2Tier:1, icon: iconStewardBoots },
+   { name:"the steward's own boots, resoled and reclaimed, of the Weasel", desc:"Better fit than they had any right to be.", type:"equip", slot:"boots", bonus:{zip:6}, classRequired:'Card Shark', price:300, tier:'common', act2Tier:1, icon: iconStewardBoots },
+   { name:"the steward's own boots, resoled and reclaimed, of the Loon", desc:"Better fit than they had any right to be.", type:"equip", slot:"boots", bonus:{hoodoo:6}, classRequired:'Hexpert', price:300, tier:'common', act2Tier:1, icon: iconStewardBoots },
    ];
 
 const act2GearItemsTier2 = [
-   { name:"scepter reclaimed from the throne room, twice stolen now", desc:"Once from him. Now from whoever had it after.", type:"equip", slot:"weapon", bonus:{hoodoo:8, grit:1}, price:700, tier:'uncommon', act2Tier:2, icon: iconThroneScepter },
-   { name:"the champion's own cleaver, freshly re-sharpened", desc:"He's not around to mind.", type:"equip", slot:"weapon", bonus:{beef:8, zip:1}, price:700, tier:'uncommon', act2Tier:2, icon: iconThroneAxe },
-   { name:"a loaded blade fresh off the gambling floor", desc:"The house always finds a way to lose these eventually.", type:"equip", slot:"weapon", bonus:{zip:8, hoodoo:1}, price:700, tier:'uncommon', act2Tier:2, icon: iconRoyalFlushBlade },
-   { name:"the conqueror's crown, melted down and reforged to fit", desc:"Fits better this time.", type:"equip", slot:"head", bonus:{grit:8, beef:1}, price:700, tier:'uncommon', act2Tier:2, icon: iconStolenCrown },
-   { name:"ceremonial plate, still warm from the palace forge", desc:"They never let it cool between owners.", type:"equip", slot:"chest", bonus:{grit:8, hoodoo:1}, price:700, tier:'uncommon', act2Tier:2, icon: iconPalaceForgedPlate },
-   { name:"dress greaves, looted twice over", desc:"Ceremonial the first time. Just useful now.", type:"equip", slot:"legs", bonus:{zip:8, grit:1}, price:700, tier:'uncommon', act2Tier:2, icon: iconDressGreaves },
-   { name:"the steward's spare boots, somehow finer than the first pair", desc:"He had more than one pair. Of course he did.", type:"equip", slot:"boots", bonus:{zip:8, beef:1}, price:700, tier:'uncommon', act2Tier:2, icon: iconStewardBoots },
+   { name:"scepter reclaimed from the throne room, twice stolen now", desc:"Once from him. Now from whoever had it after.", type:"equip", slot:"weapon", bonus:{hoodoo:8, grit:1}, classRequired:'Hexpert', price:700, tier:'uncommon', act2Tier:2, icon: iconThroneScepter },
+   { name:"the champion's own cleaver, freshly re-sharpened", desc:"He's not around to mind.", type:"equip", slot:"weapon", bonus:{beef:8, zip:1}, classRequired:'Meathead', price:700, tier:'uncommon', act2Tier:2, icon: iconThroneAxe },
+   { name:"a loaded blade fresh off the gambling floor", desc:"The house always finds a way to lose these eventually.", type:"equip", slot:"weapon", bonus:{zip:8, hoodoo:1}, classRequired:'Card Shark', price:700, tier:'uncommon', act2Tier:2, icon: iconRoyalFlushBlade },
+   { name:"the conqueror's crown, melted down and reforged to fit, of the Badger", desc:"Fits better this time.", type:"equip", slot:"head", bonus:{beef:8, grit:1}, classRequired:'Meathead', price:700, tier:'uncommon', act2Tier:2, icon: iconStolenCrown },
+   { name:"the conqueror's crown, melted down and reforged to fit, of the Weasel", desc:"Fits better this time.", type:"equip", slot:"head", bonus:{zip:8, grit:1}, classRequired:'Card Shark', price:700, tier:'uncommon', act2Tier:2, icon: iconStolenCrown },
+   { name:"the conqueror's crown, melted down and reforged to fit, of the Loon", desc:"Fits better this time.", type:"equip", slot:"head", bonus:{hoodoo:8, grit:1}, classRequired:'Hexpert', price:700, tier:'uncommon', act2Tier:2, icon: iconStolenCrown },
+   { name:"ceremonial plate, still warm from the palace forge, of the Badger", desc:"They never let it cool between owners.", type:"equip", slot:"chest", bonus:{beef:8, grit:1}, classRequired:'Meathead', price:700, tier:'uncommon', act2Tier:2, icon: iconPalaceForgedPlate },
+   { name:"ceremonial plate, still warm from the palace forge, of the Weasel", desc:"They never let it cool between owners.", type:"equip", slot:"chest", bonus:{zip:8, grit:1}, classRequired:'Card Shark', price:700, tier:'uncommon', act2Tier:2, icon: iconPalaceForgedPlate },
+   { name:"ceremonial plate, still warm from the palace forge, of the Loon", desc:"They never let it cool between owners.", type:"equip", slot:"chest", bonus:{hoodoo:8, grit:1}, classRequired:'Hexpert', price:700, tier:'uncommon', act2Tier:2, icon: iconPalaceForgedPlate },
+   { name:"dress greaves, looted twice over, of the Badger", desc:"Ceremonial the first time. Just useful now.", type:"equip", slot:"legs", bonus:{beef:8, grit:1}, classRequired:'Meathead', price:700, tier:'uncommon', act2Tier:2, icon: iconDressGreaves },
+   { name:"dress greaves, looted twice over, of the Weasel", desc:"Ceremonial the first time. Just useful now.", type:"equip", slot:"legs", bonus:{zip:8, grit:1}, classRequired:'Card Shark', price:700, tier:'uncommon', act2Tier:2, icon: iconDressGreaves },
+   { name:"dress greaves, looted twice over, of the Loon", desc:"Ceremonial the first time. Just useful now.", type:"equip", slot:"legs", bonus:{hoodoo:8, grit:1}, classRequired:'Hexpert', price:700, tier:'uncommon', act2Tier:2, icon: iconDressGreaves },
+   { name:"the steward's spare boots, somehow finer than the first pair, of the Badger", desc:"He had more than one pair. Of course he did.", type:"equip", slot:"boots", bonus:{beef:8, grit:1}, classRequired:'Meathead', price:700, tier:'uncommon', act2Tier:2, icon: iconStewardBoots },
+   { name:"the steward's spare boots, somehow finer than the first pair, of the Weasel", desc:"He had more than one pair. Of course he did.", type:"equip", slot:"boots", bonus:{zip:8, grit:1}, classRequired:'Card Shark', price:700, tier:'uncommon', act2Tier:2, icon: iconStewardBoots },
+   { name:"the steward's spare boots, somehow finer than the first pair, of the Loon", desc:"He had more than one pair. Of course he did.", type:"equip", slot:"boots", bonus:{hoodoo:8, grit:1}, classRequired:'Hexpert', price:700, tier:'uncommon', act2Tier:2, icon: iconStewardBoots },
    ];
 
 const act2GearItemsTier3 = [
-   { name:"an heirloom rod, plundered from whoever it was heirloom to", desc:"Provenance is somebody else's problem now.", type:"equip", slot:"weapon", bonus:{hoodoo:10, grit:1, zip:1}, price:1400, tier:'rare', act2Tier:3, icon: iconThroneScepter },
-   { name:"a war-cleaver with three owners' names scratched off the hilt", desc:"There's room for a fourth.", type:"equip", slot:"weapon", bonus:{beef:10, zip:1, grit:1}, price:1400, tier:'rare', act2Tier:3, icon: iconThroneAxe },
-   { name:"an ace palmed from a dead man's hand", desc:"He wasn't going to need it.", type:"equip", slot:"weapon", bonus:{zip:10, hoodoo:1, beef:1}, price:1400, tier:'rare', act2Tier:3, icon: iconRoyalFlushBlade },
-   { name:"a crown that's stopped fitting anyone but you", desc:"It tried a few other heads first.", type:"equip", slot:"head", bonus:{grit:10, hoodoo:1, beef:1}, price:1400, tier:'rare', act2Tier:3, icon: iconStolenCrown },
-   { name:"a cuirass forged for a king who never got to wear it", desc:"His loss, technically speaking.", type:"equip", slot:"chest", bonus:{grit:10, beef:1, zip:1}, price:1400, tier:'rare', act2Tier:3, icon: iconPalaceForgedPlate },
-   { name:"trousers tailored in a palace that isn't there anymore", desc:"The tailor's doing fine. The palace, less so.", type:"equip", slot:"legs", bonus:{zip:10, grit:1, hoodoo:1}, price:1400, tier:'rare', act2Tier:3, icon: iconDressGreaves },
-   { name:"boots blessed by whoever's left of the palace clergy", desc:"They insisted. You didn't argue.", type:"equip", slot:"boots", bonus:{zip:10, hoodoo:1, beef:1}, price:1400, tier:'rare', act2Tier:3, icon: iconStewardBoots },
+   { name:"an heirloom rod, plundered from whoever it was heirloom to", desc:"Provenance is somebody else's problem now.", type:"equip", slot:"weapon", bonus:{hoodoo:10, grit:1, zip:1}, classRequired:'Hexpert', price:1400, tier:'rare', act2Tier:3, icon: iconThroneScepter },
+   { name:"a war-cleaver with three owners' names scratched off the hilt", desc:"There's room for a fourth.", type:"equip", slot:"weapon", bonus:{beef:10, zip:1, grit:1}, classRequired:'Meathead', price:1400, tier:'rare', act2Tier:3, icon: iconThroneAxe },
+   { name:"an ace palmed from a dead man's hand", desc:"He wasn't going to need it.", type:"equip", slot:"weapon", bonus:{zip:10, hoodoo:1, beef:1}, classRequired:'Card Shark', price:1400, tier:'rare', act2Tier:3, icon: iconRoyalFlushBlade },
+   { name:"a crown that's stopped fitting anyone but you, of the Badger", desc:"It tried a few other heads first.", type:"equip", slot:"head", bonus:{beef:10, grit:1, zip:1}, classRequired:'Meathead', price:1400, tier:'rare', act2Tier:3, icon: iconStolenCrown },
+   { name:"a crown that's stopped fitting anyone but you, of the Weasel", desc:"It tried a few other heads first.", type:"equip", slot:"head", bonus:{zip:10, grit:1, hoodoo:1}, classRequired:'Card Shark', price:1400, tier:'rare', act2Tier:3, icon: iconStolenCrown },
+   { name:"a crown that's stopped fitting anyone but you, of the Loon", desc:"It tried a few other heads first.", type:"equip", slot:"head", bonus:{hoodoo:10, grit:1, beef:1}, classRequired:'Hexpert', price:1400, tier:'rare', act2Tier:3, icon: iconStolenCrown },
+   { name:"a cuirass forged for a king who never got to wear it, of the Badger", desc:"His loss, technically speaking.", type:"equip", slot:"chest", bonus:{beef:10, grit:1, zip:1}, classRequired:'Meathead', price:1400, tier:'rare', act2Tier:3, icon: iconPalaceForgedPlate },
+   { name:"a cuirass forged for a king who never got to wear it, of the Weasel", desc:"His loss, technically speaking.", type:"equip", slot:"chest", bonus:{zip:10, grit:1, hoodoo:1}, classRequired:'Card Shark', price:1400, tier:'rare', act2Tier:3, icon: iconPalaceForgedPlate },
+   { name:"a cuirass forged for a king who never got to wear it, of the Loon", desc:"His loss, technically speaking.", type:"equip", slot:"chest", bonus:{hoodoo:10, grit:1, beef:1}, classRequired:'Hexpert', price:1400, tier:'rare', act2Tier:3, icon: iconPalaceForgedPlate },
+   { name:"trousers tailored in a palace that isn't there anymore, of the Badger", desc:"The tailor's doing fine. The palace, less so.", type:"equip", slot:"legs", bonus:{beef:10, grit:1, zip:1}, classRequired:'Meathead', price:1400, tier:'rare', act2Tier:3, icon: iconDressGreaves },
+   { name:"trousers tailored in a palace that isn't there anymore, of the Weasel", desc:"The tailor's doing fine. The palace, less so.", type:"equip", slot:"legs", bonus:{zip:10, grit:1, hoodoo:1}, classRequired:'Card Shark', price:1400, tier:'rare', act2Tier:3, icon: iconDressGreaves },
+   { name:"trousers tailored in a palace that isn't there anymore, of the Loon", desc:"The tailor's doing fine. The palace, less so.", type:"equip", slot:"legs", bonus:{hoodoo:10, grit:1, beef:1}, classRequired:'Hexpert', price:1400, tier:'rare', act2Tier:3, icon: iconDressGreaves },
+   { name:"boots blessed by whoever's left of the palace clergy, of the Badger", desc:"They insisted. You didn't argue.", type:"equip", slot:"boots", bonus:{beef:10, grit:1, zip:1}, classRequired:'Meathead', price:1400, tier:'rare', act2Tier:3, icon: iconStewardBoots },
+   { name:"boots blessed by whoever's left of the palace clergy, of the Weasel", desc:"They insisted. You didn't argue.", type:"equip", slot:"boots", bonus:{zip:10, grit:1, hoodoo:1}, classRequired:'Card Shark', price:1400, tier:'rare', act2Tier:3, icon: iconStewardBoots },
+   { name:"boots blessed by whoever's left of the palace clergy, of the Loon", desc:"They insisted. You didn't argue.", type:"equip", slot:"boots", bonus:{hoodoo:10, grit:1, beef:1}, classRequired:'Hexpert', price:1400, tier:'rare', act2Tier:3, icon: iconStewardBoots },
    ];
 
 /* Top tier — every item touches all 4 stats (primary+12, the other 3 at
@@ -91,13 +122,21 @@ const act2GearItemsTier3 = [
 Tier 4 uses once a tier's stat count reaches the total number of stats
 that exist. */
 const act2GearItemsTier4 = [
-   { name:"the scepter of a throne that no longer exists", desc:"Outlasted the thing it was made for.", type:"equip", slot:"weapon", bonus:{hoodoo:12, beef:1, zip:1, grit:1}, price:2500, tier:'epic', act2Tier:4, icon: iconThroneScepter },
-   { name:"the headsman's axe, its debt finally called in", desc:"It was always going to end up here.", type:"equip", slot:"weapon", bonus:{beef:12, zip:1, grit:1, hoodoo:1}, price:2500, tier:'epic', act2Tier:4, icon: iconThroneAxe },
-   { name:"a royal flush that emptied the whole house", desc:"Every table, every hand, same result.", type:"equip", slot:"weapon", bonus:{zip:12, grit:1, hoodoo:1, beef:1}, price:2500, tier:'epic', act2Tier:4, icon: iconRoyalFlushBlade },
-   { name:"the crown itself, still slightly too big", desc:"You've stopped noticing.", type:"equip", slot:"head", bonus:{grit:12, hoodoo:1, beef:1, zip:1}, price:2500, tier:'epic', act2Tier:4, icon: iconStolenCrown },
-   { name:"the palace's own furnace-forged plate, unclaimed until now", desc:"It was always going to be yours, eventually.", type:"equip", slot:"chest", bonus:{grit:12, beef:1, zip:1, hoodoo:1}, price:2500, tier:'epic', act2Tier:4, icon: iconPalaceForgedPlate },
-   { name:"greaves stitched from a dress uniform nobody's left to wear", desc:"Ceremonial, once. Just yours, now.", type:"equip", slot:"legs", bonus:{zip:12, grit:1, hoodoo:1, beef:1}, price:2500, tier:'epic', act2Tier:4, icon: iconDressGreaves },
-   { name:"the steward's boots, and everything that came with them", desc:"He left in a hurry. Didn't take much.", type:"equip", slot:"boots", bonus:{zip:12, grit:1, hoodoo:1, beef:1}, price:2500, tier:'epic', act2Tier:4, icon: iconStewardBoots },
+   { name:"the scepter of a throne that no longer exists", desc:"Outlasted the thing it was made for.", type:"equip", slot:"weapon", bonus:{hoodoo:12, beef:1, zip:1, grit:1}, classRequired:'Hexpert', price:2500, tier:'epic', act2Tier:4, icon: iconThroneScepter },
+   { name:"the headsman's axe, its debt finally called in", desc:"It was always going to end up here.", type:"equip", slot:"weapon", bonus:{beef:12, zip:1, grit:1, hoodoo:1}, classRequired:'Meathead', price:2500, tier:'epic', act2Tier:4, icon: iconThroneAxe },
+   { name:"a royal flush that emptied the whole house", desc:"Every table, every hand, same result.", type:"equip", slot:"weapon", bonus:{zip:12, grit:1, hoodoo:1, beef:1}, classRequired:'Card Shark', price:2500, tier:'epic', act2Tier:4, icon: iconRoyalFlushBlade },
+   { name:"the crown itself, still slightly too big, of the Badger", desc:"You've stopped noticing.", type:"equip", slot:"head", bonus:{beef:12, grit:1, hoodoo:1, zip:1}, classRequired:'Meathead', price:2500, tier:'epic', act2Tier:4, icon: iconStolenCrown },
+   { name:"the crown itself, still slightly too big, of the Weasel", desc:"You've stopped noticing.", type:"equip", slot:"head", bonus:{zip:12, grit:1, hoodoo:1, beef:1}, classRequired:'Card Shark', price:2500, tier:'epic', act2Tier:4, icon: iconStolenCrown },
+   { name:"the crown itself, still slightly too big, of the Loon", desc:"You've stopped noticing.", type:"equip", slot:"head", bonus:{hoodoo:12, grit:1, beef:1, zip:1}, classRequired:'Hexpert', price:2500, tier:'epic', act2Tier:4, icon: iconStolenCrown },
+   { name:"the palace's own furnace-forged plate, unclaimed until now, of the Badger", desc:"It was always going to be yours, eventually.", type:"equip", slot:"chest", bonus:{beef:12, grit:1, hoodoo:1, zip:1}, classRequired:'Meathead', price:2500, tier:'epic', act2Tier:4, icon: iconPalaceForgedPlate },
+   { name:"the palace's own furnace-forged plate, unclaimed until now, of the Weasel", desc:"It was always going to be yours, eventually.", type:"equip", slot:"chest", bonus:{zip:12, grit:1, hoodoo:1, beef:1}, classRequired:'Card Shark', price:2500, tier:'epic', act2Tier:4, icon: iconPalaceForgedPlate },
+   { name:"the palace's own furnace-forged plate, unclaimed until now, of the Loon", desc:"It was always going to be yours, eventually.", type:"equip", slot:"chest", bonus:{hoodoo:12, grit:1, beef:1, zip:1}, classRequired:'Hexpert', price:2500, tier:'epic', act2Tier:4, icon: iconPalaceForgedPlate },
+   { name:"greaves stitched from a dress uniform nobody's left to wear, of the Badger", desc:"Ceremonial, once. Just yours, now.", type:"equip", slot:"legs", bonus:{beef:12, grit:1, hoodoo:1, zip:1}, classRequired:'Meathead', price:2500, tier:'epic', act2Tier:4, icon: iconDressGreaves },
+   { name:"greaves stitched from a dress uniform nobody's left to wear, of the Weasel", desc:"Ceremonial, once. Just yours, now.", type:"equip", slot:"legs", bonus:{zip:12, grit:1, hoodoo:1, beef:1}, classRequired:'Card Shark', price:2500, tier:'epic', act2Tier:4, icon: iconDressGreaves },
+   { name:"greaves stitched from a dress uniform nobody's left to wear, of the Loon", desc:"Ceremonial, once. Just yours, now.", type:"equip", slot:"legs", bonus:{hoodoo:12, grit:1, beef:1, zip:1}, classRequired:'Hexpert', price:2500, tier:'epic', act2Tier:4, icon: iconDressGreaves },
+   { name:"the steward's boots, and everything that came with them, of the Badger", desc:"He left in a hurry. Didn't take much.", type:"equip", slot:"boots", bonus:{beef:12, grit:1, hoodoo:1, zip:1}, classRequired:'Meathead', price:2500, tier:'epic', act2Tier:4, icon: iconStewardBoots },
+   { name:"the steward's boots, and everything that came with them, of the Weasel", desc:"He left in a hurry. Didn't take much.", type:"equip", slot:"boots", bonus:{zip:12, grit:1, hoodoo:1, beef:1}, classRequired:'Card Shark', price:2500, tier:'epic', act2Tier:4, icon: iconStewardBoots },
+   { name:"the steward's boots, and everything that came with them, of the Loon", desc:"He left in a hurry. Didn't take much.", type:"equip", slot:"boots", bonus:{hoodoo:12, grit:1, beef:1, zip:1}, classRequired:'Hexpert', price:2500, tier:'epic', act2Tier:4, icon: iconStewardBoots },
    ];
 
 /* Food — same 1.6x value-per-Pop-Tab ratio Gladstone's own healItems/
@@ -139,5 +178,7 @@ function getAvailableGnomeShopItems(){
    if(shopLevel >= ACT2_SHOP_LEVEL_GEAR_TIER2) items = items.concat(act2GearItemsTier2);
    if(shopLevel >= ACT2_SHOP_LEVEL_GEAR_TIER3) items = items.concat(act2GearItemsTier3);
    if(shopLevel >= ACT2_SHOP_LEVEL_GEAR_TIER4) items = items.concat(act2GearItemsTier4);
-   return items;
+   /* filterByClass() (economy.js) — same armor-classes shop filter Act
+   1's own getAvailableShopItems() uses, permissive pre-Trial. */
+   return filterByClass(items);
 }

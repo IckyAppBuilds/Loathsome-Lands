@@ -74,6 +74,15 @@ to fold in shopGearItemsTier2 once state.quest6Complete was true,
 independent of Shop level entirely; that meant it could show up before
 the Shop was upgraded at all, or never show up if quest6 was skipped —
 now every gear tier climbs the same one ladder food does). */
+/* Armor-classes filter — shared by getAvailableShopItems() and
+getAvailableGnomeShopItems() (act2-shop.js) below. Same permissive
+fallback as equipItem()'s own gate (player-actions.js): shows
+EVERYTHING while state.classTitle is still null (pre-Trial), so early
+shopping isn't blocked before a class exists. */
+function filterByClass(items){
+   return items.filter(it => !it.classRequired || !state.classTitle || it.classRequired === state.classTitle);
+}
+
 function getAvailableShopItems(){
    const shopLevel = state.buildingUpgrades.shop || 0;
    let items = [...shopBuyItems];
@@ -82,7 +91,7 @@ function getAvailableShopItems(){
    if(shopLevel >= SHOP_LEVEL_FOOD_TIER3) items = items.concat(shopFoodItemsTier3);
    if(shopLevel >= SHOP_LEVEL_GEAR_TIER3) items = items.concat(shopGearItemsTier3);
    if(shopLevel >= SHOP_LEVEL_GEAR_TIER4) items = items.concat(shopGearItemsTier4);
-   return items;
+   return filterByClass(items);
 }
 
 /* Tier 2/3 shop gear (shopGearItemsTier2/3, content.js) keeps its

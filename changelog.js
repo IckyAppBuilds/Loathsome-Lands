@@ -11,6 +11,11 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 17, date: 'September 30', title: 'Armor Classes', items: [
+      "Gear now belongs to a class: Meatheads wear Heavy gear, Card Sharks wear Medium, Hexperts wear Light — each protects a different amount, and you can only equip your own.",
+      "Already got something on that doesn't match? It's grandfathered in — nothing gets stripped off, the restriction just applies to what you equip from here on.",
+      "Armor's protective value now also climbs with an item's level requirement, same as every other stat already does — not just its rarity.",
+      ]},
    { id: 16, date: 'September 30', title: 'Zip Cuts Both Ways', items: [
       "Zip is now accuracy too, not just dodge. Your own zip cancels out some of a slippery monster's dodge chance when you attack — and a fast monster's zip does the same to you.",
       ]},
