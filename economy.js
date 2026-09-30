@@ -97,29 +97,21 @@ keep pace with however strong the primary stat's tier actually is.
 Tier 1 (a single stat) and non-equip items pass through unchanged —
 there's nothing to roll. */
 function rollShopGearStats(def){
-   if(def.type !== 'equip' || !def.bonus) return { ...def };
+   if(def.type !== 'equip' || !def.bonus) return ensureGearArmor({ ...def });
    const statKeys = Object.keys(def.bonus);
-   if(statKeys.length <= 1) return { ...def };
+   if(statKeys.length <= 1) return ensureGearArmor({ ...def });
    const primaryStat = statKeys[0];
    const primaryValue = def.bonus[primaryStat];
    const secondaryCount = statKeys.length - 1;
-   /* 'armor' joins the candidate pool here so a tier-2/3/4 purchase (either
-   shop — this function is shared, see the comment above) can now roll it as
-   a secondary alongside beef/zip/grit/hoodoo. Since a tier's secondaryCount
-   (from the ITEM's own authored bonus-key count) is unchanged, a tier-4 item
-   no longer guarantees all 4 of beef/zip/grit/hoodoo every time — it's now
-   "primary + secondaryCount random picks from all 4 remaining stats,
-   armor included," a small natural side effect of adding a 5th stat to a
-   fixed-size pool rather than a deliberate nerf. Monster gearDrop rolls
-   (rollGearDropTier(), combat.js, via STAT_ROTATION, content.js) are
-   deliberately left out of this — that system's fixed 3-slot rotation IS
-   the "tier 4 = all 4 stats" guarantee, and armor doesn't fit into it
-   without restructuring the gear-drop tier system itself. */
-   const candidates = ['beef','zip','grit','hoodoo','armor'].filter(s => s !== primaryStat);
+   /* 'armor' no longer belongs in this candidate pool — every equip item
+   guarantees a tier-based armor value now regardless (ensureGearArmor(),
+   item-tiers.js), so it stays purely beef/zip/grit/hoodoo here, same as
+   before armor existed at all. */
+   const candidates = ['beef','zip','grit','hoodoo'].filter(s => s !== primaryStat);
    const shuffled = candidates.map(s => ({ s, r: Math.random() })).sort((a,b) => a.r - b.r).map(x => x.s);
    const bonus = { [primaryStat]: primaryValue };
    shuffled.slice(0, secondaryCount).forEach(s => { bonus[s] = rollSecondaryStatValue(primaryValue); });
-   return { ...def, bonus };
+   return ensureGearArmor({ ...def, bonus });
 }
 
 /* Which shop row (if any) just sold, and when — read by

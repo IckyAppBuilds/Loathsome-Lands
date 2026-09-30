@@ -37,6 +37,38 @@ function getItemTier(item){
    return 'common';
 }
 
+/* Armor on every single piece of gear, per explicit request — rather
+than authoring an `armor:N` literal on every equip item across content.js/
+act2-shop.js/every monster's own gearDrop (the same one-off-exception
+problem the monster-stat armor migration specifically moved away from),
+armor is DERIVED from an item's own tier, exactly once, at the handful
+of points a gear item actually enters the player's possession. Flat
+per-tier amount rather than scaling off the item's own primary stat
+value — deliberately simple and easy to re-tune as one small table. */
+const GEAR_ARMOR_BY_TIER = { poor:1, common:1, uncommon:2, rare:3, epic:4, legendary:5 };
+
+/* Only sets armor when it's genuinely MISSING — never overwrites an
+existing value, however it got there. This matters: temperEquippedItem()
+(player-actions.js) multiplies every key already in item.bonus,
+including armor, so an already-tempered item's armor is boosted well
+above this function's own base tier amount — hydrateItem() (save.js)
+calls this on every single load, and unconditionally overwriting would
+silently reset a tempered item's armor back to its un-tempered floor on
+every save/load round trip (a real bug, caught by test-temper-gear.js's
+own round-trip check). Appends armor AFTER the item's existing bonus
+keys when it does need adding, so an item with a real primary stat
+never has armor mistaken for it by getGearRequirements() below (which
+always reads Object.keys(item.bonus)[0] — insertion order matters
+here). Non-equip items (junk/quest/consumables) pass through untouched.
+Mutates the item in place (so callers that already hold a reference see
+the update) and returns it for convenient chaining. */
+function ensureGearArmor(item){
+   if(!item || item.type !== 'equip') return item;
+   if(item.bonus && item.bonus.armor !== undefined) return item;
+   item.bonus = { ...(item.bonus || {}), armor: GEAR_ARMOR_BY_TIER[item.tier] || 1 };
+   return item;
+}
+
 /* Wraps an item's name in its tier color — used everywhere an item's
 name is rendered via innerHTML against known, data-driven content (the
 Pack, Shop listings, equipped gear, the Rare Finds log). Never used

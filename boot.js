@@ -52,7 +52,11 @@ all three of those cases is also exactly why the tutorial overlay
 brand-new run and never for a returning player whose save was found
 (that path is enterGameAfterAuth(true), which never calls this). */
 function startFreshGame(){
-   Object.keys(starterGear).forEach(slot => { state.equipment[slot] = {...starterGear[slot]}; });
+   /* ensureGearArmor() (item-tiers.js) so even the flavor-only starting
+   kit (starterGear, content.js — every piece has an empty bonus:{})
+   picks up its own small tier-based armor value, same as everything
+   else the player ever equips. */
+   Object.keys(starterGear).forEach(slot => { state.equipment[slot] = ensureGearArmor({...starterGear[slot]}); });
    recomputeMaxStats();
    state.inventory.push({...healItems[0]});
    clearLog();

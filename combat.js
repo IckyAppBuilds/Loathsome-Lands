@@ -931,7 +931,7 @@ function rollGearDropTier(baseDrop){
    const bonus = { [primaryStat]: primaryValue };
    const secondaryStats = STAT_ROTATION[primaryStat].slice(0, tierIndex);
    secondaryStats.forEach(stat => { bonus[stat] = rollSecondaryStatValue(primaryValue); });
-   return { ...baseDrop, bonus, tier: GEAR_DROP_TIER_NAMES[tierIndex], levelReqBase };
+   return ensureGearArmor({ ...baseDrop, bonus, tier: GEAR_DROP_TIER_NAMES[tierIndex], levelReqBase });
 }
 
 function winCombat(){
@@ -1155,7 +1155,12 @@ clearLog();
       log(`You pry loose: ${drillRigItem.name}.`);
    }
    if(lootRoll){
-      const lootedItem = {...lootRoll};
+      /* ensureGearArmor() (item-tiers.js) is what guarantees the 3
+      PALACE_GATE_GEAR pieces (the only equip items that ever flow
+      through this guaranteed-loot path) carry armor too — a no-op for
+      every other lootRoll source (junk/quest items), since it only
+      touches type:'equip'. */
+      const lootedItem = ensureGearArmor({...lootRoll});
       state.inventory.push(lootedItem);
       drops.push(lootedItem);
       log(`You loot: ${lootRoll.name}.`);

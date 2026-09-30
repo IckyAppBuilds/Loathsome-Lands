@@ -284,8 +284,12 @@ the original 4 stats, deliberately NOT extended to include `armor` —
 its 3-slot rotation IS the "tier 4 = all 4 stats" guarantee, and a 5th
 stat doesn't fit without restructuring the tier system itself. A SHOP
 purchase's own secondary roll is a separate, simpler mechanism —
-`rollShopGearStats()`, economy.js — which DOES include armor in its
-candidate pool), `MONSTER_HP_PER_GRIT`/`MONSTER_ATK_PER_BEEF`/
+`rollShopGearStats()`, economy.js — back to its original 4-stat
+candidate pool, beef/zip/grit/hoodoo only; armor briefly lived in this
+pool too before "armor on every piece of gear" replaced that with a
+guaranteed per-tier amount via `ensureGearArmor()` (item-tiers.js) on
+every item regardless of source, making a RANDOM armor roll here
+redundant), `MONSTER_HP_PER_GRIT`/`MONSTER_ATK_PER_BEEF`/
 `MONSTER_ATK_SPREAD`/`MONSTER_DODGE_COEFFICIENT`/`MONSTER_DODGE_CAP`/
 `MONSTER_ARMOR_PER_GRIT`/`MONSTER_RARE_ARMOR_PER_GRIT`
 (the monster-stat-block derive formula's own tuning knobs — see
@@ -491,6 +495,28 @@ Fully generic over whatever key `Object.keys(item.bonus)[0]` happens to
 be — confirmed to need zero changes when `armor` (core.js) was added as
 a 5th possible bonus stat, since it never special-cases the 4 original
 stat names by string.
+
+Also `GEAR_ARMOR_BY_TIER` and `ensureGearArmor(item)` — per explicit
+request ("armor should be on every piece of gear"), EVERY equip item
+guarantees a tier-based armor value, flat per tier
+(`GEAR_ARMOR_BY_TIER`), rather than being authored per-item or left to
+chance as a possible random secondary stat (an earlier, since-replaced
+version of this rolled armor as one of `rollShopGearStats()`'s
+candidates, economy.js). `ensureGearArmor()` is called at every point
+a gear item actually enters/re-enters the player's possession —
+`rollShopGearStats()` (economy.js), `rollGearDropTier()` and
+`winCombat()`'s guaranteed-loot push (combat.js), `startFreshGame()`'s
+starter kit (boot.js), and `hydrateItem()` (save.js, so an OLDER save's
+gear backfills armor retroactively too). Critically, it only ever sets
+`bonus.armor` when that key is **missing** — never overwrites an
+existing value — because `temperEquippedItem()` (player-actions.js)
+multiplies every key already in `item.bonus` generically, armor
+included; an unconditional overwrite would silently reset a tempered
+item's boosted armor back to its un-tempered floor on every single
+save/load round trip (a real bug, caught by test-temper-gear.js's own
+round-trip check before this shipped). Appends armor AFTER an item's
+existing bonus keys when it IS adding it, so `getGearRequirements()`
+above never mistakes it for the primary stat.
 
 Pure throughout: every function here only reads its `item` argument,
 never `state` — comparing a requirement against the player's actual
@@ -1110,13 +1136,11 @@ own equip rows both key off array index for exactly this reason) —
 `getAvailableShopItems`/
 `rollShopGearStats` (rerolls tier-2/3+ gear's secondary stat(s) fresh
 on every purchase — the primary stat/value is fixed by the definition,
-only which OTHER stat(s) it gets is random; shared by both shops — its
-candidate pool is `['beef','zip','grit','hoodoo','armor']`, so a
-tier-4 item no longer guarantees all 4 of the original stats every
-time, since 3 secondaries now come from a pool of 4 remaining
-candidates instead of exactly 3; monster gearDrop rolls,
-`rollGearDropTier()`, stay on the original 4-stat `STAT_ROTATION`,
-content.js — see that constant's own comment for why)/
+only which OTHER stat(s) it gets is random; shared by both shops, back
+to its original 4-stat candidate pool (`['beef','zip','grit','hoodoo']`)
+now that armor is a guaranteed per-tier amount on every item regardless
+(`ensureGearArmor()`, item-tiers.js) rather than a possible random roll
+— every return path of this function passes through that same call)/
 `buyItemByName`/`buyGnomeShopItemByName` (the Act 2 Shop's own
 purchase function — reads `getAvailableGnomeShopItems()`, act2-shop.js,
 and gates on `state.location==='gnomeshop'` instead), `randInt`, the

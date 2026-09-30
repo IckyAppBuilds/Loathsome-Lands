@@ -110,11 +110,17 @@ function hydrateItem(saved){
          if(stripped !== saved) def = itemByName(stripped);
       }
       if(!def){ console.warn(`Save referenced unknown item "${saved}" — dropped.`); return null; }
-      return { ...def };
+      return ensureGearArmor({ ...def });
    }
    const { iconName, ...rest } = saved;
    const icon = iconName && typeof window[iconName] === 'function' ? window[iconName] : null;
-   return { ...rest, icon };
+   /* ensureGearArmor() (item-tiers.js) here too — the one point EVERY
+   already-owned equip item from an older save (written before armor
+   existed, or before this specific tier-based-not-random-roll design)
+   passes through on every single load, so "every piece of gear has
+   armor" holds retroactively for returning players too, not just gear
+   picked up from here on. */
+   return ensureGearArmor({ ...rest, icon });
 }
 
 function serializeState(){
