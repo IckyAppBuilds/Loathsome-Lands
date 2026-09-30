@@ -92,8 +92,12 @@ INVENTORY_SECTIONS.forEach(section=>{
     type:"quest" (see content.js) — flag them here so they read as
     distinct from ordinary junk/loot at a glance, per user feedback. */
                   const questBadge = item.type==='quest' ? ` <span class="quest-badge">Quest Item</span>` : '';
+    /* Each stat on its own line (per explicit feedback — a multi-stat
+    item read as one long comma-joined run before) rather than joined
+    with ', '. reqText still tacks onto the end of the last stat line
+    (its own leading " — " reads fine right after a stat). */
     const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
-    ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
+    ? '<br>' + Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join('<br>')
       : consumableEffectText(item);
     const reqText = item.type==='equip' ? gearRequirementText(item) : '';
     div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}${qtyBadge}${slotBadge}${questBadge}</div><div class="desc">${item.desc}${bonusText}${reqText}</div>${btn}</div>`;
@@ -116,7 +120,7 @@ function victoryDropsHtml(drops){
     const iconSvg = item.icon ? item.icon() : '';
     const slotBadge = item.type==='equip' ? ` <span class="qty-badge">${SLOT_LABELS[item.slot]}</span>` : '';
     const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
-      ? ` (${Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')})`
+      ? '<br>' + Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join('<br>')
       : consumableEffectText(item);
     const reqText = item.type==='equip' ? gearRequirementText(item) : '';
     return `<div class="inv-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}${slotBadge}</div><div class="desc">${item.desc}${bonusText}${reqText}</div></div></div>`;

@@ -199,7 +199,7 @@ function renderEquipmentBlock(){
     }
     const iconSvg = item.icon ? item.icon() : '';
     const bonusText = item.bonus && Object.keys(item.bonus).length
-    ? Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ')
+    ? Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join('<br>')
       : 'No bonus — just flavor.';
     return `<div class="equip-row">
     <div class="icon-box">${iconSvg}</div>
@@ -236,7 +236,7 @@ function renderTinkerTemperBlock(){
   const rows = temperableSlots.map(slot => {
     const item = state.equipment[slot];
     const iconSvg = item.icon ? item.icon() : '';
-    const bonusText = Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join(', ');
+    const bonusText = Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join('<br>');
     const level = item.temperLevel || 0;
     const maxed = level >= TEMPER_MAX_LEVEL;
     let btn;
