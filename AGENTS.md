@@ -557,7 +557,13 @@ the sync functions above actually needs it — most new locations only
 touch `syncBuildingScreens()`/`syncMapDrawer()`/`renderSceneArt()`.
 
 ## render-shop.js — spend/earn-Pop-Tabs screens
-`renderInventory`, the Shop cluster (`shopTab`/`setShopTab`/
+`renderInventory` (per explicit request, each Pack equip item's own
+stat lines also diff against whatever's currently equipped in the SAME
+slot — green `(+N)`/red `(-N)` per stat, comparing a missing stat on
+the equipped piece against 0 rather than skipping it, and showing no
+diff at all for a stat that ties exactly or when nothing's equipped in
+that slot yet, since the plain number already is the full story then),
+the Shop cluster (`shopTab`/`setShopTab`/
 `renderShopItemRow`/`renderShop`), `renderBountyBoard`,
 `renderCasinoWinningsBox` (the Casino's passive-income box), `renderHoodooShop`
 (spell list + the stat-reset "Unravelling Draught" section),

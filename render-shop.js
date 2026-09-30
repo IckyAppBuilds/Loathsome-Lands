@@ -95,9 +95,27 @@ INVENTORY_SECTIONS.forEach(section=>{
     /* Each stat on its own line (per explicit feedback — a multi-stat
     item read as one long comma-joined run before) rather than joined
     with ', '. reqText still tacks onto the end of the last stat line
-    (its own leading " — " reads fine right after a stat). */
+    (its own leading " — " reads fine right after a stat).
+
+    Per a later explicit request ("compare your equipped gear"), each
+    stat also diffs against whatever's currently equipped in the SAME
+    slot — green "(+N)" if this item beats it on that stat, red "(-N)"
+    if it falls short, nothing if they tie. Only diffs the stats THIS
+    item actually has (a stat the equipped piece carries that this one
+    lacks entirely doesn't get its own "you'd lose this" line — kept
+    deliberately simple, matching every other per-item stat display).
+    No diff at all when nothing's equipped in that slot yet, since the
+    plain number already IS the full comparison in that case. */
+    const equippedInSlot = item.type === 'equip' ? state.equipment[item.slot] : null;
     const bonusText = item.type==='equip' && item.bonus && Object.keys(item.bonus).length
-    ? '<br>' + Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join('<br>')
+    ? '<br>' + Object.entries(item.bonus).map(([k,v])=>{
+        const equippedVal = equippedInSlot && equippedInSlot.bonus ? (equippedInSlot.bonus[k] || 0) : null;
+        const diff = equippedVal === null ? null : v - equippedVal;
+        const diffTag = !diff ? '' : diff > 0
+          ? ` <span style="color:var(--green);">(+${diff})</span>`
+          : ` <span style="color:var(--red);">(${diff})</span>`;
+        return `+${v} ${STAT_LABELS[k]}${diffTag}`;
+      }).join('<br>')
       : consumableEffectText(item);
     const reqText = item.type==='equip' ? gearRequirementText(item) : '';
     div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}${qtyBadge}${slotBadge}${questBadge}</div><div class="desc">${item.desc}${bonusText}${reqText}</div>${btn}</div>`;

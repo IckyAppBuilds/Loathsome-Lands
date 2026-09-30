@@ -11,6 +11,9 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 15, date: 'September 30', title: 'Know Before You Equip', items: [
+      "The Pack now compares each item's stats against whatever you've got equipped in that slot — green for an upgrade, red for a downgrade, right on each stat line.",
+      ]},
    { id: 14, date: 'September 30', title: 'See What You\'re Selling', items: [
       "The Sell tab now shows an item's full stats before you sell it, same as the Pack and your Equipment screen — no more selling gear blind.",
       ]},
