@@ -1479,10 +1479,18 @@ own hand-authored heal/bolt/debuff numbers untouched regardless of hoodoo. */
 const MONSTER_HP_PER_GRIT = 1; /* hp = statBonus(grit) * this */
 const MONSTER_ATK_PER_BEEF = 1; /* atk center = statBonus(beef) * this, spread +/- MONSTER_ATK_SPREAD below */
 const MONSTER_ATK_SPREAD = 0.25;
-/* Same coefficient/cap as the player's own playerDodgeChance() (combat.js)
-— a monster's zip means exactly the same thing a player's zip does. */
-const MONSTER_DODGE_COEFFICIENT = 0.03;
-const MONSTER_DODGE_CAP = 0.5;
+/* Zip's own coefficient/cap — shared by BOTH sides, BOTH directions:
+a player's/monster's zip drives their own dodge chance via this same
+formula (zipDodgeAndAccuracy(), combat.js) AND, symmetrically, their
+own ACCURACY — how much they cancel out of whoever they're attacking's
+dodge chance. One number, one meaning, on offense or defense, no
+matter which side rolls it — per explicit request that zip "combat"
+the opponent's dodge chance both ways, not just raise your own. No
+longer MONSTER-only despite the name's history (this used to be
+monster-specific before the player's own dodge formula's identical
+0.03/0.5 got folded into the same shared function). */
+const ZIP_DODGE_COEFFICIENT = 0.03;
+const ZIP_DODGE_CAP = 0.5;
 
 /* Armor — a brand new mitigation stat, shared by both the player (gear-only,
 see STAT_LABELS/SPENDABLE_STAT_KEYS, core.js) and monsters. armorDamageReduction()

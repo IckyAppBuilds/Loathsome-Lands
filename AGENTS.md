@@ -290,13 +290,20 @@ pool too before "armor on every piece of gear" replaced that with a
 guaranteed per-tier amount via `ensureGearArmor()` (item-tiers.js) on
 every item regardless of source, making a RANDOM armor roll here
 redundant), `MONSTER_HP_PER_GRIT`/`MONSTER_ATK_PER_BEEF`/
-`MONSTER_ATK_SPREAD`/`MONSTER_DODGE_COEFFICIENT`/`MONSTER_DODGE_CAP`/
-`MONSTER_ARMOR_PER_GRIT`/`MONSTER_RARE_ARMOR_PER_GRIT`
+`MONSTER_ATK_SPREAD`/`MONSTER_ARMOR_PER_GRIT`/`MONSTER_RARE_ARMOR_PER_GRIT`
 (the monster-stat-block derive formula's own tuning knobs — see
 `deriveMonsterCombatStats()`, combat.js — the last two are the entire
 tunable armor curve for the whole bestiary: a monster's armor is
 `grit * one of these two`, never an authored field, `rare:true`
-monsters using the steeper rate) and `ARMOR_REDUCTION_
+monsters using the steeper rate), `ZIP_DODGE_COEFFICIENT`/`ZIP_DODGE_CAP`
+(renamed from `MONSTER_DODGE_COEFFICIENT`/`MONSTER_DODGE_CAP` once zip's
+own formula — `zipDodgeAndAccuracy()`, combat.js — became shared by
+BOTH the player and monsters, on BOTH offense and defense: the same
+number is a combatant's own dodge chance AND, symmetrically, their
+ACCURACY against whoever they're attacking's dodge — per explicit
+request that zip "combat" the opponent's dodge chance in both
+directions, not just raise your own. See that function's own comment
+for the full 4-way breakdown) and `ARMOR_REDUCTION_
 COEFFICIENT`/`ARMOR_REDUCTION_CAP` (armor's own mitigation-fraction
 formula, shared by both the player and monsters — see
 `armorDamageReduction()`, combat.js — reuses `statBonus()`'s own
@@ -819,8 +826,13 @@ maxHp/dodge formulas — no "level" term, since monsters don't level;
 `m.rare` — a `rare:true` monster uses a steeper per-grit rate than
 regular trash, `MONSTER_ARMOR_PER_GRIT`/`MONSTER_RARE_ARMOR_PER_GRIT`,
 content.js — armor is NEVER read off the template itself, it has no
-authored armor field at all)/`armorDamageReduction(armor)` (shared by
-both damage functions
+authored armor field at all; `dodgeChance` itself is derived via
+`zipDodgeAndAccuracy(m.zip)`, the same shared zip formula
+`playerDodgeChance()` below uses for the player's own base
+dodge)/`zipDodgeAndAccuracy(zip)` (zip's ONE formula, used for dodge
+AND accuracy, on both sides — see `ZIP_DODGE_COEFFICIENT`/
+`ZIP_DODGE_CAP`'s own comment, content.js)/`armorDamageReduction(armor)`
+(shared by both damage functions
 below — reuses `statBonus()`'s own curve, capped at
 `ARMOR_REDUCTION_CAP`, content.js)/`applyDamageToPlayer`/
 `applyDamageToMonster` (both mitigate via `armorDamageReduction()`
@@ -829,7 +841,12 @@ roll for a monster already happened/happens first — floored at 1 UNLESS
 the raw incoming damage was already `<=0`, in which case it stays 0
 rather than manufacturing a hit out of nothing; both return the actual
 post-armor amount, and every caller logs THAT, not its own
-pre-mitigation local variable)/`monsterRetaliate`/`monsterAutoAttack`/
+pre-mitigation local variable. `applyDamageToMonster` ALSO subtracts
+the player's own `zipDodgeAndAccuracy()`-derived accuracy from the
+monster's `dodgeChance` before rolling it — per explicit request, the
+player's zip is accuracy as well as dodge, canceling out some of
+whatever a zippy monster's own dodge chance is, floored at
+0)/`monsterRetaliate`/`monsterAutoAttack`/
 `tickMonsterBuff`/`useMonsterSkill` (dispatches a monster's own
 `skills[]` entry by `type` — `'heal'`/`'buff'`/`'bolt'`/`'debuff'`, the
 last of which sets `state.playerStatusEffect` instead of attacking that

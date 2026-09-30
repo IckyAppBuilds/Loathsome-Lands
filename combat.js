@@ -231,12 +231,26 @@ different from a wild encounter of similar toughness" reasoning
 dodgeChance/skills[] already apply via other means — see the constants'
 own comment, content.js, for why this replaced an earlier hand-picked-
 per-boss version. */
+/* Zip's one formula, shared by both dodge AND accuracy, on both sides —
+see ZIP_DODGE_COEFFICIENT/ZIP_DODGE_CAP's own comment (content.js) for
+why this single function covers all four uses: the player's own dodge
+(playerDodgeChance() below, called with the player's zip), a monster's
+own dodge (deriveMonsterCombatStats() below, called with the monster's
+zip), the player's accuracy against a monster's dodge
+(applyDamageToMonster() below, called with the player's zip), and a
+monster's accuracy against the player's dodge (playerDodgeChance()
+below again, called with the ATTACKING monster's zip this time) —
+same number, same meaning, whichever side rolls it. */
+function zipDodgeAndAccuracy(zip){
+   return Math.min(ZIP_DODGE_CAP, statBonus(zip || 0) * ZIP_DODGE_COEFFICIENT);
+}
+
 function deriveMonsterCombatStats(m){
    const hp = Math.max(1, Math.round(statBonus(m.grit || 0) * MONSTER_HP_PER_GRIT));
    const atkCenter = statBonus(m.beef || 0) * MONSTER_ATK_PER_BEEF;
    const atkMin = Math.max(1, Math.round(atkCenter * (1 - MONSTER_ATK_SPREAD)));
    const atkMax = Math.max(atkMin, Math.round(atkCenter * (1 + MONSTER_ATK_SPREAD)));
-   const dodgeChance = Math.min(MONSTER_DODGE_CAP, statBonus(m.zip || 0) * MONSTER_DODGE_COEFFICIENT);
+   const dodgeChance = zipDodgeAndAccuracy(m.zip);
    const armor = Math.round((m.grit || 0) * (m.rare ? MONSTER_RARE_ARMOR_PER_GRIT : MONSTER_ARMOR_PER_GRIT));
    return { hp, atkMin, atkMax, dodgeChance, armor };
 }
@@ -314,9 +328,20 @@ the damage came from an Attack (playerAttack()) or a spell (castSpell()),
 so any future evasive monster gets this for free from either source.
 guaranteedHit skips the roll entirely for a landed sneak attack —
 "catching them off guard" shouldn't then let them dodge the very swing
-that caught them off guard. */
+that caught them off guard.
+
+Per explicit request, the player's own zip works as ACCURACY here too,
+not just as their own dodge/miss-chance elsewhere — it cancels out some
+of whatever dodgeChance the monster is rolling with, via the same
+zipDodgeAndAccuracy() formula (combat.js) evaluated on the PLAYER's zip
+instead of the monster's. A player with high zip meaningfully counters
+even a highly evasive monster; floored at 0 so a big accuracy edge can
+only ever zero out dodge, never go negative/"extra guaranteed" beyond
+that. */
 function applyDamageToMonster(rawDmg, guaranteedHit){
-   if(!guaranteedHit && state.monster.dodgeChance && Math.random() < state.monster.dodgeChance){
+   const playerAccuracy = zipDodgeAndAccuracy(getEffectiveStats().zip);
+   const effectiveDodgeChance = Math.max(0, (state.monster.dodgeChance || 0) - playerAccuracy);
+   if(!guaranteedHit && effectiveDodgeChance && Math.random() < effectiveDodgeChance){
       return { dodged: true, dealt: 0 };
    }
    /* Armor (state.monster.armor — new stat block field, content.js/
@@ -366,9 +391,21 @@ Whichever spell is active gets its own Level 2 check here
 (state.spellsUpgraded, core.js) — the bonus itself is what a Hexpert's
 Sanctum-bought Illusion upgrade actually scales, since 'evade' has no
 other single number to bump the way damage/heal/ward do. */
+/* Per explicit request, zip is accuracy as well as dodge — whichever
+monster is currently attacking cancels out some of the player's own
+base zip-dodge with ITS OWN zip, same zipDodgeAndAccuracy() formula
+(combat.js) evaluated on the monster's zip this time, floored at 0 so
+a high-accuracy monster can zero out dodge but never push it negative.
+Read directly off state.monster rather than taking a parameter — every
+caller of this function is already mid-combat, so state.monster is
+always the one attacking. Deliberately only reduces the BASE zip-dodge,
+not the evasion-spell bonus added below — Smoke Screen/Illusion is a
+magic trick, not footwork, so a monster's plain accuracy doesn't cut
+into it the same way. */
 function playerDodgeChance(){
    const eff = getEffectiveStats();
-   const base = Math.min(0.5, statBonus(eff.zip)*0.03);
+   const attackerAccuracy = state.monster ? zipDodgeAndAccuracy(state.monster.zip) : 0;
+   const base = Math.max(0, zipDodgeAndAccuracy(eff.zip) - attackerAccuracy);
    if(!state.evasionActive) return base;
    const bonus = state.spellsUpgraded.includes(state.evasionActive) ? EVASION_DODGE_BONUS * SPELL_UPGRADE_MULTIPLIER : EVASION_DODGE_BONUS;
    return Math.min(EVASION_DODGE_CAP, base + bonus);

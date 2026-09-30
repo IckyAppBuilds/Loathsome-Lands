@@ -11,6 +11,9 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 16, date: 'September 30', title: 'Zip Cuts Both Ways', items: [
+      "Zip is now accuracy too, not just dodge. Your own zip cancels out some of a slippery monster's dodge chance when you attack — and a fast monster's zip does the same to you.",
+      ]},
    { id: 15, date: 'September 30', title: 'Know Before You Equip', items: [
       "The Pack now compares each item's stats against whatever you've got equipped in that slot — green for an upgrade, red for a downgrade, right on each stat line.",
       ]},
