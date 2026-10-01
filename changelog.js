@@ -11,6 +11,11 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 20, date: 'September 30', title: 'Every Class Gets a Moment', items: [
+      "Meatheads can now land a staggering blow that skips the monster's own counterattack entirely — training your Class Skill raises the odds.",
+      "Hexperts can now echo a damage spell for a free extra hit at half power, no added MP cost — same Class Skill training raises that too.",
+      "Card Shark's own double-attack chance (and both of the above) got a clearer, more noticeable curve — 5%/10%/15% per Class Skill level instead of 1%/2%/3%.",
+      ]},
    { id: 19, date: 'September 30', title: 'Every Monster Has a Trick', items: [
       "Every regular monster in the game can now pull off a move of its own mid-fight — a heal, a rallying second wind, or a bigger one-off hit — not just named bosses anymore.",
       "Nothing drastic: it's rarer and smaller than what a boss can do, just enough that the same old monster doesn't always play out the same old way.",

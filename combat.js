@@ -620,6 +620,19 @@ function playerAttack(){
       }
    }
 
+   /* Meathead's class skill: a flat per-level chance
+   (MEATHEAD_STAGGER_CHANCE, content.js) for a LANDED hit to stagger the
+   monster hard enough that it skips its own retaliation this turn —
+   reuses the exact mechanism the opening-swing sneak attack already
+   uses to deny retaliation (see the `if(!sneakAttackLands...` line
+   below), just as a second, independent, class-exclusive condition on
+   the same check rather than a new system. Gated on `!dodged` since
+   staggering requires actually connecting — a dodge can't stagger
+   anything. */
+   const staggerLands = state.classTitle === 'Meathead' && !dodged
+      && Math.random() < MEATHEAD_STAGGER_CHANCE[state.classSkillLevel];
+   if(staggerLands) log(`The blow staggers ${state.monster.name} — it won't be swinging back this turn.`);
+
    /* Card Shark's class skill: a flat per-level chance
    (CARD_SHARK_DOUBLE_ATTACK_CHANCE, content.js) to get a second full
    swing in the same turn — rolled once per Attack, independent of
@@ -628,8 +641,8 @@ function playerAttack(){
    top of the turn that already happened, not a second independent
    turn) but still rolls the monster's own dodge via
    applyDamageToMonster(). Only ONE monster retaliation happens for the
-   whole turn either way — see the `if(!sneakAttackLands)` line below,
-   unchanged and still gating on the FIRST swing's sneak-attack roll
+   whole turn either way — see the `if(!sneakAttackLands && !staggerLands)`
+   line below, gating on the FIRST swing's sneak-attack/stagger rolls
    only, same "landing it denies retaliation" rule as before. */
    if(state.classTitle === 'Card Shark' && Math.random() < CARD_SHARK_DOUBLE_ATTACK_CHANCE[state.classSkillLevel]){
       const dmg2 = Math.round((randInt(3,7) + (state.level-1) + statBonus(eff.beef)) * statusFx.dmgMult);
@@ -645,7 +658,7 @@ function playerAttack(){
       }
    }
 
-if(!sneakAttackLands) monsterRetaliate();
+if(!sneakAttackLands && !staggerLands) monsterRetaliate();
    checkDefeat();
    render();
 }
@@ -769,6 +782,30 @@ if(spell.type==='damage'){
          winCombat();
          if(passesHoodooTrial) log("A killing blow with a spell — the Hoodoo Doctor's test, passed.");
          return;
+      }
+   }
+   /* Hexpert's class skill: a flat per-level chance (HEXPERT_ECHO_CHANCE,
+   content.js) to immediately echo-cast this same spell again at half
+   power (HEXPERT_ECHO_DAMAGE_MULT), zero extra MP cost — rolled once per
+   cast regardless of whether the main cast above hit or was dodged
+   (reaching this line at all already means the monster survived that
+   one), same "independent of the first swing's own outcome" shape as
+   Card Shark's double-attack in playerAttack(). Still rolls its own
+   dodge via applyDamageToMonster() and can still finish the monster off;
+   only ONE monsterRetaliate() happens for the whole turn either way —
+   this resolves before that single call below, same ordering Card
+   Shark's bonus swing uses relative to its own retaliation line. */
+   if(state.classTitle === 'Hexpert' && Math.random() < HEXPERT_ECHO_CHANCE[state.classSkillLevel]){
+      const echoDmg = Math.round(dmg * HEXPERT_ECHO_DAMAGE_MULT);
+      const { dodged: dodged2, dealt: dealt2 } = applyDamageToMonster(echoDmg, false);
+      if(dodged2){
+         log(`${spell.name} echoes a half-beat late — ${state.monster.name} slips out of the way this time.`);
+      } else {
+         log(`${spell.name} echoes a half-beat late, for ${dealt2} more damage.`);
+         if(state.monster.hp<=0){
+            winCombat();
+            return;
+         }
       }
    }
    monsterRetaliate();

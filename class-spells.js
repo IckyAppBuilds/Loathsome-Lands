@@ -39,17 +39,18 @@ function renderClassSpellList(containerId, classTitle){
 /* Per-class formatter for the class-skill upgrade block below — keyed the
 same way BUILDING_EFFECT_INFO (render-shop.js) formats a Town Lot
 building's per-level bonus, since state.classSkillLevel drives its bonus
-the exact same "level-indexed array, format(v) turns one entry into a
-one-line string" way those do. */
+the exact same "level-indexed array" way those do. Takes the LEVEL
+itself now (not a single pre-looked-up value) since Meathead/Hexpert
+each describe TWO numbers off the same level — their own flat bonus
+(MEATHEAD_DAMAGE_BONUS/HEXPERT_SPELL_DMG_BONUS) plus their own combat-
+variety proc (MEATHEAD_STAGGER_CHANCE/HEXPERT_ECHO_CHANCE, content.js —
+see the comment above those for why Card Shark's double-attack was the
+only one of the three that ever produced a visible moment in a fight
+before this). */
 const CLASS_SKILL_INFO = {
-   'Meathead': v => `+${Math.round(v*100)}% melee damage`,
-   'Card Shark': v => `${Math.round(v*100)}% chance to attack twice in one turn`,
-   'Hexpert': v => `+${v} spell damage`,
-};
-const CLASS_SKILL_VALUES = {
-   'Meathead': MEATHEAD_DAMAGE_BONUS,
-   'Card Shark': CARD_SHARK_DOUBLE_ATTACK_CHANCE,
-   'Hexpert': HEXPERT_SPELL_DMG_BONUS,
+   'Meathead': lvl => `+${Math.round(MEATHEAD_DAMAGE_BONUS[lvl]*100)}% melee damage, ${Math.round(MEATHEAD_STAGGER_CHANCE[lvl]*100)}% chance to stagger (skip their counterattack)`,
+   'Card Shark': lvl => `${Math.round(CARD_SHARK_DOUBLE_ATTACK_CHANCE[lvl]*100)}% chance to attack twice in one turn`,
+   'Hexpert': lvl => `+${HEXPERT_SPELL_DMG_BONUS[lvl]} spell damage, ${Math.round(HEXPERT_ECHO_CHANCE[lvl]*100)}% chance to echo-cast for free`,
 };
 
 /* Shared by the same 3 screens as renderClassSpellList() above — the
@@ -68,10 +69,9 @@ function renderClassSkillUpgrade(containerId, classTitle){
    }
    el.style.display = 'block';
    const format = CLASS_SKILL_INFO[classTitle];
-   const values = CLASS_SKILL_VALUES[classTitle];
    const level = state.classSkillLevel;
    let html = '<div class="shop-section-title">Class Skill</div>';
-   if(level > 0) html += `<div class="quest-desc">Currently: ${format(values[level])}.</div>`;
+   if(level > 0) html += `<div class="quest-desc">Currently: ${format(level)}.</div>`;
    if(level >= 3){
       html += `<div class="shop-item"><div style="flex:1;"><div class="name">Class Skill <span class="qty-badge">Lv.${level}/3</span></div><div class="desc">Fully trained.</div></div></div>`;
    } else {
@@ -81,7 +81,7 @@ function renderClassSkillUpgrade(containerId, classTitle){
       const canAfford = state.popTabs >= cost;
       const ready = meetsLevel && canAfford;
       const reqText = meetsLevel ? '' : ` — Requires Lv.${levelReq}`;
-      html += `<div class="shop-item"><div style="flex:1;"><div class="name">Class Skill <span class="qty-badge">Lv.${level}/3</span></div><div class="desc">Next: ${format(values[level+1])}${reqText}</div><button class="btn-secondary ${ready?'btn-ready':''}" ${ready?'':'disabled'} onclick="levelUpClassSkill()">Train — ${cost} Pop Tabs</button></div></div>`;
+      html += `<div class="shop-item"><div style="flex:1;"><div class="name">Class Skill <span class="qty-badge">Lv.${level}/3</span></div><div class="desc">Next: ${format(level+1)}${reqText}</div><button class="btn-secondary ${ready?'btn-ready':''}" ${ready?'':'disabled'} onclick="levelUpClassSkill()">Train — ${cost} Pop Tabs</button></div></div>`;
    }
    el.innerHTML = html;
 }

@@ -1154,15 +1154,41 @@ than three separate counters. Same [0, tier1, tier2, tier3] convention as
 the rest of this file (index = level, 0 = no bonus). */
 const MEATHEAD_DAMAGE_BONUS = [0, 0.15, 0.30, 0.45]; /* fractional bonus to combat damage */
 /* Chance per Attack (playerAttack(), combat.js) to land a second full
-swing in the same turn — a flat 1% per level, deliberately modest since
-it's a chance at ENTIRELY FREE extra damage every turn of every fight,
-not a one-time payout multiplier like the old Casino-payout version of
-this skill. Was CARD_SHARK_PAYOUT_BONUS (a Casino win-payout bonus) —
-replaced because a Card Shark's capstone skill only mattering at the
-Casino, not in combat, felt off next to Meathead/Hexpert's both being
-combat bonuses. */
-const CARD_SHARK_DOUBLE_ATTACK_CHANCE = [0, 0.01, 0.02, 0.03];
+swing in the same turn. Was CARD_SHARK_PAYOUT_BONUS (a Casino win-payout
+bonus) — replaced because a Card Shark's capstone skill only mattering
+at the Casino, not in combat, felt off next to Meathead/Hexpert's both
+being combat bonuses. */
+const CARD_SHARK_DOUBLE_ATTACK_CHANCE = [0, 0.05, 0.10, 0.15];
 const HEXPERT_SPELL_DMG_BONUS = [0, 3, 6, 9]; /* flat bonus added to spell damage */
+/* Combat-variety pass: Card Shark's double-attack above was the only
+one of the 3 class skills that produces a visible, "eventful" moment in
+a fight — Meathead's/Hexpert's bonuses above are just a bigger number
+on the same hit, nothing a player actually sees happen differently.
+These two give the other two classes an equivalent proc, scaling off
+the SAME state.classSkillLevel lever rather than inventing a second
+training currency — one level now grants both the existing flat bonus
+AND this chance together. All three proc-based class skills (this pair
+plus CARD_SHARK_DOUBLE_ATTACK_CHANCE above, retuned alongside them) share
+one unified 5%/10%/15% curve per explicit correction — noticeable
+without being overpowered, clearer than the original 1/2/3% Card Shark
+shipped with. */
+/* MEATHEAD_STAGGER_CHANCE — rolled in playerAttack() (combat.js) only on
+a LANDED (non-dodged) hit, since "staggering" requires actually
+connecting. A landed stagger denies the monster's own retaliation this
+turn, reusing the exact same mechanism the opening-swing sneak attack
+already uses to do that — this is just a second, independent,
+class-exclusive condition on the same check, not a new system. */
+const MEATHEAD_STAGGER_CHANCE = [0, 0.05, 0.10, 0.15];
+/* HEXPERT_ECHO_CHANCE/HEXPERT_ECHO_DAMAGE_MULT — rolled in castSpell()'s
+'damage' branch (combat.js) right after the main cast resolves: a
+chance to immediately echo-cast the same spell again at half power
+(HEXPERT_ECHO_DAMAGE_MULT), zero extra MP cost. Matches the flavor
+already written for the Crystal City's echo wraith gearDrop ("casts the
+spell, then casts it again, slightly earlier") — this is that same beat,
+now a real mechanic. Half power because it's free; a player paying full
+MP for a second real cast should still hit harder than this. */
+const HEXPERT_ECHO_CHANCE = [0, 0.05, 0.10, 0.15];
+const HEXPERT_ECHO_DAMAGE_MULT = 0.5;
 /* The shared 'evade' spell mechanic's own dodge boost
 (playerDodgeChance(), combat.js) — a flat add-on to the normal
 Zip-based roll, not a classSkillLevel-indexed array like the three

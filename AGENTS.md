@@ -344,8 +344,13 @@ flat +45% bump to each spell's own effect: damage/heal/ward magnitude,
 buff duration in fights, or evade's dodge bonus specifically),
 `potionIngredients`, `veinIngredients`,
 `CLASS_TITLES` + each class's skill-bonus constants
-(`MEATHEAD_DAMAGE_BONUS`/`CARD_SHARK_PAYOUT_BONUS`/`HEXPERT_SPELL_DMG_BONUS`
-+ `classSkillCost()`), casino odds/flavor lines, `BOUNTY_TEMPLATES`, and
+(`MEATHEAD_DAMAGE_BONUS`/`CARD_SHARK_DOUBLE_ATTACK_CHANCE`/
+`HEXPERT_SPELL_DMG_BONUS`, each now paired with a combat-variety proc
+constant — `MEATHEAD_STAGGER_CHANCE`/(Card Shark's own skill already
+WAS the proc)/`HEXPERT_ECHO_CHANCE`+`HEXPERT_ECHO_DAMAGE_MULT` — see the
+comment above `MEATHEAD_STAGGER_CHANCE` for why; all 3 proc-chance
+arrays share one 5%/10%/15%-per-level curve + `classSkillCost()`),
+casino odds/flavor lines, `BOUNTY_TEMPLATES`, and
 the Town Lot/building-upgrade cost
 tables (`buildingUpgradeCost()`, `LOT_TIER_COST` — both quadratic) plus
 each building's per-level effect constants (`GAFFER_BISCUIT_MAX_BONUS`
@@ -714,7 +719,13 @@ trainer building, Act 1's (Guild/Casino/Hoodoo Doctor) and Act 2's
 (`spell.learnLocation` override, or `CLASS_SPELL_LOCATION`'s default —
 combat.js) so a class's Act 1 trainer never lists its Act 2 spell or
 vice versa. `renderClassSkillUpgrade(containerId, classTitle)` — the
-Train-a-tier UI for `state.classSkillLevel`. `renderCastableSpellsBlock()`
+Train-a-tier UI for `state.classSkillLevel`. `CLASS_SKILL_INFO`'s 3
+formatter functions each take the LEVEL itself (not a pre-looked-up
+value) since Meathead/Hexpert each describe TWO numbers off the same
+level now — their existing flat bonus plus a combat-variety proc
+chance (`MEATHEAD_STAGGER_CHANCE`/`HEXPERT_ECHO_CHANCE`, content.js —
+see the comment above those for the "only Card Shark's skill ever
+produced a visible moment in a fight" reasoning). `renderCastableSpellsBlock()`
 — the Character page's own list of every known non-damage spell (this
 is a SEPARATE surface from the in-combat Use menu's own "Buffs &
 Support" section, `renderSpellMenu()`, render-character.js — both call
@@ -972,8 +983,24 @@ immediately, freeze instead hands back a `dmgMult` for the caller to
 apply to whatever it's about to deal that turn; called at the start of
 every player action that costs a turn — `playerAttack`/a damage
 spell/`useItemInCombat` — so it ticks down on "a set number of
-attacks" regardless of hit/miss/item use)/`playerAttack`/
-`openSpellMenu`/`closeSpellMenu`/`useItemInCombat`/`castSpell` (its `'evade'` branch sets `state.evasionActive` to the
+attacks" regardless of hit/miss/item use)/`playerAttack` (also rolls
+Meathead's class-skill proc here — `MEATHEAD_STAGGER_CHANCE`,
+content.js — a flat per-level chance, on a LANDED non-dodged hit, to
+deny the monster's own retaliation this turn; reuses the exact
+`if(!sneakAttackLands...)` mechanism the opening sneak attack already
+uses to do that, just as a second independent condition, not a new
+system; Card Shark's own double-attack proc,
+`CARD_SHARK_DOUBLE_ATTACK_CHANCE`, lives right after it in the same
+function, unchanged in shape — both share this file's "the only class
+skill with a visible effect" origin story, now joined by Hexpert's
+Arcane Echo in `castSpell()`'s `'damage'` branch below)/
+`openSpellMenu`/`closeSpellMenu`/`useItemInCombat`/`castSpell` (its
+`'damage'` branch also rolls Hexpert's own class-skill proc —
+`HEXPERT_ECHO_CHANCE`/`HEXPERT_ECHO_DAMAGE_MULT`, content.js — a chance
+to immediately echo-cast the same spell again at half power, zero
+extra MP, resolving before the turn's one `monsterRetaliate()` call,
+same ordering Card Shark's bonus swing uses in `playerAttack()`. Its
+`'evade'` branch sets `state.evasionActive` to the
 CAST SPELL'S OWN ID, not a boolean — Card Shark's Smoke Screen and
 Hexpert's Illusion, content.js, are two different spells sharing this
 one flag, so it has to be an id to know which spell's flavor
