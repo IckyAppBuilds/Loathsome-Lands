@@ -933,8 +933,8 @@ to give players a reason to come back tomorrow that isn't just "Biscuits
 finished refilling" — the only other real-time pacing mechanic in the
 whole game. `checkDailyStreakOnLogin()` is the one real piece of logic:
 compares today's `toDateString()` against `state.lastLoginRewardDateKey`
-(core.js/save.js, same "compare calendar days" convention as
-`state.bountyDayKey`, guild.js) to grant at most once per real day, with
+(core.js/save.js, a "compare calendar days, not exact timestamps"
+convention) to grant at most once per real day, with
 a ONE-DAY GRACE — missing exactly one day still continues
 `state.dailyStreakCount`, missing two or more resets it to 1 — per
 explicit direction over a stricter "any missed day resets it" model.
@@ -1285,8 +1285,13 @@ flow.
   reveals the Crystal Breach tile in the Ember Warren's own square —
   a real explorable stub zone, not just an ending screen).
 - **Bounty Board**: `isBountyZoneUnlocked`/`rollNewBounty`/
-  `checkBountyDayReset`/`ensureActiveBounty`/`isBountyReady`/
-  `formatBountyTimeLeft`/`claimBounty`/`updateBountyTimerDisplay`. Its
+  `ensureActiveBounty`/`isBountyReady`/`formatBountyTimeLeft`/
+  `claimBounty`/`updateBountyTimerDisplay`. No daily claim cap — per
+  explicit request, the board can be worked all day long;
+  `claimBounty()` just rolls a fresh bounty immediately on every claim,
+  the same way it always did below whatever the old cap used to be.
+  `bountiesCompleted` (core.js) is a lifetime counter, unrelated to any
+  per-day limit. Its
   own zone pool has moved twice now — Act 1 zones, then Garrison/
   Rogues' Den/Arcane Sanctum as an interim pool, now Mudroot Warren's
   own districts (`rootcellar`/`mudflats`/`bureau`), the Warren's Ear's

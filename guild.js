@@ -574,26 +574,13 @@ function rollNewBounty(){
    const template = pool[Math.floor(Math.random()*pool.length)];
    state.activeBounty = { templateId: template.id, progress: 0, startedAt: Date.now() };
 }
-/* Resets state.bountiesClaimedToday the first time this is called after
-local midnight (toDateString() changes), so BOUNTY_DAILY_CAP (content.js)
-is a per-calendar-day cap, not a rolling 24h window like BOUNTY_RESET_MS. */
-function checkBountyDayReset(){
-   const todayKey = new Date().toDateString();
-   if(state.bountyDayKey !== todayKey){
-      state.bountyDayKey = todayKey;
-      state.bountiesClaimedToday = 0;
-   }
-}
 /* Call before reading state.activeBounty anywhere (Bounty Board, Quest
 Log, the town-square glow indicator) — rolls a fresh one if there isn't
 one yet, or if the current one has been active for BOUNTY_RESET_MS
 (content.js) without being claimed. Progress on an expired bounty is
-lost, same as the zone-mismatch reroll below. Once BOUNTY_DAILY_CAP
-claims have happened today, no new bounty is offered at all — leaves
-state.activeBounty null until tomorrow's reset. */
+lost, same as the zone-mismatch reroll below. No daily claim cap — per
+explicit request, the Bounty Board can be worked all day long. */
 function ensureActiveBounty(){
-   checkBountyDayReset();
-   if(state.bountiesClaimedToday >= BOUNTY_DAILY_CAP){ state.activeBounty = null; return; }
    if(!state.activeBounty){ rollNewBounty(); return; }
    const currentTemplate = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
    if(!currentTemplate || !isBountyZoneUnlocked(currentTemplate.zone)){ rollNewBounty(); return; }
@@ -616,22 +603,14 @@ function formatBountyTimeLeft(ms){
 }
 function claimBounty(){
    if((state.location !== 'guild' && state.location !== 'gnomeguild') || !state.questComplete || !state.activeBounty) return;
-   checkBountyDayReset();
-   if(state.bountiesClaimedToday >= BOUNTY_DAILY_CAP) return;
    const bt = BOUNTY_TEMPLATES.find(b => b.id === state.activeBounty.templateId);
    if(!bt || !isBountyReady()) return;
    const bountyPayout = Math.round(bt.reward.bountyTokens * (1 + GUILD_BOUNTY_BONUS[state.buildingUpgrades.guild || 0]));
    state.bountyTokens += bountyPayout;
    state.bountiesCompleted++;
-   state.bountiesClaimedToday++;
    clearLog();
    log(`Bounty complete! You collect ${bountyPayout} Bounty Token${bountyPayout===1?'':'s'} for clearing out ${bt.count} × ${bt.monsterName}.`);
-   if(state.bountiesClaimedToday < BOUNTY_DAILY_CAP){
-      rollNewBounty();
-   } else {
-      state.activeBounty = null;
-      log(`That's ${BOUNTY_DAILY_CAP} bounties claimed today — the board's empty until tomorrow.`);
-   }
+   rollNewBounty();
    render();
    autosave();
 }

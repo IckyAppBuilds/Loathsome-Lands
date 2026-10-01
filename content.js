@@ -1516,12 +1516,6 @@ future gear exchange. */
 auto-rerolls it, progress and all, even if it was never claimed — keeps
 the board from going stale on a bounty the player isn't pursuing. */
 const BOUNTY_RESET_MS = 12 * 60 * 60 * 1000;
-/* Calendar-day cap on CLAIMS (not attempts) — checkBountyDayReset()
-(guild.js) tracks the boundary via state.bountyDayKey (a toDateString(),
-so it resets at local midnight, not on a rolling 24h window like
-BOUNTY_RESET_MS above). Once hit, ensureActiveBounty() stops offering a
-new bounty until the day rolls over. */
-const BOUNTY_DAILY_CAP = 2;
 /* One bounty per REGULAR monster in monsters[] above — every zone's whole
 roster is eligible, not a hand-picked couple of targets — with `count`
 set by how often that monster actually shows up, not a flat number.

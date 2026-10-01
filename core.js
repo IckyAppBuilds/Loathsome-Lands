@@ -289,24 +289,23 @@ function createDefaultState(){
         "Day 12!" can be shown) even though the actual reward tier cycles
         through DAILY_STREAK_REWARDS' own 7 entries via a modulo — see that
         array's own comment. lastLoginRewardDateKey is a toDateString()
-        string (same "compare calendar days, not exact timestamps"
-        convention as state.bountyDayKey, guild.js) used both to guard
-        against granting twice in one day and to compute the gap since the
-        last login for the streak's own one-day-grace rule. null on a
-        brand-new character or a save that predates this field — both
-        treated as "no streak yet," same as lastSeenChangelogVersion above. */
+        string (compares calendar days, not exact timestamps) used both
+        to guard against granting twice in one day and to compute the
+        gap since the last login for the streak's own one-day-grace
+        rule. null on a brand-new character or a save that predates
+        this field — both treated as "no streak yet," same as
+        lastSeenChangelogVersion above. */
      dailyStreakCount: 0,
      lastLoginRewardDateKey: null,
      /* Bounty board (The Guild) — one active bounty at a time, auto-refreshed
         on claim or expiry (see ensureActiveBounty()/claimBounty() in
-        guild.js). null until the player's first visit rolls one, or once
-        bountiesClaimedToday hits BOUNTY_DAILY_CAP (content.js) for the day.
-        activeBounty itself carries its own startedAt (Date.now() at roll
-        time) for the BOUNTY_RESET_MS expiry check. */
+        guild.js). null until the player's first visit rolls one. No daily
+        claim cap — per explicit request, the board can be worked all day
+        long. activeBounty itself carries its own startedAt (Date.now() at
+        roll time) for the BOUNTY_RESET_MS expiry check. bountiesCompleted
+        is a lifetime counter, unrelated to any per-day limit. */
      activeBounty: null,
      bountiesCompleted: 0,
-     bountiesClaimedToday: 0,
-     bountyDayKey: null, /* toDateString() of the last claim-day boundary check — see checkBountyDayReset() (guild.js) */
      /* Stat-reset (respec) potion purchase count, ever — not tiered by
         building level like everything else. Each brew's price climbs
         steeply off this counter (STAT_RESET_BASE_PRICE/_PRICE_MULT,

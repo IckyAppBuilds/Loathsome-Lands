@@ -149,7 +149,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        classQuestAccepted, classQuestComplete, classTitle,
        classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
        classBuffFightsLeft,
-       activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
+       activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed,
        monstersSeen, allMonstersBonusClaimed,
        lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
        lastSeenChangelogVersion, dailyStreakCount, lastLoginRewardDateKey } = state;
@@ -174,7 +174,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
       classQuestAccepted, classQuestComplete, classTitle,
       classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
       classBuffFightsLeft,
-      activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
+      activeBounty, bountiesCompleted, rareDropsSeen, allRaresBonusClaimed,
       monstersSeen, allMonstersBonusClaimed,
       lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
       lastSeenChangelogVersion, dailyStreakCount, lastLoginRewardDateKey,
@@ -213,8 +213,6 @@ state.homeTown = TOWN_HUBS.includes(saved.homeTown) ? saved.homeTown : 'town';
    fallbacks rather than leaving them undefined. */
 state.activeBounty = saved.activeBounty || null;
    state.bountiesCompleted = typeof saved.bountiesCompleted === 'number' ? saved.bountiesCompleted : 0;
-   state.bountiesClaimedToday = typeof saved.bountiesClaimedToday === 'number' ? saved.bountiesClaimedToday : 0;
-   state.bountyDayKey = typeof saved.bountyDayKey === 'string' ? saved.bountyDayKey : null;
    state.bountyTokens = typeof saved.bountyTokens === 'number' ? saved.bountyTokens : 0;
    /* Daily login streak (dailystreak.js) — same "give an older save a sane
    default" fallback as every other field on this stretch. */

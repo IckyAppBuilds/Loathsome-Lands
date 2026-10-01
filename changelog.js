@@ -11,6 +11,9 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 22, date: 'October 1', title: 'The Bounty Board Never Closes', items: [
+      "The Bounty Board's daily claim cap is gone — work it as many times as you want in a single day, no more \"board's empty until tomorrow.\"",
+      ]},
    { id: 21, date: 'September 30', title: 'The Bestiary', items: [
       "New: the Bestiary, a Character-page log of every creature you've ever defeated — 92 entries, every regular monster and every named boss. Undefeated ones just show as \"???\" so nothing gets spoiled early.",
       "Defeat every single one and the Guild wires over a congratulatory bonus.",

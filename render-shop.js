@@ -424,15 +424,16 @@ function renderBountyBoard(){
   const el = document.getElementById('bounty-box');
   if(!el) return;
   if(!state.activeBounty){
-    /* null has two different causes now — hit today's claim cap, or
-    (post-quest7Complete specifically) no Act 2 zone unlocked yet at
-    all, a real gap between quest8Complete and quest9Accepted where
-    rollNewBounty() (guild.js) can't find anything eligible to offer.
-    Same distinction the Quest Log's own copy makes (render-character.js). */
-    const noZoneUnlocked = state.bountiesClaimedToday < BOUNTY_DAILY_CAP;
+    /* No daily claim cap anymore (per explicit request — the board can
+    be worked all day long), so the only reason this is ever null is
+    the one real gap left: post-quest7Complete specifically, no Act 2
+    zone unlocked yet at all, between quest8Complete and quest9Accepted,
+    where rollNewBounty() (guild.js) can't find anything eligible to
+    offer. Same message the Quest Log's own copy uses
+    (render-character.js). */
     el.innerHTML = `
     <div class="block-title">Bounty Board</div>
-    <div class="quest-desc">${noZoneUnlocked ? "Nothing worth posting yet — check back once you've found somewhere new to hunt." : `You've claimed ${BOUNTY_DAILY_CAP} bounties today — the board's empty until tomorrow.`}</div>
+    <div class="quest-desc">Nothing worth posting yet — check back once you've found somewhere new to hunt.</div>
     <div class="quest-progress" style="color:var(--tan);">${state.bountiesCompleted} bounties completed lifetime. You have ${state.bountyTokens} Bounty Token${state.bountyTokens===1?'':'s'}.</div>
     `;
     return;
