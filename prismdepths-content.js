@@ -68,11 +68,22 @@ tagged with that class's own signature stat as primary
 (CLASS_SIGNATURE_STAT, content.js) and tier:'epic' — armor derives
 automatically via ensureGearArmor() (item-tiers.js), no new armor code
 needed. Reuses existing icons, same "nothing here is unique enough for
-a new SVG" convention every other piece of loot in the game follows. */
+a new SVG" convention every other piece of loot in the game follows.
+
+Per explicit correction, each also carries 3 secondary stats (STAT_
+ROTATION order, content.js — same deterministic rotation rollGearDropTier()
+uses, just hand-authored here since this is a fixed guaranteed drop, not
+a random roll) at roughly two-thirds the primary value. Epic sits one
+rung above the random gearDrop system's own ceiling — GEAR_DROP_TIER_
+NAMES (content.js) tops out at 'rare' (3 stats total, armor-base 3,
+GEAR_ARMOR_BY_TIER/item-tiers.js), and epic's own armor-base is 4 on
+that same table — so shipping these as bare 1-stat items (armor aside)
+left the endgame's own guaranteed epic reward with FEWER stats than a
+lucky mid-game monster could already roll for free. */
 const embercryptTreasure = [
-   { name:"the Emberwright's own tongs, still faintly glowing", desc:"Picks things up that would otherwise take your fingers with them.", type:"equip", slot:"weapon", bonus:{beef:11}, classRequired:'Meathead', tier:'epic', icon: iconPalaceForgedPlate },
-   { name:"a cinder-quick cloak, never quite catching fire", desc:"Smells permanently like the inside of a kiln. You stop noticing after a while.", type:"equip", slot:"chest", bonus:{zip:11}, classRequired:'Card Shark', tier:'epic', icon: iconCapturedLight },
-   { name:"a forge-sealed circlet, warm even when nothing else is", desc:"Whatever it was tempered in, it still remembers.", type:"equip", slot:"head", bonus:{hoodoo:11}, classRequired:'Hexpert', tier:'epic', icon: iconVeinGemstone },
+   { name:"the Emberwright's own tongs, still faintly glowing", desc:"Picks things up that would otherwise take your fingers with them.", type:"equip", slot:"weapon", bonus:{beef:11, zip:7, grit:7, hoodoo:7}, classRequired:'Meathead', tier:'epic', icon: iconPalaceForgedPlate },
+   { name:"a cinder-quick cloak, never quite catching fire", desc:"Smells permanently like the inside of a kiln. You stop noticing after a while.", type:"equip", slot:"chest", bonus:{zip:11, grit:7, hoodoo:7, beef:7}, classRequired:'Card Shark', tier:'epic', icon: iconCapturedLight },
+   { name:"a forge-sealed circlet, warm even when nothing else is", desc:"Whatever it was tempered in, it still remembers.", type:"equip", slot:"head", bonus:{hoodoo:11, beef:7, zip:7, grit:7}, classRequired:'Hexpert', tier:'epic', icon: iconVeinGemstone },
    ];
 
 /* ---------------- The Prism Depths — Frostvault ---------------- */
@@ -110,10 +121,12 @@ const stillglassWarden = {
    art: artStillglassWarden, loot:null
 };
 
+/* Same 3-secondary-stat treatment as embercryptTreasure's own comment
+above explains — two-thirds of the primary, STAT_ROTATION order. */
 const frostvaultTreasure = [
-   { name:"the Stillglass Warden's own frozen gauntlet-blade", desc:"Doesn't melt. Hasn't, in longer than anyone's been asking.", type:"equip", slot:"weapon", bonus:{beef:12}, classRequired:'Meathead', tier:'epic', icon: iconGuardCleaver },
-   { name:"frost-cut striders, impossibly sure-footed on ice", desc:"Never once slip. You've stopped testing it.", type:"equip", slot:"boots", bonus:{zip:12}, classRequired:'Card Shark', tier:'epic', icon: iconGripBoots },
-   { name:"a frost-sealed circlet, thoughts still legible through the ice", desc:"Whoever wore it last was mid-thought. Still is, technically.", type:"equip", slot:"head", bonus:{hoodoo:12}, classRequired:'Hexpert', tier:'epic', icon: iconStolenCrown },
+   { name:"the Stillglass Warden's own frozen gauntlet-blade", desc:"Doesn't melt. Hasn't, in longer than anyone's been asking.", type:"equip", slot:"weapon", bonus:{beef:12, zip:8, grit:8, hoodoo:8}, classRequired:'Meathead', tier:'epic', icon: iconGuardCleaver },
+   { name:"frost-cut striders, impossibly sure-footed on ice", desc:"Never once slip. You've stopped testing it.", type:"equip", slot:"boots", bonus:{zip:12, grit:8, hoodoo:8, beef:8}, classRequired:'Card Shark', tier:'epic', icon: iconGripBoots },
+   { name:"a frost-sealed circlet, thoughts still legible through the ice", desc:"Whoever wore it last was mid-thought. Still is, technically.", type:"equip", slot:"head", bonus:{hoodoo:12, beef:8, zip:8, grit:8}, classRequired:'Hexpert', tier:'epic', icon: iconStolenCrown },
    ];
 
 /* ---------------- The Prism Depths — Stormreach ---------------- */
@@ -149,8 +162,10 @@ const unansweredHerald = {
    art: artUnansweredHerald, loot:null
 };
 
+/* Same 3-secondary-stat treatment as embercryptTreasure's own comment
+above explains — two-thirds of the primary, STAT_ROTATION order. */
 const stormreachTreasure = [
-   { name:"a storm-charged maul, still humming between swings", desc:"Doesn't need to be swung hard. It's already moving.", type:"equip", slot:"weapon", bonus:{beef:13}, classRequired:'Meathead', tier:'epic', icon: iconHeirloomCleaver },
-   { name:"windworn leggings, never quite touching the ground", desc:"You've stopped checking whether you're actually walking.", type:"equip", slot:"legs", bonus:{zip:13}, classRequired:'Card Shark', tier:'epic', icon: iconQuickstepTrousers },
-   { name:"a storm-signal mantle, still relaying something", desc:"Whatever it's broadcasting, it isn't for you. You wear it anyway.", type:"equip", slot:"chest", bonus:{hoodoo:13}, classRequired:'Hexpert', tier:'epic', icon: iconAdventurerCuirass },
+   { name:"a storm-charged maul, still humming between swings", desc:"Doesn't need to be swung hard. It's already moving.", type:"equip", slot:"weapon", bonus:{beef:13, zip:9, grit:9, hoodoo:9}, classRequired:'Meathead', tier:'epic', icon: iconHeirloomCleaver },
+   { name:"windworn leggings, never quite touching the ground", desc:"You've stopped checking whether you're actually walking.", type:"equip", slot:"legs", bonus:{zip:13, grit:9, hoodoo:9, beef:9}, classRequired:'Card Shark', tier:'epic', icon: iconQuickstepTrousers },
+   { name:"a storm-signal mantle, still relaying something", desc:"Whatever it's broadcasting, it isn't for you. You wear it anyway.", type:"equip", slot:"chest", bonus:{hoodoo:13, beef:9, zip:9, grit:9}, classRequired:'Hexpert', tier:'epic', icon: iconAdventurerCuirass },
    ];

@@ -574,7 +574,11 @@ rest): **Embercrypt** (fire/forging), **Frostvault**
 shape: `<name>Regulars` (3), its own `rare:true` boss
 (`emberwright`/`stillglassWarden`/`unansweredHerald`), and
 `<name>Treasure` (3 class-tagged items, one picked at random per
-clear). Each sets its own `ZONE_DIFFICULTY.<name>` entry (content.js)
+clear — each carries 4 total stats, primary + 3 secondaries at
+roughly two-thirds the primary value in STAT_ROTATION order, content.js
+— per explicit correction, an 'epic' guaranteed drop needs to beat a
+'rare' random gearDrop roll's own 3-stat ceiling, not ship with just
+the bare primary stat). Each sets its own `ZONE_DIFFICULTY.<name>` entry (content.js)
 at parse time — a plain mutation of an already-initialized object, NOT
 a `const` declared before its own use (that ordering mistake already
 happened once this session — see `TRASH_SKILL_CHANCE`'s own comment,

@@ -11,6 +11,9 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 26, date: 'October 1', title: 'The Prism Depths Pays Out Properly', items: [
+      "Fixed: every dungeon's guaranteed epic treasure was only carrying one stat — now each one rolls with three extra secondary stats too, so an epic drop actually outclasses a lucky rare find like it should.",
+      ]},
    { id: 25, date: 'October 1', title: 'Dungeon Combat, Cleaned Up', items: [
       "Fixed: the Dungeon Board (and its Enter/Leave buttons) no longer stay stuck on screen once you're actually fighting inside a dungeon — it now looks like a normal fight, same as everywhere else.",
       "New: a progress bar now shows how far into the current dungeon run you are, stage by stage.",
