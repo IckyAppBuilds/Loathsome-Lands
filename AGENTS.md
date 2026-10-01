@@ -271,7 +271,28 @@ heal, an elemental bolt, evasion, or some combination — see the comment
 above `gnomeCommander` for the full rundown and reasoning) dispatched
 generically by combat.js's `monsterRetaliate()`/`useMonsterSkill()`,
 no per-boss combat code needed — with their own spawn-chance
-constants, `ZONE_DIFFICULTY`/`ZONE_LABELS`, `noncombatEvents`/
+constants.
+
+**Every regular (non-rare) monster now also carries exactly one
+skills[] entry** (combat-variety pass — previously only named bosses
+had any mechanical behavior beyond plain auto-attack; see the comment
+above `TRASH_SKILL_CHANCE`, right before `const monsters = [`, for the
+full reasoning). Reuses the exact same `monsterRetaliate()`/
+`useMonsterSkill()` dispatcher — zero new combat.js code was needed.
+Restricted to `heal`/`buff`/`bolt` only; `debuff` (burn/poison/freeze)
+stays boss-exclusive, a "this is a real fight" signal. Every trash
+skill shares one `chance` (`TRASH_SKILL_CHANCE = 0.12`, well below a
+boss's own 0.15-0.25), and its heal/bolt magnitude is hand-computed
+per monster from that monster's own zone-scaled atk/hp (not an
+arbitrary number) — `TRASH_SKILL_CHANCE` has to be declared BEFORE
+`const monsters = [` specifically because it's referenced inside that
+array literal (evaluated immediately at parse time, unlike
+`MONSTER_ARMOR_PER_GRIT`-style constants that live further down this
+file and are only read inside function bodies called later — declaring
+it after the array would throw a temporal-dead-zone ReferenceError the
+moment the array tried to evaluate it, a real bug caught once while
+building this). Flavor text is hand-written per monster to match the
+game's existing comedic voice, not templated. `ZONE_DIFFICULTY`/`ZONE_LABELS`, `noncombatEvents`/
 `hazardEvents`, `healItems`/`shopFoodItemsTier2`/`shopFoodItemsTier3`,
 `starterGear`, `shopGearItems`/`shopGearItemsTier2`/`shopGearItemsTier3`/
 `shopGearItemsTier4` (1/2/3/4 stats respectively — each tier up adds one
@@ -385,8 +406,10 @@ zones on the main chain (not a district) get added here, in order.
 
 ## mudroot-content.js — Act 2 Part 2 (Mudroot Warren) monster data
 `mudrootMonsters` (Root Cellar's 3 + Mudflats' 3 + the Bureau's 3
-"business mole" regulars — same loot/rareDrop/gearDrop shape as
-content.js's own `monsters[]`, `.push()`ed onto that same array at the
+"business mole" regulars — same loot/rareDrop/gearDrop/skills[] shape
+as content.js's own `monsters[]` (each one also carries its own
+`TRASH_SKILL_CHANCE`-gated heal/buff/bolt skill — see content.js's own
+comment above that constant), `.push()`ed onto that same array at the
 bottom of this file rather than duplicating combat.js's zone filter),
 quest9's two rare hunt targets (`tunnelWarden`/`warrenScout` — same
 `rare:true`/`skills[]`/`beef`/`zip`/`grit`/`hoodoo` stat-block shape as

@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 19, date: 'September 30', title: 'Every Monster Has a Trick', items: [
+      "Every regular monster in the game can now pull off a move of its own mid-fight — a heal, a rallying second wind, or a bigger one-off hit — not just named bosses anymore.",
+      "Nothing drastic: it's rarer and smaller than what a boss can do, just enough that the same old monster doesn't always play out the same old way.",
+      ]},
    { id: 18, date: 'September 30', title: 'Weapons Are For Hitting Things', items: [
       "Weapons no longer carry an armor bonus — that was never the point of a weapon. Already-owned weapons with armor on them lose it automatically next time you log in; every other stat they carry is untouched.",
       ]},
