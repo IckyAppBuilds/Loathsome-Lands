@@ -288,12 +288,19 @@ pane rather than each maintaining its own copy. sellFn defaults to
 Gladstone's sellItemByName(), used for the junk/consumable/quest rows
 only — equip rows always call sellEquipItemByIndex() directly (economy.js),
 regardless of sellFn, since gear is never grouped/matched by name (see
-this function's own comment below). The Act 2 Shop doesn't need its
-own separate sell function the way it needed its own buy function
+groupInventoryByName()'s own comment above). The Act 2 Shop doesn't need
+its own separate sell function the way it needed its own buy function
 (selling doesn't touch either shop's own catalog, only the Pack), so
 unlike renderShopItemRow()'s buyFn param this one has no real second
 caller yet — kept as a param anyway so that stays true if it ever
-needs one. */
+needs one.
+
+Per explicit request, this groups into the same Potions & Consumables/
+Equipment/Quest Items/Loot sections (INVENTORY_SECTIONS, above)
+renderInventory() uses for the Pack itself, built off that same
+groupInventoryByName() helper — so a sellable item always lands in the
+same section here as it does there, instead of this pane's own
+separate flat alphabetical list. */
 function buildSellSection(sellFn){
   sellFn = sellFn || 'sellItemByName';
   const sellSection = document.createElement('div');
@@ -302,62 +309,44 @@ function buildSellSection(sellFn){
   (item-tiers.js) derives a price from tier/bonus or tier/heal-value, so
   there's no stored `sell` field to gate on the way junk/quest items
   still have. */
-  const sellable = state.inventory.filter(it => it.type==='equip' || it.type==='hp' || it.type==='mp' || it.type==='luck'
-    || (it.sell && (it.type==='junk' || isQuestItemSellable(it))));
+  const sellableGroups = groupInventoryByName().filter(({item}) =>
+    item.type==='equip' || item.type==='hp' || item.type==='mp' || item.type==='luck'
+    || (item.sell && (item.type==='junk' || isQuestItemSellable(item))));
 
-  if(sellable.length===0){
+  if(sellableGroups.length===0){
     sellSection.innerHTML += '<div class="shop-empty">Nothing in your pack worth selling. Bring back some gnome junk.</div>';
     return sellSection;
   }
-  /* Equip items never group here either — same reasoning as
-  groupInventoryByName()'s own comment (render-shop.js): even name+tier
-  isn't enough to guarantee two items are actually identical (rolled
-  secondary stats/temperLevel can still differ), so gear doesn't stack
-  at all, full stop. Each gets its own row, sold individually by its
-  own array index (sellEquipItemByIndex(), economy.js) rather than
-  matched back up by name. Junk/consumables/quest items are genuinely
-  fungible (no rolled stats to differ), so they keep grouping by name. */
-  const equipRows = [];
-  state.inventory.forEach((item, idx)=>{
-    if(item.type!=='equip') return;
-    const iconSvg = item.icon ? item.icon() : '';
-    const unitSell = getItemSellValue(item);
-    /* Per explicit request — the Sell tab never showed an item's own
-    stats before (only its flavor desc + price), unlike every other
-    listing (Pack, Shop, Equipment). Same "each stat on its own line"
-    formatting as those, so a multi-stat item reads the same way here
-    too, right before deciding whether to sell it. */
-    const bonusText = item.bonus && Object.keys(item.bonus).length
-      ? '<br>' + Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join('<br>')
-      : '';
-    const div = document.createElement('div');
-    div.className = 'shop-item';
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}</div><div class="desc">${item.desc}${bonusText}<br>(${unitSell} Pop Tab${unitSell>1?'s':''})</div><button class="btn-secondary" onclick="sellEquipItemByIndex(${idx})">Sell — ${unitSell} Pop Tabs</button></div>`;
-    equipRows.push({ name: item.name, div });
-  });
 
-  const groups = new Map();
-  sellable.filter(item => item.type!=='equip').forEach(item=>{
-    if(!groups.has(item.name)) groups.set(item.name, { item, count:0 });
-    groups.get(item.name).count++;
+  INVENTORY_SECTIONS.forEach(section=>{
+    const entries = sellableGroups.filter(g => section.types.includes(g.item.type));
+    if(entries.length===0) return;
+    const header = document.createElement('div');
+    header.className = 'shop-section-title';
+    header.textContent = section.title;
+    sellSection.appendChild(header);
+    entries.forEach(({item, count, firstIdx})=>{
+      const iconSvg = item.icon ? item.icon() : '';
+      const unitSell = getItemSellValue(item);
+      const div = document.createElement('div');
+      div.className = 'shop-item';
+      if(item.type==='equip'){
+        /* Equip items never group by name (see groupInventoryByName()'s
+        own comment above) — each is sold individually by its own array
+        index. Per explicit request, the Sell tab also shows an item's
+        own stats (only its flavor desc + price before), same "each stat
+        on its own line" formatting every other listing uses. */
+        const bonusText = item.bonus && Object.keys(item.bonus).length
+          ? '<br>' + Object.entries(item.bonus).map(([k,v])=>`+${v} ${STAT_LABELS[k]}`).join('<br>')
+          : '';
+        div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)}</div><div class="desc">${item.desc}${bonusText}<br>(${unitSell} Pop Tab${unitSell>1?'s':''})</div><button class="btn-secondary" onclick="sellEquipItemByIndex(${firstIdx})">Sell — ${unitSell} Pop Tabs</button></div>`;
+      } else {
+        const total = unitSell * count;
+        div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)} <span class="qty-badge">×${count}</span></div><div class="desc">${item.desc} (${unitSell} Pop Tab${unitSell>1?'s':''} each)</div><button class="btn-secondary" onclick="${sellFn}('${item.name.replace(/'/g,"\\'")}')">Sell All — ${total} Pop Tabs</button></div>`;
+      }
+      sellSection.appendChild(div);
+    });
   });
-  const nonEquipRows = [...groups.values()].map(({item, count})=>{
-    const div = document.createElement('div');
-    div.className = 'shop-item';
-    const iconSvg = item.icon ? item.icon() : '';
-    const unitSell = getItemSellValue(item);
-    const total = unitSell * count;
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${itemNameHtml(item)} <span class="qty-badge">×${count}</span></div><div class="desc">${item.desc} (${unitSell} Pop Tab${unitSell>1?'s':''} each)</div><button class="btn-secondary" onclick="${sellFn}('${item.name.replace(/'/g,"\\'")}')">Sell All — ${total} Pop Tabs</button></div>`;
-    return { name: item.name, div };
-  });
-
-  /* Sort by name rather than trusting state.inventory's current order —
-  same reasoning as renderInventory() above: that order shifts under
-  this list's feet whenever items are used/equipped elsewhere, which
-  made entries here reshuffle too even though nothing was sold. */
-  [...equipRows, ...nonEquipRows]
-    .sort((a,b)=>a.name.localeCompare(b.name))
-    .forEach(({div}) => sellSection.appendChild(div));
   return sellSection;
 }
 
