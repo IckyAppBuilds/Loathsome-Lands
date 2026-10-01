@@ -584,10 +584,17 @@ function syncBuildingScreens(ctx){
   the Crystal City screen itself (same role the Guild/Shop buttons play
   on their own town squares); the board + its own Leave button live on
   the 'prismdepths' screen this leads to. */
-  document.getElementById('prism-depths-entry-row').style.display = (ctx.isCrystalCity && state.quest16Complete) ? 'flex' : 'none';
-  document.getElementById('prism-depths-row').style.display = ctx.isPrismDepths ? 'flex' : 'none';
-  document.getElementById('dungeon-board').style.display = ctx.isPrismDepths ? 'block' : 'none';
-  if(ctx.isPrismDepths) renderDungeonBoard();
+  /* Same "&& !state.inCombat" rule every other zone's own action row
+  (explore-row/class-area-row/palace-row above) already follows — a
+  dungeon run is still just combat happening on this screen, so the
+  Dungeon Board (every dungeon's own Enter button) and the Leave button
+  have to disappear for it the same way the Palace's own
+  Attack-the-gate button does mid-fight, rather than sitting there
+  stacked on top of the normal combat screen. */
+  document.getElementById('prism-depths-entry-row').style.display = (ctx.isCrystalCity && state.quest16Complete && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('prism-depths-row').style.display = (ctx.isPrismDepths && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('dungeon-board').style.display = (ctx.isPrismDepths && !state.inCombat) ? 'block' : 'none';
+  if(ctx.isPrismDepths && !state.inCombat) renderDungeonBoard();
 
   document.getElementById('accept-quest3-btn').style.display = ctx.quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = ctx.quest3State==='active' ? '' : 'none';
@@ -1205,12 +1212,26 @@ function renderSceneArt(ctx){
 }
 
 /* Job 6: the combat HUD (monster name/HP bar/HP text) — reads
-state.monster directly, no ctx needed. */
+state.monster directly, no ctx needed. Also the dungeon-run progress
+bar (Act 3, dungeon.js) — only ever shown mid-combat inside an active
+run, so it rides the same job as the monster HP bar rather than
+needing its own sync pass. Percentage is completed-stages/total (0%
+entering the first fight, climbing one stage at a time) — same
+"how much is actually behind you" reading the XP bar already uses,
+not "how deep is this one fight." */
 function syncCombatHud(){
   if(state.inCombat){
     document.getElementById('monster-name').textContent = capitalize(state.monster.name);
     document.getElementById('monster-hp-bar').style.width = (state.monster.hp/state.monster.maxHp*100)+'%';
     document.getElementById('monster-hp-text').textContent = state.monster.hp+'/'+state.monster.maxHp;
+  }
+  const inDungeonRun = state.inCombat && activeDungeonRun;
+  document.getElementById('dungeon-progress-row').style.display = inDungeonRun ? 'flex' : 'none';
+  if(inDungeonRun){
+    const total = dungeonStageCount(activeDungeonRun.id);
+    const pct = Math.round(activeDungeonRun.stage / total * 100);
+    document.getElementById('dungeon-progress-bar').style.width = pct+'%';
+    document.getElementById('dungeon-progress-text').textContent = `Stage ${activeDungeonRun.stage+1}/${total} (${pct}%)`;
   }
 }
 

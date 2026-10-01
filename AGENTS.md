@@ -635,6 +635,19 @@ entered from a button on the Crystal City screen itself
 (`enterPrismDepths()`/`leavePrismDepths()`, town.js) rather than being
 its own `ZONE_ORDER` destination — same "a screen inside a zone"
 relationship the Guild/Shop/Town Lot have to Gladstone Hollow.
+`#dungeon-board`/`#prism-depths-row`/`#prism-depths-entry-row` all also
+gate on `&& !state.inCombat` (`syncBuildingScreens()`, render.js, same
+rule `explore-row`/`class-area-row`/`palace-row` already follow) — a
+dungeon run is still just combat happening on the `'prismdepths'`
+screen, so the Board/Leave button have to disappear for it the same
+way they would for any other zone's own action row, instead of sitting
+there stacked on top of the normal Attack/Use/Flee combat screen.
+`#dungeon-progress-row` (`syncCombatHud()`, render.js, right next to
+the monster HP bar it shares `#monster-card` with) is the mirror
+image — only ever shown while `state.inCombat && activeDungeonRun`,
+reading `activeDungeonRun.stage`/`dungeonStageCount(id)` as a
+completed-stages/total percentage, same "how much is actually behind
+you" reading the XP bar already uses.
 
 Loads after prismdepths-content.js (reads its consts by value building
 `DUNGEONS`) and before combat.js/render.js (whose functions this file

@@ -100,6 +100,7 @@ header h1{
 .biscuit-icon-row svg{ width:20px; height:20px; }
 .biscuit-track{ width:56px; height:6px; margin:3px auto 0; }
 .fill-biscuit{ background:var(--tan); }
+.fill-dungeon{ background:var(--yellow); }
 
 .xp-row{
   display:flex;

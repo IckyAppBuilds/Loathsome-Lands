@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 25, date: 'October 1', title: 'Dungeon Combat, Cleaned Up', items: [
+      "Fixed: the Dungeon Board (and its Enter/Leave buttons) no longer stay stuck on screen once you're actually fighting inside a dungeon — it now looks like a normal fight, same as everywhere else.",
+      "New: a progress bar now shows how far into the current dungeon run you are, stage by stage.",
+      ]},
    { id: 24, date: 'October 1', title: 'One Spell or Item Per Turn', items: [
       "Fixed: casting a heal/ward/buff/shout spell mid-combat (Stubborn Recovery, Warding Charm, Shout, Adrenaline Rush, etc.) no longer skips the monster's turn — it now costs the same one turn an Attack or a damage spell already did, so the monster always gets to act.",
       "Outside combat, from the Character page, casting those same spells is unaffected and still completely free.",
