@@ -456,15 +456,44 @@ function leaveTinker(){
    render();
 }
 
+/* Quest 17, "What Light Remembers" — Act 3's own opener, offered at the
+Crystal City itself once quest16Complete. Per explicit correction: the
+Prism Depths used to hang directly off quest16Complete with no quest
+ever actually announcing them (a bare "Descend into the Prism Depths"
+button a player would have to notice on their own) — this closes that
+gap. Deliberately a formality, same shape as quest8's own "New Digs":
+no fetch objective, accept/report in one visit, since the real content
+is the dungeons themselves, not a hunt for this quest to gate. */
+function acceptQuest17(){
+   if(state.location !== 'crystalcity' || !state.quest16Complete || state.quest17Accepted || state.quest17Complete) return;
+   state.quest17Accepted = true;
+   clearLog();
+   log("The light shifts — not a flicker, a response. Something old is still paying attention down here, and it's noticed you noticing it back. Whatever's left of it isn't hostile. It's just been waiting a very long time for someone to ask.");
+   render();
+}
+function reportQuest17(){
+   if(state.location !== 'crystalcity' || !state.quest17Accepted || state.quest17Complete) return;
+   state.quest17Complete = true;
+   state.popTabs += 60;
+   state.xp += 50;
+   state.adventures += 30;
+   clearLog();
+   log("You don't get words, exactly — more like a shape the light makes, settling into something you can almost read. It isn't gnome, and it isn't Mole either. It's older than both, and most of it is gone. What's left just wants to be found. (+60 Pop Tabs, +50 XP, +30 Biscuits)");
+   log("The passage down from here finally makes sense as more than a hole in the ground: the Prism Depths, laid out level by level beneath the City, each one a different room of whatever this place used to be. They're open now — check the Dungeon Board.");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
 /* ---------------- The Prism Depths (Act 3) ---------------- */
 /* Entered from the Crystal City itself rather than being its own
 ZONE_ORDER destination — see dungeon.js's own top comment and the
-Act 3 plan for why. Phase A's own scope note: gated on the same
-quest16Complete flag Crystal City itself uses, rather than a separate
-quest17 accept step — that narrative framing is a later pass, this is
-just the underlying engine proven out end-to-end first. */
+Act 3 plan for why. Gated on quest17Complete (not quest16Complete
+directly anymore) — quest17's own report is what actually opens this,
+same "a quest announces what it unlocks" rule every other gate in the
+game already follows. */
 function enterPrismDepths(){
-   if(state.inCombat || state.location !== 'crystalcity' || !state.quest16Complete) return;
+   if(state.inCombat || state.location !== 'crystalcity' || !state.quest17Complete) return;
    state.location = 'prismdepths';
    clearLog();
    log("Light that isn't torchlight leads down past the crystal walls — and further down than the walls alone would explain.");

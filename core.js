@@ -218,6 +218,15 @@ function createDefaultState(){
      quest16Accepted: false,
      quest16Complete: false,
      drillRigSalvaged: false,
+     /* Quest 17, "What Light Remembers" — Act 3's own opener, offered at
+     the Crystal City itself once quest16Complete. Deliberately a
+     formality quest, same shape as quest8's own "New Digs" (no fetch
+     objective, accept/report in one visit) — the real content is the
+     Prism Depths dungeons themselves (dungeon.js), which this quest now
+     gates (DUNGEONS.*.requiredFlag) instead of them hanging directly off
+     quest16Complete with no quest ever announcing they exist. */
+     quest17Accepted: false,
+     quest17Complete: false,
      classQuestAccepted: false,
      classQuestComplete: false,
      classTitle: null,

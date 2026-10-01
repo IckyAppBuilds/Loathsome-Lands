@@ -24,7 +24,7 @@ const DUNGEONS = {
       treasureTable: embercryptTreasure,
       shardReward: 40,
       biscuitCost: 3,
-      requiredFlag: 'quest16Complete', /* same gate Crystal City itself uses — see the Act 3 plan's "Phase A, slice 1" scope note */
+      requiredFlag: 'quest17Complete', /* quest17, "What Light Remembers" (town.js) — the Prism Depths' own opener, reportQuest17() sets this */
       enterLine: "You step into Embercrypt. Whatever's still burning in here has been burning a very long time.",
       midRunLine: (left) => `Deeper into Embercrypt — ${left} fight${left===1?'':'s'} left before whatever's keeping it lit.`,
       clearLine: "Embercrypt falls dark behind you, all at once, like something finally let go of a breath.",
@@ -36,7 +36,7 @@ const DUNGEONS = {
       treasureTable: frostvaultTreasure,
       shardReward: 44, /* +4 over Embercrypt's 40, same escalation the biscuitCost/difficulty ladder also climbs */
       biscuitCost: 3,
-      requiredFlag: 'quest16Complete',
+      requiredFlag: 'quest17Complete',
       enterLine: "You step into Frostvault. Everything in here is exactly where it was left — including, maybe, you.",
       midRunLine: (left) => `Deeper into Frostvault — ${left} fight${left===1?'':'s'} left before whatever's keeping it still.`,
       clearLine: "Frostvault doesn't darken behind you so much as settle — one more thing filed, finally, under finished.",
@@ -48,7 +48,7 @@ const DUNGEONS = {
       treasureTable: stormreachTreasure,
       shardReward: 48,
       biscuitCost: 4, /* one step up — Stormreach is the hardest of the first wave */
-      requiredFlag: 'quest16Complete',
+      requiredFlag: 'quest17Complete',
       enterLine: "You step into Stormreach. Something up here is still talking. It's been a very long time since anyone answered.",
       midRunLine: (left) => `Deeper into Stormreach — ${left} fight${left===1?'':'s'} left before whatever's still broadcasting.`,
       clearLine: "Stormreach goes quiet behind you, all at once — whatever that signal was, it's finally been heard.",

@@ -11,6 +11,9 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 27, date: 'October 1', title: 'A Proper Welcome to the Prism Depths', items: [
+      "New: quest 17, \"What Light Remembers,\" at the Crystal City — accept it, report back, and the Prism Depths actually open through a real quest now, instead of a button you'd only find by poking around.",
+      ]},
    { id: 26, date: 'October 1', title: 'The Prism Depths Pays Out Properly', items: [
       "Fixed: every dungeon's guaranteed epic treasure was only carrying one stat — now each one rolls with three extra secondary stats too, so an epic drop actually outclasses a lucky rare find like it should.",
       ]},

@@ -633,6 +633,18 @@ FINAL kill shows the normal victory banner (see the "wasDungeonMonster
 && dungeonRunContinues" branch, combat.js, right next to
 `wasBuildingTrialFight`'s own banner-skip logic).
 
+Every dungeon's `requiredFlag` is `'quest17Complete'` — quest17, "What
+Light Remembers" (`acceptQuest17()`/`reportQuest17()`, town.js), Act
+3's own opener, offered at the Crystal City itself once
+`quest16Complete`. Deliberately a formality, same shape as quest8's own
+"New Digs" (no fetch objective, accept/report in one visit — the real
+content is the dungeons themselves). Per explicit correction: this
+used to be `'quest16Complete'` directly, so the Prism Depths existed
+only as a bare, un-announced "Descend into the Prism Depths" button a
+player would have to notice on their own — reportQuest17() is now what
+actually reveals that button (`#prism-depths-entry-row`, render.js)
+and unlocks `isDungeonUnlocked()`.
+
 UI: the Dungeon Board (`renderDungeonBoard()`, render.js;
 `#dungeon-board`, index.html) lives on the `'prismdepths'` screen,
 entered from a button on the Crystal City screen itself
@@ -895,7 +907,7 @@ class-skill upgrade block, or the spell-upgrade block is displayed.
 (reset every quest flag back to never-started — quest7 through quest15
 were silently missing from this entirely until this session, despite
 its own doc comment already claiming full coverage; fixed alongside
-adding quest13-15, extended again for quest16, and now also calls
+adding quest13-15, extended again for quest16 and then quest17, and now also calls
 `resetAllGauntlets()`, gauntlet.js)/`resetToNewGameDev` (the "Full
 Reset (New Game)" button — wipes to `createDefaultState()` then
 replays `startFreshGame()`), the direct state setters (Biscuits/Pop
@@ -907,7 +919,9 @@ hit by one of the handful of bosses that inflict it), and
 entirely missing until this session — every Act 2 quest was reachable
 only by actually playing through it, with zero dev shortcut; quest16's
 own stages push/strip its 3 gathered-3-different-ways items directly
-so the Pack stays in sync with whatever stage is jumped to). Never
+so the Pack stays in sync with whatever stage is jumped to; quest17's
+own 3 stages are the simple no-fetch "formality" shape, same as
+quest8's). Never
 touched by normal gameplay work otherwise — the cleanest single-concern
 file in the project.
 
@@ -1218,7 +1232,12 @@ free), `isTravelHub`/`forceHomeIfBroke`/`travelTo`/`restAtInn`,
 enter/leave pairs and quest accept/report for the Gaffer House, Shop,
 Hoodoo Doctor's (incl. `brewPotion`/`brewStatResetPotion`), and
 Tinker's Workshop, plus `giveRakeTines`/`turnInVein`, and the Town Lot
-economy (`buyTownLot`/`upgradeTownLot`/`upgradeBuilding`). The
+economy (`buyTownLot`/`upgradeTownLot`/`upgradeBuilding`). Also
+quest17 (`acceptQuest17`/`reportQuest17`) and `enterPrismDepths`/
+`leavePrismDepths` — the Crystal City doesn't get its own file (still
+a stub leaf zone, crystalcity-content.js holds only its monster data),
+so everything quest/door-related for it lives here, same as every
+other `travelTo()`-reached location. The
 Tinker's Workshop is also where gear tempering happens now
 (`temperEquippedItem()`, player-actions.js — gated on
 `state.location==='tinker'`), even though `enterTinker`/`leaveTinker`
@@ -1396,7 +1415,16 @@ flow.
   Tinker's Workshop). `heldAllDrilldozerParts()`/
   `countDrilldozerPlatingHeld()` (render.js) check holdings; reporting
   reveals the Crystal Breach tile in the Ember Warren's own square —
-  a real explorable stub zone, not just an ending screen).
+  a real explorable stub zone, not just an ending screen), and quest17
+  "What Light Remembers" (`acceptQuest17`/`reportQuest17`, town.js —
+  Act 3's own opener, offered at the Crystal City itself once
+  quest16Complete. Deliberately a formality, same shape as quest8's own
+  "New Digs": no fetch objective, accept/report in one visit, since the
+  real content is the Prism Depths dungeons themselves — DUNGEONS.*.
+  requiredFlag, dungeon.js, gates on quest17Complete now rather than
+  quest16Complete directly, per explicit correction, so the dungeons
+  are actually announced by a quest instead of existing only as a bare
+  button on the Crystal City screen).
 - **Bounty Board**: `isBountyZoneUnlocked`/`rollNewBounty`/
   `ensureActiveBounty`/`isBountyReady`/`formatBountyTimeLeft`/
   `claimBounty`/`updateBountyTimerDisplay`. No daily claim cap — per

@@ -85,6 +85,7 @@ function resetQuestsDev(){
       quest14Accepted: false, quest14Complete: false, vaultKeeperDefeated: false,
       quest15Accepted: false, quest15Complete: false, warrenMotherDefeated: false,
       quest16Accepted: false, quest16Complete: false, drillRigSalvaged: false,
+      quest17Accepted: false, quest17Complete: false,
       classQuestAccepted: false, classQuestComplete: false, classTitle: null,
    });
    state.inventory = state.inventory.filter(it => it.type !== 'quest');
@@ -455,6 +456,17 @@ const QUEST_DEV_STAGES = [
          if(state.quest16Accepted) return 1;
          return 0;
       } },
+
+   /* Quest 17, "What Light Remembers" — same 3-stage "formality" shape
+   quest8's own dev stages use (no fetch objective, accepted===ready to
+   report). Gates the Prism Depths (DUNGEONS.*.requiredFlag, dungeon.js)
+   now, so jumping straight to "Complete" here is the fast path to
+   actually reaching the dungeons in dev mode. */
+   { id:'quest17', label:'Crystal City: What Light Remembers (Act 3 opener)', stages: [
+      { label:'Not started', apply(){ Object.assign(state, { quest17Accepted:false, quest17Complete:false }); } },
+      { label:'Accepted (ready to turn in)', apply(){ Object.assign(state, { quest17Accepted:true, quest17Complete:false }); } },
+      { label:'Complete (Prism Depths open)', apply(){ Object.assign(state, { quest17Accepted:true, quest17Complete:true }); } },
+      ], detect(){ if(state.quest17Complete) return 2; if(state.quest17Accepted) return 1; return 0; } },
 
    { id:'classquest', label:"Guild: The Adventurer's Trial (class)", stages: [
       { label:'Not accepted', apply(){ Object.assign(state, { classQuestAccepted:false, classQuestComplete:false, classTitle:null,

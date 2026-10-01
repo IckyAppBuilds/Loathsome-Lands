@@ -270,6 +270,11 @@ function computeRenderContext(){
     : state.quest16Accepted ? 'active'
     : (state.quest15Complete ? 'offer' : 'locked');
 
+  /* Quest 17, "What Light Remembers" — Act 3's own opener at the Crystal
+  City, same no-fetch "formality" shape as quest8State above (accepted
+  === ready to report, no separate 'ready' stage). */
+  const quest17State = state.quest17Complete ? 'complete' : (state.quest17Accepted ? 'active' : (state.quest16Complete ? 'offer' : 'locked'));
+
   /* Gauntlet approach-button visibility (gauntlet.js) — mirrors
   canApproachPalaceGate's own shape exactly: standing in the right
   zone, the right quest accepted, and not already cleared. */
@@ -300,7 +305,7 @@ function computeRenderContext(){
     quest5State, veinHeld, veinNeeded, canTurnInVein,
     quest6State, canReportGnomeKing,
     quest7State, palaceGateGearItem, canApproachPalaceGate,
-    quest10State, quest11State, quest12State, quest13State, quest14State, quest15State, quest16State,
+    quest10State, quest11State, quest12State, quest13State, quest14State, quest15State, quest16State, quest17State,
     canApproachLedgerCommittee, canApproachMoleCouncil,
     quest8State, quest9State, classQuestState,
   };
@@ -571,6 +576,10 @@ function syncBuildingScreens(ctx){
   document.getElementById('accept-quest16-btn').style.display = ctx.quest16State==='offer' ? '' : 'none';
   document.getElementById('report-quest16-btn').style.display = ctx.quest16State==='ready' ? '' : 'none';
   document.getElementById('report-quest16-btn').classList.toggle('btn-ready', ctx.quest16State==='ready');
+  document.getElementById('crystalcity-quest-row').style.display = (ctx.isCrystalCity && !state.inCombat && (ctx.quest17State==='offer' || ctx.quest17State==='active')) ? 'flex' : 'none';
+  document.getElementById('accept-quest17-btn').style.display = ctx.quest17State==='offer' ? '' : 'none';
+  document.getElementById('report-quest17-btn').style.display = ctx.quest17State==='active' ? '' : 'none';
+  document.getElementById('report-quest17-btn').classList.toggle('btn-ready', ctx.quest17State==='active');
 
   /* Gauntlet approach buttons (gauntlet.js) — same "always visible while
   standing there, win/lose/not-yet-fought alike" rule as palace-gate-row
@@ -582,8 +591,11 @@ function syncBuildingScreens(ctx){
 
   /* Act 3 (the Prism Depths, dungeon.js) — the entry button lives on
   the Crystal City screen itself (same role the Guild/Shop buttons play
-  on their own town squares); the board + its own Leave button live on
-  the 'prismdepths' screen this leads to. */
+  on their own town squares), gated on quest17Complete (not
+  quest16Complete directly anymore — quest17, "What Light Remembers,"
+  town.js, is what actually announces the Prism Depths now); the board
+  + its own Leave button live on the 'prismdepths' screen this leads
+  to. */
   /* Same "&& !state.inCombat" rule every other zone's own action row
   (explore-row/class-area-row/palace-row above) already follows — a
   dungeon run is still just combat happening on this screen, so the
@@ -591,7 +603,7 @@ function syncBuildingScreens(ctx){
   have to disappear for it the same way the Palace's own
   Attack-the-gate button does mid-fight, rather than sitting there
   stacked on top of the normal combat screen. */
-  document.getElementById('prism-depths-entry-row').style.display = (ctx.isCrystalCity && state.quest16Complete && !state.inCombat) ? 'flex' : 'none';
+  document.getElementById('prism-depths-entry-row').style.display = (ctx.isCrystalCity && state.quest17Complete && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('prism-depths-row').style.display = (ctx.isPrismDepths && !state.inCombat) ? 'flex' : 'none';
   document.getElementById('dungeon-board').style.display = (ctx.isPrismDepths && !state.inCombat) ? 'block' : 'none';
   if(ctx.isPrismDepths && !state.inCombat) renderDungeonBoard();
@@ -654,6 +666,7 @@ function syncBuildingScreens(ctx){
         || ctx.quest16State==='offer' || ctx.quest16State==='active' || ctx.quest16State==='ready'))
     || (ctx.isHoodoo && (ctx.quest3State==='offer' || ctx.quest3State==='active'))
     || (ctx.isTinker && (ctx.quest4State==='offer' || ctx.quest4State==='active' || ctx.quest5State==='offer' || ctx.quest5State==='active'))
+    || (ctx.isCrystalCity && (ctx.quest17State==='offer' || ctx.quest17State==='active'))
   )) ? 'block' : 'none';
 
   if(ctx.isGafferHouse){
@@ -838,6 +851,16 @@ function syncBuildingScreens(ctx){
       document.getElementById('quest-name').textContent = 'Quest: The Vein';
       document.getElementById('quest-desc').textContent = "Gather parts from monsters in the Clockwork Quarry and the Dank Sewers, then bring them back to the Tinker.";
       document.getElementById('quest-progress').textContent = `Parts gathered: ${ctx.veinHeld}/${ctx.veinNeeded}`;
+    }
+  } else if(ctx.isCrystalCity){
+    if(ctx.quest17State==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: What Light Remembers';
+      document.getElementById('quest-desc').textContent = "There's something still down here, and it noticed you back. Whatever's left of it isn't dangerous — just old, and waiting.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(ctx.quest17State==='active'){
+      document.getElementById('quest-name').textContent = 'Quest: What Light Remembers';
+      document.getElementById('quest-desc').textContent = "Whatever's answering isn't going anywhere. Report back when you're ready to hear the rest.";
+      document.getElementById('quest-progress').textContent = 'Ready to report.';
     }
   }
 }
