@@ -566,34 +566,46 @@ Monster/boss/treasure DATA only for Act 3's repeatable dungeons — the
 generic run engine that reads it lives in dungeon.js right after this
 file (same split gauntlet.js/its boss-data files already use). Act 3
 is NOT another `ZONE_ORDER` zone chain — see dungeon.js's own top
-comment for why. Currently holds **Embercrypt** (Phase A's proven
-template, one of a planned 8 themed dungeons — see
+comment for why. Currently holds the first wave of 3 (of a planned 8
+themed dungeons + the Hollow Vault finale — see
 `~/.claude/plans/shimmering-hopping-parrot.md`'s Act 3 plan for the
-rest): `embercryptRegulars` (3), `emberwright` (`rare:true` boss),
-`embercryptTreasure` (3 class-tagged items, one picked at random per
-clear). Sets `ZONE_DIFFICULTY.embercrypt = 8.6` (content.js) at parse
-time — a plain mutation of an already-initialized object, continuing
-the same late-game ~13-15%-per-step ratio the last few Act 2 zones
-settled into, NOT a `const` declared before its own use (that
-ordering mistake already happened once this session — see
-`TRASH_SKILL_CHANCE`'s own comment, content.js). Every Act 3 creature
-shares one "Lucent-made" angular/faceted visual family (same vocabulary
-Crystal City's own monsters introduced), never the gnome/mole
-silhouettes — each dungeon just varies the palette for its own theme.
+rest): **Embercrypt** (fire/forging), **Frostvault**
+(ice/preservation), **Stormreach** (lightning/signal) — each the same
+shape: `<name>Regulars` (3), its own `rare:true` boss
+(`emberwright`/`stillglassWarden`/`unansweredHerald`), and
+`<name>Treasure` (3 class-tagged items, one picked at random per
+clear). Each sets its own `ZONE_DIFFICULTY.<name>` entry (content.js)
+at parse time — a plain mutation of an already-initialized object, NOT
+a `const` declared before its own use (that ordering mistake already
+happened once this session — see `TRASH_SKILL_CHANCE`'s own comment,
+content.js) — continuing the same ~14%-per-step ratio from Crystal
+City's own 7.5 ceiling: embercrypt 8.6 -> frostvault 9.8 -> stormreach
+11.2. Treasure primary-stat values climb the gearDrop ladder's own
++1-per-dungeon (+11/+12/+13), one step past Crystal City's +10. Every
+Act 3 creature shares one "Lucent-made" angular/faceted visual family
+(same vocabulary Crystal City's own monsters introduced), never the
+gnome/mole silhouettes — each dungeon just varies the palette for its
+own theme (ember red/orange, ice blue/white, storm purple/yellow).
 Dungeon monsters carry `loot:null` always — treasure comes from the
-dungeon's own guaranteed end-of-run payout, not per-kill drops.
-Loads after content.js/icons.js/art.js, before dungeon.js.
+dungeon's own guaranteed end-of-run payout, not per-kill drops. Each
+boss uses exactly one of the existing debuffs (burn/freeze) or a
+bolt-heavy kit instead, reused rather than reinvented, matching the
+"the Lucent taught the Moles this" thread the Act 3 plan calls for —
+deliberately not all three debuffs on all three bosses, so each still
+reads as its own fight. Loads after content.js/icons.js/art.js,
+before dungeon.js.
 
-Touch this file when: adding/rebalancing Embercrypt, or (future
-phases) adding one of the other 7 planned dungeons + the Hollow Vault
-finale.
+Touch this file when: adding/rebalancing one of these 3 dungeons, or
+(future phases) adding one of the other 5 planned dungeons + the
+Hollow Vault finale.
 
 ## dungeon.js — Act 3's reusable REPEATABLE dungeon engine
 Generalizes gauntlet.js's own "named sequence of guards + a finalBoss"
 shape for dungeons that must stay repeatable FOREVER instead of
 completing once — no `doneFlag`; `state.dungeonClears[id]` (core.js) is
 a lifetime counter instead, bumped on every full clear, never a gate.
-`DUNGEONS` (currently just `embercrypt`) — `regulars`/`bosses` arrays,
+`DUNGEONS` (currently `embercrypt`/`frostvault`/`stormreach`, Act 3's
+first wave) — `regulars`/`bosses` arrays,
 `treasureTable`, `shardReward`, `biscuitCost`, `requiredFlag`, and 3
 flavor-line functions (`enterLine`/`midRunLine(left)`/`clearLine`).
 `activeDungeonRun` (`{id, stage}`) is transient — never saved, same

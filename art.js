@@ -767,6 +767,41 @@ to read as "still burning" at a glance. */
 function artEmberwright(){
    return sceneWrap(`<path d="M50 8 L80 40 L68 92 L32 92 L20 40 Z" fill="#2b2b28" opacity="0.8"/><path d="M50 8 L80 40 L50 50 Z" fill="#b5453f" opacity="0.75"/><path d="M50 8 L20 40 L50 50 Z" fill="#c97b3d" opacity="0.65"/><path d="M50 50 L68 92 L32 92 Z" fill="#8a8477" opacity="0.5"/><circle cx="50" cy="50" r="6" fill="#d1a94e" stroke="none"/><circle cx="50" cy="50" r="3" fill="#f4efe4" stroke="none"/>`, 0);
 }
+
+/* Frostvault's own creatures — same Lucent angular family, ice
+blue/white over the same shapes Embercrypt used ember red/orange for. */
+function artGlassStillCustodian(){
+   return sceneWrap(`<path d="M50 14 L74 42 L62 86 L38 86 L26 42 Z" fill="#8a8477" opacity="0.5"/><path d="M50 14 L74 42 L50 50 Z" fill="#3d5a80" opacity="0.7"/><path d="M50 14 L26 42 L50 50 Z" fill="#f4efe4" opacity="0.6"/><circle cx="50" cy="52" r="3" fill="#f4efe4" stroke="none"/><line x1="38" y1="86" x2="34" y2="98" stroke-width="3"/><line x1="62" y1="86" x2="66" y2="98" stroke-width="3"/>`, 0);
+}
+function artRimeCrustedDrifter(){
+   return sceneWrap(`<path d="M50 16 L70 38 L64 70 L36 70 L30 38 Z" fill="#2b2b28" opacity="0.7"/><circle cx="42" cy="44" r="4.5" fill="#3d5a80" stroke="none"/><circle cx="58" cy="44" r="4.5" fill="#f4efe4" stroke="none"/><path d="M36 70 L30 86 M64 70 L70 86" stroke-width="3"/>`, 0);
+}
+function artFrostboundArchivist(){
+   return sceneWrap(`<path d="M20 70 L38 54 L52 62 L68 48 L86 66 L70 80 L50 72 L34 82 Z" fill="#8a8477" opacity="0.6"/><path d="M38 54 L44 44 L52 54 Z" fill="#3d5a80" opacity="0.8"/><path d="M68 48 L76 40 L80 50 Z" fill="#f4efe4" opacity="0.8"/><circle cx="46" cy="64" r="1.8" fill="#f4efe4" stroke="none"/>`, 0);
+}
+/* The Stillglass Warden — Frostvault's own boss, bigger/more layered
+than the 3 regulars above, same shape artEmberwright uses with a cold
+white-blue core instead of a forge-orange one. */
+function artStillglassWarden(){
+   return sceneWrap(`<path d="M50 8 L80 40 L68 92 L32 92 L20 40 Z" fill="#2b2b28" opacity="0.75"/><path d="M50 8 L80 40 L50 50 Z" fill="#3d5a80" opacity="0.7"/><path d="M50 8 L20 40 L50 50 Z" fill="#f4efe4" opacity="0.6"/><path d="M50 50 L68 92 L32 92 Z" fill="#8a8477" opacity="0.5"/><circle cx="50" cy="50" r="6" fill="#f4efe4" stroke="none"/><circle cx="50" cy="50" r="3" fill="#3d5a80" stroke="none"/>`, 0);
+}
+
+/* Stormreach's own creatures — same Lucent angular family, storm
+purple/yellow over the same shapes. */
+function artChargeSplitSentry(){
+   return sceneWrap(`<path d="M50 14 L74 42 L62 86 L38 86 L26 42 Z" fill="#8a8477" opacity="0.5"/><path d="M50 14 L74 42 L50 50 Z" fill="#5a4a8a" opacity="0.7"/><path d="M50 14 L26 42 L50 50 Z" fill="#d1a94e" opacity="0.6"/><circle cx="50" cy="52" r="3" fill="#d1a94e" stroke="none"/><line x1="38" y1="86" x2="34" y2="98" stroke-width="3"/><line x1="62" y1="86" x2="66" y2="98" stroke-width="3"/>`, 0);
+}
+function artWindwornHerald(){
+   return sceneWrap(`<path d="M50 16 L70 38 L64 70 L36 70 L30 38 Z" fill="#2b2b28" opacity="0.7"/><circle cx="42" cy="44" r="4.5" fill="#5a4a8a" stroke="none"/><circle cx="58" cy="44" r="4.5" fill="#d1a94e" stroke="none"/><path d="M36 70 L30 86 M64 70 L70 86" stroke-width="3"/>`, 0);
+}
+function artStormTideWalker(){
+   return sceneWrap(`<path d="M20 70 L38 54 L52 62 L68 48 L86 66 L70 80 L50 72 L34 82 Z" fill="#8a8477" opacity="0.6"/><path d="M38 54 L44 44 L52 54 Z" fill="#5a4a8a" opacity="0.8"/><path d="M68 48 L76 40 L80 50 Z" fill="#d1a94e" opacity="0.8"/><circle cx="46" cy="64" r="1.8" fill="#d1a94e" stroke="none"/>`, 0);
+}
+/* The Unanswered Herald — Stormreach's own boss, same bigger/layered
+shape as the other two dungeon bosses, storm purple/yellow core. */
+function artUnansweredHerald(){
+   return sceneWrap(`<path d="M50 8 L80 40 L68 92 L32 92 L20 40 Z" fill="#2b2b28" opacity="0.75"/><path d="M50 8 L80 40 L50 50 Z" fill="#5a4a8a" opacity="0.7"/><path d="M50 8 L20 40 L50 50 Z" fill="#d1a94e" opacity="0.6"/><path d="M50 50 L68 92 L32 92 Z" fill="#8a8477" opacity="0.5"/><circle cx="50" cy="50" r="6" fill="#d1a94e" stroke="none"/><circle cx="50" cy="50" r="3" fill="#f4efe4" stroke="none"/>`, 0);
+}
 function artEchoWraith(){
    return sceneWrap(`<path d="M50 22 Q68 30 66 54 Q64 78 50 84 Q36 78 34 54 Q32 30 50 22 Z" fill="#b06a97" opacity="0.55"/><path d="M46 26 Q64 34 62 58 Q60 82 46 88" fill="none" stroke="#3d5a80" stroke-width="2.5" opacity="0.6"/><circle cx="44" cy="44" r="3" fill="#f4efe4" stroke="none"/><circle cx="56" cy="44" r="3" fill="#f4efe4" stroke="none"/>`, 0);
 }

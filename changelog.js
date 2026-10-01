@@ -12,7 +12,8 @@ never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
    { id: 23, date: 'October 1', title: 'Act 3 Begins: the Prism Depths', items: [
-      "New: beneath the Crystal City lies the Prism Depths — the first of Act 3's repeatable themed dungeons. Clear Embercrypt for guaranteed treasure and a new currency, Prism Shards, then run it again as many times as you like.",
+      "New: beneath the Crystal City lies the Prism Depths — the first of Act 3's repeatable themed dungeons. Clear one for guaranteed treasure and a new currency, Prism Shards, then run it again as many times as you like.",
+      "Three dungeons open to start: Embercrypt, Frostvault, and Stormreach — each with its own trio of guardians, its own boss, and its own themed reward.",
       "This is the start of a much bigger endgame — more dungeons are coming.",
       ]},
    { id: 22, date: 'October 1', title: 'The Bounty Board Never Closes', items: [

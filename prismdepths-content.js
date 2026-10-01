@@ -74,3 +74,83 @@ const embercryptTreasure = [
    { name:"a cinder-quick cloak, never quite catching fire", desc:"Smells permanently like the inside of a kiln. You stop noticing after a while.", type:"equip", slot:"chest", bonus:{zip:11}, classRequired:'Card Shark', tier:'epic', icon: iconCapturedLight },
    { name:"a forge-sealed circlet, warm even when nothing else is", desc:"Whatever it was tempered in, it still remembers.", type:"equip", slot:"head", bonus:{hoodoo:11}, classRequired:'Hexpert', tier:'epic', icon: iconVeinGemstone },
    ];
+
+/* ---------------- The Prism Depths — Frostvault ---------------- */
+/* Second of the 8 planned dungeons — the Lucent's own discipline of
+preservation, not decoration: whatever Frostvault was built to keep
+exactly as it was, it's still keeping. Continues Embercrypt's own
++14.7%-per-step ZONE_DIFFICULTY ratio (8.6 -> 9.8 is +14%) and the
+gearDrop ladder's +1-per-dungeon climb (embercrypt +11 -> frostvault
++12). Palette: ice blue/white over the same angular Lucent silhouette
+family every Act 3 creature shares. */
+ZONE_DIFFICULTY.frostvault = 9.8;
+
+const frostvaultRegulars = [
+   { name:"a glass-still custodian, holding a pose it stopped finishing", beef:11, zip:0, grit:32, hoodoo:0, xp:56, zone:"frostvault",
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:20, healMax:35, flavor:"settles back into the exact shape it's supposed to be" } ],
+    art: artGlassStillCustodian, loot:null },
+   { name:"a rime-crusted drifter, dragging cold that isn't really air", beef:11, zip:0, grit:33, hoodoo:0, xp:57, zone:"frostvault",
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:37, boltMax:47, flavor:"drags that cold straight through you" } ],
+    art: artRimeCrustedDrifter, loot:null },
+   { name:"a frostbound archivist, filed under a temperature nothing should survive", beef:12, zip:0, grit:32, hoodoo:0, xp:58, zone:"frostvault",
+    skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"cross-references its own cold against something colder" } ],
+    art: artFrostboundArchivist, loot:null },
+   ];
+
+/* Frostvault's own boss — same "the Lucent taught the Moles this"
+thread Embercrypt's own boss started, this time with the existing
+freeze debuff instead of burn (a near-perfect fit for "preservation"
+as a discipline — it doesn't hurt you, it just stops you). */
+const stillglassWarden = {
+   name:"the Stillglass Warden, holding the exact same shape since before anyone was counting", beef:15, zip:0, grit:49, hoodoo:0, xp:145, rare:true, zone:"frostvault",
+   skills:[
+      { type:'debuff', chance:0.22, debuffType:'freeze', debuffTurns:3, dmgReduction:0.4, flavor:"holds you still exactly as long as it's holding itself" },
+      { type:'heal', chance:0.18, healMin:22, healMax:38, flavor:"reseals a crack along its own glass" },
+      ],
+   art: artStillglassWarden, loot:null
+};
+
+const frostvaultTreasure = [
+   { name:"the Stillglass Warden's own frozen gauntlet-blade", desc:"Doesn't melt. Hasn't, in longer than anyone's been asking.", type:"equip", slot:"weapon", bonus:{beef:12}, classRequired:'Meathead', tier:'epic', icon: iconGuardCleaver },
+   { name:"frost-cut striders, impossibly sure-footed on ice", desc:"Never once slip. You've stopped testing it.", type:"equip", slot:"boots", bonus:{zip:12}, classRequired:'Card Shark', tier:'epic', icon: iconGripBoots },
+   { name:"a frost-sealed circlet, thoughts still legible through the ice", desc:"Whoever wore it last was mid-thought. Still is, technically.", type:"equip", slot:"head", bonus:{hoodoo:12}, classRequired:'Hexpert', tier:'epic', icon: iconStolenCrown },
+   ];
+
+/* ---------------- The Prism Depths — Stormreach ---------------- */
+/* Third of the 8 planned dungeons — the Lucent's own discipline of
+motion and signal: whatever Stormreach was built to carry, it's still
+broadcasting. Continues the same ratios (9.8 -> 11.2 is +14.3%;
+frostvault +12 -> stormreach +13). Palette: storm purple/yellow over
+the same angular Lucent silhouette family. */
+ZONE_DIFFICULTY.stormreach = 11.2;
+
+const stormreachRegulars = [
+   { name:"a charge-split sentry, arguing with its own echo", beef:12, zip:0, grit:35, hoodoo:0, xp:60, zone:"stormreach",
+    skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"and its echo agree on something, for once" } ],
+    art: artChargeSplitSentry, loot:null },
+   { name:"a windworn herald, three words into a message it'll never finish", beef:12, zip:0, grit:36, hoodoo:0, xp:61, zone:"stormreach",
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:23, healMax:40, flavor:"patches itself on the same wind that's wearing it down" } ],
+    art: artWindwornHerald, loot:null },
+   { name:"a storm-tide walker, never landing on the ground it's clearly standing on", beef:13, zip:0, grit:35, hoodoo:0, xp:62, zone:"stormreach",
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:41, boltMax:52, flavor:"brings the whole tide down in one strike" } ],
+    art: artStormTideWalker, loot:null },
+   ];
+
+/* Stormreach's own boss — a bolt-heavy kit (lightning, the dungeon's
+own theme) plus a rally buff, same "one signature mechanic" shape
+every named boss in the game already uses, no debuff this time since
+Embercrypt/Frostvault already covered burn/freeze between them. */
+const unansweredHerald = {
+   name:"the Unanswered Herald, still broadcasting something nobody built ears for", beef:16, zip:0, grit:52, hoodoo:0, xp:155, rare:true, zone:"stormreach",
+   skills:[
+      { type:'bolt', chance:0.24, boltMin:48, boltMax:62, flavor:"finally gets an answer, and it is not a kind one" },
+      { type:'buff', chance:0.18, buffMult:1.5, buffTurns:2, flavor:"catches a gust that shouldn't exist down here" },
+      ],
+   art: artUnansweredHerald, loot:null
+};
+
+const stormreachTreasure = [
+   { name:"a storm-charged maul, still humming between swings", desc:"Doesn't need to be swung hard. It's already moving.", type:"equip", slot:"weapon", bonus:{beef:13}, classRequired:'Meathead', tier:'epic', icon: iconHeirloomCleaver },
+   { name:"windworn leggings, never quite touching the ground", desc:"You've stopped checking whether you're actually walking.", type:"equip", slot:"legs", bonus:{zip:13}, classRequired:'Card Shark', tier:'epic', icon: iconQuickstepTrousers },
+   { name:"a storm-signal mantle, still relaying something", desc:"Whatever it's broadcasting, it isn't for you. You wear it anyway.", type:"equip", slot:"chest", bonus:{hoodoo:13}, classRequired:'Hexpert', tier:'epic', icon: iconAdventurerCuirass },
+   ];
