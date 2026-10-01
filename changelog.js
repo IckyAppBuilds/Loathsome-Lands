@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 23, date: 'October 1', title: 'Act 3 Begins: the Prism Depths', items: [
+      "New: beneath the Crystal City lies the Prism Depths — the first of Act 3's repeatable themed dungeons. Clear Embercrypt for guaranteed treasure and a new currency, Prism Shards, then run it again as many times as you like.",
+      "This is the start of a much bigger endgame — more dungeons are coming.",
+      ]},
    { id: 22, date: 'October 1', title: 'The Bounty Board Never Closes', items: [
       "The Bounty Board's daily claim cap is gone — work it as many times as you want in a single day, no more \"board's empty until tomorrow.\"",
       ]},

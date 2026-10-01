@@ -10,7 +10,8 @@ supabase (CDN)
 -> core.js -> icons.js -> art.js -> gnometropolis-art.js -> mudroot-art.js
 -> warrensear-art.js -> emberwarren-art.js -> content.js -> mudroot-content.js
 -> warrensear-content.js -> emberwarren-content.js -> gauntlet.js
--> crystalcity-content.js -> act2-shop.js -> item-tiers.js -> render.js
+-> crystalcity-content.js -> prismdepths-content.js -> dungeon.js
+-> act2-shop.js -> item-tiers.js -> render.js
 -> render-shop.js -> render-character.js -> class-spells.js -> dev-tools.js
 -> auth.js -> save.js -> player-actions.js -> tutorial.js -> changelog.js
 -> dailystreak.js -> hubs.js -> combat.js -> town.js -> casino.js -> hilo.js
@@ -559,6 +560,79 @@ another warren. Also extends `noncombatEvents`/`hazardEvents` with a
 
 Touch this file when: adding/rebalancing a Crystal City monster, or
 (eventually) its own first quest/rare hunt.
+
+## prismdepths-content.js — Act 3 (the Prism Depths) dungeon data
+Monster/boss/treasure DATA only for Act 3's repeatable dungeons — the
+generic run engine that reads it lives in dungeon.js right after this
+file (same split gauntlet.js/its boss-data files already use). Act 3
+is NOT another `ZONE_ORDER` zone chain — see dungeon.js's own top
+comment for why. Currently holds **Embercrypt** (Phase A's proven
+template, one of a planned 8 themed dungeons — see
+`~/.claude/plans/shimmering-hopping-parrot.md`'s Act 3 plan for the
+rest): `embercryptRegulars` (3), `emberwright` (`rare:true` boss),
+`embercryptTreasure` (3 class-tagged items, one picked at random per
+clear). Sets `ZONE_DIFFICULTY.embercrypt = 8.6` (content.js) at parse
+time — a plain mutation of an already-initialized object, continuing
+the same late-game ~13-15%-per-step ratio the last few Act 2 zones
+settled into, NOT a `const` declared before its own use (that
+ordering mistake already happened once this session — see
+`TRASH_SKILL_CHANCE`'s own comment, content.js). Every Act 3 creature
+shares one "Lucent-made" angular/faceted visual family (same vocabulary
+Crystal City's own monsters introduced), never the gnome/mole
+silhouettes — each dungeon just varies the palette for its own theme.
+Dungeon monsters carry `loot:null` always — treasure comes from the
+dungeon's own guaranteed end-of-run payout, not per-kill drops.
+Loads after content.js/icons.js/art.js, before dungeon.js.
+
+Touch this file when: adding/rebalancing Embercrypt, or (future
+phases) adding one of the other 7 planned dungeons + the Hollow Vault
+finale.
+
+## dungeon.js — Act 3's reusable REPEATABLE dungeon engine
+Generalizes gauntlet.js's own "named sequence of guards + a finalBoss"
+shape for dungeons that must stay repeatable FOREVER instead of
+completing once — no `doneFlag`; `state.dungeonClears[id]` (core.js) is
+a lifetime counter instead, bumped on every full clear, never a gate.
+`DUNGEONS` (currently just `embercrypt`) — `regulars`/`bosses` arrays,
+`treasureTable`, `shardReward`, `biscuitCost`, `requiredFlag`, and 3
+flavor-line functions (`enterLine`/`midRunLine(left)`/`clearLine`).
+`activeDungeonRun` (`{id, stage}`) is transient — never saved, same
+convention `gauntletProgress`/`combatSubView`/`evasionActive` already
+use — reset by `abandonDungeonRun()`, called from the same two spots
+`resetGauntlet()` already is (`travelTo()`/`checkDefeat()`, keyed on
+leaving the `'prismdepths'` screen rather than a per-dungeon zone,
+since every dungeon is entered from that one screen).
+
+`enterDungeon(id)` starts stage 0 (refuses mid-combat/mid-run/off the
+`'prismdepths'` screen/not enough Biscuits — `devMode`-guarded the same
+way `goAdventuring()` already is). `advanceDungeonRun()` — called from
+`winCombat()` (combat.js) on every dungeon-run kill — either starts the
+next stage's fight (`startCombat()`, same function every other forced
+fight already uses) or calls `grantDungeonTreasure(id)` and clears
+`activeDungeonRun`. A multi-stage run auto-chains straight through
+every regular+boss fight with NO button click between stages — deliberately
+different from gauntlets' own "click again when ready" UX, since a
+dungeon run is meant to play as one continuous push; only the run's
+FINAL kill shows the normal victory banner (see the "wasDungeonMonster
+&& dungeonRunContinues" branch, combat.js, right next to
+`wasBuildingTrialFight`'s own banner-skip logic).
+
+UI: the Dungeon Board (`renderDungeonBoard()`, render.js;
+`#dungeon-board`, index.html) lives on the `'prismdepths'` screen,
+entered from a button on the Crystal City screen itself
+(`enterPrismDepths()`/`leavePrismDepths()`, town.js) rather than being
+its own `ZONE_ORDER` destination — same "a screen inside a zone"
+relationship the Guild/Shop/Town Lot have to Gladstone Hollow.
+
+Loads after prismdepths-content.js (reads its consts by value building
+`DUNGEONS`) and before combat.js/render.js (whose functions this file
+calls only inside function bodies, so — same note gauntlet.js's own
+header makes — that ordering is for readability, not correctness).
+
+Touch this file when: adding a new dungeon (just a new `DUNGEONS`
+entry + its own content-file data, no engine changes needed, same
+"registry generic, UI wiring per-screen" pattern gauntlets already
+established) or changing how a run advances/pays out.
 
 ## act2-shop.js — Act 2 Shop (Gnometropolis) gear + food ladder
 `act2GearItemsTier1/2/3/4` and `act2FoodItemsTier1/2` — a structurally

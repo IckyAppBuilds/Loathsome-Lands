@@ -68,6 +68,19 @@ function createDefaultState(){
      adventures: 100, /* "Biscuits" */
      popTabs: 0,
   bountyTokens: 0, /* earned only from the Bounty Board (see BOUNTY_TEMPLATES/claimBounty) — a separate currency from Pop Tabs, meant for a future gear exchange. Not spendable anywhere yet. */
+     /* Act 3 (the Prism Depths, dungeon.js) — prismShards is a third
+     currency, earned only from a dungeon's own guaranteed treasure
+     payout on a full clear (grantDungeonTreasure(), dungeon.js), spent
+     at the Depths' own shop (a future pass — see the Act 3 plan).
+     dungeonClears is a per-dungeon LIFETIME counter (key = a DUNGEONS
+     entry's id, content.js-equivalent), same shape
+     gnomeBuildingUpgrades uses — missing keys read as 0 via `|| 0` at
+     every call site, same convention. Deliberately NOT a doneFlag —
+     every dungeon stays repeatable forever once unlocked, same
+     "nothing ever locks" philosophy the Bounty Board/zone-rares
+     already settled on. */
+     prismShards: 0,
+     dungeonClears: {},
      lotTier: 0, /* the town-square Town Lot (translate(200,100) in artTownSquare()) — 0 = unpurchased "Empty Lot". See LOT_TIER_NAMES/LOT_TIER_COST (content.js) and buyTownLot()/upgradeTownLot() (game.js). Buying tier 1 is what unlocks buildingUpgrades below. */
      buildingUpgrades: {}, /* key = a BUILDING_UPGRADES entry's key (content.js) -> upgrade level, 0..BUILDING_UPGRADE_MAX. Missing keys read as level 0 — see upgradeBuilding()/buildingUpgradeLevel() in game.js. Levels are tracked only for now; they don't change anything about the buildings yet (see content.js comment above BUILDING_UPGRADES). */
      /* Act 2's own Town Lot, at the Gnometropolis square — same shape as

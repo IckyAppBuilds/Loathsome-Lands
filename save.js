@@ -129,7 +129,7 @@ function serializeState(){
    progress on every autosave, so reloading mid-Tinker-quest or after
    claiming a class title would revert it. Fixed alongside the similar
    allItemDefs() gap above. */
-const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
+const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens, prismShards, dungeonClears,
        lastRegenAt, lastMpRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
        spellsKnown, spellsUpgraded, questTinesGiven, questAccepted, questComplete, quest2Accepted,
        commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
@@ -154,7 +154,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
        lastSeenChangelogVersion, dailyStreakCount, lastLoginRewardDateKey } = state;
    return {
-      hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens,
+      hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs, bountyTokens, prismShards, dungeonClears,
       lastRegenAt, lastMpRegenAt, level, xp, xpToLevel, stats, statPoints, location, homeTown,
       spellsKnown, spellsUpgraded, questTinesGiven, questAccepted, questComplete, quest2Accepted,
       commanderDefeated, quest2Complete, quest3Accepted, quest3Complete,
@@ -214,6 +214,8 @@ state.homeTown = TOWN_HUBS.includes(saved.homeTown) ? saved.homeTown : 'town';
 state.activeBounty = saved.activeBounty || null;
    state.bountiesCompleted = typeof saved.bountiesCompleted === 'number' ? saved.bountiesCompleted : 0;
    state.bountyTokens = typeof saved.bountyTokens === 'number' ? saved.bountyTokens : 0;
+   state.prismShards = typeof saved.prismShards === 'number' ? saved.prismShards : 0;
+   state.dungeonClears = (saved.dungeonClears && typeof saved.dungeonClears === 'object') ? saved.dungeonClears : {};
    /* Daily login streak (dailystreak.js) — same "give an older save a sane
    default" fallback as every other field on this stretch. */
    state.dailyStreakCount = typeof saved.dailyStreakCount === 'number' ? saved.dailyStreakCount : 0;

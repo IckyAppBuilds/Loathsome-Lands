@@ -744,6 +744,29 @@ function artCrystalSentinel(){
 function artGeodeCrawler(){
    return sceneWrap(`<path d="M18 78 L34 56 L50 66 L66 52 L84 78 Z" fill="#8a8477"/><path d="M30 74 L36 62 L44 70 Z" fill="#b06a97" opacity="0.8"/><path d="M52 70 L60 58 L68 68 Z" fill="#f4efe4" opacity="0.7"/><circle cx="40" cy="74" r="2" fill="#d1a94e" stroke="none"/><circle cx="60" cy="72" r="2" fill="#d1a94e" stroke="none"/>`, 0);
 }
+
+/* ---------------- Act 3: the Prism Depths — Embercrypt ---------------- */
+/* Every Act 3 creature shares one "Lucent-made" visual family — the
+same angular/faceted vocabulary artCrystalSentinel/artGeodeCrawler
+above introduced for Crystal City, never the gnome (Act 1) or mole
+(Act 2) silhouettes — with each dungeon just varying the palette for
+its own theme. Embercrypt's is ember red/orange over the same cut-
+crystal shapes, like something still hot behind the facets. */
+function artSlagBoundHusk(){
+   return sceneWrap(`<path d="M50 14 L74 42 L62 86 L38 86 L26 42 Z" fill="#8a8477"/><path d="M50 14 L74 42 L50 50 Z" fill="#b5453f" opacity="0.7"/><path d="M50 14 L26 42 L50 50 Z" fill="#c97b3d" opacity="0.6"/><circle cx="50" cy="52" r="3" fill="#d1a94e" stroke="none"/><line x1="38" y1="86" x2="34" y2="98" stroke-width="3"/><line x1="62" y1="86" x2="66" y2="98" stroke-width="3"/>`, 0);
+}
+function artAshVeiledWatcher(){
+   return sceneWrap(`<path d="M50 16 L70 38 L64 70 L36 70 L30 38 Z" fill="#2b2b28" opacity="0.85"/><circle cx="42" cy="44" r="4.5" fill="#b5453f" stroke="none"/><circle cx="58" cy="44" r="4.5" fill="#c97b3d" stroke="none"/><path d="M36 70 L30 86 M64 70 L70 86" stroke-width="3"/>`, 0);
+}
+function artCinderHound(){
+   return sceneWrap(`<path d="M20 70 L38 54 L52 62 L68 48 L86 66 L70 80 L50 72 L34 82 Z" fill="#8a8477" opacity="0.8"/><path d="M38 54 L44 44 L52 54 Z" fill="#b5453f" opacity="0.8"/><path d="M68 48 L76 40 L80 50 Z" fill="#c97b3d" opacity="0.8"/><circle cx="46" cy="64" r="1.8" fill="#d1a94e" stroke="none"/>`, 0);
+}
+/* The Emberwright — Embercrypt's own boss, bigger and more layered than
+the 3 regulars above, same palette with a brighter forge-core center
+to read as "still burning" at a glance. */
+function artEmberwright(){
+   return sceneWrap(`<path d="M50 8 L80 40 L68 92 L32 92 L20 40 Z" fill="#2b2b28" opacity="0.8"/><path d="M50 8 L80 40 L50 50 Z" fill="#b5453f" opacity="0.75"/><path d="M50 8 L20 40 L50 50 Z" fill="#c97b3d" opacity="0.65"/><path d="M50 50 L68 92 L32 92 Z" fill="#8a8477" opacity="0.5"/><circle cx="50" cy="50" r="6" fill="#d1a94e" stroke="none"/><circle cx="50" cy="50" r="3" fill="#f4efe4" stroke="none"/>`, 0);
+}
 function artEchoWraith(){
    return sceneWrap(`<path d="M50 22 Q68 30 66 54 Q64 78 50 84 Q36 78 34 54 Q32 30 50 22 Z" fill="#b06a97" opacity="0.55"/><path d="M46 26 Q64 34 62 58 Q60 82 46 88" fill="none" stroke="#3d5a80" stroke-width="2.5" opacity="0.6"/><circle cx="44" cy="44" r="3" fill="#f4efe4" stroke="none"/><circle cx="56" cy="44" r="3" fill="#f4efe4" stroke="none"/>`, 0);
 }
@@ -786,6 +809,13 @@ its one backdrop lives directly here alongside Act 1's own four rather
 than getting a whole new paired art file for just one function. */
 function artZoneCrystalCity(){
    return sceneWrap(`<rect x="0" y="0" width="100" height="100" fill="#3d5a80" opacity="0.12"/><path d="M50 8 L78 40 L64 92 L36 92 L22 40 Z" fill="none" stroke="#3d5a80" stroke-width="3"/><path d="M50 8 L50 92 M22 40 L78 40" stroke="#8a8477" stroke-width="1.6" opacity="0.6"/><circle cx="30" cy="60" r="2.4" fill="#d1a94e" stroke="none"/><circle cx="70" cy="66" r="2" fill="#b06a97" stroke="none"/><circle cx="50" cy="30" r="2.2" fill="#f4efe4" stroke="none"/>`, 0);
+}
+/* The Prism Depths' own backdrop (Act 3, dungeon.js) — same crystalline
+motif as artZoneCrystalCity above, one level further down: darker,
+more facets, no single clean silhouette, since it's not a place with
+one shape the way every other zone background has one. */
+function artPrismDepths(){
+   return sceneWrap(`<rect x="0" y="0" width="100" height="100" fill="#2b2b28" opacity="0.15"/><path d="M50 4 L70 30 L62 60 L38 60 L30 30 Z" fill="none" stroke="#3d5a80" stroke-width="2.5" opacity="0.8"/><path d="M50 60 L68 84 L50 98 L32 84 Z" fill="none" stroke="#b06a97" stroke-width="2.5" opacity="0.7"/><circle cx="50" cy="60" r="2.4" fill="#f4efe4" stroke="none"/><circle cx="24" cy="44" r="1.8" fill="#d1a94e" stroke="none"/><circle cx="76" cy="50" r="1.8" fill="#d1a94e" stroke="none"/>`, 0);
 }
 function artDefeated(monsterArtFn){
    const inner = monsterArtFn();

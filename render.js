@@ -70,6 +70,7 @@ const ZONE_TITLES = {
   warrensear: "The Warren's Ear", choir: 'The Choir', ledgervault: 'The Ledger Vault',
   emberwarren: 'The Ember Warren', foundry: 'The Foundry', gearworks: 'The Gearworks',
   crystalcity: 'The Crystal City',
+  prismdepths: 'The Prism Depths',
 };
 
 /* All PURE `state` reads used by two or more of the sync functions
@@ -134,6 +135,11 @@ function computeRenderContext(){
   there's no "inCrystalCityArea" the way every other Act 2 zone has —
   just this one flag, same shape as isCommons/isSewers/etc. */
   const isCrystalCity = state.location === 'crystalcity';
+  /* Act 3 (the Prism Depths, dungeon.js) — entered FROM the Crystal
+  City rather than being its own ZONE_ORDER destination, same "a
+  screen inside a zone" relationship the Guild/Shop/Town Lot have to
+  Gladstone Hollow, not a new hub. See dungeon.js's own top comment. */
+  const isPrismDepths = state.location === 'prismdepths';
   const isCasino = state.location === 'casino';
   const isNoticeBoard = state.location === 'noticeboard';
   const inTownArea = isTownSquare || isGafferHouse || isShop || isHoodoo || isGuild || isTinker || isCasino || isTownLot || isNoticeBoard;
@@ -285,7 +291,7 @@ function computeRenderContext(){
     isMudrootWarren, isRootCellar, isMudflats, isBureau, inMudrootWarrenArea,
     isWarrensEar, isChoir, isLedgerVault, inWarrensEarArea,
     isEmberWarren, isFoundry, isGearworks, inEmberWarrenArea,
-    isCrystalCity,
+    isCrystalCity, isPrismDepths,
     isCasino, isNoticeBoard, inTownArea,
     questState, tinesHeld, tinesStillNeeded, canGive,
     quest2State, canReport,
@@ -573,6 +579,15 @@ function syncBuildingScreens(ctx){
   if(ctx.canApproachLedgerCommittee) document.getElementById('ledger-committee-btn').textContent = gauntletButtonText('ledgerCommittee');
   document.getElementById('mole-council-row').style.display = ctx.canApproachMoleCouncil ? 'flex' : 'none';
   if(ctx.canApproachMoleCouncil) document.getElementById('mole-council-btn').textContent = gauntletButtonText('moleCouncil');
+
+  /* Act 3 (the Prism Depths, dungeon.js) — the entry button lives on
+  the Crystal City screen itself (same role the Guild/Shop buttons play
+  on their own town squares); the board + its own Leave button live on
+  the 'prismdepths' screen this leads to. */
+  document.getElementById('prism-depths-entry-row').style.display = (ctx.isCrystalCity && state.quest16Complete) ? 'flex' : 'none';
+  document.getElementById('prism-depths-row').style.display = ctx.isPrismDepths ? 'flex' : 'none';
+  document.getElementById('dungeon-board').style.display = ctx.isPrismDepths ? 'block' : 'none';
+  if(ctx.isPrismDepths) renderDungeonBoard();
 
   document.getElementById('accept-quest3-btn').style.display = ctx.quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = ctx.quest3State==='active' ? '' : 'none';
@@ -1141,6 +1156,9 @@ function renderSceneArt(ctx){
   } else if(ctx.isCrystalCity){
     document.getElementById('scene-art').innerHTML = artZoneCrystalCity();
     document.getElementById('victory-banner').style.display = 'none';
+  } else if(ctx.isPrismDepths){
+    document.getElementById('scene-art').innerHTML = artPrismDepths();
+    document.getElementById('victory-banner').style.display = 'none';
   } else if(ctx.isGearworks){
     document.getElementById('scene-art').innerHTML = artZoneGearworks();
     document.getElementById('victory-banner').style.display = 'none';
@@ -1226,6 +1244,28 @@ function heldAllDrilldozerParts(){
   return countDrilldozerPlatingHeld() >= DRILLDOZER_PLATING_NEEDED
     && state.inventory.some(it => it.key === 'drillRig')
     && state.inventory.some(it => it.key === 'driveShaft');
+}
+
+/* The Prism Depths' own Dungeon Board (Act 3, dungeon.js) — lists every
+DUNGEONS entry with its own lifetime clear count (state.dungeonClears,
+core.js — never a doneFlag, so this never reads as "done forever,"
+just "cleared N times") and an Enter button, disabled mid-run/mid-
+combat/short on Biscuits. Mirrors renderBountyBoard()'s own shape
+(render-shop.js) for a repeatable-currency-earning screen. */
+function renderDungeonBoard(){
+  const el = document.getElementById('dungeon-board');
+  if(!el) return;
+  const rows = Object.keys(DUNGEONS).map(id=>{
+    const cfg = DUNGEONS[id];
+    const clears = state.dungeonClears[id] || 0;
+    const inThisRun = activeDungeonRun && activeDungeonRun.id === id;
+    const canEnter = !state.inCombat && !activeDungeonRun && state.adventures >= cfg.biscuitCost;
+    const statusText = inThisRun
+      ? `In progress — stage ${activeDungeonRun.stage + 1}/${dungeonStageCount(id)}`
+      : `Cleared ${clears}x`;
+    return `<div class="shop-item"><div style="flex:1;"><div class="name">${cfg.name}</div><div class="desc">${statusText} — costs ${cfg.biscuitCost} Biscuits</div></div><button class="btn-secondary ${canEnter?'btn-ready':''}" ${canEnter?'':'disabled'} onclick="enterDungeon('${id}')">${inThisRun ? 'In Progress' : 'Enter'}</button></div>`;
+  }).join('');
+  el.innerHTML = `<div class="block-title">Dungeon Board</div><div class="quest-desc">${state.prismShards} Prism Shard${state.prismShards===1?'':'s'}.</div>${rows}`;
 }
 
 function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }

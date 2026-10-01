@@ -192,6 +192,11 @@ function travelTo(dest){
    sibling district in the same hub), resets that gauntlet's progress,
    same as Palace's own "no partial credit for stepping away" rule. */
    Object.keys(GAUNTLETS).forEach(id => { if(state.location === GAUNTLETS[id].zone) resetGauntlet(id); });
+   /* Same "no partial credit for stepping away" rule, for Act 3's own
+   dungeons (dungeon.js) — every dungeon is entered from the one Prism
+   Depths screen rather than its own zone, so this checks leaving THAT
+   screen specifically rather than a per-dungeon zone match. */
+   if(state.location === 'prismdepths') abandonDungeonRun();
    if(state.location === 'casino' && state.blackjack) state.blackjack = null;
    if(state.location === 'roguesden' && state.hilo) state.hilo = null;
    /* No quest7Accepted gate on the 4 district/palace destinations below —
@@ -447,6 +452,27 @@ function enterTinker(){
 function leaveTinker(){
    if(state.inCombat || state.location !== 'tinker') return;
    state.location = 'town';
+   clearLog();
+   render();
+}
+
+/* ---------------- The Prism Depths (Act 3) ---------------- */
+/* Entered from the Crystal City itself rather than being its own
+ZONE_ORDER destination — see dungeon.js's own top comment and the
+Act 3 plan for why. Phase A's own scope note: gated on the same
+quest16Complete flag Crystal City itself uses, rather than a separate
+quest17 accept step — that narrative framing is a later pass, this is
+just the underlying engine proven out end-to-end first. */
+function enterPrismDepths(){
+   if(state.inCombat || state.location !== 'crystalcity' || !state.quest16Complete) return;
+   state.location = 'prismdepths';
+   clearLog();
+   log("Light that isn't torchlight leads down past the crystal walls — and further down than the walls alone would explain.");
+   render();
+}
+function leavePrismDepths(){
+   if(state.inCombat || state.location !== 'prismdepths') return;
+   state.location = 'crystalcity';
    clearLog();
    render();
 }

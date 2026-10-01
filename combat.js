@@ -1059,6 +1059,17 @@ function winCombat(){
    wasRealGnomeKing pair does below, so a THIRD gauntlet never needs its
    own matching pair of consts here — just a new GAUNTLETS entry. */
    const gauntletMatch = !!state.monster.rare ? matchGauntletKill(state.monster.name) : null;
+   /* Act 3's own repeatable dungeons (dungeon.js) — if a run is active
+   at all, this kill can only be that dungeon's own current-stage
+   monster (nothing else can call startCombat() while
+   activeDungeonRun is set). wasDungeonMonster never fires for the
+   gauntlet/palace checks above since those live in different zones
+   entirely, so there's no ordering conflict between this block and
+   them. dungeonRunContinues is computed here (not inside
+   advanceDungeonRun() below) so the victory-banner branch further
+   down can use it too, before any state actually mutates. */
+   const wasDungeonMonster = !!activeDungeonRun;
+   const dungeonRunContinues = wasDungeonMonster && (activeDungeonRun.stage + 1) < dungeonStageCount(activeDungeonRun.id);
    /* Which of the 5 palace gauntlet guards (PALACE_GUARDS, content.js)
    this was, if any — -1 when it wasn't one of them. Used below to both
    log a distinct "guards left" message and advance
@@ -1144,6 +1155,16 @@ if(wasBuildingTrialFight){
    state.showVictory = false;
    state.victoryMonster = null;
    state.location = 'town';
+} else if(wasDungeonMonster && dungeonRunContinues){
+   /* Mid-run kill, more fights left — skip the banner entirely, we're
+   about to auto-chain straight into the next one below (same "no
+   button click between stages" design the Act 3 plan settled on: a
+   dungeon run plays out as one continuous push, not a zone you can
+   wander off from mid-fight). The run's FINAL kill (dungeonRunContinues
+   false) falls through to the normal banner below instead, since that
+   one really is a real victory moment like any other boss fight. */
+   state.showVictory = false;
+   state.victoryMonster = null;
 } else {
    state.victoryMonster = { art: state.monster.art, name: state.monster.name };
    state.showVictory = true;
@@ -1239,6 +1260,16 @@ clearLog();
       log(guardsLeft > 0
           ? `You defeat ${defeatedName}! ${guardsLeft} guard${guardsLeft===1?'':'s'} between you and the throne. (+${xpGain} XP)`
           : `You defeat ${defeatedName}! The throne room stands empty ahead — nothing left between you and the King. (+${xpGain} XP)`);
+   } else if(wasDungeonMonster){
+      /* Logging only here — the actual stage advance/treasure grant
+      happens via advanceDungeonRun() right before endCombat() below,
+      same ordering reasoning every other "log now, mutate at the very
+      end" case in this function already follows (this file's own
+      clearLog() sits well above this whole chain). */
+      const cfg = DUNGEONS[activeDungeonRun.id];
+      log(dungeonRunContinues
+          ? `You defeat ${defeatedName}! ${cfg.midRunLine(dungeonStageCount(activeDungeonRun.id) - activeDungeonRun.stage - 1)} (+${xpGain} XP)`
+          : `You defeat ${defeatedName}! ${cfg.clearLine} (+${xpGain} XP)`);
    } else {
       log(`You defeat ${defeatedName}! (+${xpGain} XP)`);
    }
@@ -1318,6 +1349,20 @@ if(state.activeBounty){
    }
 }
    checkLevelUp();
+   /* Act 3's own dungeons (dungeon.js) — mutates activeDungeonRun and
+   either starts the next fight in the sequence (dungeonRunContinues
+   true, computed above before this point mutated anything) or grants
+   the run's guaranteed treasure and clears activeDungeonRun
+   (dungeonRunContinues false). Mid-run, the next fight is already
+   underway by the time this returns, so skip endCombat() entirely —
+   it would wrongly null out the state.monster that startCombat() just
+   set inside advanceDungeonRun(). The run's final kill already got
+   the normal victory banner above, so it falls through to the usual
+   endCombat()/render() below like any other fight. */
+   if(wasDungeonMonster){
+      advanceDungeonRun();
+      if(dungeonRunContinues){ render(); return; }
+   }
    endCombat();
    render();
 }
@@ -1386,6 +1431,9 @@ function checkDefeat(){
       in. resetGauntlet() no-ops harmlessly if location doesn't match
       any GAUNTLETS zone. */
       Object.keys(GAUNTLETS).forEach(id => { if(state.location === GAUNTLETS[id].zone) resetGauntlet(id); });
+      /* Same reasoning, for Act 3's own dungeons (dungeon.js) — a
+      defeat mid-run abandons it, same "no partial credit" rule. */
+      if(state.location === 'prismdepths') abandonDungeonRun();
       /* Whichever town square the player actually calls home (TOWN_HUBS,
       town.js — 'town'/Gladstone Hollow by default, 'gnometropolis' once
       that's been reached), not always Gladstone Hollow — a defeat inside
