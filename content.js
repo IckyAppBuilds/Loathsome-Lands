@@ -929,12 +929,16 @@ attack/Hexpert spell damage) for the next few fights.
 both use this type, sharing one mechanic and one underlying flag
 (state.evasionActive) since a player only ever has one class at a
 time; see its own entry for why this one breaks from every type above it.
-'heal'/'ward'/'buff'/'shout' never cost a turn (no monsterRetaliate()
-call) and are castable both mid-combat and from the Character page
-(renderCastableSpellsBlock(), class-spells.js) — a deliberate choice:
-only a damage spell trades your turn for an effect, everything else is
-free utility you can use as often as your MP allows. 'evade' is also a
-free action, but — unlike the other four — combat-only, same
+'heal'/'ward'/'buff'/'shout'/'evade' are all castable mid-combat
+(costing the one turn — monsterRetaliate() fires exactly once per
+cast, same as 'damage' — per explicit correction; these used to be
+free actions with no retaliation at all, which let a player chain-cast
+something like Stubborn Recovery for unlimited healing in a single
+turn) — see castSpell()'s own comment, combat.js, for the shared
+per-type logic. 'heal'/'ward'/'buff'/'shout' (not 'evade') are ALSO
+castable from the Character page (renderCastableSpellsBlock(),
+class-spells.js) as a genuinely free action there, since there's no
+turn to cost outside combat at all. 'evade' stays combat-only, same
 restriction 'damage' has, see its own entry below for why.
 
 `classRequired` restricts BOTH where a spell can be learned

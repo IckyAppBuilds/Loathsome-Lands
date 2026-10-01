@@ -720,17 +720,9 @@ function useItemInCombat(idx){
 function castSpell(id){
    const spell = spells.find(s=>s.id===id);
    if(!spell) return;
-   /* Only 'damage' spells need a monster to target — every other type
-   (heal/ward/shout/buff) is castable from the Character page too
-   (renderCastableSpellsBlock(), class-spells.js), not just mid-combat.
-   That's also why only 'damage' calls monsterRetaliate() below: a
-   damage spell is a combat action that costs you your turn the same
-   way a physical Attack does, but heal/ward/shout/buff are meant to be
-   free actions — cast one mid-fight and the monster doesn't get a
-   bonus swing out of it, same as if you'd cast it from the Character
-   page between fights. */
-   /* 'evade' (Smoke Screen) needs a fight to apply to, same reasoning as
-   'damage' needing a monster to target — see the comment above. */
+   /* Only 'damage'/'evade' spells need a monster to target — every other
+   type (heal/ward/shout/buff) is also castable from the Character page
+   (renderCastableSpellsBlock(), class-spells.js), not just mid-combat. */
    if((spell.type==='damage' || spell.type==='evade') && !state.inCombat) return;
    if(!state.spellsKnown.includes(id) || state.mp < spell.mpCost) return;
    /* Defense-in-depth: learnSpell() already refuses to teach a buff spell
@@ -747,6 +739,27 @@ state.mp -= spell.mpCost;
    const eff = getEffectiveStats();
    combatSubView = 'main';
 
+   /* Per explicit correction: EVERY spell type costs the one turn while
+   mid-combat, not just 'damage' — heal/ward/buff/shout used to be
+   "free" (no retaliation at all), which is exactly what let a player
+   chain-cast something like Stubborn Recovery over and over in a
+   single turn for effectively unlimited healing/shield-stacking, with
+   the monster never getting to act. Ticks the per-turn debuff the same
+   "before the spell's own effect resolves" way playerAttack() already
+   does (so a burn/poison tick that drops HP to 0 ends the turn here
+   too, for ANY spell type, not just 'damage') and provokes exactly one
+   monsterRetaliate() call at the very end of this function — see the
+   shared call right before the final checkDefeat()/render(), not
+   duplicated inside the 'damage' branch below anymore. Outside combat
+   (heal/ward/buff/shout cast from the Character page) there's no turn
+   to cost at all, so all of this is skipped — statusFx just stays at
+   its default, inert values. */
+   let statusFx = { defeated: false, dmgMult: 1 };
+   if(state.inCombat){
+      statusFx = applyPlayerStatusEffectForTurn();
+      if(statusFx.defeated){ checkDefeat(); render(); return; }
+   }
+
 if(spell.type==='damage'){
    /* Same "your own aggression breaks the cloud" rule playerAttack() enforces
    — a damage spell costs a turn and provokes retaliation just like a
@@ -758,13 +771,7 @@ if(spell.type==='damage'){
           : "Swinging back gives away your position — the smoke clears.");
       state.evasionActive = null;
    }
-   /* Same per-turn debuff tick as playerAttack() — a damage spell costs
-   a turn exactly like a physical Attack, so it ticks state.playerStatus
-   Effect the same way (and a burn/poison tick that drops HP to 0 ends
-   the turn here too, before the spell itself resolves). */
-   const spellStatusFx = applyPlayerStatusEffectForTurn();
-   if(spellStatusFx.defeated){ checkDefeat(); render(); return; }
-   let dmg = Math.round((randInt(spell.dmgMin, spell.dmgMax) + (state.level-1) + statBonus(eff.hoodoo)) * spellStatusFx.dmgMult);
+   let dmg = Math.round((randInt(spell.dmgMin, spell.dmgMax) + (state.level-1) + statBonus(eff.hoodoo)) * statusFx.dmgMult);
    if(state.classTitle === 'Hexpert') dmg += HEXPERT_SPELL_DMG_BONUS[state.classSkillLevel];
    /* This spell's own Level 2 upgrade (SPELL_UPGRADE_MULTIPLIER,
    content.js) — applied here, after the flat class bonus but before
@@ -821,7 +828,6 @@ if(spell.type==='damage'){
          }
       }
    }
-   monsterRetaliate();
 } else if(spell.type==='heal'){
    /* SPELL_UPGRADE_MULTIPLIER (content.js) applies to whichever single
    number IS that spell's own effect — for 'heal' that's healValue
@@ -879,6 +885,13 @@ if(spell.type==='damage'){
        ? `You cast ${spell.name} — a dozen flickering copies of yourself scatter outward. Don't swing back if you want them to hold.`
        : `You cast ${spell.name} — kick up a cloud of grit and vanish into it. Don't swing back if you want to stay hidden.`);
 }
+
+/* The one shared retaliation call for every spell type that reaches
+this point (a kill via 'damage'/its own Hexpert echo already returned
+early above, skipping this) — see the comment above the status-effect
+tick near the top of this function for why every type costs the turn
+now, not just 'damage'. */
+if(state.inCombat) monsterRetaliate();
 
 if(state.inCombat){
    checkDefeat();

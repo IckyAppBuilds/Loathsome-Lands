@@ -1127,7 +1127,17 @@ system; Card Shark's own double-attack proc,
 function, unchanged in shape — both share this file's "the only class
 skill with a visible effect" origin story, now joined by Hexpert's
 Arcane Echo in `castSpell()`'s `'damage'` branch below)/
-`openSpellMenu`/`closeSpellMenu`/`useItemInCombat`/`castSpell` (its
+`openSpellMenu`/`closeSpellMenu`/`useItemInCombat`/`castSpell` (every
+spell type costs the one turn while `state.inCombat` — a shared
+`applyPlayerStatusEffectForTurn()` tick up top plus one shared
+`monsterRetaliate()` call at the bottom, after the type-specific
+`if/else if` chain, skipped only by the `'damage'` branch's own early
+`return` on a kill. Per explicit correction — heal/ward/buff/shout used
+to be free actions with no retaliation at all, which let a player
+chain-cast something like Stubborn Recovery for unlimited healing in a
+single turn; outside combat, cast from the Character page, there's no
+turn to cost at all, so this is skipped entirely and it's still a
+genuinely free action there. Its
 `'damage'` branch also rolls Hexpert's own class-skill proc —
 `HEXPERT_ECHO_CHANCE`/`HEXPERT_ECHO_DAMAGE_MULT`, content.js — a chance
 to immediately echo-cast the same spell again at half power, zero

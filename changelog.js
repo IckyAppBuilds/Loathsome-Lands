@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 24, date: 'October 1', title: 'One Spell or Item Per Turn', items: [
+      "Fixed: casting a heal/ward/buff/shout spell mid-combat (Stubborn Recovery, Warding Charm, Shout, Adrenaline Rush, etc.) no longer skips the monster's turn — it now costs the same one turn an Attack or a damage spell already did, so the monster always gets to act.",
+      "Outside combat, from the Character page, casting those same spells is unaffected and still completely free.",
+      ]},
    { id: 23, date: 'October 1', title: 'Act 3 Begins: the Prism Depths', items: [
       "New: beneath the Crystal City lies the Prism Depths — the first of Act 3's repeatable themed dungeons. Clear one for guaranteed treasure and a new currency, Prism Shards, then run it again as many times as you like.",
       "Three dungeons open to start: Embercrypt, Frostvault, and Stormreach — each with its own trio of guardians, its own boss, and its own themed reward.",

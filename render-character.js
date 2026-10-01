@@ -1,13 +1,16 @@
 /* In-combat spell+item menu (opened via the Use button) — 'damage'
 spells, plus (new) any held HP/MP/luck consumable. Every other spell
-type (heal/ward/shout/buff) doesn't cost a turn anymore (castSpell(),
-combat.js, no longer calls monsterRetaliate() for them) and is cast
-from the Character page instead (renderCastableSpellsBlock(),
-class-spells.js — reachable mid-combat too, so this isn't losing
-access, just moving where non-damage spells live). A damage spell (or
-now, using an item — useItemInCombat(), combat.js) is still a real
-combat action that trades your turn for its effect, so both live here
-alongside Attack/Flee, not on the free-action Character page. */
+type (heal/ward/shout/buff) is cast from the Character page instead
+(renderCastableSpellsBlock(), class-spells.js — reachable mid-combat
+too, just a different screen, not a different cost) even though
+castSpell() (combat.js) now costs the same one turn for EVERY spell
+type while `state.inCombat` is true, 'damage' included — per explicit
+correction, these used to be genuinely free (no monsterRetaliate() at
+all), which is exactly what let a player chain-cast something like
+Stubborn Recovery for unlimited healing in a single turn. Casting one
+from the Character page mid-fight still only costs that one turn, same
+as casting it from this menu would if it were listed here — nothing
+about WHERE a spell is cast changes what castSpell() itself enforces. */
 /* A spell in state.spellsKnown whose own classRequired no longer matches
 state.classTitle is permanently uncastable — castSpell() (combat.js)
 refuses it outright — so every filter below also requires that match
