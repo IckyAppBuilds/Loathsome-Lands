@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 28, date: 'October 1', title: 'Five More Rooms in the Prism Depths', items: [
+      "New: 5 more Prism Depths dungeons — Verdant Hollow, Duskward, and Ironloom, then Echo Chapel and the Sunken Archive. That's all 8 of the first wave of dungeons now open.",
+      "New: quest 18, \"Old Light, Older Debts,\" and quest 19, \"The Last Two Rooms,\" at the Crystal City — each one only opens up once you've actually cleared every dungeon in the wave before it, not just by finishing the last quest.",
+      ]},
    { id: 27, date: 'October 1', title: 'A Proper Welcome to the Prism Depths', items: [
       "New: quest 17, \"What Light Remembers,\" at the Crystal City — accept it, report back, and the Prism Depths actually open through a real quest now, instead of a button you'd only find by poking around.",
       ]},

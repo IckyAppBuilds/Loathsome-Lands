@@ -566,52 +566,74 @@ Monster/boss/treasure DATA only for Act 3's repeatable dungeons — the
 generic run engine that reads it lives in dungeon.js right after this
 file (same split gauntlet.js/its boss-data files already use). Act 3
 is NOT another `ZONE_ORDER` zone chain — see dungeon.js's own top
-comment for why. Currently holds the first wave of 3 (of a planned 8
-themed dungeons + the Hollow Vault finale — see
-`~/.claude/plans/shimmering-hopping-parrot.md`'s Act 3 plan for the
-rest): **Embercrypt** (fire/forging), **Frostvault**
-(ice/preservation), **Stormreach** (lightning/signal) — each the same
-shape: `<name>Regulars` (3), its own `rare:true` boss
-(`emberwright`/`stillglassWarden`/`unansweredHerald`), and
-`<name>Treasure` (3 class-tagged items, one picked at random per
-clear — each carries 4 total stats, primary + 3 secondaries at
-roughly two-thirds the primary value in STAT_ROTATION order, content.js
-— per explicit correction, an 'epic' guaranteed drop needs to beat a
-'rare' random gearDrop roll's own 3-stat ceiling, not ship with just
-the bare primary stat). Each sets its own `ZONE_DIFFICULTY.<name>` entry (content.js)
-at parse time — a plain mutation of an already-initialized object, NOT
-a `const` declared before its own use (that ordering mistake already
-happened once this session — see `TRASH_SKILL_CHANCE`'s own comment,
-content.js) — continuing the same ~14%-per-step ratio from Crystal
-City's own 7.5 ceiling: embercrypt 8.6 -> frostvault 9.8 -> stormreach
-11.2. Treasure primary-stat values climb the gearDrop ladder's own
-+1-per-dungeon (+11/+12/+13), one step past Crystal City's +10. Every
-Act 3 creature shares one "Lucent-made" angular/faceted visual family
-(same vocabulary Crystal City's own monsters introduced), never the
-gnome/mole silhouettes — each dungeon just varies the palette for its
-own theme (ember red/orange, ice blue/white, storm purple/yellow).
-Dungeon monsters carry `loot:null` always — treasure comes from the
-dungeon's own guaranteed end-of-run payout, not per-kill drops. Each
-boss uses exactly one of the existing debuffs (burn/freeze) or a
-bolt-heavy kit instead, reused rather than reinvented, matching the
-"the Lucent taught the Moles this" thread the Act 3 plan calls for —
-deliberately not all three debuffs on all three bosses, so each still
-reads as its own fight. Loads after content.js/icons.js/art.js,
-before dungeon.js.
+comment for why. Holds all 8 of the planned first-wave-through-third-
+wave dungeons now (the Hollow Vault finale is a deliberately separate,
+later pass — see `~/.claude/plans/shimmering-hopping-parrot.md`'s Act
+3 plan): **wave 1** (quest17, "What Light Remembers") —
+**Embercrypt** (fire/forging), **Frostvault** (ice/preservation),
+**Stormreach** (lightning/signal); **wave 2** (quest18, "Old Light,
+Older Debts," town.js — offered only once ALL of wave 1 is cleared at
+least once, `allDungeonsCleared()`, dungeon.js) — **Verdant Hollow**
+(growth/binding), **Duskward** (shadow/null-light, "the clearest echo
+of the Dimming itself" per the plan), **Ironloom** (clockwork/
+constructs, a deliberate callback to the Moles' own machine theme);
+**wave 3** (quest19, "The Last Two Rooms," same "gated by the actual
+dungeons" rule) — **Echo Chapel** (sound/memory, a callback to the
+Warren's Ear's own Choir), **Sunken Archive** (knowledge/the Lucent's
+own history, the direct lead-in to the not-yet-built finale). Every
+dungeon shares the exact same shape: `<name>Regulars` (3), its own
+`rare:true` boss, and `<name>Treasure` (3 class-tagged items, one
+picked at random per clear — each carries 4 total stats, primary + 3
+secondaries at roughly two-thirds the primary value in STAT_ROTATION
+order, content.js — per explicit correction, an 'epic' guaranteed drop
+needs to beat a 'rare' random gearDrop roll's own 3-stat ceiling, not
+ship with just the bare primary stat). Each sets its own
+`ZONE_DIFFICULTY.<name>` entry (content.js) at parse time — a plain
+mutation of an already-initialized object, NOT a `const` declared
+before its own use (that ordering mistake already happened once this
+session — see `TRASH_SKILL_CHANCE`'s own comment, content.js) —
+continuing the same ~14%-per-step ratio all the way from Crystal
+City's own 7.5 ceiling through all 8 dungeons: 8.6 -> 9.8 -> 11.2 ->
+12.8 -> 14.6 -> 16.6 -> 18.9 -> 21.5. Treasure primary-stat values
+climb the gearDrop ladder's own +1-per-dungeon the same way, +11
+through +18. Every Act 3 creature shares one "Lucent-made"
+angular/faceted visual family (same vocabulary Crystal City's own
+monsters introduced, art.js), never the gnome/mole silhouettes — each
+dungeon just varies the palette for its own theme (ember red/orange,
+ice blue/white, storm purple/yellow, forest green/moss-olive, shadow-
+violet/pale lavender, bronze/brass, slate blue/pale sky, aged sepia/
+faded gold) — the underlying shape geometry (4 templates: a "crystal
+body," a "ghost head," a "low crawler," and a bigger "layered boss
+body") is byte-for-byte IDENTICAL across every dungeon's art functions,
+only the fill colors change, so a 9th dungeon's art is a fast, mostly-
+mechanical addition. Dungeon monsters carry `loot:null` always —
+treasure comes from the dungeon's own guaranteed end-of-run payout, not
+per-kill drops. Each boss reuses an existing mechanic (burn/freeze/
+poison debuff, or a bolt-heavy kit, in varied combinations with
+heal/buff) rather than inventing new ones, matching the "the Lucent
+taught the Moles this" thread the Act 3 plan calls for — Ironloom's own
+burn is an explicit, deliberate callback to Embercrypt's. Loads after
+content.js/icons.js/art.js, before dungeon.js.
 
-Touch this file when: adding/rebalancing one of these 3 dungeons, or
-(future phases) adding one of the other 5 planned dungeons + the
-Hollow Vault finale.
+Touch this file when: adding/rebalancing one of these 8 dungeons, or
+(a later, separate pass) adding the Hollow Vault finale.
 
 ## dungeon.js — Act 3's reusable REPEATABLE dungeon engine
 Generalizes gauntlet.js's own "named sequence of guards + a finalBoss"
 shape for dungeons that must stay repeatable FOREVER instead of
 completing once — no `doneFlag`; `state.dungeonClears[id]` (core.js) is
 a lifetime counter instead, bumped on every full clear, never a gate.
-`DUNGEONS` (currently `embercrypt`/`frostvault`/`stormreach`, Act 3's
-first wave) — `regulars`/`bosses` arrays,
+`DUNGEONS` (all 8 of the first 3 waves now — `embercrypt`/
+`frostvault`/`stormreach` (wave 1), `verdanthollow`/`duskward`/
+`ironloom` (wave 2), `echochapel`/`sunkenarchive` (wave 3)) —
+`regulars`/`bosses` arrays,
 `treasureTable`, `shardReward`, `biscuitCost`, `requiredFlag`, and 3
 flavor-line functions (`enterLine`/`midRunLine(left)`/`clearLine`).
+`allDungeonsCleared(ids)` — `ids.every(id => state.dungeonClears[id] >
+0)` — is the actual gate behind quest18/quest19's own 'offer' state
+(render.js/town.js): each later wave unlocks by having cleared the
+PRIOR wave's dungeons themselves, not merely by completing the quest
+before it, per explicit request.
 `activeDungeonRun` (`{id, stage}`) is transient — never saved, same
 convention `gauntletProgress`/`combatSubView`/`evasionActive` already
 use — reset by `abandonDungeonRun()`, called from the same two spots
@@ -633,21 +655,30 @@ FINAL kill shows the normal victory banner (see the "wasDungeonMonster
 && dungeonRunContinues" branch, combat.js, right next to
 `wasBuildingTrialFight`'s own banner-skip logic).
 
-Every dungeon's `requiredFlag` is `'quest17Complete'` — quest17, "What
-Light Remembers" (`acceptQuest17()`/`reportQuest17()`, town.js), Act
-3's own opener, offered at the Crystal City itself once
-`quest16Complete`. Deliberately a formality, same shape as quest8's own
-"New Digs" (no fetch objective, accept/report in one visit — the real
-content is the dungeons themselves). Per explicit correction: this
-used to be `'quest16Complete'` directly, so the Prism Depths existed
-only as a bare, un-announced "Descend into the Prism Depths" button a
-player would have to notice on their own — reportQuest17() is now what
+Wave 1's `requiredFlag` is `'quest17Complete'` — quest17, "What Light
+Remembers" (`acceptQuest17()`/`reportQuest17()`, town.js), Act 3's own
+opener, offered at the Crystal City itself once `quest16Complete`.
+Deliberately a formality, same shape as quest8's own "New Digs" (no
+fetch objective, accept/report in one visit — the real content is the
+dungeons themselves). Per explicit correction: this used to be
+`'quest16Complete'` directly, so the Prism Depths existed only as a
+bare, un-announced "Descend into the Prism Depths" button a player
+would have to notice on their own — reportQuest17() is now what
 actually reveals that button (`#prism-depths-entry-row`, render.js)
-and unlocks `isDungeonUnlocked()`.
+and unlocks `isDungeonUnlocked()`. Wave 2's `requiredFlag` is
+`'quest18Complete'`, wave 3's is `'quest19Complete'` — quest18/quest19
+(`acceptQuest18/19`/`reportQuest18/19`, town.js), each also offered at
+the Crystal City, each gated on `allDungeonsCleared()` (above) for the
+PRIOR wave rather than just that wave's own quest flag, per explicit
+request ("gated by the other dungeons").
 
 UI: the Dungeon Board (`renderDungeonBoard()`, render.js;
-`#dungeon-board`, index.html) lives on the `'prismdepths'` screen,
-entered from a button on the Crystal City screen itself
+`#dungeon-board`, index.html) filters to `isDungeonUnlocked(id)` only —
+necessary now that waves have different `requiredFlag`s sharing one
+board: without the filter, every dungeon (wave 2/3 names included)
+would list the moment ANY dungeon unlocks, each with a dead Enter
+button that would just silently refuse. Lives on the `'prismdepths'`
+screen, entered from a button on the Crystal City screen itself
 (`enterPrismDepths()`/`leavePrismDepths()`, town.js) rather than being
 its own `ZONE_ORDER` destination — same "a screen inside a zone"
 relationship the Guild/Shop/Town Lot have to Gladstone Hollow.
@@ -673,7 +704,8 @@ header makes — that ordering is for readability, not correctness).
 Touch this file when: adding a new dungeon (just a new `DUNGEONS`
 entry + its own content-file data, no engine changes needed, same
 "registry generic, UI wiring per-screen" pattern gauntlets already
-established) or changing how a run advances/pays out.
+established), adding a new wave's own unlock quest, or changing how a
+run advances/pays out.
 
 ## act2-shop.js — Act 2 Shop (Gnometropolis) gear + food ladder
 `act2GearItemsTier1/2/3/4` and `act2FoodItemsTier1/2` — a structurally
@@ -907,7 +939,7 @@ class-skill upgrade block, or the spell-upgrade block is displayed.
 (reset every quest flag back to never-started — quest7 through quest15
 were silently missing from this entirely until this session, despite
 its own doc comment already claiming full coverage; fixed alongside
-adding quest13-15, extended again for quest16 and then quest17, and now also calls
+adding quest13-15, extended again for quest16 and then quest17/18/19, and now also calls
 `resetAllGauntlets()`, gauntlet.js)/`resetToNewGameDev` (the "Full
 Reset (New Game)" button — wipes to `createDefaultState()` then
 replays `startFreshGame()`), the direct state setters (Biscuits/Pop
@@ -919,9 +951,13 @@ hit by one of the handful of bosses that inflict it), and
 entirely missing until this session — every Act 2 quest was reachable
 only by actually playing through it, with zero dev shortcut; quest16's
 own stages push/strip its 3 gathered-3-different-ways items directly
-so the Pack stays in sync with whatever stage is jumped to; quest17's
-own 3 stages are the simple no-fetch "formality" shape, same as
-quest8's). Never
+so the Pack stays in sync with whatever stage is jumped to; quest17/18/19's
+own 3 stages each are the simple no-fetch "formality" shape, same as
+quest8's — quest18/19's own 'Accepted'/'Complete' stages also stamp
+`state.dungeonClears` for the prior wave directly, since their real
+unlock condition (`allDungeonsCleared()`, dungeon.js) needs those
+clears to be reachable without grinding real dungeon runs first in
+dev mode). Never
 touched by normal gameplay work otherwise — the cleanest single-concern
 file in the project.
 
@@ -1233,8 +1269,9 @@ enter/leave pairs and quest accept/report for the Gaffer House, Shop,
 Hoodoo Doctor's (incl. `brewPotion`/`brewStatResetPotion`), and
 Tinker's Workshop, plus `giveRakeTines`/`turnInVein`, and the Town Lot
 economy (`buyTownLot`/`upgradeTownLot`/`upgradeBuilding`). Also
-quest17 (`acceptQuest17`/`reportQuest17`) and `enterPrismDepths`/
-`leavePrismDepths` — the Crystal City doesn't get its own file (still
+quest17/18/19 (`acceptQuest17/18/19`/`reportQuest17/18/19`) and
+`enterPrismDepths`/`leavePrismDepths` — the Crystal City doesn't get
+its own file (still
 a stub leaf zone, crystalcity-content.js holds only its monster data),
 so everything quest/door-related for it lives here, same as every
 other `travelTo()`-reached location. The
@@ -1424,7 +1461,19 @@ flow.
   requiredFlag, dungeon.js, gates on quest17Complete now rather than
   quest16Complete directly, per explicit correction, so the dungeons
   are actually announced by a quest instead of existing only as a bare
-  button on the Crystal City screen).
+  button on the Crystal City screen), quest18 "Old Light, Older Debts"
+  (`acceptQuest18`/`reportQuest18`, town.js — offered at the Crystal
+  City once ALL of wave 1's dungeons are cleared at least once,
+  `allDungeonsCleared()`, dungeon.js, not merely once quest17Complete;
+  the gnome-hoodoo-lineage reveal beat the Act 3 plan calls for —
+  gnome hoodoo turns out to descend from the Lucent's own fading
+  influence. Unlocks wave 2 — Verdant Hollow/Duskward/Ironloom), and
+  quest19 "The Last Two Rooms" (`acceptQuest19`/`reportQuest19`,
+  town.js — same "gated by the dungeons themselves" rule, offered once
+  all of wave 2 is cleared. Unlocks wave 3 — Echo Chapel/Sunken
+  Archive, the last of the first 8 dungeons; the true finale, the
+  Hollow Vault/quest20/the Dimming, is a deliberately separate, later
+  pass, not built with these).
 - **Bounty Board**: `isBountyZoneUnlocked`/`rollNewBounty`/
   `ensureActiveBounty`/`isBountyReady`/`formatBountyTimeLeft`/
   `claimBounty`/`updateBountyTimerDisplay`. No daily claim cap — per

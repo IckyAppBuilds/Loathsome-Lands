@@ -53,6 +53,75 @@ const DUNGEONS = {
       midRunLine: (left) => `Deeper into Stormreach — ${left} fight${left===1?'':'s'} left before whatever's still broadcasting.`,
       clearLine: "Stormreach goes quiet behind you, all at once — whatever that signal was, it's finally been heard.",
    },
+   /* Wave 2 — gated on quest18Complete, not quest17Complete. quest18,
+   "Old Light, Older Debts" (town.js), is only OFFERED once every wave 1
+   dungeon has been cleared at least once (state.dungeonClears, core.js)
+   — "gated by the other dungeons," per explicit request, not just a
+   quest-accept click. */
+   verdanthollow: {
+      name: "Verdant Hollow",
+      regulars: verdantHollowRegulars,
+      bosses: [rootboundWarden],
+      treasureTable: verdantHollowTreasure,
+      shardReward: 52,
+      biscuitCost: 4,
+      requiredFlag: 'quest18Complete',
+      enterLine: "You step into Verdant Hollow. Whatever this place used to grow, it's still growing — just slower, and without anyone to pick the harvest.",
+      midRunLine: (left) => `Deeper into Verdant Hollow — ${left} fight${left===1?'':'s'} left before whatever's still tending it.`,
+      clearLine: "Verdant Hollow settles back into its own slow green quiet, like it was only ever waiting for you to finish and leave.",
+   },
+   duskward: {
+      name: "Duskward",
+      regulars: duskwardRegulars,
+      bosses: [lastCandle],
+      treasureTable: duskwardTreasure,
+      shardReward: 56,
+      biscuitCost: 4,
+      requiredFlag: 'quest18Complete',
+      enterLine: "You step into Duskward. The torches don't help much here — whatever's wrong with the light isn't a lighting problem.",
+      midRunLine: (left) => `Deeper into Duskward — ${left} fight${left===1?'':'s'} left before whatever's keeping the dark company.`,
+      clearLine: "Duskward doesn't get any brighter behind you. It just stops watching.",
+   },
+   ironloom: {
+      name: "Ironloom",
+      regulars: ironloomRegulars,
+      bosses: [warpLoomOverseer],
+      treasureTable: ironloomTreasure,
+      shardReward: 60,
+      biscuitCost: 5, /* one step up — Ironloom is the hardest of the second wave */
+      requiredFlag: 'quest18Complete',
+      enterLine: "You step into Ironloom. Something in here is still running, still weaving, still keeping perfect, pointless time.",
+      midRunLine: (left) => `Deeper into Ironloom — ${left} fight${left===1?'':'s'} left before whatever's still keeping the pattern.`,
+      clearLine: "Ironloom winds down behind you, gear by gear, into something almost like rest.",
+   },
+   /* Wave 3 — gated on quest19Complete. quest19, "The Last Two Rooms"
+   (town.js), is only OFFERED once every wave 2 dungeon has been cleared
+   at least once, same "gated by the other dungeons" rule wave 2's own
+   quest18 uses. */
+   echochapel: {
+      name: "Echo Chapel",
+      regulars: echoChapelRegulars,
+      bosses: [unbrokenChord],
+      treasureTable: echoChapelTreasure,
+      shardReward: 64,
+      biscuitCost: 5,
+      requiredFlag: 'quest19Complete',
+      enterLine: "You step into Echo Chapel. Every sound you make comes back changed — a little slower, a little sadder, like the room's correcting you.",
+      midRunLine: (left) => `Deeper into Echo Chapel — ${left} fight${left===1?'':'s'} left before whatever's still holding the note.`,
+      clearLine: "Echo Chapel finally lets the note end. The silence after is somehow the loudest part.",
+   },
+   sunkenarchive: {
+      name: "Sunken Archive",
+      regulars: sunkenArchiveRegulars,
+      bosses: [lastArchivist],
+      treasureTable: sunkenArchiveTreasure,
+      shardReward: 68,
+      biscuitCost: 6, /* one step up — Sunken Archive is the hardest of the third wave */
+      requiredFlag: 'quest19Complete',
+      enterLine: "You step into the Sunken Archive. Everything in here was written down by something that expected to be read again.",
+      midRunLine: (left) => `Deeper into the Sunken Archive — ${left} fight${left===1?'':'s'} left before whatever's still cataloguing you.`,
+      clearLine: "The Sunken Archive goes quiet behind you — not empty, exactly. Just finished, for now, with what it had to say.",
+   },
 };
 
 /* Transient run state — mirrors gauntletProgress exactly (plain
@@ -66,6 +135,16 @@ let activeDungeonRun = null;
 function isDungeonUnlocked(id){
    const cfg = DUNGEONS[id];
    return !!cfg && !!state[cfg.requiredFlag];
+}
+
+/* "Has every one of these dungeons been cleared at least once" — the
+actual gate behind quest18/quest19's own offer states (town.js), per
+explicit request that each wave unlock by having cleared the dungeons
+themselves, not just by clicking through a quest. Reads
+state.dungeonClears (core.js) directly, same lifetime-counter field
+grantDungeonTreasure() above bumps on every full clear. */
+function allDungeonsCleared(ids){
+   return ids.every(id => (state.dungeonClears[id] || 0) > 0);
 }
 
 /* Total fight count for a dungeon — regulars then bosses, in order. */

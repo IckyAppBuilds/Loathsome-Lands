@@ -227,6 +227,17 @@ function createDefaultState(){
      quest16Complete with no quest ever announcing they exist. */
      quest17Accepted: false,
      quest17Complete: false,
+     /* Quest 18, "Old Light, Older Debts," and quest19, "The Last Two
+     Rooms" — the wave 2/wave 3 unlocks for the Prism Depths
+     (DUNGEONS.*.requiredFlag, dungeon.js), each offered at the Crystal
+     City only once the WHOLE prior wave has actually been cleared at
+     least once (allDungeonsCleared(), dungeon.js — state.dungeonClears,
+     below), not merely once the prior quest is complete. Same
+     formality shape as quest17/quest8 otherwise. */
+     quest18Accepted: false,
+     quest18Complete: false,
+     quest19Accepted: false,
+     quest19Complete: false,
      classQuestAccepted: false,
      classQuestComplete: false,
      classTitle: null,

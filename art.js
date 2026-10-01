@@ -802,6 +802,95 @@ shape as the other two dungeon bosses, storm purple/yellow core. */
 function artUnansweredHerald(){
    return sceneWrap(`<path d="M50 8 L80 40 L68 92 L32 92 L20 40 Z" fill="#2b2b28" opacity="0.75"/><path d="M50 8 L80 40 L50 50 Z" fill="#5a4a8a" opacity="0.7"/><path d="M50 8 L20 40 L50 50 Z" fill="#d1a94e" opacity="0.6"/><path d="M50 50 L68 92 L32 92 Z" fill="#8a8477" opacity="0.5"/><circle cx="50" cy="50" r="6" fill="#d1a94e" stroke="none"/><circle cx="50" cy="50" r="3" fill="#f4efe4" stroke="none"/>`, 0);
 }
+
+/* Verdant Hollow's own creatures (Act 3, wave 2) — same Lucent angular
+family, forest green/moss-olive over the same shapes the first wave
+used. */
+function artBrambleBoundSentinel(){
+   return sceneWrap(`<path d="M50 14 L74 42 L62 86 L38 86 L26 42 Z" fill="#8a8477" opacity="0.5"/><path d="M50 14 L74 42 L50 50 Z" fill="#4a7a4a" opacity="0.7"/><path d="M50 14 L26 42 L50 50 Z" fill="#8ba23f" opacity="0.6"/><circle cx="50" cy="52" r="3" fill="#8ba23f" stroke="none"/><line x1="38" y1="86" x2="34" y2="98" stroke-width="3"/><line x1="62" y1="86" x2="66" y2="98" stroke-width="3"/>`, 0);
+}
+function artSeedCaster(){
+   return sceneWrap(`<path d="M50 16 L70 38 L64 70 L36 70 L30 38 Z" fill="#2b2b28" opacity="0.7"/><circle cx="42" cy="44" r="4.5" fill="#4a7a4a" stroke="none"/><circle cx="58" cy="44" r="4.5" fill="#8ba23f" stroke="none"/><path d="M36 70 L30 86 M64 70 L70 86" stroke-width="3"/>`, 0);
+}
+function artMossGrownCaretaker(){
+   return sceneWrap(`<path d="M20 70 L38 54 L52 62 L68 48 L86 66 L70 80 L50 72 L34 82 Z" fill="#8a8477" opacity="0.6"/><path d="M38 54 L44 44 L52 54 Z" fill="#4a7a4a" opacity="0.8"/><path d="M68 48 L76 40 L80 50 Z" fill="#8ba23f" opacity="0.8"/><circle cx="46" cy="64" r="1.8" fill="#8ba23f" stroke="none"/>`, 0);
+}
+/* The Rootbound Warden — Verdant Hollow's own boss, same bigger/layered
+shape as every other dungeon boss, forest green/moss core. */
+function artRootboundWarden(){
+   return sceneWrap(`<path d="M50 8 L80 40 L68 92 L32 92 L20 40 Z" fill="#2b2b28" opacity="0.75"/><path d="M50 8 L80 40 L50 50 Z" fill="#4a7a4a" opacity="0.7"/><path d="M50 8 L20 40 L50 50 Z" fill="#8ba23f" opacity="0.6"/><path d="M50 50 L68 92 L32 92 Z" fill="#8a8477" opacity="0.5"/><circle cx="50" cy="50" r="6" fill="#8ba23f" stroke="none"/><circle cx="50" cy="50" r="3" fill="#4a7a4a" stroke="none"/>`, 0);
+}
+
+/* Duskward's own creatures (Act 3, wave 2) — same Lucent angular
+family, shadow-violet/pale lavender over the same shapes. */
+function artHollowEyedWatchman(){
+   return sceneWrap(`<path d="M50 14 L74 42 L62 86 L38 86 L26 42 Z" fill="#8a8477" opacity="0.5"/><path d="M50 14 L74 42 L50 50 Z" fill="#3a2f52" opacity="0.7"/><path d="M50 14 L26 42 L50 50 Z" fill="#9c8ab5" opacity="0.6"/><circle cx="50" cy="52" r="3" fill="#9c8ab5" stroke="none"/><line x1="38" y1="86" x2="34" y2="98" stroke-width="3"/><line x1="62" y1="86" x2="66" y2="98" stroke-width="3"/>`, 0);
+}
+function artUnlitLanternbearer(){
+   return sceneWrap(`<path d="M50 16 L70 38 L64 70 L36 70 L30 38 Z" fill="#2b2b28" opacity="0.75"/><circle cx="42" cy="44" r="4.5" fill="#3a2f52" stroke="none"/><circle cx="58" cy="44" r="4.5" fill="#9c8ab5" stroke="none"/><path d="M36 70 L30 86 M64 70 L70 86" stroke-width="3"/>`, 0);
+}
+function artShadeStitchedMender(){
+   return sceneWrap(`<path d="M20 70 L38 54 L52 62 L68 48 L86 66 L70 80 L50 72 L34 82 Z" fill="#8a8477" opacity="0.6"/><path d="M38 54 L44 44 L52 54 Z" fill="#3a2f52" opacity="0.8"/><path d="M68 48 L76 40 L80 50 Z" fill="#9c8ab5" opacity="0.8"/><circle cx="46" cy="64" r="1.8" fill="#9c8ab5" stroke="none"/>`, 0);
+}
+/* The Last Candle — Duskward's own boss, same bigger/layered shape as
+every other dungeon boss, shadow-violet/pale lavender core. */
+function artLastCandle(){
+   return sceneWrap(`<path d="M50 8 L80 40 L68 92 L32 92 L20 40 Z" fill="#2b2b28" opacity="0.8"/><path d="M50 8 L80 40 L50 50 Z" fill="#3a2f52" opacity="0.75"/><path d="M50 8 L20 40 L50 50 Z" fill="#9c8ab5" opacity="0.65"/><path d="M50 50 L68 92 L32 92 Z" fill="#8a8477" opacity="0.5"/><circle cx="50" cy="50" r="6" fill="#9c8ab5" stroke="none"/><circle cx="50" cy="50" r="3" fill="#3a2f52" stroke="none"/>`, 0);
+}
+
+/* Ironloom's own creatures (Act 3, wave 2) — same Lucent angular
+family, bronze/brass over the same shapes, a deliberate callback to
+the Moles' own clockwork theme (see dungeon.js's own comment). */
+function artCoiledTensioner(){
+   return sceneWrap(`<path d="M50 14 L74 42 L62 86 L38 86 L26 42 Z" fill="#8a8477" opacity="0.5"/><path d="M50 14 L74 42 L50 50 Z" fill="#8a6a3f" opacity="0.7"/><path d="M50 14 L26 42 L50 50 Z" fill="#b5934a" opacity="0.6"/><circle cx="50" cy="52" r="3" fill="#b5934a" stroke="none"/><line x1="38" y1="86" x2="34" y2="98" stroke-width="3"/><line x1="62" y1="86" x2="66" y2="98" stroke-width="3"/>`, 0);
+}
+function artLoomSpindle(){
+   return sceneWrap(`<path d="M50 16 L70 38 L64 70 L36 70 L30 38 Z" fill="#2b2b28" opacity="0.7"/><circle cx="42" cy="44" r="4.5" fill="#8a6a3f" stroke="none"/><circle cx="58" cy="44" r="4.5" fill="#b5934a" stroke="none"/><path d="M36 70 L30 86 M64 70 L70 86" stroke-width="3"/>`, 0);
+}
+function artStitchWorker(){
+   return sceneWrap(`<path d="M20 70 L38 54 L52 62 L68 48 L86 66 L70 80 L50 72 L34 82 Z" fill="#8a8477" opacity="0.6"/><path d="M38 54 L44 44 L52 54 Z" fill="#8a6a3f" opacity="0.8"/><path d="M68 48 L76 40 L80 50 Z" fill="#b5934a" opacity="0.8"/><circle cx="46" cy="64" r="1.8" fill="#b5934a" stroke="none"/>`, 0);
+}
+/* The Warp-Loom Overseer — Ironloom's own boss, same bigger/layered
+shape as every other dungeon boss, bronze/brass core. */
+function artWarpLoomOverseer(){
+   return sceneWrap(`<path d="M50 8 L80 40 L68 92 L32 92 L20 40 Z" fill="#2b2b28" opacity="0.75"/><path d="M50 8 L80 40 L50 50 Z" fill="#8a6a3f" opacity="0.7"/><path d="M50 8 L20 40 L50 50 Z" fill="#b5934a" opacity="0.6"/><path d="M50 50 L68 92 L32 92 Z" fill="#8a8477" opacity="0.5"/><circle cx="50" cy="50" r="6" fill="#b5934a" stroke="none"/><circle cx="50" cy="50" r="3" fill="#8a6a3f" stroke="none"/>`, 0);
+}
+
+/* Echo Chapel's own creatures (Act 3, wave 3) — same Lucent angular
+family, slate blue/pale sky over the same shapes. */
+function artResonanceWarden(){
+   return sceneWrap(`<path d="M50 14 L74 42 L62 86 L38 86 L26 42 Z" fill="#8a8477" opacity="0.5"/><path d="M50 14 L74 42 L50 50 Z" fill="#4a6a8a" opacity="0.7"/><path d="M50 14 L26 42 L50 50 Z" fill="#a8c4d9" opacity="0.6"/><circle cx="50" cy="52" r="3" fill="#a8c4d9" stroke="none"/><line x1="38" y1="86" x2="34" y2="98" stroke-width="3"/><line x1="62" y1="86" x2="66" y2="98" stroke-width="3"/>`, 0);
+}
+function artChimeCaster(){
+   return sceneWrap(`<path d="M50 16 L70 38 L64 70 L36 70 L30 38 Z" fill="#2b2b28" opacity="0.7"/><circle cx="42" cy="44" r="4.5" fill="#4a6a8a" stroke="none"/><circle cx="58" cy="44" r="4.5" fill="#a8c4d9" stroke="none"/><path d="M36 70 L30 86 M64 70 L70 86" stroke-width="3"/>`, 0);
+}
+function artHumKeeper(){
+   return sceneWrap(`<path d="M20 70 L38 54 L52 62 L68 48 L86 66 L70 80 L50 72 L34 82 Z" fill="#8a8477" opacity="0.6"/><path d="M38 54 L44 44 L52 54 Z" fill="#4a6a8a" opacity="0.8"/><path d="M68 48 L76 40 L80 50 Z" fill="#a8c4d9" opacity="0.8"/><circle cx="46" cy="64" r="1.8" fill="#a8c4d9" stroke="none"/>`, 0);
+}
+/* The Unbroken Chord — Echo Chapel's own boss, same bigger/layered
+shape as every other dungeon boss, slate blue/pale sky core. */
+function artUnbrokenChord(){
+   return sceneWrap(`<path d="M50 8 L80 40 L68 92 L32 92 L20 40 Z" fill="#2b2b28" opacity="0.75"/><path d="M50 8 L80 40 L50 50 Z" fill="#4a6a8a" opacity="0.7"/><path d="M50 8 L20 40 L50 50 Z" fill="#a8c4d9" opacity="0.6"/><path d="M50 50 L68 92 L32 92 Z" fill="#8a8477" opacity="0.5"/><circle cx="50" cy="50" r="6" fill="#a8c4d9" stroke="none"/><circle cx="50" cy="50" r="3" fill="#4a6a8a" stroke="none"/>`, 0);
+}
+
+/* The Sunken Archive's own creatures (Act 3, wave 3) — same Lucent
+angular family, aged sepia/faded gold over the same shapes, the last
+of the first 8 dungeons and the direct lead-in to the finale. */
+function artMarginaliaWraith(){
+   return sceneWrap(`<path d="M50 14 L74 42 L62 86 L38 86 L26 42 Z" fill="#8a8477" opacity="0.5"/><path d="M50 14 L74 42 L50 50 Z" fill="#5a4a3a" opacity="0.7"/><path d="M50 14 L26 42 L50 50 Z" fill="#9c8560" opacity="0.6"/><circle cx="50" cy="52" r="3" fill="#9c8560" stroke="none"/><line x1="38" y1="86" x2="34" y2="98" stroke-width="3"/><line x1="62" y1="86" x2="66" y2="98" stroke-width="3"/>`, 0);
+}
+function artIndexWalker(){
+   return sceneWrap(`<path d="M50 16 L70 38 L64 70 L36 70 L30 38 Z" fill="#2b2b28" opacity="0.7"/><circle cx="42" cy="44" r="4.5" fill="#5a4a3a" stroke="none"/><circle cx="58" cy="44" r="4.5" fill="#9c8560" stroke="none"/><path d="M36 70 L30 86 M64 70 L70 86" stroke-width="3"/>`, 0);
+}
+function artPageBinder(){
+   return sceneWrap(`<path d="M20 70 L38 54 L52 62 L68 48 L86 66 L70 80 L50 72 L34 82 Z" fill="#8a8477" opacity="0.6"/><path d="M38 54 L44 44 L52 54 Z" fill="#5a4a3a" opacity="0.8"/><path d="M68 48 L76 40 L80 50 Z" fill="#9c8560" opacity="0.8"/><circle cx="46" cy="64" r="1.8" fill="#9c8560" stroke="none"/>`, 0);
+}
+/* The Last Archivist — the Sunken Archive's own boss, same bigger/
+layered shape as every other dungeon boss, sepia/faded gold core. */
+function artLastArchivist(){
+   return sceneWrap(`<path d="M50 8 L80 40 L68 92 L32 92 L20 40 Z" fill="#2b2b28" opacity="0.75"/><path d="M50 8 L80 40 L50 50 Z" fill="#5a4a3a" opacity="0.7"/><path d="M50 8 L20 40 L50 50 Z" fill="#9c8560" opacity="0.6"/><path d="M50 50 L68 92 L32 92 Z" fill="#8a8477" opacity="0.5"/><circle cx="50" cy="50" r="6" fill="#9c8560" stroke="none"/><circle cx="50" cy="50" r="3" fill="#5a4a3a" stroke="none"/>`, 0);
+}
+
 function artEchoWraith(){
    return sceneWrap(`<path d="M50 22 Q68 30 66 54 Q64 78 50 84 Q36 78 34 54 Q32 30 50 22 Z" fill="#b06a97" opacity="0.55"/><path d="M46 26 Q64 34 62 58 Q60 82 46 88" fill="none" stroke="#3d5a80" stroke-width="2.5" opacity="0.6"/><circle cx="44" cy="44" r="3" fill="#f4efe4" stroke="none"/><circle cx="56" cy="44" r="3" fill="#f4efe4" stroke="none"/>`, 0);
 }

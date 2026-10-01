@@ -275,6 +275,16 @@ function computeRenderContext(){
   === ready to report, no separate 'ready' stage). */
   const quest17State = state.quest17Complete ? 'complete' : (state.quest17Accepted ? 'active' : (state.quest16Complete ? 'offer' : 'locked'));
 
+  /* Quest 18/19 — same formality shape as quest17 above, but 'offer'
+  also requires the PRIOR wave's dungeons to actually be cleared
+  (allDungeonsCleared(), dungeon.js), not just the prior quest's own
+  completion — per explicit request, each wave unlocks by clearing the
+  dungeons themselves. */
+  const quest18State = state.quest18Complete ? 'complete' : (state.quest18Accepted ? 'active'
+    : (state.quest17Complete && allDungeonsCleared(['embercrypt','frostvault','stormreach'])) ? 'offer' : 'locked');
+  const quest19State = state.quest19Complete ? 'complete' : (state.quest19Accepted ? 'active'
+    : (state.quest18Complete && allDungeonsCleared(['verdanthollow','duskward','ironloom'])) ? 'offer' : 'locked');
+
   /* Gauntlet approach-button visibility (gauntlet.js) — mirrors
   canApproachPalaceGate's own shape exactly: standing in the right
   zone, the right quest accepted, and not already cleared. */
@@ -305,7 +315,7 @@ function computeRenderContext(){
     quest5State, veinHeld, veinNeeded, canTurnInVein,
     quest6State, canReportGnomeKing,
     quest7State, palaceGateGearItem, canApproachPalaceGate,
-    quest10State, quest11State, quest12State, quest13State, quest14State, quest15State, quest16State, quest17State,
+    quest10State, quest11State, quest12State, quest13State, quest14State, quest15State, quest16State, quest17State, quest18State, quest19State,
     canApproachLedgerCommittee, canApproachMoleCouncil,
     quest8State, quest9State, classQuestState,
   };
@@ -576,10 +586,20 @@ function syncBuildingScreens(ctx){
   document.getElementById('accept-quest16-btn').style.display = ctx.quest16State==='offer' ? '' : 'none';
   document.getElementById('report-quest16-btn').style.display = ctx.quest16State==='ready' ? '' : 'none';
   document.getElementById('report-quest16-btn').classList.toggle('btn-ready', ctx.quest16State==='ready');
-  document.getElementById('crystalcity-quest-row').style.display = (ctx.isCrystalCity && !state.inCombat && (ctx.quest17State==='offer' || ctx.quest17State==='active')) ? 'flex' : 'none';
+  document.getElementById('crystalcity-quest-row').style.display = (ctx.isCrystalCity && !state.inCombat && (
+    ctx.quest17State==='offer' || ctx.quest17State==='active'
+    || ctx.quest18State==='offer' || ctx.quest18State==='active'
+    || ctx.quest19State==='offer' || ctx.quest19State==='active'
+  )) ? 'flex' : 'none';
   document.getElementById('accept-quest17-btn').style.display = ctx.quest17State==='offer' ? '' : 'none';
   document.getElementById('report-quest17-btn').style.display = ctx.quest17State==='active' ? '' : 'none';
   document.getElementById('report-quest17-btn').classList.toggle('btn-ready', ctx.quest17State==='active');
+  document.getElementById('accept-quest18-btn').style.display = ctx.quest18State==='offer' ? '' : 'none';
+  document.getElementById('report-quest18-btn').style.display = ctx.quest18State==='active' ? '' : 'none';
+  document.getElementById('report-quest18-btn').classList.toggle('btn-ready', ctx.quest18State==='active');
+  document.getElementById('accept-quest19-btn').style.display = ctx.quest19State==='offer' ? '' : 'none';
+  document.getElementById('report-quest19-btn').style.display = ctx.quest19State==='active' ? '' : 'none';
+  document.getElementById('report-quest19-btn').classList.toggle('btn-ready', ctx.quest19State==='active');
 
   /* Gauntlet approach buttons (gauntlet.js) — same "always visible while
   standing there, win/lose/not-yet-fought alike" rule as palace-gate-row
@@ -666,7 +686,9 @@ function syncBuildingScreens(ctx){
         || ctx.quest16State==='offer' || ctx.quest16State==='active' || ctx.quest16State==='ready'))
     || (ctx.isHoodoo && (ctx.quest3State==='offer' || ctx.quest3State==='active'))
     || (ctx.isTinker && (ctx.quest4State==='offer' || ctx.quest4State==='active' || ctx.quest5State==='offer' || ctx.quest5State==='active'))
-    || (ctx.isCrystalCity && (ctx.quest17State==='offer' || ctx.quest17State==='active'))
+    || (ctx.isCrystalCity && (ctx.quest17State==='offer' || ctx.quest17State==='active'
+        || ctx.quest18State==='offer' || ctx.quest18State==='active'
+        || ctx.quest19State==='offer' || ctx.quest19State==='active'))
   )) ? 'block' : 'none';
 
   if(ctx.isGafferHouse){
@@ -860,6 +882,22 @@ function syncBuildingScreens(ctx){
     } else if(ctx.quest17State==='active'){
       document.getElementById('quest-name').textContent = 'Quest: What Light Remembers';
       document.getElementById('quest-desc').textContent = "Whatever's answering isn't going anywhere. Report back when you're ready to hear the rest.";
+      document.getElementById('quest-progress').textContent = 'Ready to report.';
+    } else if(ctx.quest18State==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: Old Light, Older Debts';
+      document.getElementById('quest-desc').textContent = "The light's got more to say now that you've cleared the first three rooms. This isn't just history anymore.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(ctx.quest18State==='active'){
+      document.getElementById('quest-name').textContent = 'Quest: Old Light, Older Debts';
+      document.getElementById('quest-desc').textContent = "It's still showing you. Report back when you're ready to hear what it means.";
+      document.getElementById('quest-progress').textContent = 'Ready to report.';
+    } else if(ctx.quest19State==='offer'){
+      document.getElementById('quest-name').textContent = 'Quest available: The Last Two Rooms';
+      document.getElementById('quest-desc').textContent = "Two rooms left down here, now that the second three are cleared. Whatever's left of the Lucent wants to show you both.";
+      document.getElementById('quest-progress').textContent = 'Not yet accepted.';
+    } else if(ctx.quest19State==='active'){
+      document.getElementById('quest-name').textContent = 'Quest: The Last Two Rooms';
+      document.getElementById('quest-desc').textContent = "The light's gone quiet, deliberate. Report back when you're ready for whatever it's choosing to say next.";
       document.getElementById('quest-progress').textContent = 'Ready to report.';
     }
   }
@@ -1291,15 +1329,21 @@ function heldAllDrilldozerParts(){
 }
 
 /* The Prism Depths' own Dungeon Board (Act 3, dungeon.js) — lists every
-DUNGEONS entry with its own lifetime clear count (state.dungeonClears,
-core.js — never a doneFlag, so this never reads as "done forever,"
-just "cleared N times") and an Enter button, disabled mid-run/mid-
-combat/short on Biscuits. Mirrors renderBountyBoard()'s own shape
-(render-shop.js) for a repeatable-currency-earning screen. */
+UNLOCKED DUNGEONS entry (isDungeonUnlocked(), dungeon.js) with its own
+lifetime clear count (state.dungeonClears, core.js — never a doneFlag,
+so this never reads as "done forever," just "cleared N times") and an
+Enter button, disabled mid-run/mid-combat/short on Biscuits. Mirrors
+renderBountyBoard()'s own shape (render-shop.js) for a repeatable-
+currency-earning screen. Filtering to unlocked-only matters now that
+wave 2/3 (quest18/19, town.js) gate on a LATER flag than wave 1 — this
+board is reachable the moment ANY dungeon is unlocked, so without the
+filter every dungeon would list immediately, wave 2/3 names included,
+with an Enter button that would just silently refuse
+(isDungeonUnlocked() inside enterDungeon() itself). */
 function renderDungeonBoard(){
   const el = document.getElementById('dungeon-board');
   if(!el) return;
-  const rows = Object.keys(DUNGEONS).map(id=>{
+  const rows = Object.keys(DUNGEONS).filter(id => isDungeonUnlocked(id)).map(id=>{
     const cfg = DUNGEONS[id];
     const clears = state.dungeonClears[id] || 0;
     const inThisRun = activeDungeonRun && activeDungeonRun.id === id;

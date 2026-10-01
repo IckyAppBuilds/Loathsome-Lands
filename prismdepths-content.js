@@ -169,3 +169,202 @@ const stormreachTreasure = [
    { name:"windworn leggings, never quite touching the ground", desc:"You've stopped checking whether you're actually walking.", type:"equip", slot:"legs", bonus:{zip:13, grit:9, hoodoo:9, beef:9}, classRequired:'Card Shark', tier:'epic', icon: iconQuickstepTrousers },
    { name:"a storm-signal mantle, still relaying something", desc:"Whatever it's broadcasting, it isn't for you. You wear it anyway.", type:"equip", slot:"chest", bonus:{hoodoo:13, beef:9, zip:9, grit:9}, classRequired:'Hexpert', tier:'epic', icon: iconAdventurerCuirass },
    ];
+
+/* ---------------- The Prism Depths — Verdant Hollow (wave 2) ---------------- */
+/* First of wave 2 (quest18, "Old Light, Older Debts," gates all three —
+see dungeon.js's own DUNGEONS registry) — the Lucent's own discipline of
+growth/binding: whatever Verdant Hollow was built to cultivate, it's
+still cultivating, slower now and with nobody left to harvest it.
+Continues the same ~+14%-per-step ZONE_DIFFICULTY ratio (11.2 ->
+12.8 is +14.3%) and the gearDrop ladder's +1-per-dungeon climb
+(stormreach +13 -> verdant hollow +14). Palette: forest green/moss-
+olive over the same angular Lucent silhouette family every Act 3
+creature shares. */
+ZONE_DIFFICULTY.verdanthollow = 12.8;
+
+const verdantHollowRegulars = [
+   { name:"a bramble-bound sentinel, more vine than whatever it used to be", beef:13, zip:0, grit:38, hoodoo:0, xp:64, zone:"verdanthollow",
+    skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"pulls its own growth tight and holds" } ],
+    art: artBrambleBoundSentinel, loot:null },
+   { name:"a seed-caster, lobbing something that already took root", beef:13, zip:0, grit:39, hoodoo:0, xp:65, zone:"verdanthollow",
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:44, boltMax:56, flavor:"lets fly a pod that wasn't finished growing" } ],
+    art: artSeedCaster, loot:null },
+   { name:"a moss-grown caretaker, tending a garden that stopped needing one", beef:14, zip:0, grit:38, hoodoo:0, xp:66, zone:"verdanthollow",
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:25, healMax:43, flavor:"folds back into its own green and knits shut" } ],
+    art: artMossGrownCaretaker, loot:null },
+   ];
+
+/* Verdant Hollow's own boss — the first Act 3 use of the 'poison'
+debuff (state.playerStatusEffect, combat.js) — a natural fit for
+growth/binding that Embercrypt's burn and Frostvault's freeze hadn't
+covered yet. */
+const rootboundWarden = {
+   name:"the Rootbound Warden, holding the Hollow the only way it still can — by not letting go", beef:17, zip:0, grit:55, hoodoo:0, xp:165, rare:true, zone:"verdanthollow",
+   skills:[
+      { type:'debuff', chance:0.22, debuffType:'poison', debuffTurns:3, dmgPerTurn:20, flavor:"wraps something old and patient around you" },
+      { type:'heal', chance:0.18, healMin:25, healMax:42, flavor:"pulls itself back together, root by root" },
+      ],
+   art: artRootboundWarden, loot:null
+};
+
+const verdantHollowTreasure = [
+   { name:"the Rootbound Warden's own grasping bough", desc:"Still rooted, somehow, in a hand instead of soil.", type:"equip", slot:"weapon", bonus:{beef:14, zip:9, grit:9, hoodoo:9}, classRequired:'Meathead', tier:'epic', icon: iconBannerLance },
+   { name:"a bramble-woven circlet, thorns worn smooth from wear", desc:"Drew blood exactly once. Learned its lesson.", type:"equip", slot:"head", bonus:{zip:14, grit:9, hoodoo:9, beef:9}, classRequired:'Card Shark', tier:'epic', icon: iconChampionCrown },
+   { name:"a moss-grown vestment, cool and a little damp, always", desc:"Never quite dries. You've stopped minding.", type:"equip", slot:"chest", bonus:{hoodoo:14, beef:9, zip:9, grit:9}, classRequired:'Hexpert', tier:'epic', icon: iconVest },
+   ];
+
+/* ---------------- The Prism Depths — Duskward (wave 2) ---------------- */
+/* Second of wave 2 — the Lucent's own discipline of shadow/null-light,
+"the clearest echo of the Dimming itself" (per the Act 3 plan). Continues
+the same ratios (12.8 -> 14.6 is +14.1%; verdant hollow +14 -> duskward
++15). Palette: shadow-violet/pale lavender over the same angular Lucent
+silhouette family. */
+ZONE_DIFFICULTY.duskward = 14.6;
+
+const duskwardRegulars = [
+   { name:"a hollow-eyed watchman, standing guard over nothing that's still there", beef:14, zip:0, grit:41, hoodoo:0, xp:68, zone:"duskward",
+    skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"draws the dark in closer, like a coat" } ],
+    art: artHollowEyedWatchman, loot:null },
+   { name:"an unlit lanternbearer, carrying a light that went out a long time ago", beef:15, zip:0, grit:42, hoodoo:0, xp:69, zone:"duskward",
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:48, boltMax:60, flavor:"the lantern flares once, wrong-colored and cold" } ],
+    art: artUnlitLanternbearer, loot:null },
+   { name:"a shade-stitched mender, patching itself with borrowed dark", beef:15, zip:0, grit:41, hoodoo:0, xp:70, zone:"duskward",
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:27, healMax:46, flavor:"pulls a little more shadow over the tear" } ],
+    art: artShadeStitchedMender, loot:null },
+   ];
+
+/* Duskward's own boss — a bolt-heavy kit, same "one signature mechanic,
+no debuff" shape unansweredHerald (Stormreach) uses, reused deliberately
+here too: Duskward is meant to read as raw ominous power rather than a
+status effect, the most dangerous "preview" of the real Dimming. */
+const lastCandle = {
+   name:"the Last Candle, still burning down here for reasons nobody's left to remember", beef:18, zip:0, grit:58, hoodoo:0, xp:175, rare:true, zone:"duskward",
+   skills:[
+      { type:'bolt', chance:0.24, boltMin:52, boltMax:66, flavor:"goes out all at once, and something worse arrives in the dark" },
+      { type:'buff', chance:0.18, buffMult:1.5, buffTurns:2, flavor:"gutters, then catches again, brighter than before" },
+      ],
+   art: artLastCandle, loot:null
+};
+
+const duskwardTreasure = [
+   { name:"the Last Candle's own unlit wick, somehow still sharp", desc:"Doesn't give off light. Takes it, a little, from everything nearby.", type:"equip", slot:"weapon", bonus:{beef:15, zip:10, grit:10, hoodoo:10}, classRequired:'Meathead', tier:'epic', icon: iconVizierScepter },
+   { name:"shade-stitched leggings, seamed with borrowed dark", desc:"The stitching keeps moving if you don't look at it directly.", type:"equip", slot:"legs", bonus:{zip:15, grit:10, hoodoo:10, beef:10}, classRequired:'Card Shark', tier:'epic', icon: iconCutpurseLeggings },
+   { name:"an unlit lanternbearer's own boots, quiet on purpose", desc:"Every step lands exactly where the dark already was.", type:"equip", slot:"boots", bonus:{hoodoo:15, beef:10, zip:10, grit:10}, classRequired:'Hexpert', tier:'epic', icon: iconWardedSlippers },
+   ];
+
+/* ---------------- The Prism Depths — Ironloom (wave 2) ---------------- */
+/* Third of wave 2 — the Lucent's own discipline of clockwork/constructs,
+a deliberate callback to the Moles' own machine theme (the Lucent taught
+them this, per the Act 3 plan). Continues the same ratios (14.6 -> 16.6
+is +13.7%; duskward +15 -> ironloom +16). Palette: bronze/brass over the
+same angular Lucent silhouette family. */
+ZONE_DIFFICULTY.ironloom = 16.6;
+
+const ironloomRegulars = [
+   { name:"a coiled tensioner, wound past anything it was built to hold", beef:15, zip:0, grit:44, hoodoo:0, xp:72, zone:"ironloom",
+    skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"winds itself one notch tighter" } ],
+    art: artCoiledTensioner, loot:null },
+   { name:"a loom-spindle, still weaving something nobody's wearing", beef:16, zip:0, grit:45, hoodoo:0, xp:73, zone:"ironloom",
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:51, boltMax:64, flavor:"snaps a thread straight at you, faster than thread should go" } ],
+    art: artLoomSpindle, loot:null },
+   { name:"a stitch-worker, mending gears with thread that shouldn't hold metal", beef:16, zip:0, grit:44, hoodoo:0, xp:74, zone:"ironloom",
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:29, healMax:49, flavor:"binds the crack shut, thread over gear" } ],
+    art: artStitchWorker, loot:null },
+   ];
+
+/* Ironloom's own boss — reuses Embercrypt's own 'burn' debuff
+(overdriven clockwork venting built-up heat), an explicit callback per
+the Act 3 plan's own note on this dungeon specifically tying it back to
+the first wave's own mechanic. */
+const warpLoomOverseer = {
+   name:"the Warp-Loom Overseer, running a pattern it finished a long time ago", beef:19, zip:0, grit:61, hoodoo:0, xp:185, rare:true, zone:"ironloom",
+   skills:[
+      { type:'debuff', chance:0.22, debuffType:'burn', debuffTurns:3, dmgPerTurn:24, flavor:"overdrives something that was never built to run this hot" },
+      { type:'buff', chance:0.18, buffMult:1.5, buffTurns:2, flavor:"throws every gear back in sync at once" },
+      ],
+   art: artWarpLoomOverseer, loot:null
+};
+
+const ironloomTreasure = [
+   { name:"a warp-loom spindle, still threaded for a pattern nobody's finishing", desc:"Swings like it's still weaving something.", type:"equip", slot:"weapon", bonus:{beef:16, zip:11, grit:11, hoodoo:11}, classRequired:'Meathead', tier:'epic', icon: iconDrillRoster },
+   { name:"clockwork-stitched plating, ticking faintly under the dents", desc:"You've stopped trying to find out what the ticking is counting down to.", type:"equip", slot:"chest", bonus:{zip:16, grit:11, hoodoo:11, beef:11}, classRequired:'Card Shark', tier:'epic', icon: iconClockworkPlate },
+   { name:"tensioner-wound greaves, wound one notch past comfortable", desc:"Every step releases a little of the tension back.", type:"equip", slot:"legs", bonus:{hoodoo:16, beef:11, zip:11, grit:11}, classRequired:'Hexpert', tier:'epic', icon: iconBurrowGreaves },
+   ];
+
+/* ---------------- The Prism Depths — Echo Chapel (wave 3) ---------------- */
+/* First of wave 3 (quest19, "The Last Two Rooms," gates both — see
+dungeon.js's own DUNGEONS registry) — the Lucent's own discipline of
+sound/memory, a callback to the Warren's Ear's own Choir. Continues the
+same ratios (16.6 -> 18.9 is +13.9%; ironloom +16 -> echo chapel +17).
+Palette: slate blue/pale sky over the same angular Lucent silhouette
+family. */
+ZONE_DIFFICULTY.echochapel = 18.9;
+
+const echoChapelRegulars = [
+   { name:"a resonance warden, holding one note longer than it should last", beef:16, zip:0, grit:47, hoodoo:0, xp:76, zone:"echochapel",
+    skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"leans into its own echo until it holds steady" } ],
+    art: artResonanceWarden, loot:null },
+   { name:"a chime-caster, ringing something that was never meant to be struck", beef:17, zip:0, grit:48, hoodoo:0, xp:77, zone:"echochapel",
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:55, boltMax:68, flavor:"strikes true, and the whole chapel strikes back with it" } ],
+    art: artChimeCaster, loot:null },
+   { name:"a hum-keeper, stitching itself whole with its own held note", beef:17, zip:0, grit:47, hoodoo:0, xp:78, zone:"echochapel",
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:32, healMax:52, flavor:"hums the crack shut, one long unbroken note" } ],
+    art: artHumKeeper, loot:null },
+   ];
+
+/* Echo Chapel's own boss — bolt-heavy (a struck, resonant note) plus a
+heal (the note stitching its own damage shut) — the first use of this
+particular combination, distinct from every boss before it. */
+const unbrokenChord = {
+   name:"the Unbroken Chord, still holding a note that should have ended centuries ago", beef:20, zip:0, grit:64, hoodoo:0, xp:195, rare:true, zone:"echochapel",
+   skills:[
+      { type:'bolt', chance:0.24, boltMin:58, boltMax:72, flavor:"lets the note finally land, all at once" },
+      { type:'heal', chance:0.18, healMin:28, healMax:46, flavor:"folds the damage back into the song and keeps singing" },
+      ],
+   art: artUnbrokenChord, loot:null
+};
+
+const echoChapelTreasure = [
+   { name:"the Unbroken Chord's own struck chime, still ringing faintly", desc:"Hits like the note never actually stopped.", type:"equip", slot:"weapon", bonus:{beef:17, zip:11, grit:11, hoodoo:11}, classRequired:'Meathead', tier:'epic', icon: iconAceBlade },
+   { name:"resonance-soled boots, landing a half-beat ahead of you", desc:"You've learned to let them lead.", type:"equip", slot:"boots", bonus:{zip:17, grit:11, hoodoo:11, beef:11}, classRequired:'Card Shark', tier:'epic', icon: iconSpringBoots },
+   { name:"a hum-keeper's own circlet, humming one note you can't place", desc:"You've caught yourself humming it back, more than once.", type:"equip", slot:"head", bonus:{hoodoo:17, beef:11, zip:11, grit:11}, classRequired:'Hexpert', tier:'epic', icon: iconGuardHelm },
+   ];
+
+/* ---------------- The Prism Depths — Sunken Archive (wave 3) ---------------- */
+/* Last of the first 8 dungeons — the Lucent's own history, the direct
+lead-in to the eventual finale (not built this pass — see the Act 3
+plan). Continues the same ratios (18.9 -> 21.5 is +13.8%; echo chapel
++17 -> sunken archive +18). Palette: aged sepia/faded gold over the same
+angular Lucent silhouette family. */
+ZONE_DIFFICULTY.sunkenarchive = 21.5;
+
+const sunkenArchiveRegulars = [
+   { name:"a marginalia-wraith, scrawled in the gaps of something older than it", beef:17, zip:0, grit:50, hoodoo:0, xp:80, zone:"sunkenarchive",
+    skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"underlines itself twice, for emphasis" } ],
+    art: artMarginaliaWraith, loot:null },
+   { name:"an index-walker, citing a source that's about to cite you back", beef:18, zip:0, grit:51, hoodoo:0, xp:81, zone:"sunkenarchive",
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:58, boltMax:72, flavor:"delivers the footnote directly, at speed" } ],
+    art: artIndexWalker, loot:null },
+   { name:"a page-binder, re-stitching a spine that's been read too many times", beef:18, zip:0, grit:50, hoodoo:0, xp:82, zone:"sunkenarchive",
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:34, healMax:55, flavor:"rebinds itself along the crease" } ],
+    art: artPageBinder, loot:null },
+   ];
+
+/* The Sunken Archive's own boss — reuses the 'poison' debuff
+(Verdant Hollow's own first use), reflavored as a slow, patient
+revelation rather than binding growth — the wave's closing note before
+the quest chain's own next step (not this pass's own scope). */
+const lastArchivist = {
+   name:"the Last Archivist, still cataloguing a collection nobody's left to read", beef:21, zip:0, grit:67, hoodoo:0, xp:205, rare:true, zone:"sunkenarchive",
+   skills:[
+      { type:'debuff', chance:0.22, debuffType:'poison', debuffTurns:3, dmgPerTurn:28, flavor:"files something slow and patient directly under your skin" },
+      { type:'buff', chance:0.18, buffMult:1.5, buffTurns:2, flavor:"cross-references itself against its own best entry" },
+      ],
+   art: artLastArchivist, loot:null
+};
+
+const sunkenArchiveTreasure = [
+   { name:"the Last Archivist's own binding-blade, still sharp enough to cut a page clean", desc:"Files whatever it touches under \"closed.\"", type:"equip", slot:"weapon", bonus:{beef:18, zip:12, grit:12, hoodoo:12}, classRequired:'Meathead', tier:'epic', icon: iconSiegeBreaker },
+   { name:"a marginalia-woven circlet, annotated in a hand that isn't yours", desc:"The notes update themselves. You've stopped reading them too closely.", type:"equip", slot:"head", bonus:{zip:18, grit:12, hoodoo:12, beef:12}, classRequired:'Card Shark', tier:'epic', icon: iconCap },
+   { name:"an index-walker's own boots, always already where the next citation is", desc:"You arrive at conclusions slightly before you mean to.", type:"equip", slot:"boots", bonus:{hoodoo:18, beef:12, zip:12, grit:12}, classRequired:'Hexpert', tier:'epic', icon: iconBlessedBoots },
+   ];

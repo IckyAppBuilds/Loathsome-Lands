@@ -86,6 +86,7 @@ function resetQuestsDev(){
       quest15Accepted: false, quest15Complete: false, warrenMotherDefeated: false,
       quest16Accepted: false, quest16Complete: false, drillRigSalvaged: false,
       quest17Accepted: false, quest17Complete: false,
+      quest18Accepted: false, quest18Complete: false, quest19Accepted: false, quest19Complete: false,
       classQuestAccepted: false, classQuestComplete: false, classTitle: null,
    });
    state.inventory = state.inventory.filter(it => it.type !== 'quest');
@@ -467,6 +468,45 @@ const QUEST_DEV_STAGES = [
       { label:'Accepted (ready to turn in)', apply(){ Object.assign(state, { quest17Accepted:true, quest17Complete:false }); } },
       { label:'Complete (Prism Depths open)', apply(){ Object.assign(state, { quest17Accepted:true, quest17Complete:true }); } },
       ], detect(){ if(state.quest17Complete) return 2; if(state.quest17Accepted) return 1; return 0; } },
+
+   /* Quest 18/19 — same formality shape as quest17 above, but their own
+   'offer' state is gated on the PRIOR wave's dungeons actually being
+   cleared (allDungeonsCleared(), dungeon.js), not just the prior
+   quest's own completion. The 'Accepted'/'Complete' stages here stamp
+   state.dungeonClears for that prior wave directly so jumping to either
+   stage is actually reachable in dev mode without grinding 3 real
+   dungeon clears first — same "each stage sets every flag it implies"
+   rule quest16's own stages use for its 3 gathered items. */
+   { id:'quest18', label:'Crystal City: Old Light, Older Debts (Prism Depths wave 2)', stages: [
+      { label:'Not started', apply(){ Object.assign(state, { quest18Accepted:false, quest18Complete:false }); } },
+      { label:'Accepted (ready to turn in)', apply(){
+         Object.assign(state, { quest17Complete:true, quest18Accepted:true, quest18Complete:false });
+         state.dungeonClears.embercrypt = state.dungeonClears.embercrypt || 1;
+         state.dungeonClears.frostvault = state.dungeonClears.frostvault || 1;
+         state.dungeonClears.stormreach = state.dungeonClears.stormreach || 1;
+      } },
+      { label:'Complete (Verdant Hollow/Duskward/Ironloom open)', apply(){
+         Object.assign(state, { quest17Complete:true, quest18Accepted:true, quest18Complete:true });
+         state.dungeonClears.embercrypt = state.dungeonClears.embercrypt || 1;
+         state.dungeonClears.frostvault = state.dungeonClears.frostvault || 1;
+         state.dungeonClears.stormreach = state.dungeonClears.stormreach || 1;
+      } },
+      ], detect(){ if(state.quest18Complete) return 2; if(state.quest18Accepted) return 1; return 0; } },
+   { id:'quest19', label:'Crystal City: The Last Two Rooms (Prism Depths wave 3)', stages: [
+      { label:'Not started', apply(){ Object.assign(state, { quest19Accepted:false, quest19Complete:false }); } },
+      { label:'Accepted (ready to turn in)', apply(){
+         Object.assign(state, { quest18Complete:true, quest19Accepted:true, quest19Complete:false });
+         state.dungeonClears.verdanthollow = state.dungeonClears.verdanthollow || 1;
+         state.dungeonClears.duskward = state.dungeonClears.duskward || 1;
+         state.dungeonClears.ironloom = state.dungeonClears.ironloom || 1;
+      } },
+      { label:'Complete (Echo Chapel/Sunken Archive open)', apply(){
+         Object.assign(state, { quest18Complete:true, quest19Accepted:true, quest19Complete:true });
+         state.dungeonClears.verdanthollow = state.dungeonClears.verdanthollow || 1;
+         state.dungeonClears.duskward = state.dungeonClears.duskward || 1;
+         state.dungeonClears.ironloom = state.dungeonClears.ironloom || 1;
+      } },
+      ], detect(){ if(state.quest19Complete) return 2; if(state.quest19Accepted) return 1; return 0; } },
 
    { id:'classquest', label:"Guild: The Adventurer's Trial (class)", stages: [
       { label:'Not accepted', apply(){ Object.assign(state, { classQuestAccepted:false, classQuestComplete:false, classTitle:null,

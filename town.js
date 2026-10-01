@@ -485,6 +485,66 @@ function reportQuest17(){
    autosave();
 }
 
+/* Quest 18, "Old Light, Older Debts" — offered at the Crystal City once
+every wave 1 dungeon (Embercrypt/Frostvault/Stormreach) has been
+cleared at least once, per explicit request that each wave unlock by
+actually clearing the dungeons themselves, not just by completing the
+quest before it (allDungeonsCleared(), dungeon.js — reads
+state.dungeonClears directly). The gnome-hoodoo-lineage reveal beat the
+Act 3 plan calls for: the Lucent's own fading influence turns out to be
+where gnome hoodoo descends from. Same formality shape as quest17/
+quest8 — no fetch objective of its own, the dungeons already cleared
+to unlock it ARE the content. */
+function acceptQuest18(){
+   if(state.location !== 'crystalcity' || !state.quest17Complete || !allDungeonsCleared(['embercrypt','frostvault','stormreach'])
+      || state.quest18Accepted || state.quest18Complete) return;
+   state.quest18Accepted = true;
+   clearLog();
+   log("The light goes somewhere it hasn't before — not forward, back. Whatever's showing you this isn't a memory of the Mole Wars. It's older, and it runs somewhere underneath them: every bit of hoodoo any gnome has ever worked, every bit of it was always this, thinned out and half-remembered. You're not looking at a stranger's history. You're looking at where yours actually starts.");
+   render();
+}
+function reportQuest18(){
+   if(state.location !== 'crystalcity' || !state.quest18Accepted || state.quest18Complete) return;
+   state.quest18Complete = true;
+   state.popTabs += 80;
+   state.xp += 70;
+   state.adventures += 40;
+   clearLog();
+   log("You don't know what to do with it yet — that gnome hoodoo and whatever this place is are the same thing, worn down to different names by enough centuries. The light doesn't seem to need you to do anything with it. Just to know. (+80 Pop Tabs, +70 XP, +40 Biscuits)");
+   log("Three more rooms show themselves further down, the same way the first three did — Verdant Hollow, Duskward, Ironloom. Whatever's left of the Lucent isn't finished talking.");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
+/* Quest 19, "The Last Two Rooms" — offered once every wave 2 dungeon
+(Verdant Hollow/Duskward/Ironloom) has been cleared at least once, same
+"gated by the dungeons themselves" rule quest18 uses. Unlocks the last
+2 of the first 8 dungeons (Echo Chapel/Sunken Archive) — the true
+finale (the Hollow Vault/the Dimming/quest20) is a deliberately later,
+separate pass, not built here (see the Act 3 plan). */
+function acceptQuest19(){
+   if(state.location !== 'crystalcity' || !state.quest18Complete || !allDungeonsCleared(['verdanthollow','duskward','ironloom'])
+      || state.quest19Accepted || state.quest19Complete) return;
+   state.quest19Accepted = true;
+   clearLog();
+   log("Only two rooms left showing themselves down here, and whatever's left of the Lucent seems to know it too — the light's gone quieter, more deliberate, like it's choosing its words now instead of just letting them through.");
+   render();
+}
+function reportQuest19(){
+   if(state.location !== 'crystalcity' || !state.quest19Accepted || state.quest19Complete) return;
+   state.quest19Complete = true;
+   state.popTabs += 100;
+   state.xp += 90;
+   state.adventures += 50;
+   clearLog();
+   log("\"The last two,\" is the closest thing to words it's given you yet. Not a warning. Not quite an invitation either. Just a fact, laid down the same patient way everything else down here gets laid down. (+100 Pop Tabs, +90 XP, +50 Biscuits)");
+   log("Echo Chapel and the Sunken Archive open beneath the City, same as every room before them. Whatever's past those two, the light isn't showing you yet.");
+   checkLevelUp();
+   render();
+   autosave();
+}
+
 /* ---------------- The Prism Depths (Act 3) ---------------- */
 /* Entered from the Crystal City itself rather than being its own
 ZONE_ORDER destination — see dungeon.js's own top comment and the
