@@ -526,6 +526,32 @@ function artGnomePickpocket(){
    return sceneWrap(`<path d="M50 8 Q64 14 60 30 L40 30 Q36 14 50 8 Z" fill="#2b2b28"/><rect x="40" y="26" width="20" height="6" fill="#2b2b28" stroke="none"/><circle cx="50" cy="38" r="10" fill="#e0c49a"/><path d="M34 48 Q50 40 66 48 L62 86 Q50 92 38 86 Z" fill="#2b2b28"/><line x1="34" y1="52" x2="18" y2="60"/><path d="M18 60 L10 54 M18 60 L14 68" stroke-width="2.5"/><line x1="66" y1="52" x2="80" y2="46"/><line x1="50" y1="86" x2="42" y2="99"/><line x1="50" y1="86" x2="58" y2="99"/>`, 0);
 }
 
+/* Act 1's 7 zone-rare monsters (ZONE_RARE_MONSTERS, content.js) — same
+primitive-shape gnome-silhouette convention as every monster above,
+each with its own small distinguishing flourish and palette rather than
+a full redesign. */
+function artMossbackStrider(){
+   return sceneWrap(`<path d="M50 4 L34 50 L66 50 Z" fill="#3f5c3f"/><circle cx="50" cy="62" r="12" fill="#e0c49a"/><path d="M40 20 Q36 14 40 8 M60 20 Q64 14 60 8" stroke-width="2.5"/><line x1="50" y1="74" x2="50" y2="94"/><line x1="50" y1="80" x2="30" y2="70"/><line x1="50" y1="80" x2="70" y2="70"/><line x1="50" y1="94" x2="38" y2="99"/><line x1="50" y1="94" x2="62" y2="99"/>`, -4);
+}
+function artSewerSovereign(){
+   return sceneWrap(`<path d="M50 14 L32 46 L68 46 Z" fill="#5c7a6b"/><circle cx="50" cy="58" r="12" fill="#e0c49a"/><path d="M40 46 L44 36 L48 44 L52 34 L56 44 L60 36 L64 46" fill="#b9b3a4"/><line x1="50" y1="70" x2="50" y2="90"/><line x1="50" y1="76" x2="32" y2="84"/><line x1="50" y1="76" x2="68" y2="84"/><line x1="50" y1="90" x2="40" y2="99"/><line x1="50" y1="90" x2="60" y2="99"/>`, 2);
+}
+function artQuarryWraith(){
+   return sceneWrap(`<path d="M50 10 L30 48 L70 48 Z" fill="#8a8477" opacity="0.6"/><circle cx="50" cy="60" r="12" fill="#b9b3a4" opacity="0.6"/><circle cx="44" cy="58" r="2" fill="#2b2b28" stroke="none"/><circle cx="56" cy="58" r="2" fill="#2b2b28" stroke="none"/><line x1="50" y1="72" x2="50" y2="92" opacity="0.6"/><line x1="50" y1="78" x2="32" y2="68" opacity="0.6"/><line x1="50" y1="78" x2="68" y2="68" opacity="0.6"/>`, 0);
+}
+function artVaultBornEcho(){
+   return sceneWrap(`<circle cx="50" cy="46" r="24" fill="#3d5a80"/><circle cx="50" cy="46" r="24" fill="none" stroke="#f4efe4" stroke-width="2" opacity="0.6"/><path d="M38 40 Q50 48 62 40" stroke-width="2.5"/><path d="M38 52 Q50 44 62 52" stroke-width="2.5"/><line x1="50" y1="70" x2="50" y2="90"/><line x1="50" y1="76" x2="34" y2="84"/><line x1="50" y1="76" x2="66" y2="84"/>`, 0);
+}
+function artUnlistedRecruit(){
+   return sceneWrap(`<path d="M50 6 L32 42 L68 42 Z" fill="#8a8477"/><circle cx="50" cy="54" r="13" fill="#e0c49a"/><rect x="34" y="64" width="32" height="24" fill="#b5453f"/><line x1="34" y1="70" x2="18" y2="78"/><line x1="66" y1="70" x2="82" y2="62"/><line x1="50" y1="88" x2="40" y2="99"/><line x1="50" y1="88" x2="60" y2="99"/>`, 0);
+}
+function artShadeFingeredCutpurse(){
+   return sceneWrap(`<path d="M50 10 L31 46 L69 46 Z" fill="#5a4a6b"/><circle cx="50" cy="58" r="12" fill="#e0c49a"/><path d="M38 52 L34 44" stroke-width="2.5"/><line x1="50" y1="70" x2="50" y2="90"/><line x1="50" y1="76" x2="28" y2="68"/><path d="M28 68 L20 60 M28 68 L22 76" stroke-width="2.5"/><line x1="50" y1="76" x2="70" y2="84"/><line x1="50" y1="90" x2="40" y2="99"/><line x1="50" y1="90" x2="60" y2="99"/>`, 0);
+}
+function artHalfCastFamiliar(){
+   return sceneWrap(`<circle cx="50" cy="48" r="20" fill="#5a4a8a" opacity="0.5"/><path d="M34 40 Q50 26 66 40" fill="none" stroke-width="2.5"/><circle cx="43" cy="46" r="2.4" fill="#2b2b28" stroke="none"/><circle cx="57" cy="46" r="2.4" fill="#2b2b28" stroke="none"/><path d="M50 68 Q40 78 46 90 M50 68 Q60 78 54 90" opacity="0.5"/>`, -2);
+}
+
 /* ---------------- Mudroot Warren monster art (Act 2 Part 2) ---------------- */
 /* mudroot-content.js's 6 regulars + 2 rare hunts (tunnelWarden/
 warrenScout) — kept here rather than a new file, following this
@@ -580,6 +606,17 @@ function artVaultClerk(){
 function artAuditorInChief(){
    return sceneWrap(`<ellipse cx="50" cy="64" rx="25" ry="19" fill="#2b2b28"/><ellipse cx="50" cy="43" rx="13" ry="11" fill="#5f4632"/><path d="M41 39 Q36 30 29 32" fill="none" stroke-width="3.5"/><path d="M59 39 Q64 30 71 32" fill="none" stroke-width="3.5"/><line x1="72" y1="50" x2="82" y2="46" stroke="#b5453f" stroke-width="3"/><line x1="40" y1="82" x2="34" y2="96"/><line x1="60" y1="82" x2="66" y2="96"/>`, 0);
 }
+
+/* The Warren's Ear's own 2 zone-rares (ZONE_RARE_MONSTERS, content.js)
+— same mole silhouette vocabulary, a musical-note flourish for the
+Choir's unsungChorister and a crossed-out-paperwork flourish for the
+Ledger Vault's misfiledAuditor. */
+function artUnsungChorister(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="25" ry="19" fill="#5f4632"/><ellipse cx="50" cy="44" rx="13" ry="11" fill="#5f4632"/><path d="M41 40 Q36 31 29 33" fill="none" stroke-width="3.5"/><path d="M59 40 Q64 31 71 33" fill="none" stroke-width="3.5"/><circle cx="76" cy="40" r="3.5" fill="#d1a94e" stroke="none"/><line x1="79" y1="38" x2="79" y2="24" stroke-width="2"/><path d="M44 44 Q50 40 56 44" fill="none" stroke="#2b2b28" stroke-width="2.5"/><line x1="40" y1="82" x2="34" y2="96"/><line x1="60" y1="82" x2="66" y2="96"/>`, 0);
+}
+function artMisfiledAuditor(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="25" ry="19" fill="#5f4632"/><ellipse cx="50" cy="44" rx="13" ry="11" fill="#5f4632"/><path d="M41 40 Q36 31 29 33" fill="none" stroke-width="3.5"/><path d="M59 40 Q64 31 71 33" fill="none" stroke-width="3.5"/><rect x="66" y="50" width="18" height="22" fill="#f4efe4" stroke="#2b2b28" stroke-width="2" transform="rotate(-8 75 61)"/><line x1="69" y1="56" x2="81" y2="68" stroke="#b5453f" stroke-width="2"/><line x1="81" y1="56" x2="69" y2="68" stroke="#b5453f" stroke-width="2"/><line x1="40" y1="82" x2="34" y2="96"/><line x1="60" y1="82" x2="66" y2="96"/>`, 0);
+}
 function artTunnelMoleInformant(){
    return sceneWrap(`<ellipse cx="50" cy="66" rx="26" ry="19" fill="#5f4632"/><ellipse cx="50" cy="46" rx="14" ry="12" fill="#5f4632"/><path d="M40 42 Q34 32 25 34" fill="none" stroke-width="3.5"/><path d="M60 42 Q66 32 75 34" fill="none" stroke-width="3.5"/><path d="M44 46 L50 40 L56 46" stroke="#2b2b28" stroke-width="2.5" fill="none"/><line x1="40" y1="82" x2="32" y2="98"/><line x1="60" y1="82" x2="68" y2="98"/>`, 0);
 }
@@ -596,6 +633,20 @@ function artMoleClerk(){
 function artMoleAuditor(){
    return sceneWrap(`<ellipse cx="50" cy="62" rx="24" ry="19" fill="#5f4632"/><ellipse cx="50" cy="44" rx="13" ry="11" fill="#5f4632"/><circle cx="43" cy="44" r="5" fill="none" stroke="#2b2b28" stroke-width="2.5"/><circle cx="57" cy="44" r="5" fill="none" stroke="#2b2b28" stroke-width="2.5"/><line x1="48" y1="44" x2="52" y2="44" stroke-width="2"/><path d="M40 78 L34 92 M60 78 L66 92" stroke-width="3.5"/>`, 0);
 }
+
+/* Mudroot Warren's own 3 zone-rares (ZONE_RARE_MONSTERS, content.js) —
+same mole silhouette vocabulary, bark-toned/overgrown for Root Cellar's
+rootWarden, paper-themed for Bureau's unregisteredAuditor, and
+elongated/ghosted for Mudflats' siltWalker. */
+function artRootWarden(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="27" ry="20" fill="#5f4632"/><ellipse cx="50" cy="46" rx="14" ry="12" fill="#5f4632"/><path d="M40 42 Q34 32 25 34" fill="none" stroke-width="3.5"/><path d="M60 42 Q66 32 75 34" fill="none" stroke-width="3.5"/><path d="M30 60 Q24 54 28 46 M70 60 Q76 54 72 46" fill="none" stroke="#3f5c3f" stroke-width="3"/><line x1="40" y1="84" x2="34" y2="98"/><line x1="60" y1="84" x2="66" y2="98"/>`, 0);
+}
+function artUnregisteredAuditor(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="25" ry="19" fill="#5f4632"/><ellipse cx="50" cy="44" rx="13" ry="11" fill="#5f4632"/><path d="M41 40 Q36 31 29 33" fill="none" stroke-width="3.5"/><path d="M59 40 Q64 31 71 33" fill="none" stroke-width="3.5"/><rect x="68" y="50" width="16" height="20" fill="#f4efe4" stroke="#2b2b28" stroke-width="2" transform="rotate(10 76 60)"/><circle cx="76" cy="54" r="3" fill="none" stroke="#b5453f" stroke-width="1.6"/><line x1="40" y1="82" x2="34" y2="96"/><line x1="60" y1="82" x2="66" y2="96"/>`, 0);
+}
+function artSiltWalker(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="17" fill="#5f4632" opacity="0.7"/><ellipse cx="50" cy="44" rx="12" ry="10" fill="#5f4632" opacity="0.7"/><path d="M40 40 Q35 32 27 34" fill="none" stroke-width="3" opacity="0.7"/><path d="M60 40 Q65 32 73 34" fill="none" stroke-width="3" opacity="0.7"/><line x1="38" y1="80" x2="30" y2="96" opacity="0.7"/><line x1="50" y1="82" x2="48" y2="98" opacity="0.7"/><line x1="62" y1="80" x2="70" y2="96" opacity="0.7"/>`, 0);
+}
 function artMoleNotary(){
    return sceneWrap(`<ellipse cx="46" cy="64" rx="24" ry="18" fill="#5f4632"/><ellipse cx="46" cy="46" rx="13" ry="11" fill="#5f4632"/><path d="M38 42 Q34 34 28 36" fill="none" stroke-width="3"/><path d="M54 42 Q58 34 64 36" fill="none" stroke-width="3"/><rect x="68" y="46" width="14" height="14" fill="#b5453f" transform="rotate(-10 75 53)"/><line x1="75" y1="60" x2="75" y2="72" stroke-width="3"/>`, 0);
 }
@@ -607,6 +658,17 @@ gear. #b5453f doubles as ember-glow here same as it does as a red pen/
 stamp accent elsewhere -- no new palette color introduced. */
 function artForgeMole(){
    return sceneWrap(`<ellipse cx="50" cy="66" rx="25" ry="18" fill="#5f4632"/><ellipse cx="50" cy="47" rx="13" ry="11" fill="#5f4632"/><path d="M41 43 Q36 34 28 36" fill="none" stroke-width="3.5"/><path d="M59 43 Q64 34 72 36" fill="none" stroke-width="3.5"/><circle cx="30" cy="30" r="2" fill="#b5453f" stroke="none"/><circle cx="70" cy="26" r="2.4" fill="#d1a94e" stroke="none"/><circle cx="60" cy="20" r="1.8" fill="#b5453f" stroke="none"/><line x1="40" y1="82" x2="34" y2="96"/><line x1="60" y1="82" x2="66" y2="96"/>`, 0);
+}
+
+/* The Ember Warren's own 2 zone-rares (ZONE_RARE_MONSTERS, content.js)
+— same mole silhouette vocabulary, molten/ember tones for the
+Foundry's emberForgedWretch and a mechanical cog flourish for the
+Gearworks' looseCogIncarnate. */
+function artEmberForgedWretch(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="26" ry="19" fill="#5f4632"/><ellipse cx="50" cy="46" rx="14" ry="12" fill="#5f4632"/><path d="M40 42 Q34 32 25 34" fill="none" stroke-width="3.5"/><path d="M60 42 Q66 32 75 34" fill="none" stroke-width="3.5"/><circle cx="36" cy="28" r="2.4" fill="#b5453f" stroke="none"/><circle cx="64" cy="24" r="2" fill="#d1a94e" stroke="none"/><circle cx="50" cy="18" r="1.8" fill="#b5453f" stroke="none"/><path d="M38 60 Q50 54 62 60" fill="none" stroke="#b5453f" stroke-width="2.5"/><line x1="40" y1="84" x2="34" y2="98"/><line x1="60" y1="84" x2="66" y2="98"/>`, 0);
+}
+function artLooseCogIncarnate(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="24" ry="18" fill="#5f4632"/><ellipse cx="50" cy="45" rx="13" ry="11" fill="#5f4632"/><path d="M41 41 Q36 32 28 34" fill="none" stroke-width="3.5"/><path d="M59 41 Q64 32 72 34" fill="none" stroke-width="3.5"/><circle cx="70" cy="56" r="8" fill="none" stroke="#8a8477" stroke-width="2.5"/><circle cx="70" cy="56" r="2.5" fill="#8a8477" stroke="none"/><path d="M70 48 L70 44 M70 64 L70 68 M62 56 L58 56 M78 56 L82 56" stroke="#8a8477" stroke-width="2"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
 }
 function artBellowsMole(){
    return sceneWrap(`<ellipse cx="50" cy="68" rx="27" ry="17" fill="#5f4632"/><ellipse cx="50" cy="47" rx="14" ry="12" fill="#5f4632"/><path d="M40 43 Q35 34 27 36" fill="none" stroke-width="3.5"/><path d="M60 43 Q65 34 73 36" fill="none" stroke-width="3.5"/><ellipse cx="38" cy="54" rx="6" ry="5" fill="#5f4632" opacity="0.8"/><ellipse cx="62" cy="54" rx="6" ry="5" fill="#5f4632" opacity="0.8"/><path d="M50 30 Q56 20 50 12 Q44 20 50 30" fill="none" stroke="#b5453f" stroke-width="2" opacity="0.6"/>`, 0);
@@ -684,6 +746,14 @@ function artGeodeCrawler(){
 }
 function artEchoWraith(){
    return sceneWrap(`<path d="M50 22 Q68 30 66 54 Q64 78 50 84 Q36 78 34 54 Q32 30 50 22 Z" fill="#b06a97" opacity="0.55"/><path d="M46 26 Q64 34 62 58 Q60 82 46 88" fill="none" stroke="#3d5a80" stroke-width="2.5" opacity="0.6"/><circle cx="44" cy="44" r="3" fill="#f4efe4" stroke="none"/><circle cx="56" cy="44" r="3" fill="#f4efe4" stroke="none"/>`, 0);
+}
+
+/* Crystal City's own single zone-rare (ZONE_RARE_MONSTERS, content.js)
+— same angular crystalline-facet vocabulary as artCrystalSentinel
+above, this one a loose cluster of drifting shards rather than one
+solid silhouette. */
+function artDriftingFacet(){
+   return sceneWrap(`<path d="M50 14 L62 34 L50 48 L38 34 Z" fill="#3d5a80" opacity="0.7"/><path d="M68 50 L82 62 L68 78 L56 62 Z" fill="#b06a97" opacity="0.6"/><path d="M32 56 L46 66 L34 84 L20 72 Z" fill="#f4efe4" opacity="0.5"/><circle cx="50" cy="48" r="2.4" fill="#d1a94e" stroke="none"/>`, 0);
 }
 
 /* ---------------- Zone backdrop art ---------------- */

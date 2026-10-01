@@ -1325,6 +1325,94 @@ const arcaneSanctumGuardian = {
    art: artArcaneSanctumGuardian, loot: PALACE_GATE_GEAR.find(g => g.classRequired === 'Hexpert')
 };
 
+/* Bestiary registry — every named rare/boss monster in the game,
+collected into one array for the first time (they otherwise only ever
+exist as standalone consts, each referenced individually by its own
+*Hunt spawn check in goAdventuring(), combat.js). Nothing before this
+needed them collected together; the Bestiary (renderBestiaryBlock(),
+render-character.js) and its completion-bonus math (winCombat(),
+combat.js) are the first things that do. content.js's own 15 are listed
+directly since all are already in scope by this point in the file;
+mudroot-content.js/warrensear-content.js/emberwarren-content.js each
+append their own with `NAMED_BOSSES.push(...)` at the bottom of that
+file, the same extension pattern those files already use for
+`monsters.push(...)`/`BOUNTY_TEMPLATES.push(...)`. A future new boss
+(or zone-rare, see ZONE_RARE_MONSTERS below) just gets pushed here
+wherever it's defined — no different from the other wiring a new boss
+already needs. crystalcity-content.js has none of its own yet (still a
+stub zone) but pushes its own zone-rare here once that's added. */
+const NAMED_BOSSES = [
+   gnomeCommander, diggerBot, gnomeKingsCaptain,
+   palaceGuard1, palaceGuard2, palaceGuard3, palaceGuard4, palaceGuard5,
+   gnomeKing, trialChampion, casinoChampion, hoodooChampion,
+   garrisonGuardian, roguesDenEnforcer, arcaneSanctumGuardian,
+];
+
+/* One zone-rare monster per real adventuring zone (ADVENTURE_ZONES,
+combat.js — deliberately 15, not 16: `palace` is gauntlet-only and was
+never a wild-exploration zone, so it gets no zone-rare of its own).
+Unlike every *Hunt rare above (quest-gated, one-time, a single
+hand-written if-block per boss in goAdventuring()), these are
+ALWAYS available and repeatable — a flat chance every adventure in
+their zone, forever, checked generically once in goAdventuring()
+rather than needing 15 near-identical copies of that block. One shared
+chance constant, one lookup table built up the same way NAMED_BOSSES
+is — content.js's own 7 Act 1 zone-rares populate it directly below;
+mudroot-content.js/warrensear-content.js/emberwarren-content.js/
+crystalcity-content.js each add their own with
+`Object.assign(ZONE_RARE_MONSTERS, {...})` at the bottom of that file,
+same convention noncombatEvents/hazardEvents already use. Every
+zone-rare is ALSO pushed onto NAMED_BOSSES above, so it's trackable in
+the Bestiary like any other named monster. */
+const ZONE_RARE_SPAWN_CHANCE = 0.05;
+const ZONE_RARE_MONSTERS = {};
+
+/* Act 1's 7 zone-rares — stats derived from each zone's own toughest
+REGULAR monster (monsters[] above), not invented: beef/grit run ~20%
+above that ceiling, xp ~1.5-2x it, capped comfortably below whatever
+quest-rare/boss already guards that same zone so a zone-rare never
+outshines the real encounter there. */
+const mossbackStrider = {
+   name:"a mossback strider, somehow taller every time you look away", beef:4, zip:0, grit:12, hoodoo:0, xp:11, rare:true, zone:"commons",
+   art: artMossbackStrider,
+   loot:{name:"a fistful of impossibly fresh moss", desc:"Still damp. The ground nearby is bone dry.", type:"junk", sell:8, icon:iconSoil}
+};
+const sewerSovereign = {
+   name:"the sewer sovereign, crowned in bottlecaps nobody remembers losing", beef:5, zip:0, grit:16, hoodoo:0, xp:14, rare:true, zone:"sewers",
+   art: artSewerSovereign,
+   loot:{name:"a bottlecap crown, slightly too small for you", desc:"Dented in exactly the shape of a tiny, confident head.", type:"junk", sell:12, icon:iconBottlecapHelmet}
+};
+const quarryWraith = {
+   name:"a quarry wraith, worn into the rock face itself", beef:5, zip:0, grit:17, hoodoo:0, xp:20, rare:true, zone:"quarry",
+   art: artQuarryWraith,
+   loot:{name:"a sliver of quarry-wraith stone, warm despite the chill", desc:"Keeps the exact shape it was chipped into. Won't say why.", type:"junk", sell:16, icon:iconOreGrit}
+};
+const vaultBornEcho = {
+   name:"a vault-born echo, wearing a face it borrowed from a mirror", beef:6, zip:0, grit:20, hoodoo:0, xp:30, rare:true, zone:"vault",
+   art: artVaultBornEcho,
+   loot:{name:"a shard of borrowed glass, reflecting something else entirely", desc:"Not your face. Not anyone's face you recognize.", type:"junk", sell:22, icon:iconCapturedLight}
+};
+const unlistedRecruit = {
+   name:"the garrison's unlisted recruit, nobody's sure who signed off on it", beef:7, zip:0, grit:24, hoodoo:0, xp:38, rare:true, zone:"garrison",
+   art: artUnlistedRecruit,
+   loot:{name:"the unlisted recruit's own forged enlistment papers", desc:"Signed, stamped, and entirely fictional.", type:"junk", sell:28, icon:iconDrillRoster}
+};
+const shadeFingeredCutpurse = {
+   name:"a shade-fingered cutpurse, light-footed even by Rogues' Den standards", beef:7, zip:0, grit:24, hoodoo:0, xp:39, rare:true, zone:"roguesden",
+   art: artShadeFingeredCutpurse,
+   loot:{name:"a lifted trinket nobody's reported missing yet", desc:"Somebody's definitely going to notice this is gone. Eventually.", type:"junk", sell:28, icon:iconCoinPurse}
+};
+const halfCastFamiliar = {
+   name:"a half-cast familiar, stuck between the spell and the shape it was meant to take", beef:6, zip:0, grit:20, hoodoo:0, xp:30, rare:true, zone:"sanctum",
+   art: artHalfCastFamiliar,
+   loot:{name:"a half-formed hex, still humming", desc:"Never finished. Still works, somehow, a little.", type:"junk", sell:22, icon:iconFeatherScale}
+};
+Object.assign(ZONE_RARE_MONSTERS, {
+   commons: mossbackStrider, sewers: sewerSovereign, quarry: quarryWraith, vault: vaultBornEcho,
+   garrison: unlistedRecruit, roguesden: shadeFingeredCutpurse, sanctum: halfCastFamiliar,
+});
+NAMED_BOSSES.push(mossbackStrider, sewerSovereign, quarryWraith, vaultBornEcho, unlistedRecruit, shadeFingeredCutpurse, halfCastFamiliar);
+
 /* ---------------- Casino: Blackjack ---------------- */
 /* Replaces the old flat coin-flip (gambleCasino() — Bet 5/10/25 for a
 CASINO_WIN_CHANCE-ish shot at a flat 2x) per explicit direction: a real

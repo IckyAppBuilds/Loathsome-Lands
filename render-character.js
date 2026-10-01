@@ -117,6 +117,7 @@ renderStatsBlock();
   renderCastableSpellsBlock();
   renderEquipmentBlock();
   renderRareFindsBlock();
+  renderBestiaryBlock();
 }
 
 /* Rare-drop collection log — see state.rareDropsSeen (core.js) and the
@@ -143,6 +144,39 @@ function renderRareFindsBlock(){
     return `<div class="stat-row"><div style="flex:1;"><div class="stat-row-label">${nameHtml}</div></div></div>`;
   }).join('');
   el.innerHTML = `<div class="block-title">Rare Finds: ${foundCount} / ${totalRares}</div>${bonusNote}${rows}`;
+}
+
+/* Bestiary collection log — same shape as renderRareFindsBlock() just
+above, but covering every monster in the game (monsters[] + NAMED_BOSSES,
+content.js) rather than just rare drops, and unlocked on DEFEAT
+(state.monstersSeen, winCombat()/core.js) rather than on finding an
+item. Grouped by zone (Object.keys(ZONE_DIFFICULTY), content.js —
+already exactly the right commons->...->crystalcity progression order,
+no new ordering array needed) since 92 flat entries would otherwise be
+an unreadable wall. A zone's own header always shows, so players know
+a zone exists to explore; individual monster names inside stay "???"
+until defeated, same spoiler-avoidance Rare Finds already uses. */
+function renderBestiaryBlock(){
+  const el = document.getElementById('bestiary-block');
+  if(!el) return;
+  const all = [...monsters, ...NAMED_BOSSES];
+  const total = all.length;
+  const foundCount = state.monstersSeen.length;
+  const bonusNote = state.allMonstersBonusClaimed
+  ? `<div class="stat-points-note" style="color:var(--green);">Every creature seen! Bonus claimed.</div>`
+    : '';
+  const zoneGroups = Object.keys(ZONE_DIFFICULTY).map(zone=>{
+    const inZone = all.filter(m => m.zone === zone);
+    if(inZone.length === 0) return '';
+    const rows = inZone.map(m=>{
+      const found = state.monstersSeen.includes(m.name);
+      const art = found && m.art ? m.art() : '';
+      const label = found ? capitalize(m.name) : '???';
+      return `<div class="stat-row"><div class="icon-box">${art}</div><div style="flex:1;"><div class="stat-row-label">${label}</div></div></div>`;
+    }).join('');
+    return `<div class="quest-log-section-title">${ZONE_LABELS[zone]}</div>${rows}`;
+  }).join('');
+  el.innerHTML = `<div class="block-title">Bestiary: ${foundCount} / ${total}</div>${bonusNote}${zoneGroups}`;
 }
 
 function renderStatsBlock(){

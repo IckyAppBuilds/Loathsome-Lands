@@ -230,7 +230,9 @@ tier via `GEAR_DROP_TIER_CHANCE`/`rollGearDropTier()` — see combat.js).
 
 Every monster/boss across ALL FIVE monster-data files (this one,
 mudroot-content.js, warrensear-content.js, emberwarren-content.js,
-crystalcity-content.js — 77 objects total) is authored as a
+crystalcity-content.js — 92 objects total: the original 77 plus the 15
+always-available zone-rares added for the Bestiary feature, see
+`NAMED_BOSSES`/`ZONE_RARE_MONSTERS` below) is authored as a
 `beef`/`zip`/`grit`/`hoodoo` stat block, mirroring the player's own 4
 stats, REPLACING the old raw `hp`/`atkMin`/`atkMax`(/ad hoc
 `dodgeChance`) fields entirely — `deriveMonsterCombatStats()`
@@ -272,6 +274,38 @@ above `gnomeCommander` for the full rundown and reasoning) dispatched
 generically by combat.js's `monsterRetaliate()`/`useMonsterSkill()`,
 no per-boss combat code needed — with their own spawn-chance
 constants.
+
+**`NAMED_BOSSES`** (content.js, declared right after `arcaneSanctumGuardian`,
+the last of its own 15) collects every one of those named rare/boss
+consts into a single array for the first time — the Bestiary
+(`renderBestiaryBlock()`, render-character.js) and its completion-bonus
+math (`winCombat()`, combat.js) are the first things that need them
+together; before this they only ever existed as standalone consts each
+referenced by their own `*Hunt` check. mudroot-content.js/
+warrensear-content.js/emberwarren-content.js/crystalcity-content.js
+each append their own bosses/zone-rares with `NAMED_BOSSES.push(...)`
+at the bottom of that file — same extension pattern as
+`monsters.push(...)`/`BOUNTY_TEMPLATES.push(...)`. A new boss (or
+zone-rare) just gets pushed here wherever it's defined.
+
+**`ZONE_RARE_MONSTERS`/`ZONE_RARE_SPAWN_CHANCE`** — one always-
+available, repeatable rare monster per real adventuring zone
+(`ADVENTURE_ZONES`, combat.js — 15 zones; `palace` deliberately has
+none, since it's gauntlet-only and was never a wild-exploration zone).
+Unlike every `*Hunt` above (quest-gated, one-time, a hand-written
+`if` block per boss in `goAdventuring()`), these are checked ONCE,
+generically, via a single `ZONE_RARE_MONSTERS[state.location]` lookup
+in `goAdventuring()` — placed after every quest-hunt check (so an
+active quest hunt still takes priority) and before the normal
+encounter roll. Each zone's own rare is defined in that zone's own
+content file and added to `ZONE_RARE_MONSTERS` via
+`Object.assign(ZONE_RARE_MONSTERS, {...})`, same convention
+`noncombatEvents`/`hazardEvents` already use — and also pushed onto
+`NAMED_BOSSES` so it's trackable in the Bestiary like any other named
+monster. Stats are derived from that zone's own toughest REGULAR
+monster (`monsters[]`) — beef/grit ~20% above that ceiling, xp
+~1.5x it, capped below whatever quest-rare/boss already guards that
+same zone — not invented per zone.
 
 **Every regular (non-rare) monster now also carries exactly one
 skills[] entry** (combat-variety pass — previously only named bosses
@@ -698,8 +732,17 @@ Town Lot screen's layout or wording needs to change.
 
 ## render-character.js — progression screens
 `renderSpellMenu`, `renderCharacterDrawer` + its sub-blocks
-(`renderRareFindsBlock`/`renderStatsBlock`/`renderEquipmentBlock`), and
-`renderQuestLogDrawer`. `renderStatsBlock()` iterates
+(`renderRareFindsBlock`/`renderBestiaryBlock`/`renderStatsBlock`/
+`renderEquipmentBlock`), and `renderQuestLogDrawer`.
+`renderBestiaryBlock()` — same "???"-until-unlocked collection-log
+shape as `renderRareFindsBlock()` right above it, covering every
+monster in the game (`monsters[]` + `NAMED_BOSSES`, content.js — 92
+total) rather than just rare drops, grouped by zone
+(`Object.keys(ZONE_DIFFICULTY)` order, `ZONE_LABELS` headers) since a
+flat 92-entry list would be unreadable. Unlocked on DEFEAT
+(`state.monstersSeen`, set in `winCombat()`, combat.js) specifically,
+not merely encountering a monster — a zone header always shows even
+with nothing found there yet. `renderStatsBlock()` iterates
 `SPENDABLE_STAT_KEYS` (core.js), not `STAT_LABELS`, for the 4
 spend-a-point rows — armor gets its own separate read-only row instead
 (no base/bonus split, no button), shown only once `getEffectiveStats().armor`
@@ -942,7 +985,11 @@ pure class-trainer buildings; see gnometropolis.js)/`goAdventuring()`
 `tunnelMoleInformantHunt`/`seniorClerkHunt`/`gearworksForemanHunt`/
 `bureauQuartermasterHunt` — each a simple "quest accepted, not
 complete, not already found" boolean checked against a per-target
-spawn chance), `startCombat` (derives a template's real hp/atkMin/
+spawn chance; checked AFTER all of these and before the normal
+encounter roll: one generic `ZONE_RARE_MONSTERS[state.location]`
+lookup, `ZONE_RARE_SPAWN_CHANCE` — content.js's own always-available,
+repeatable per-zone rare, not quest-gated, so it's one shared check
+instead of 15 more copies of the `*Hunt` shape), `startCombat` (derives a template's real hp/atkMin/
 atkMax/dodgeChance/armor from its `beef`/`zip`/`grit` stat block via
 `deriveMonsterCombatStats()` right before applying `ZONE_DIFFICULTY` —
 dodgeChance/armor both pass through unscaled, same treatment
@@ -1016,7 +1063,14 @@ one — Hexpert is the first class with TWO Act 2 spells, Arcane Lance
 AND Illusion, both taught at the Sanctum)/`playerFlee`/`rollGearDropTier` (scales a monster's authored
 tier-1 gearDrop up 0-2 tiers, `GEAR_DROP_TIER_CHANCE`)/`winCombat`
 (rolls lootRoll/rareRoll/gearRoll independently on every kill — see
-the comment above monsters[], content.js, for what each one is)/
+the comment above monsters[], content.js, for what each one is; also
+records the Bestiary discovery — `state.monstersSeen`, matched by the
+defeated monster's own name against `NAMED_BOSSES`/`monsters[]` — and
+its one-time full-completion bonus, mirroring `rareDropsSeen`'s own
+shape; the completion-bonus check/log specifically happens AFTER this
+function's own `clearLog()` call, not at the top where the discovery
+itself is recorded, for the same "a log() before clearLog() just gets
+wiped" reason the rareDropsSeen bonus log already has to)/
 `endCombat` (also clears `state.playerStatusEffect` — scoped to a
 single fight, same as `state.evasionActive`)/`upgradeSpell(id)`
 (Arcane Sanctum + Hexpert-only — permanently deepens one already-known

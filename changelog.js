@@ -11,6 +11,11 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 21, date: 'September 30', title: 'The Bestiary', items: [
+      "New: the Bestiary, a Character-page log of every creature you've ever defeated — 92 entries, every regular monster and every named boss. Undefeated ones just show as \"???\" so nothing gets spoiled early.",
+      "Defeat every single one and the Guild wires over a congratulatory bonus.",
+      "Every adventuring zone now also has its own rare, always-findable creature on top of whatever quest bosses already lurk there — including the Clockwork Quarry, the Choir, and the Crystal City, which never had one before.",
+      ]},
    { id: 20, date: 'September 30', title: 'Every Class Gets a Moment', items: [
       "Meatheads can now land a staggering blow that skips the monster's own counterattack entirely — training your Class Skill raises the odds.",
       "Hexperts can now echo a damage spell for a free extra hit at half power, no added MP cost — same Class Skill training raises that too.",

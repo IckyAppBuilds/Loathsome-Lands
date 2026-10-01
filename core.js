@@ -347,7 +347,15 @@ function createDefaultState(){
         kept even if later sold/lost (see winCombat() in game.js and the
         Character drawer's Rare Finds block in render.js). */
      rareDropsSeen: [],
-     allRaresBonusClaimed: false
+     allRaresBonusClaimed: false,
+     /* Bestiary collection log — same shape as rareDropsSeen/
+     allRaresBonusClaimed just above, but keyed by monster NAME instead
+     of a rare drop's own name, and unlocked on actually DEFEATING a
+     monster (winCombat(), combat.js), not merely encountering one. See
+     NAMED_BOSSES (content.js) and renderBestiaryBlock()
+     (render-character.js). */
+     monstersSeen: [],
+     allMonstersBonusClaimed: false
    };
 }
 const state = createDefaultState();

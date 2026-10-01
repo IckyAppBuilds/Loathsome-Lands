@@ -90,6 +90,29 @@ const vaultKeeper = {
 monsters.push(...warrensEarMonsters);
 BOUNTY_TEMPLATES.push(...warrensEarMonsters.map(makeBountyTemplate));
 
+/* Bestiary registry (NAMED_BOSSES, content.js) — this hub's own 4
+quest-rare bosses defined above. */
+NAMED_BOSSES.push(tunnelMoleInformant, seniorClerk, committeeAuditor, vaultKeeper);
+
+/* This hub's own 2 zone-rares (ZONE_RARE_MONSTERS, content.js) — same
+derivation as every other zone-rare: ~20% above the zone's own regular
+trash ceiling, xp capped below whatever quest-rare/gauntlet boss
+already guards that zone. Ledger Vault already has committeeAuditor
+(45 xp)/vaultKeeper (68 xp) from the gauntlet above, so
+misfiledAuditor's own xp stays comfortably under the lower of the two. */
+const unsungChorister = {
+   name:"the unsung chorister, humming a note the Choir itself has never learned", beef:10, zip:0, grit:30, hoodoo:0, xp:55, rare:true, zone:"choir",
+   art: artUnsungChorister,
+   loot:{name:"a note nobody else can hit, bottled", desc:"Hums faintly whenever the room goes quiet.", type:"junk", sell:40, icon:iconWhistle}
+};
+const misfiledAuditor = {
+   name:"a misfiled auditor, cross-referenced into something that shouldn't check out", beef:10, zip:0, grit:30, hoodoo:0, xp:38, rare:true, zone:"ledgervault",
+   art: artMisfiledAuditor,
+   loot:{name:"a ledger entry filed under nothing at all", desc:"Technically doesn't exist. You're holding it anyway.", type:"junk", sell:38, icon:iconDrillRoster}
+};
+Object.assign(ZONE_RARE_MONSTERS, { choir: unsungChorister, ledgervault: misfiledAuditor });
+NAMED_BOSSES.push(unsungChorister, misfiledAuditor);
+
 /* Same reasoning as mudroot-content.js's own extension of these two
 objects — Choir/the Ledger Vault get their own flavor instead of
 falling back to the Commons pool. */

@@ -179,6 +179,19 @@ const tunnelWardenSalvageHunt = state.location==='rootcellar' && state.quest16Ac
       return;
    }
 
+/* One generic check for every zone's own always-available zone-rare
+(ZONE_RARE_MONSTERS, content.js) — unlike every *Hunt above, these
+aren't quest-gated or one-time, so a single lookup covers all 15
+zones instead of needing 15 near-identical copies of the blocks above.
+Checked AFTER every quest-hunt (so an active quest hunt still takes
+priority this adventure) and BEFORE the normal encounter roll below. */
+const zoneRare = ZONE_RARE_MONSTERS[state.location];
+   if(zoneRare && Math.random() < ZONE_RARE_SPAWN_CHANCE){
+      startCombat(zoneRare);
+      render();
+      return;
+   }
+
 /* Non-combat share of the encounter roll: hazard was cut from 12% down
    to 5% per user feedback that unscripted damage events specifically
    were showing up too often — the freed-up 7 points went to combat
@@ -1011,6 +1024,17 @@ function rollGearDropTier(baseDrop){
 function winCombat(){
    const defeatedName = state.monster.name;
    const xpGain = state.monster.xp;
+   /* Bestiary discovery — see state.monstersSeen's own comment
+   (core.js). Unlocked on DEFEAT specifically, per explicit correction
+   (not merely encountering it, startCombat()) — fleeing or losing
+   doesn't count. NAMED_BOSSES (content.js) covers every rare/boss/
+   zone-rare monster; monsters[] covers every regular one. Just the
+   silent recording here — the completion-bonus check/log moves below,
+   after this function's own clearLog(), for the same reason the
+   rareDropsSeen bonus log does (a log() call made before that point
+   would just get wiped by it). */
+   const isNewMonsterDiscovery = !state.monstersSeen.includes(defeatedName);
+   if(isNewMonsterDiscovery) state.monstersSeen.push(defeatedName);
    const wasCommander = !!state.monster.rare && state.monster.name === gnomeCommander.name;
    const wasDiggerBot = !!state.monster.rare && state.monster.name === diggerBot.name;
    const wasVaultCaptain = !!state.monster.rare && state.monster.name === gnomeKingsCaptain.name;
@@ -1126,6 +1150,14 @@ if(wasBuildingTrialFight){
 }
 
 clearLog();
+   if(isNewMonsterDiscovery && !state.allMonstersBonusClaimed){
+      const totalMonsters = monsters.length + NAMED_BOSSES.length;
+      if(state.monstersSeen.length >= totalMonsters){
+         state.allMonstersBonusClaimed = true;
+         state.popTabs += 100;
+         log(`You've laid eyes on every creature in the Loathsome Lands! The Guild wires you a congratulatory bonus. (+100 Pop Tabs)`);
+      }
+   }
    if(wasCommander){
       state.commanderDefeated = true;
       log(`You defeat ${defeatedName}! The rest of his gnomes scatter into the hedges. (+${xpGain} XP)`);

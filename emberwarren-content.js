@@ -112,6 +112,27 @@ const warrenMother = {
    art: artWarrenMother, loot:null
 };
 
+/* Bestiary registry (NAMED_BOSSES, content.js) — this hub's own 6
+quest-rare bosses defined above. */
+NAMED_BOSSES.push(gearworksForeman, bureauQuartermaster, quenchMaster, tunnelCaptain, foundryMarshal, warrenMother);
+
+/* This hub's own 2 zone-rares (ZONE_RARE_MONSTERS, content.js) — same
+derivation as every other zone-rare. Gearworks already has 3
+quest-rares (tunnelCaptain 50/foundryMarshal 58/warrenMother 90), so
+looseCogIncarnate's own xp stays below the lowest of those. */
+const emberForgedWretch = {
+   name:"an ember-forged wretch, poured from the same mold as everything else here, wrong anyway", beef:10, zip:0, grit:31, hoodoo:0, xp:55, rare:true, zone:"foundry",
+   art: artEmberForgedWretch,
+   loot:{name:"a slag casting nobody ordered", desc:"Fits no machine in the Foundry. Fits something, somewhere.", type:"junk", sell:42, icon:iconCapturedLight}
+};
+const looseCogIncarnate = {
+   name:"a loose cog incarnate, somehow load-bearing anyway", beef:10, zip:0, grit:30, hoodoo:0, xp:45, rare:true, zone:"gearworks",
+   art: artLooseCogIncarnate,
+   loot:{name:"the one gear that definitely shouldn't fit, but does", desc:"Nobody's dared remove it to check what happens.", type:"junk", sell:40, icon:iconGear}
+};
+Object.assign(ZONE_RARE_MONSTERS, { foundry: emberForgedWretch, gearworks: looseCogIncarnate });
+NAMED_BOSSES.push(emberForgedWretch, looseCogIncarnate);
+
 /* Same reasoning as mudroot-content.js/warrensear-content.js's own
 extension of these two objects — the Foundry/the Gearworks get their
 own flavor instead of falling back to the Commons pool. */

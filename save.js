@@ -150,6 +150,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
        classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
        classBuffFightsLeft,
        activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
+       monstersSeen, allMonstersBonusClaimed,
        lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
        lastSeenChangelogVersion, dailyStreakCount, lastLoginRewardDateKey } = state;
    return {
@@ -174,6 +175,7 @@ const { hp, maxHp, shield, mp, maxMp, baseMaxHp, baseMaxMp, adventures, popTabs,
       classTrialGuildPassed, classTrialCasinoPassed, classTrialHoodooPassed, classSkillLevel,
       classBuffFightsLeft,
       activeBounty, bountiesCompleted, bountiesClaimedToday, bountyDayKey, rareDropsSeen, allRaresBonusClaimed,
+      monstersSeen, allMonstersBonusClaimed,
       lotTier, buildingUpgrades, gnomeLotTier, gnomeBuildingUpgrades, statResetsBrewed, lastInnRestAt, lastCampRestAt, casinoWinnings, lastCasinoRegenAt,
       lastSeenChangelogVersion, dailyStreakCount, lastLoginRewardDateKey,
       equipment: Object.fromEntries(
@@ -220,6 +222,8 @@ state.activeBounty = saved.activeBounty || null;
    state.lastLoginRewardDateKey = typeof saved.lastLoginRewardDateKey === 'string' ? saved.lastLoginRewardDateKey : null;
    state.rareDropsSeen = Array.isArray(saved.rareDropsSeen) ? saved.rareDropsSeen : [];
    state.allRaresBonusClaimed = !!saved.allRaresBonusClaimed;
+   state.monstersSeen = Array.isArray(saved.monstersSeen) ? saved.monstersSeen : [];
+   state.allMonstersBonusClaimed = !!saved.allMonstersBonusClaimed;
    /* Town Lot — added after this function was first written, same reasoning
    as the bounty board/rare-drop fallbacks just above: give older saves that
    predate these fields sane defaults rather than leaving them undefined. */

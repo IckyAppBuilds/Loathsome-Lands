@@ -95,6 +95,33 @@ const warrenScout = {
    art: artWarrenScout, loot:null
 };
 
+/* Bestiary registry (NAMED_BOSSES, content.js) — this hub's own 2
+quest-rare bosses defined above. */
+NAMED_BOSSES.push(tunnelWarden, warrenScout);
+
+/* This hub's own 3 zone-rares (ZONE_RARE_MONSTERS, content.js) — same
+"~20% above the zone's own regular trash ceiling, capped below
+whatever quest-rare already guards that zone" derivation content.js's
+own Act 1 zone-rares use. Always-available/repeatable, unlike
+tunnelWarden/warrenScout above. */
+const rootWarden = {
+   name:"a root-warden, grown into the tunnel wall over seasons nobody tracked", beef:7, zip:0, grit:24, hoodoo:0, xp:41, rare:true, zone:"rootcellar",
+   art: artRootWarden,
+   loot:{name:"a bark-like root-warden scale, still faintly warm", desc:"Peeled off something that was holding very still.", type:"junk", sell:30, icon:iconBurrowShell}
+};
+const unregisteredAuditor = {
+   name:"the unregistered auditor, carrying a badge for a department that doesn't exist", beef:7, zip:0, grit:24, hoodoo:0, xp:42, rare:true, zone:"bureau",
+   art: artUnregisteredAuditor,
+   loot:{name:"a badge for a department you've never heard of", desc:"Laminated. Official-looking. Means nothing, probably.", type:"junk", sell:30, icon:iconVizierLedger}
+};
+const siltWalker = {
+   name:"a silt-walker, three steps ahead and never once visibly moving", beef:8, zip:0, grit:28, hoodoo:0, xp:48, rare:true, zone:"mudflats",
+   art: artSiltWalker,
+   loot:{name:"a silt-walker's own footprint, perfectly cast in dried clay", desc:"Already hardened by the time you noticed it.", type:"junk", sell:35, icon:iconSurveyMap}
+};
+Object.assign(ZONE_RARE_MONSTERS, { rootcellar: rootWarden, bureau: unregisteredAuditor, mudflats: siltWalker });
+NAMED_BOSSES.push(rootWarden, unregisteredAuditor, siltWalker);
+
 /* Folds these two districts into the pool startCombat() actually draws
 from (monsters.filter(m => m.zone===state.location), combat.js) — a
 plain array mutation, not a reassignment, so it stays a genuine `const`

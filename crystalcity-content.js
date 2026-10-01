@@ -28,6 +28,18 @@ const crystalCityMonsters = [
 monsters.push(...crystalCityMonsters);
 BOUNTY_TEMPLATES.push(...crystalCityMonsters.map(makeBountyTemplate));
 
+/* This zone's own single zone-rare (ZONE_RARE_MONSTERS, content.js) —
+same ~20%-above-regular-trash-ceiling derivation as every other
+zone-rare. Crystal City has no quest-rare/boss of its own yet (still a
+stub zone), so no xp cap is needed here. */
+const driftingFacet = {
+   name:"a drifting facet, light bending the wrong way just to reach it", beef:11, zip:0, grit:32, hoodoo:0, xp:65, rare:true, zone:"crystalcity",
+   art: artDriftingFacet,
+   loot:{name:"a facet that keeps catching light that isn't there", desc:"Glints on cue, every time, for no visible reason.", type:"junk", sell:46, icon:iconVeinGemstone}
+};
+Object.assign(ZONE_RARE_MONSTERS, { crystalcity: driftingFacet });
+NAMED_BOSSES.push(driftingFacet);
+
 Object.assign(noncombatEvents, {
    crystalcity: [
       "Light moves through the walls here like it's still deciding where to land.",
