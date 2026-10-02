@@ -2189,10 +2189,11 @@ const STAT_SCALING_DIVISOR = 15;
 replace every monster's old raw hp/atkMin/atkMax/dodgeChance fields —
 deriveMonsterCombatStats() (combat.js) turns them into the numbers
 startCombat() actually uses, via statBonus() same as every player formula.
-No "level" term (monsters don't level) and no per-monster hoodoo effect yet
-— hoodoo exists in the data shape for a future "scale skill[] magnitude off
-it" pass, out of scope for this change; every monster's skills[] keeps its
-own hand-authored heal/bolt/debuff numbers untouched regardless of hoodoo. */
+No "level" term (monsters don't level). hoodoo now DOES have a real
+mechanical effect — see hoodooResistance()'s own comment further down —
+but it's a damage-mitigation layer read by applyDamageToMonster(), not a
+skills[] input; every monster's skills[] still keeps its own hand-authored
+heal/bolt/debuff numbers untouched regardless of hoodoo. */
 const MONSTER_HP_PER_GRIT = 1; /* hp = statBonus(grit) * this */
 const MONSTER_ATK_PER_BEEF = 1; /* atk center = statBonus(beef) * this, spread +/- MONSTER_ATK_SPREAD below */
 const MONSTER_ATK_SPREAD = 0.25;
@@ -2218,6 +2219,46 @@ moderate armor and then hard-flatlines at the ceiling rather than ever
 reaching (or exceeding) 100%. */
 const ARMOR_REDUCTION_COEFFICIENT = 0.02;
 const ARMOR_REDUCTION_CAP = 0.6;
+
+/* Hoodoo's own monster-side mechanic, per explicit request ("how do we
+make hexpert viable" / "ethereal things should [use hoodoo]") — until
+now a monster's hoodoo had NO mechanical effect at all (see the old
+comment above `monsters[]`, content.js, for why: skills[] kept their
+own hand-authored magnitude regardless of it). hoodooResistance()
+(combat.js) reuses the exact same statBonus()-driven, capped-reduction
+shape armorDamageReduction() already has — but it ONLY mitigates
+NON-magic damage (a plain Attack, Card Shark's bonus swing), never a
+spell (applyDamageToMonster()'s own `isMagic` parameter is what gates
+this — see its comment). A monster with real hoodoo reads as
+"ethereal": physically tougher than its armor alone would suggest, but
+a Hexpert's own spell damage punches straight through untouched,
+because magic was never what it was ever resisting. Deliberately a
+LOWER cap than armor's own (0.4 vs 0.6) — this has to stay beatable
+with nothing but Attack for the 2 of 3 classes who can never swap into
+Hexpert mid-playthrough (class choice is permanent), just slower/
+harder, not walled off; it's an edge for whoever brought magic, not a
+hard class gate. No compensating grit cut on the "ethereal" archetype
+monsters that use this (monster-stats.js) the way the evasive/armored
+archetypes get one — unlike dodge/armor, this resistance is
+CONDITIONAL on the attacker's own choice of damage type, not a
+universal defense every class pays the same price to see, so there's
+no universal difficulty increase to offset.
+
+Rolled out as a real "ethereal" archetype across 70 of the 122 monsters
+left eligible after the evasive/armored passes claimed the rest
+(monster-stats.js, mutually exclusive with both the same way evasive
+and armored already are with each other) — hoodoo 5-7 for regular/
+dungeon-trash, 9-11 for zone-bosses/dungeon-minibosses (12-14, hitting
+the cap outright, was reserved for dungeon-bosses but all 8 were
+already claimed 4-evasive/4-armored, so no dungeon-boss ended up
+ethereal this pass). Selection: an explicit ethereal-flavored name
+(wisp/spirit/shadow/echo/ghost/familiar/summon/hex/rune/witch/wizard/
+oracle/curse/etc) always converts; an explicit mundane-brute name
+(brute/warden/sentinel/plated/forged/guard/etc) never does; anything
+else in the remaining pool converts roughly 1-in-3, same density every
+archetype pass here uses. */
+const HOODOO_RESIST_COEFFICIENT = 0.02;
+const HOODOO_RESIST_CAP = 0.4;
 
 /* A monster's own armor WAS derived purely from grit + whether it's
 rare:true (two flat per-grit rate constants that used to live here),

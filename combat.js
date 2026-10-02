@@ -232,10 +232,13 @@ replaced the old raw hp/atkMin/atkMax/dodgeChance fields entirely) into
 the numbers startCombat() below actually spawns with, via statBonus()
 (core.js) same as every player-side formula. No "level" term — unlike
 the player, a monster's own stats don't grow over time, so its combat
-numbers are pure functions of grit/beef/zip/armor. hoodoo is
-deliberately unused here (see its own comment, content.js) — a
-monster's skills[] keep their own hand-authored magnitude regardless of
-hoodoo.
+numbers are pure functions of grit/beef/zip/armor. hoodoo itself isn't
+derived here — it passes straight through on the `{...template}` spread
+in startCombat() below untouched, and is read directly off state.monster
+by hoodooResistance()/applyDamageToMonster() further down (see their own
+comments) rather than folded into hp/atk the way grit/beef are; a
+monster's skills[] still keep their own hand-authored magnitude
+regardless of hoodoo.
 
 armor is read straight off MONSTER_STATS (monster-stats.js) as its own
 authored field now, same as beef/zip/grit/hoodoo — NOT derived from grit
@@ -283,6 +286,16 @@ as "diminishing returns" in practice despite statBonus() itself being an
 increasing-returns curve). */
 function armorDamageReduction(armor){
    return Math.min(ARMOR_REDUCTION_CAP, statBonus(armor || 0) * ARMOR_REDUCTION_COEFFICIENT);
+}
+
+/* Hoodoo's own mitigation fraction (0..HOODOO_RESIST_CAP, content.js) —
+same shape armorDamageReduction() above has, just a lower cap and (per
+applyDamageToMonster()'s own `isMagic` gate) only ever applied against
+NON-magic damage. Only read for a MONSTER's own hoodoo right now — the
+player's hoodoo already has its own, unrelated jobs (spell damage/heal/
+ward magnitude), so this never touches getEffectiveStats().hoodoo. */
+function hoodooResistance(hoodoo){
+   return Math.min(HOODOO_RESIST_CAP, statBonus(hoodoo || 0) * HOODOO_RESIST_COEFFICIENT);
 }
 
 function startCombat(forceTemplate){
@@ -356,8 +369,21 @@ zipDodgeAndAccuracy() formula (combat.js) evaluated on the PLAYER's zip
 instead of the monster's. A player with high zip meaningfully counters
 even a highly evasive monster; floored at 0 so a big accuracy edge can
 only ever zero out dodge, never go negative/"extra guaranteed" beyond
-that. */
-function applyDamageToMonster(rawDmg, guaranteedHit){
+that.
+
+`isMagic` (new) is true only for the two spell-damage call sites
+(castSpell()'s 'damage' branch and Hexpert's own echo-cast) — never
+for playerAttack()'s primary swing or Card Shark's bonus swing. It
+gates `hoodooResistance()` (combat.js, HOODOO_RESIST_CAP/COEFFICIENT,
+content.js): a monster's own hoodoo only ever mitigates NON-magic
+damage, so a Hexpert's spell punches straight through an "ethereal"
+(high-hoodoo) monster's resistance at full force while a plain Attack
+from any class gets shaved down by it — see hoodoo's own comment,
+content.js, for the full "how we make Hexpert viable against this"
+reasoning. Stacks multiplicatively with armor, which still applies to
+every damage type regardless (plating doesn't care whether a hit was
+magic or not; hoodoo-resistance is the new, narrower layer on top). */
+function applyDamageToMonster(rawDmg, guaranteedHit, isMagic){
    const playerAccuracy = zipDodgeAndAccuracy(getEffectiveStats().zip);
    const effectiveDodgeChance = Math.max(0, (state.monster.dodgeChance || 0) - playerAccuracy);
    if(!guaranteedHit && effectiveDodgeChance && Math.random() < effectiveDodgeChance){
@@ -374,7 +400,8 @@ function applyDamageToMonster(rawDmg, guaranteedHit){
    swing, castSpell()'s 'damage' branch) needs to log the RETURNED `dealt`
    amount, not its own local pre-mitigation damage variable, or the log
    text and the monster's actual HP change would disagree. */
-   const dealt = rawDmg <= 0 ? 0 : Math.max(1, Math.round(rawDmg * (1 - armorDamageReduction(state.monster.armor))));
+   const hoodooMitigation = isMagic ? 0 : hoodooResistance(state.monster.hoodoo);
+   const dealt = rawDmg <= 0 ? 0 : Math.max(1, Math.round(rawDmg * (1 - armorDamageReduction(state.monster.armor)) * (1 - hoodooMitigation)));
    state.monster.hp = Math.max(0, state.monster.hp - dealt);
    return { dodged: false, dealt };
 }
@@ -626,7 +653,7 @@ function playerAttack(){
       || (sneakAttackChance > 0 && Math.random() < sneakAttackChance);
    if(sneakAttackLands) dmg = Math.round(dmg * 2);
 
-   const { dodged, dealt } = applyDamageToMonster(dmg, sneakAttackLands);
+   const { dodged, dealt } = applyDamageToMonster(dmg, sneakAttackLands, false);
    if(dodged){
       log(`${capitalize(state.monster.name)} slips out of the way — ${weaponName} finds nothing but air.`);
    } else {
@@ -665,7 +692,7 @@ function playerAttack(){
    only, same "landing it denies retaliation" rule as before. */
    if(state.classTitle === 'Card Shark' && Math.random() < CARD_SHARK_DOUBLE_ATTACK_CHANCE[state.classSkillLevel]){
       const dmg2 = Math.round((randInt(3,7) + (state.level-1) + statBonus(eff.beef)) * statusFx.dmgMult);
-      const { dodged: dodged2, dealt: dealt2 } = applyDamageToMonster(dmg2, false);
+      const { dodged: dodged2, dealt: dealt2 } = applyDamageToMonster(dmg2, false, false);
       if(dodged2){
          log(`Quick as a card trick, you come back around for a second swing with ${weaponName} — ${state.monster.name} slips out of the way again.`);
       } else {
@@ -808,7 +835,7 @@ if(spell.type==='damage'){
    just the base roll — chosen to mirror how Adrenaline Rush stacks on
    top of MEATHEAD_DAMAGE_BONUS in playerAttack() rather than diverge. */
    if(state.classBuffFightsLeft > 0 && state.classTitle === 'Hexpert') dmg = Math.round(dmg * 1.5);
-   const { dodged, dealt } = applyDamageToMonster(dmg, false);
+   const { dodged, dealt } = applyDamageToMonster(dmg, false, true);
    if(dodged){
       log(`You cast ${spell.name}, but ${state.monster.name} isn't where the bolt lands.`);
    } else {
@@ -840,7 +867,7 @@ if(spell.type==='damage'){
    Shark's bonus swing uses relative to its own retaliation line. */
    if(state.classTitle === 'Hexpert' && Math.random() < HEXPERT_ECHO_CHANCE[state.classSkillLevel]){
       const echoDmg = Math.round(dmg * HEXPERT_ECHO_DAMAGE_MULT);
-      const { dodged: dodged2, dealt: dealt2 } = applyDamageToMonster(echoDmg, false);
+      const { dodged: dodged2, dealt: dealt2 } = applyDamageToMonster(echoDmg, false, true);
       if(dodged2){
          log(`${spell.name} echoes a half-beat late — ${state.monster.name} slips out of the way this time.`);
       } else {

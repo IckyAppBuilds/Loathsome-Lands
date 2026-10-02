@@ -281,10 +281,10 @@ mirroring the player's own 4 stats, REPLACING the old raw
 `hp`/`atkMin`/`atkMax`(/ad hoc `dodgeChance`) fields entirely —
 `deriveMonsterCombatStats()` (combat.js) turns these into the numbers
 `startCombat()` actually spawns with, via `statBonus()` same as every
-player formula. `hoodoo` is present in the data shape but has NO
-mechanical effect yet (a monster's `skills[]` keep their own
-hand-authored heal/bolt/debuff magnitude regardless of hoodoo — scaling
-those off it is an intentionally out-of-scope follow-up).
+player formula. `hoodoo` now has a real mechanical effect — see its own
+"ethereal archetype" paragraph further down — though a monster's
+`skills[]` still keep their own hand-authored heal/bolt/debuff
+magnitude regardless of hoodoo; that part was never in scope.
 
 **Per a later explicit request ("I want to tune their stats" / "have
 the lookup table be part of the GitHub with the program referencing
@@ -348,6 +348,34 @@ extraction diffed every monster's new armor/grit against the computed
 plan (zero mismatches) and the Prism Depths difficulty calibration was
 re-checked across all 8 dungeons. See monster-stats.js's own comment
 for the exact keyword/tier rules.
+
+**`hoodoo` is a real "ethereal" archetype now too**, per explicit
+request ("how do we handle hoodoo... ethereal things should be like
+that as well as how we make hexpert viable"). `hoodooResistance()`
+(combat.js, `HOODOO_RESIST_COEFFICIENT`/`HOODOO_RESIST_CAP`,
+content.js) mitigates a fraction of damage dealt TO a monster with real
+hoodoo, same capped `statBonus()` shape `armorDamageReduction()` uses —
+but ONLY against non-magic damage (`applyDamageToMonster()`'s own
+`isMagic` parameter gates it; a Hexpert's own spell damage ignores it
+completely). That asymmetry IS the "make Hexpert viable" payoff: the
+one class that invests in hoodoo gets a built-in edge against monsters
+that invest in resisting everyone else, while Meathead/Card Shark just
+face a real-but-survivable (capped at 0.4, lower than armor's own 0.6
+specifically because class choice is permanent and this can't become a
+hard wall for 2 of 3 classes) extra toughness check. 70 of the 122
+monsters left after the evasive/armored passes claimed their own share
+were converted: hoodoo raised into a tier (5-7 regular/dungeon-trash,
+9-11 zone-boss/dungeon-miniboss; a 12-14 dungeon-boss tier went unused
+since all 8 dungeon finals were already evasive or armored), grit left
+UNTOUCHED (unlike the other two archetypes — the benefit here is
+conditional on the attacker's own damage-type choice, not a universal
+defense, so there's no universal difficulty increase to offset). A
+monster is never ethereal AND evasive/armored — all three stay mutually
+exclusive. Re-verified the same way: a live extraction diffed every
+monster's new hoodoo against the computed plan (zero mismatches, beef/
+zip/grit/armor/xp confirmed untouched) and the Prism Depths calibration
+was re-checked, with particular attention to Meathead/Card Shark win
+rates since they face the new resistance with no way to bypass it.
 
 The named bosses — every one of them (`gnomeCommander`/`diggerBot`/
 `gnomeKingsCaptain`/`gnomeKing`/the Adventurer's Trial's three themed
@@ -568,9 +596,8 @@ as content.js's own `monsters[]` (each one also carries its own
 comment above that constant), `.push()`ed onto that same array at the
 bottom of this file rather than duplicating combat.js's zone filter),
 quest9's two rare hunt targets (`tunnelWarden`/`warrenScout` — same
-`rare:true`/`skills[]`/`beef`/`zip`/`grit`/`hoodoo` stat-block shape as
-content.js's own named bosses (armor is never authored — see armor's
-own comment above), spawned by
+`rare:true`/`skills[]`/`beef`/`zip`/`grit`/`hoodoo`/`armor` stat-block
+shape as content.js's own named bosses, spawned by
 `tunnelWardenHunt`/`warrenScoutHunt` in
 `goAdventuring()`, combat.js) plus their own spawn-chance constants,
 and extends content.js's `noncombatEvents`/`hazardEvents` with entries
@@ -1352,28 +1379,32 @@ instead of 15 more copies of the `*Hunt` shape), `startCombat` (derives a templa
 atkMax/dodgeChance/armor from its `beef`/`zip`/`grit` stat block via
 `deriveMonsterCombatStats()` right before applying `ZONE_DIFFICULTY` —
 dodgeChance/armor both pass through unscaled, same treatment
-`dodgeChance` always got)/`deriveMonsterCombatStats(m)` (the
+`dodgeChance` always got; `hoodoo` passes through on the `{...template}`
+spread untouched by any of this, read later directly off `state.monster`
+by `hoodooResistance()`)/`deriveMonsterCombatStats(m)` (the
 monster-stat-block formula shapes, mirroring the player's own
 maxHp/dodge formulas — no "level" term, since monsters don't level;
-`hoodoo` is deliberately unread here; armor is derived from `grit` +
-`m.rare` — a `rare:true` monster uses a steeper per-grit rate than
-regular trash, `MONSTER_ARMOR_PER_GRIT`/`MONSTER_RARE_ARMOR_PER_GRIT`,
-content.js — armor is NEVER read off the template itself, it has no
-authored armor field at all; `dodgeChance` itself is derived via
-`zipDodgeAndAccuracy(m.zip)`, the same shared zip formula
+`armor` is read straight off the template now, a real authored field in
+`monster-stats.js`, no longer derived from `grit`; `dodgeChance` itself
+is derived via `zipDodgeAndAccuracy(m.zip)`, the same shared zip formula
 `playerDodgeChance()` below uses for the player's own base
 dodge)/`zipDodgeAndAccuracy(zip)` (zip's ONE formula, used for dodge
 AND accuracy, on both sides — see `ZIP_DODGE_COEFFICIENT`/
 `ZIP_DODGE_CAP`'s own comment, content.js)/`armorDamageReduction(armor)`
 (shared by both damage functions
 below — reuses `statBonus()`'s own curve, capped at
-`ARMOR_REDUCTION_CAP`, content.js)/`applyDamageToPlayer`/
+`ARMOR_REDUCTION_CAP`, content.js)/`hoodooResistance(hoodoo)` (same
+capped `statBonus()` shape, lower cap — `HOODOO_RESIST_CAP`, content.js
+— only ever read for a MONSTER's own hoodoo, only applied against
+non-magic damage, see its own comment)/`applyDamageToPlayer`/
 `applyDamageToMonster` (both mitigate via `armorDamageReduction()`
 before anything else — shield absorption for the player, the dodge
 roll for a monster already happened/happens first — floored at 1 UNLESS
 the raw incoming damage was already `<=0`, in which case it stays 0
-rather than manufacturing a hit out of nothing; both return the actual
-post-armor amount, and every caller logs THAT, not its own
+rather than manufacturing a hit out of nothing; `applyDamageToMonster`
+ALSO takes `hoodooResistance()` into account, but only when its own
+`isMagic` argument is false — a spell ignores it entirely; both return
+the actual post-mitigation amount, and every caller logs THAT, not its own
 pre-mitigation local variable. `applyDamageToMonster` ALSO subtracts
 the player's own `zipDodgeAndAccuracy()`-derived accuracy from the
 monster's `dodgeChance` before rolling it — per explicit request, the
