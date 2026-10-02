@@ -670,6 +670,119 @@ function artGnomeFamiliar(){
 function artGnomePickpocket(){
    return sceneWrap(`<path d="M50 8 Q64 14 60 30 L40 30 Q36 14 50 8 Z" fill="#2b2b28"/><rect x="40" y="26" width="20" height="6" fill="#2b2b28" stroke="none"/><circle cx="50" cy="38" r="10" fill="#e0c49a"/><path d="M34 48 Q50 40 66 48 L62 86 Q50 92 38 86 Z" fill="#2b2b28"/><line x1="34" y1="52" x2="18" y2="60"/><path d="M18 60 L10 54 M18 60 L14 68" stroke-width="2.5"/><line x1="66" y1="52" x2="80" y2="46"/><line x1="50" y1="86" x2="42" y2="99"/><line x1="50" y1="86" x2="58" y2="99"/>`, 0);
 }
+/* Same gap-filling, class-gated pass as the other zones above — 33
+more Gnometropolis district regulars (12 Garrison, 10 Rogues' Den, 11
+Arcane Sanctum), same gnome stick-figure template every district
+regular already uses. */
+function artGnomeQuartermaster(){
+   return sceneWrap(`<path d="M50 10 L30 44 L70 44 Z" fill="#8a8477"/><circle cx="50" cy="56" r="13" fill="#e0c49a"/><rect x="40" y="62" width="20" height="14" fill="#a97c53"/><line x1="50" y1="76" x2="50" y2="88"/><line x1="36" y1="60" x2="26" y2="54"/><line x1="64" y1="60" x2="74" y2="54"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artGnomeRecruit(){
+   return sceneWrap(`<path d="M50 14 L34 44 L66 44 Z" fill="#5c8a5c"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="68" y2="68"/><line x1="50" y1="74" x2="32" y2="80"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 1);
+}
+function artGnomeDrillfieldRunner(){
+   return sceneWrap(`<path d="M50 10 L34 38 L66 38 Z" fill="#5c8a5c"/><circle cx="50" cy="50" r="11" fill="#e0c49a"/><line x1="50" y1="61" x2="50" y2="78"/><line x1="50" y1="66" x2="26" y2="56"/><line x1="50" y1="66" x2="74" y2="72"/><line x1="50" y1="78" x2="28" y2="90"/><line x1="50" y1="78" x2="72" y2="94"/>`, -6);
+}
+function artGnomeScoutSergeant(){
+   return sceneWrap(`<path d="M50 12 L34 42 L66 42 Z" fill="#8a8477" opacity="0.7"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="76" y2="60"/><circle cx="80" cy="56" r="3" fill="none" stroke="#2b2b28" stroke-width="1.5"/><line x1="50" y1="72" x2="32" y2="80"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artGnomeSupplyRaider(){
+   return sceneWrap(`<path d="M50 10 L32 42 L68 42 Z" fill="#b06a97"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><rect x="66" y="50" width="14" height="18" fill="#a97c53"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="32" y2="80"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 2);
+}
+function artGnomePerimeterRunner(){
+   return sceneWrap(`<path d="M50 8 L34 36 L66 36 Z" fill="#b06a97"/><circle cx="50" cy="48" r="11" fill="#e0c49a"/><line x1="50" y1="59" x2="50" y2="76"/><line x1="50" y1="64" x2="24" y2="54"/><line x1="50" y1="64" x2="76" y2="70"/><line x1="50" y1="76" x2="26" y2="88"/><line x1="50" y1="76" x2="74" y2="92"/>`, -7);
+}
+function artGnomeBladeSergeant(){
+   return sceneWrap(`<path d="M50 10 L32 42 L68 42 Z" fill="#8a8477"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="80" y2="56"/><line x1="80" y1="56" x2="88" y2="48"/><line x1="50" y1="72" x2="32" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, -2);
+}
+function artGnomeWarChaplain(){
+   return sceneWrap(`<path d="M50 10 L32 44 L68 44 Z" fill="#f4efe4" opacity="0.7"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="30" x2="50" y2="14"/><line x1="42" y1="22" x2="58" y2="22"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="32" y2="82"/><line x1="50" y1="74" x2="68" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artGnomeSignalCaster(){
+   return sceneWrap(`<path d="M50 12 L32 44 L68 44 Z" fill="#3d5a80" opacity="0.8"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><circle cx="50" cy="56" r="22" fill="none" stroke="#d1a94e" stroke-width="1.5" opacity="0.5"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="32" y2="82"/><line x1="50" y1="74" x2="68" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artGnomeRuneMarkedScout(){
+   return sceneWrap(`<path d="M50 10 L34 40 L66 40 Z" fill="#b06a97" opacity="0.8"/><circle cx="50" cy="52" r="11" fill="#e0c49a"/><line x1="50" y1="63" x2="50" y2="84"/><path d="M34 90 L38 82 L42 90 L38 86 Z" fill="#d1a94e" stroke="none"/><line x1="50" y1="68" x2="30" y2="60"/><line x1="50" y1="68" x2="70" y2="74"/><line x1="50" y1="84" x2="60" y2="96"/>`, 2);
+}
+function artGnomeWardWalker(){
+   return sceneWrap(`<line x1="20" y1="90" x2="80" y2="90" stroke-width="2" stroke-dasharray="3 5"/><path d="M50 12 L34 42 L66 42 Z" fill="#3d5a80" opacity="0.7"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="84"/><line x1="50" y1="72" x2="32" y2="80"/><line x1="50" y1="72" x2="68" y2="80"/><line x1="50" y1="84" x2="40" y2="94"/><line x1="50" y1="84" x2="60" y2="94"/>`, 0);
+}
+function artGnomeBattleConjurer(){
+   return sceneWrap(`<circle cx="50" cy="56" r="40" fill="#b06a97" opacity="0.2"/><path d="M50 10 L32 42 L68 42 Z" fill="#2b2b28" opacity="0.85"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="76" y2="60"/><circle cx="80" cy="56" r="4" fill="#b06a97" stroke="none"/><line x1="50" y1="72" x2="32" y2="80"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artGnomeCardShill(){
+   return sceneWrap(`<path d="M50 8 Q62 12 58 28 L42 28 Q38 12 50 8 Z" fill="#2b2b28"/><circle cx="50" cy="36" r="10" fill="#e0c49a"/><path d="M34 46 Q50 38 66 46 L62 84 Q50 90 38 84 Z" fill="#b06a97"/><line x1="34" y1="50" x2="18" y2="44"/><path d="M14 40 L22 44 L14 48 Z" fill="#f4efe4" stroke="none"/><line x1="66" y1="50" x2="80" y2="56"/><line x1="50" y1="84" x2="42" y2="97"/><line x1="50" y1="84" x2="58" y2="97"/>`, 0);
+}
+function artGnomeFence(){
+   return sceneWrap(`<path d="M50 8 Q64 14 60 30 L40 30 Q36 14 50 8 Z" fill="#8a8477"/><circle cx="50" cy="38" r="10" fill="#e0c49a"/><path d="M34 48 Q50 40 66 48 L62 86 Q50 92 38 86 Z" fill="#5f4632"/><rect x="66" y="50" width="12" height="16" fill="#a97c53" transform="rotate(10 72 58)"/><line x1="34" y1="52" x2="18" y2="60"/><line x1="50" y1="86" x2="42" y2="99"/><line x1="50" y1="86" x2="58" y2="99"/>`, 0);
+}
+function artGnomeEnforcerApprentice(){
+   return sceneWrap(`<path d="M50 10 Q62 16 58 30 L42 30 Q38 16 50 10 Z" fill="#b5453f"/><circle cx="50" cy="38" r="10" fill="#e0c49a"/><path d="M34 48 Q50 40 66 48 L62 84 Q50 90 38 84 Z" fill="#2b2b28"/><line x1="34" y1="52" x2="16" y2="48"/><line x1="66" y1="52" x2="84" y2="58"/><line x1="50" y1="84" x2="42" y2="97"/><line x1="50" y1="84" x2="58" y2="97"/>`, -2);
+}
+function artGnomeGetawayDriver(){
+   return sceneWrap(`<ellipse cx="50" cy="92" rx="34" ry="6" fill="#2b2b28" opacity="0.3"/><path d="M50 10 Q62 16 58 30 L42 30 Q38 16 50 10 Z" fill="#3d5a80"/><circle cx="50" cy="38" r="10" fill="#e0c49a"/><path d="M34 48 Q50 40 66 48 L62 84 Q50 90 38 84 Z" fill="#2b2b28"/><line x1="34" y1="52" x2="20" y2="62"/><line x1="66" y1="52" x2="80" y2="62"/><line x1="50" y1="84" x2="42" y2="97"/><line x1="50" y1="84" x2="58" y2="97"/>`, 0);
+}
+function artGnomeKnifeJuggler(){
+   return sceneWrap(`<path d="M50 8 Q62 14 58 28 L42 28 Q38 14 50 8 Z" fill="#d1a94e"/><circle cx="50" cy="36" r="10" fill="#e0c49a"/><path d="M34 46 Q50 38 66 46 L62 84 Q50 90 38 84 Z" fill="#2b2b28"/><line x1="34" y1="50" x2="14" y2="42"/><path d="M10 38 L18 42 L10 46 Z" fill="#b9b3a4" stroke="none"/><line x1="66" y1="50" x2="86" y2="42"/><path d="M90 38 L82 42 L90 46 Z" fill="#b9b3a4" stroke="none"/><line x1="50" y1="84" x2="42" y2="97"/><line x1="50" y1="84" x2="58" y2="97"/>`, 0);
+}
+function artGnomeShadowBroker(){
+   return sceneWrap(`<path d="M50 8 Q62 14 58 28 L42 28 Q38 14 50 8 Z" fill="#2b2b28"/><circle cx="50" cy="36" r="10" fill="#e0c49a" opacity="0.85"/><path d="M34 46 Q50 38 66 46 L62 84 Q50 90 38 84 Z" fill="#2b2b28" opacity="0.85"/><line x1="34" y1="50" x2="18" y2="58"/><line x1="66" y1="50" x2="82" y2="44"/><line x1="50" y1="84" x2="42" y2="97"/><line x1="50" y1="84" x2="58" y2="97"/>`, 1);
+}
+function artGnomeSeanceCaller(){
+   return sceneWrap(`<circle cx="50" cy="56" r="42" fill="#b06a97" opacity="0.12"/><path d="M50 10 L32 42 L68 42 Z" fill="#2b2b28" opacity="0.8"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="32" y2="80"/><line x1="50" y1="72" x2="68" y2="80"/><circle cx="68" cy="76" r="2.5" fill="#d1a94e" stroke="none"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artGnomeHexDealer(){
+   return sceneWrap(`<path d="M50 8 Q62 14 58 28 L42 28 Q38 14 50 8 Z" fill="#b06a97"/><circle cx="50" cy="36" r="10" fill="#e0c49a"/><path d="M34 46 Q50 38 66 46 L62 84 Q50 90 38 84 Z" fill="#2b2b28"/><line x1="34" y1="50" x2="18" y2="58"/><circle cx="14" cy="62" r="2.5" fill="#b06a97" stroke="none"/><line x1="66" y1="50" x2="82" y2="56"/><line x1="50" y1="84" x2="42" y2="97"/><line x1="50" y1="84" x2="58" y2="97"/>`, 0);
+}
+function artGnomeAlleyFortuneReader(){
+   return sceneWrap(`<path d="M50 10 L32 42 L68 42 Z" fill="#b06a97" opacity="0.7"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><circle cx="50" cy="80" r="8" fill="#f4efe4" opacity="0.4"/><line x1="50" y1="66" x2="50" y2="72"/><line x1="50" y1="72" x2="34" y2="78"/><line x1="50" y1="72" x2="66" y2="78"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 1);
+}
+function artGnomeBattleMage(){
+   return sceneWrap(`<circle cx="50" cy="56" r="40" fill="#3d5a80" opacity="0.2"/><path d="M50 8 L30 44 L70 44 Z" fill="#3d5a80"/><circle cx="50" cy="56" r="13" fill="#e0c49a"/><line x1="50" y1="69" x2="50" y2="88"/><line x1="50" y1="76" x2="30" y2="68"/><circle cx="26" cy="64" r="3.5" fill="#d1a94e" stroke="none"/><line x1="50" y1="76" x2="70" y2="84"/><line x1="50" y1="88" x2="38" y2="98"/><line x1="50" y1="88" x2="62" y2="98"/>`, 0);
+}
+function artGnomeSpellSmith(){
+   return sceneWrap(`<path d="M50 10 L32 42 L68 42 Z" fill="#8a8477"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="72" y2="60"/><path d="M68 56 L76 50 L80 58 Z" fill="#b9b3a4"/><line x1="50" y1="72" x2="32" y2="80"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, -1);
+}
+function artGnomeArcaneSentry(){
+   return sceneWrap(`<path d="M50 10 L32 42 L68 42 Z" fill="#5c8a5c"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="30" y2="64"/><line x1="50" y1="72" x2="70" y2="64"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artGnomeRuneblade(){
+   return sceneWrap(`<path d="M50 10 L32 42 L68 42 Z" fill="#8a8477"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="80" y2="58"/><circle cx="76" cy="60" r="2.5" fill="#d1a94e" stroke="none"/><line x1="50" y1="72" x2="32" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, -2);
+}
+function artGnomeScryingApprentice(){
+   return sceneWrap(`<path d="M50 12 L32 44 L68 44 Z" fill="#b06a97" opacity="0.7"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><circle cx="50" cy="80" r="10" fill="none" stroke="#f4efe4" stroke-width="2"/><circle cx="50" cy="80" r="4" fill="#3d5a80" stroke="none"/><line x1="50" y1="68" x2="50" y2="70"/><line x1="50" y1="70" x2="32" y2="78"/><line x1="50" y1="70" x2="68" y2="78"/>`, 1);
+}
+function artGnomeGlyphCutter(){
+   return sceneWrap(`<path d="M50 12 L32 44 L68 44 Z" fill="#b06a97"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="70" y2="66"/><path d="M68 62 L74 58 L76 64 Z" fill="#b9b3a4"/><line x1="50" y1="74" x2="32" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artGnomeConjureThief(){
+   return sceneWrap(`<path d="M50 10 Q62 16 58 30 L42 30 Q38 16 50 10 Z" fill="#b06a97"/><circle cx="50" cy="38" r="10" fill="#e0c49a"/><path d="M34 48 Q50 40 66 48 L62 84 Q50 90 38 84 Z" fill="#3d5a80"/><line x1="34" y1="52" x2="18" y2="60"/><line x1="66" y1="52" x2="82" y2="46"/><circle cx="86" cy="42" r="3" fill="#d1a94e" stroke="none"/><line x1="50" y1="84" x2="42" y2="97"/><line x1="50" y1="84" x2="58" y2="97"/>`, 0);
+}
+function artGnomeTrickCaster(){
+   return sceneWrap(`<path d="M50 8 Q62 14 58 28 L42 28 Q38 14 50 8 Z" fill="#b06a97"/><circle cx="50" cy="36" r="10" fill="#e0c49a"/><path d="M34 46 Q50 38 66 46 L62 84 Q50 90 38 84 Z" fill="#2b2b28"/><line x1="34" y1="50" x2="18" y2="44"/><line x1="66" y1="50" x2="82" y2="56"/><circle cx="86" cy="58" r="3" fill="#d1a94e" stroke="none"/><line x1="50" y1="84" x2="42" y2="97"/><line x1="50" y1="84" x2="58" y2="97"/>`, 0);
+}
+function artGnomeOracleInTraining(){
+   return sceneWrap(`<path d="M50 12 L32 44 L68 44 Z" fill="#3d5a80" opacity="0.6"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><circle cx="50" cy="56" r="20" fill="none" stroke="#f4efe4" stroke-width="1.5" opacity="0.4"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="32" y2="82"/><line x1="50" y1="74" x2="68" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artGnomeLeyTapper(){
+   return sceneWrap(`<circle cx="50" cy="56" r="38" fill="#b06a97" opacity="0.18"/><path d="M50 10 L32 42 L68 42 Z" fill="#3d5a80" opacity="0.8"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="30" y2="64"/><circle cx="26" cy="60" r="3" fill="#d1a94e" stroke="none"/><line x1="50" y1="72" x2="70" y2="64"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+/* 5 remaining district monsters' art, same gnome template. */
+function artGnomeCaneMan(){
+   return sceneWrap(`<path d="M50 10 L32 42 L68 42 Z" fill="#2b2b28"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="74" y2="64"/><path d="M74 64 Q80 58 76 52" fill="none" stroke-width="3"/><line x1="50" y1="72" x2="32" y2="80"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, -1);
+}
+function artGnomeLookout(){
+   return sceneWrap(`<line x1="50" y1="94" x2="50" y2="60" stroke-width="3"/><path d="M50 10 Q62 16 58 30 L42 30 Q38 16 50 10 Z" fill="#2b2b28"/><circle cx="50" cy="38" r="10" fill="#e0c49a"/><line x1="40" y1="46" x2="60" y2="46" stroke-width="3"/><line x1="34" y1="50" x2="22" y2="44"/><line x1="66" y1="50" x2="78" y2="44"/>`, 1);
+}
+function artGnomeFateCheater(){
+   return sceneWrap(`<path d="M50 8 Q62 14 58 28 L42 28 Q38 14 50 8 Z" fill="#b06a97"/><circle cx="50" cy="36" r="10" fill="#e0c49a"/><path d="M34 46 Q50 38 66 46 L62 84 Q50 90 38 84 Z" fill="#3d5a80"/><line x1="34" y1="50" x2="18" y2="44"/><rect x="10" y="38" width="8" height="8" fill="#f4efe4" transform="rotate(20 14 42)"/><line x1="66" y1="50" x2="82" y2="56"/><line x1="50" y1="84" x2="42" y2="97"/><line x1="50" y1="84" x2="58" y2="97"/>`, 0);
+}
+function artGnomeSpellRunner(){
+   return sceneWrap(`<path d="M50 10 L34 40 L66 40 Z" fill="#b06a97"/><circle cx="50" cy="52" r="11" fill="#e0c49a"/><line x1="50" y1="63" x2="50" y2="82"/><line x1="50" y1="68" x2="28" y2="58"/><rect x="18" y="52" width="12" height="10" fill="#a97c53"/><line x1="50" y1="68" x2="72" y2="76"/><line x1="50" y1="82" x2="34" y2="94"/><line x1="50" y1="82" x2="66" y2="94"/>`, -3);
+}
+function artGnomeCircleWarden(){
+   return sceneWrap(`<ellipse cx="50" cy="88" rx="30" ry="6" fill="none" stroke="#d1a94e" stroke-width="2" opacity="0.4"/><path d="M50 10 L32 42 L68 42 Z" fill="#3d5a80"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="84"/><line x1="50" y1="72" x2="32" y2="80"/><line x1="50" y1="72" x2="68" y2="80"/><line x1="50" y1="84" x2="40" y2="94"/><line x1="50" y1="84" x2="60" y2="94"/>`, 0);
+}
 
 /* Act 1's 7 zone-rare monsters (ZONE_RARE_MONSTERS, content.js) — same
 primitive-shape gnome-silhouette convention as every monster above,
