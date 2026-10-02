@@ -510,10 +510,13 @@ Touch this file when: adding/rebalancing a Warren's Ear monster, or
 extending quest10's own branching-path mechanics or quest14's gauntlet.
 
 ## emberwarren-content.js — The Ember Warren (Act 2, quest11/12/13/15) monster data
-`emberWarrenMonsters` (the Foundry's 3 + the Gearworks' 3 regulars —
+`emberWarrenMonsters` (the Foundry's 15 + the Gearworks' 15 regulars —
 same shape as warrensear-content.js's own monsters, `.push()`ed onto
 `monsters`/`BOUNTY_TEMPLATES` the same way; gearDrop bonus continues
-the zone-difficulty ladder at +9, one step past Warren's Ear's +8).
+the zone-difficulty ladder at +9, one step past Warren's Ear's +8). Per
+the "every zone's gear covers all 5 slots x all 3 classes" pass, each
+district's gearDrop set is a full 15-item (5 slot x 3 class) matrix —
+no gaps, same as every other Gnometropolis-onward zone.
 Also quest12's own two-stage rare hunt, "Chain of Custody" —
 `gearworksForeman` (Gearworks, stage 1, inflicts `'burn'`) and
 `bureauQuartermaster` (Bureau, stage 2 — a district from an OLDER hub,

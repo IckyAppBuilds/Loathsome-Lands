@@ -11,6 +11,9 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 34, date: 'October 1', title: 'The Forge Keeps Pace', items: [
+      "New: 24 new monsters across the Foundry and the Gearworks — each district now drops gear for all 5 equip slots, for all 3 classes.",
+      ]},
    { id: 33, date: 'October 1', title: 'The Ear Hears It All Now', items: [
       "New: 24 new monsters across the Choir and the Ledger Vault — each one now drops gear for all 5 equip slots, for all 3 classes.",
       ]},

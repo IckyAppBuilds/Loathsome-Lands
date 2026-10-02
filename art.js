@@ -1131,6 +1131,82 @@ function artLineRunner(){
    return sceneWrap(`<ellipse cx="46" cy="66" rx="22" ry="16" fill="#5f4632"/><ellipse cx="46" cy="48" rx="12" ry="10" fill="#5f4632"/><path d="M39 45 Q34 37 27 39" fill="none" stroke-width="3"/><path d="M53 45 Q58 37 65 39" fill="none" stroke-width="3"/><line x1="70" y1="56" x2="86" y2="52" stroke="#8a8477" stroke-width="2"/><line x1="70" y1="64" x2="86" y2="60" stroke="#8a8477" stroke-width="2"/><line x1="70" y1="72" x2="86" y2="68" stroke="#8a8477" stroke-width="2"/>`, 0);
 }
 
+/* 24 more Ember Warren regulars (Foundry/Gearworks gear-coverage pass)
+— same mole silhouette vocabulary, same forge/machine palette already
+established above, no new colors introduced. */
+function artCrucibleMole(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="25" ry="18" fill="#5f4632"/><ellipse cx="50" cy="47" rx="13" ry="11" fill="#5f4632"/><path d="M41 43 Q36 34 28 36" fill="none" stroke-width="3.5"/><path d="M59 43 Q64 34 72 36" fill="none" stroke-width="3.5"/><path d="M68 58 Q78 54 76 44" fill="none" stroke="#b5453f" stroke-width="2.5" opacity="0.7"/><circle cx="76" cy="40" r="2" fill="#b5453f" stroke="none"/><line x1="40" y1="82" x2="34" y2="96"/><line x1="60" y1="82" x2="66" y2="96"/>`, 0);
+}
+function artHammerMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="26" ry="19" fill="#5f4632"/><ellipse cx="50" cy="44" rx="13" ry="11" fill="#5f4632"/><path d="M41 40 Q36 31 28 33" fill="none" stroke-width="3.5"/><path d="M59 40 Q64 31 72 33" fill="none" stroke-width="3.5"/><rect x="70" y="56" width="14" height="6" fill="#8a8477"/><rect x="80" y="50" width="6" height="18" fill="#8a8477"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artFurnaceStokerMole(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="24" ry="17" fill="#5f4632"/><ellipse cx="50" cy="46" rx="12" ry="10" fill="#5f4632"/><path d="M41 42 Q36 33 28 35" fill="none" stroke-width="3"/><path d="M59 42 Q64 33 72 35" fill="none" stroke-width="3"/><line x1="70" y1="58" x2="88" y2="50" stroke="#8a8477" stroke-width="3"/><circle cx="88" cy="50" r="3" fill="#b5453f" stroke="none"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artSlagWalkerMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="23" ry="16" fill="#5f4632"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M41 41 Q36 32 28 34" fill="none" stroke-width="3"/><path d="M59 41 Q64 32 72 34" fill="none" stroke-width="3"/><circle cx="34" cy="90" r="2" fill="#b5453f" stroke="none"/><circle cx="66" cy="92" r="2" fill="#b5453f" stroke="none"/><line x1="40" y1="78" x2="34" y2="92"/><line x1="60" y1="78" x2="66" y2="92"/>`, 0);
+}
+function artQuenchMole(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="22" ry="16" fill="#5f4632"/><ellipse cx="50" cy="47" rx="12" ry="10" fill="#5f4632"/><path d="M41 43 Q36 34 28 36" fill="none" stroke-width="3"/><path d="M59 43 Q64 34 72 36" fill="none" stroke-width="3"/><path d="M68 32 Q74 22 68 14" fill="none" stroke="#f4efe4" stroke-width="2" opacity="0.6"/><line x1="40" y1="82" x2="34" y2="96"/><line x1="60" y1="82" x2="66" y2="96"/>`, 5);
+}
+function artSparkDodgerMole(){
+   return sceneWrap(`<ellipse cx="50" cy="62" rx="23" ry="16" fill="#5f4632"/><ellipse cx="50" cy="43" rx="12" ry="10" fill="#5f4632"/><path d="M41 39 Q36 30 28 32" fill="none" stroke-width="3"/><path d="M59 39 Q64 30 72 32" fill="none" stroke-width="3"/><circle cx="24" cy="24" r="1.8" fill="#d1a94e" stroke="none"/><circle cx="76" cy="20" r="1.8" fill="#d1a94e" stroke="none"/><circle cx="60" cy="14" r="1.5" fill="#d1a94e" stroke="none"/><line x1="40" y1="78" x2="34" y2="92" stroke-width="2.5"/><line x1="60" y1="78" x2="66" y2="92" stroke-width="2.5"/>`, 5);
+}
+function artCinderRunnerMole(){
+   return sceneWrap(`<ellipse cx="50" cy="60" rx="22" ry="15" fill="#5f4632"/><ellipse cx="50" cy="42" rx="11" ry="9" fill="#5f4632"/><path d="M41 38 Q36 29 28 31" fill="none" stroke-width="3"/><path d="M59 38 Q64 29 72 31" fill="none" stroke-width="3"/><circle cx="34" cy="86" r="1.6" fill="#b5453f" stroke="none"/><circle cx="66" cy="88" r="1.6" fill="#b5453f" stroke="none"/><line x1="40" y1="74" x2="32" y2="88" stroke-width="2.5"/><line x1="60" y1="74" x2="68" y2="88" stroke-width="2.5"/>`, 5);
+}
+function artForgeBladeMole(){
+   return sceneWrap(`<ellipse cx="46" cy="64" rx="23" ry="16" fill="#5f4632"/><ellipse cx="46" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M38 41 Q33 32 25 34" fill="none" stroke-width="3"/><path d="M54 41 Q59 32 67 34" fill="none" stroke-width="3"/><path d="M68 56 L84 48" stroke="#d1a94e" stroke-width="3"/><circle cx="84" cy="48" r="2" fill="#b5453f" stroke="none"/>`, 5);
+}
+function artHeatReaderMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632" opacity="0.85"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632" opacity="0.85"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><circle cx="50" cy="30" r="3" fill="none" stroke="#b5453f" stroke-width="1.5"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artEmberWardedMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><path d="M40 58 Q50 52 60 58" fill="none" stroke="#b5453f" stroke-width="2" opacity="0.6"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artSilentSmithMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632" opacity="0.6"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632" opacity="0.6"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artFoundryConjurorMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><path d="M76 58 L80 34" stroke="#8a8477" stroke-width="2.5"/><circle cx="80" cy="30" r="4" fill="none" stroke="#b5453f" stroke-width="2"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artGearPlatedMole(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="25" ry="18" fill="#5f4632"/><ellipse cx="50" cy="47" rx="13" ry="11" fill="#5f4632"/><path d="M41 43 Q36 34 28 36" fill="none" stroke-width="3.5"/><path d="M59 43 Q64 34 72 36" fill="none" stroke-width="3.5"/><circle cx="40" cy="62" r="6" fill="none" stroke="#d1a94e" stroke-width="2"/><circle cx="60" cy="64" r="5" fill="none" stroke="#d1a94e" stroke-width="2"/><line x1="40" y1="82" x2="34" y2="96"/><line x1="60" y1="82" x2="66" y2="96"/>`, 0);
+}
+function artFlywheelMole(){
+   return sceneWrap(`<ellipse cx="46" cy="64" rx="23" ry="16" fill="#5f4632"/><ellipse cx="46" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M38 41 Q33 32 25 34" fill="none" stroke-width="3"/><path d="M54 41 Q59 32 67 34" fill="none" stroke-width="3"/><circle cx="76" cy="58" r="12" fill="none" stroke="#8a8477" stroke-width="2.5"/><line x1="76" y1="46" x2="76" y2="70" stroke="#8a8477" stroke-width="1.5"/><line x1="64" y1="58" x2="88" y2="58" stroke="#8a8477" stroke-width="1.5"/>`, 0);
+}
+function artPistonMole(){
+   return sceneWrap(`<ellipse cx="50" cy="68" rx="24" ry="17" fill="#5f4632"/><ellipse cx="50" cy="48" rx="13" ry="11" fill="#5f4632"/><path d="M41 44 Q36 35 28 37" fill="none" stroke-width="3.5"/><path d="M59 44 Q64 35 72 37" fill="none" stroke-width="3.5"/><rect x="70" y="60" width="18" height="7" fill="#8a8477"/><path d="M88 63 Q94 60 94 70" fill="none" stroke="#f4efe4" stroke-width="2" opacity="0.5"/>`, 0);
+}
+function artCogSmithMole(){
+   return sceneWrap(`<ellipse cx="44" cy="66" rx="25" ry="18" fill="#5f4632"/><ellipse cx="44" cy="47" rx="13" ry="11" fill="#5f4632"/><path d="M36 43 Q31 34 23 36" fill="none" stroke-width="3.5"/><path d="M52 43 Q57 34 65 36" fill="none" stroke-width="3.5"/><rect x="68" y="56" width="10" height="24" fill="#8a8477"/><rect x="62" y="50" width="22" height="8" fill="#8a8477"/>`, 0);
+}
+function artSprocketScoutMole(){
+   return sceneWrap(`<ellipse cx="50" cy="60" rx="22" ry="15" fill="#5f4632"/><ellipse cx="50" cy="42" rx="11" ry="9" fill="#5f4632"/><path d="M41 38 Q36 29 28 31" fill="none" stroke-width="3"/><path d="M59 38 Q64 29 72 31" fill="none" stroke-width="3"/><circle cx="34" cy="20" r="4" fill="none" stroke="#d1a94e" stroke-width="2"/><line x1="40" y1="74" x2="32" y2="88" stroke-width="2.5"/><line x1="60" y1="74" x2="68" y2="88" stroke-width="2.5"/>`, 5);
+}
+function artBeltRunnerMole(){
+   return sceneWrap(`<ellipse cx="46" cy="62" rx="21" ry="15" fill="#5f4632"/><ellipse cx="46" cy="44" rx="11" ry="9" fill="#5f4632"/><path d="M39 40 Q34 32 27 34" fill="none" stroke-width="3"/><path d="M53 40 Q58 32 65 34" fill="none" stroke-width="3"/><line x1="68" y1="52" x2="88" y2="48" stroke="#8a8477" stroke-width="2"/><line x1="68" y1="60" x2="88" y2="56" stroke="#8a8477" stroke-width="2"/>`, 5);
+}
+function artGearSlipMole(){
+   return sceneWrap(`<ellipse cx="50" cy="60" rx="20" ry="14" fill="#5f4632"/><ellipse cx="50" cy="43" rx="10" ry="8" fill="#5f4632"/><path d="M42 40 Q37 32 30 34" fill="none" stroke-width="2.5"/><path d="M58 40 Q63 32 70 34" fill="none" stroke-width="2.5"/><line x1="40" y1="72" x2="26" y2="88" stroke-width="3"/><line x1="60" y1="72" x2="74" y2="90" stroke-width="3"/>`, 5);
+}
+function artRatchetMole(){
+   return sceneWrap(`<ellipse cx="46" cy="64" rx="23" ry="16" fill="#5f4632"/><ellipse cx="46" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M38 41 Q33 32 25 34" fill="none" stroke-width="3"/><path d="M54 41 Q59 32 67 34" fill="none" stroke-width="3"/><path d="M68 56 L82 50" stroke="#8a8477" stroke-width="3"/><circle cx="82" cy="50" r="3" fill="none" stroke="#d1a94e" stroke-width="1.5"/>`, 5);
+}
+function artClockworkReaderMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632" opacity="0.85"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632" opacity="0.85"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><circle cx="50" cy="28" r="4" fill="none" stroke="#d1a94e" stroke-width="1.5"/><line x1="50" y1="28" x2="50" y2="25" stroke="#d1a94e" stroke-width="1"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artGearworksWardedMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><path d="M40 58 Q50 52 60 58" fill="none" stroke="#d1a94e" stroke-width="2" opacity="0.6"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artTensionMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><path d="M40 78 Q36 86 40 94" fill="none" stroke="#8a8477" stroke-width="2"/><path d="M60 78 Q64 86 60 94" fill="none" stroke="#8a8477" stroke-width="2"/>`, 0);
+}
+function artSilentCogMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632" opacity="0.5"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632" opacity="0.5"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+
 /* Quest12's own two rare-hunt bosses (emberwarren-content.js) — the
 first pair of monsters in this game with a 'debuff' skill (see
 state.playerStatusEffect's own comment, core.js), so both get a bigger,
