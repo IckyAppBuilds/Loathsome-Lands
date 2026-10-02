@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 30, date: 'October 1', title: 'New Faces in the Early Zones', items: [
+      "New: 43 new monsters across the Overgrown Commons, Dank Sewers, Clockwork Quarry, and Sunless Vault — enough that every one of those zones now drops gear for all 5 equip slots.",
+      "Gear from those 4 zones is now class-free (no class restriction at all) — you don't even need to have picked a class yet to use it. Class-locked gear still starts once you reach Gnometropolis's own districts.",
+      ]},
    { id: 29, date: 'October 1', title: 'Every Dungeon Drops Your Whole Kit', items: [
       "New: every Prism Depths dungeon's guaranteed treasure now covers all 5 gear slots for all 3 classes (15 items each, up from 3) — farm any one dungeon long enough and you can gear out your entire class from its drops alone.",
       ]},

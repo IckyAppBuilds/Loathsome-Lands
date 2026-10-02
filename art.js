@@ -365,6 +365,42 @@ function artGnomeSnail(){
 function artGnomeSergeant(){
    return sceneWrap(`<path d="M50 10 L30 46 L70 46 Z" fill="#d1a94e"/><circle cx="50" cy="58" r="13" fill="#e0c49a"/><circle cx="42" cy="58" r="2" fill="#2b2b28" stroke="none"/><circle cx="58" cy="58" r="2" fill="#2b2b28" stroke="none"/><line x1="50" y1="71" x2="50" y2="90"/><line x1="50" y1="78" x2="32" y2="86"/><line x1="50" y1="78" x2="68" y2="86"/><path d="M42 74 L58 74 L54 82 L46 82 Z" fill="#b5453f"/><line x1="50" y1="90" x2="38" y2="99"/><line x1="50" y1="90" x2="62" y2="99"/>`, 0);
 }
+/* Commons' own gap-filling pass (10 more regulars, per a later explicit
+request that every zone's gearDrop set cover all 5 slots, class-free
+before Gnometropolis) — same triangle-hat/circle-head/line-limb gnome
+template every Commons monster above already uses, just a new hat
+shape/color and pose per monster, same as the existing 5 already vary
+from each other. */
+function artGnomeBeekeeper(){
+   return sceneWrap(`<ellipse cx="50" cy="30" rx="18" ry="14" fill="#f4efe4" opacity="0.5"/><path d="M50 14 L34 44 L66 44 Z" fill="#f4efe4"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="30" y2="68"/><line x1="50" y1="74" x2="70" y2="80"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/><circle cx="26" cy="64" r="2" fill="#d1a94e" stroke="none"/><circle cx="20" cy="58" r="2" fill="#d1a94e" stroke="none"/>`, 2);
+}
+function artGnomeScarecrow(){
+   return sceneWrap(`<line x1="50" y1="14" x2="50" y2="92" stroke-width="4"/><line x1="24" y1="40" x2="76" y2="40" stroke-width="4"/><path d="M50 14 L32 36 L68 36 Z" fill="#a97c53"/><circle cx="50" cy="52" r="11" fill="#e0c49a"/><circle cx="44" cy="52" r="1.8" fill="#2b2b28" stroke="none"/><circle cx="56" cy="52" r="1.8" fill="#2b2b28" stroke="none"/><line x1="24" y1="40" x2="16" y2="30"/><line x1="76" y1="40" x2="84" y2="30"/><line x1="50" y1="92" x2="38" y2="99"/><line x1="50" y1="92" x2="62" y2="99"/>`, 0);
+}
+function artGnomePlumber(){
+   return sceneWrap(`<path d="M50 14 L30 42 L70 42 Z" fill="#3d5a80"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="68" y2="60"/><rect x="64" y="52" width="6" height="16" fill="#8a8477" transform="rotate(30 67 60)"/><line x1="50" y1="72" x2="32" y2="84"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, -2);
+}
+function artGnomeHerald(){
+   return sceneWrap(`<path d="M50 8 L28 42 L72 42 Z" fill="#b06a97"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><path d="M50 66 L50 80 Q62 78 64 90 Q50 86 50 90" fill="#f4efe4"/><line x1="50" y1="66" x2="32" y2="76"/><line x1="50" y1="90" x2="40" y2="99"/><line x1="50" y1="90" x2="60" y2="99"/>`, 1);
+}
+function artGnomeTailor(){
+   return sceneWrap(`<path d="M50 12 L32 44 L68 44 Z" fill="#5c8a5c"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="68" y2="68"/><circle cx="70" cy="66" r="2" fill="#d1a94e" stroke="none"/><circle cx="74" cy="70" r="2" fill="#d1a94e" stroke="none"/><line x1="50" y1="74" x2="32" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, -1);
+}
+function artGnomeDuelist(){
+   return sceneWrap(`<path d="M50 10 L34 42 L66 42 Z" fill="#2b2b28"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="76" y2="58"/><line x1="76" y1="58" x2="86" y2="52"/><line x1="50" y1="72" x2="34" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="64" y2="96"/>`, -3);
+}
+function artGnomeLibrarian(){
+   return sceneWrap(`<path d="M50 12 L34 44 L66 44 Z" fill="#8a8477"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><rect x="38" y="50" width="24" height="5" fill="#2b2b28"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="32" y2="80"/><line x1="50" y1="74" x2="68" y2="80"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artGnomeWeathervaneKeeper(){
+   return sceneWrap(`<path d="M50 10 L36 40 L64 40 Z" fill="#d1a94e"/><circle cx="50" cy="52" r="12" fill="#e0c49a"/><line x1="50" y1="64" x2="50" y2="86"/><line x1="50" y1="30" x2="50" y2="10"/><path d="M50 10 L58 16 L50 22 L42 16 Z" fill="#8a8477"/><line x1="50" y1="70" x2="30" y2="62"/><line x1="50" y1="70" x2="70" y2="78"/><line x1="50" y1="86" x2="40" y2="97"/><line x1="50" y1="86" x2="60" y2="97"/>`, 0);
+}
+function artGnomeForager(){
+   return sceneWrap(`<path d="M50 14 L32 46 L68 46 Z" fill="#b06a97" opacity="0.8"/><circle cx="50" cy="58" r="12" fill="#e0c49a"/><line x1="50" y1="70" x2="50" y2="90"/><line x1="50" y1="76" x2="30" y2="70"/><ellipse cx="24" cy="68" rx="5" ry="7" fill="#5c8a5c"/><line x1="50" y1="76" x2="68" y2="84"/><line x1="50" y1="90" x2="40" y2="99"/><line x1="50" y1="90" x2="60" y2="99"/>`, 2);
+}
+function artGnomeFortuneTeller(){
+   return sceneWrap(`<path d="M50 10 L30 42 L70 42 Z" fill="#3d5a80" opacity="0.85"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><circle cx="50" cy="78" r="9" fill="#f4efe4" opacity="0.5"/><line x1="50" y1="66" x2="50" y2="72"/><line x1="50" y1="72" x2="36" y2="78"/><line x1="50" y1="72" x2="64" y2="78"/><line x1="50" y1="87" x2="40" y2="98"/><line x1="50" y1="87" x2="60" y2="98"/>`, 0);
+}
 /* Boss pass (rare:true, content.js) — bigger and more menacing than the
 regular Commons roster, not just a recolor: a low-opacity red aura disc
 drawn first (behind everything, same halo technique as
@@ -385,6 +421,43 @@ function artGiantSewerRat(){
 function artRatTrenchcoat(){
    return sceneWrap(`<path d="M30 40 L50 40 L58 92 L22 92 Z" fill="#5f4632"/><line x1="40" y1="46" x2="40" y2="88"/><circle cx="34" cy="30" r="9" fill="#8a8477"/><circle cx="50" cy="26" r="9" fill="#8a8477"/><circle cx="66" cy="32" r="9" fill="#8a8477"/><circle cx="30" cy="27" r="2.5" fill="#8a8477"/><circle cx="38" cy="27" r="2.5" fill="#8a8477"/><circle cx="46" cy="23" r="2.5" fill="#8a8477"/><circle cx="54" cy="23" r="2.5" fill="#8a8477"/><circle cx="62" cy="29" r="2.5" fill="#8a8477"/><circle cx="70" cy="29" r="2.5" fill="#8a8477"/><circle cx="33" cy="30" r="1.4" fill="#2b2b28" stroke="none"/><circle cx="50" cy="26" r="1.4" fill="#2b2b28" stroke="none"/><circle cx="66" cy="32" r="1.4" fill="#2b2b28" stroke="none"/><line x1="26" y1="92" x2="24" y2="98"/><line x1="40" y1="92" x2="40" y2="98"/><line x1="54" y1="92" x2="56" y2="98"/>`, 0);
 }
+/* Same gap-filling pass as Commons' own above — 11 more Sewers
+regulars, same rat-silhouette vocabulary (artSewerRat's own ellipse-
+body/circle-head/ear-circle formula) every Sewers monster already
+uses, varied body size/color and accent detail per monster. */
+function artSewerBrawlerRat(){
+   return sceneWrap(`<ellipse cx="46" cy="64" rx="28" ry="17" fill="#8a8477"/><circle cx="76" cy="52" r="13" fill="#8a8477"/><circle cx="68" cy="42" r="5" fill="#8a8477"/><circle cx="82" cy="42" r="5" fill="#8a8477"/><circle cx="81" cy="49" r="1.8" fill="#2b2b28" stroke="none"/><line x1="22" y1="58" x2="10" y2="48" stroke-width="3"/><line x1="22" y1="68" x2="10" y2="72" stroke-width="3"/><line x1="34" y1="78" x2="30" y2="90"/><line x1="46" y1="80" x2="46" y2="92"/><line x1="58" y1="78" x2="62" y2="90"/>`, -2);
+}
+function artDrainpipeCrawler(){
+   return sceneWrap(`<ellipse cx="42" cy="62" rx="24" ry="14" fill="#5f4632"/><circle cx="72" cy="50" r="12" fill="#5f4632"/><circle cx="65" cy="41" r="4.5" fill="#5f4632"/><circle cx="78" cy="41" r="4.5" fill="#5f4632"/><circle cx="76" cy="47" r="1.6" fill="#2b2b28" stroke="none"/><path d="M16 62 Q4 68 8 82" fill="none"/><line x1="26" y1="74" x2="18" y2="90" stroke-width="3"/><line x1="40" y1="76" x2="36" y2="92" stroke-width="3"/><line x1="54" y1="74" x2="56" y2="90" stroke-width="3"/>`, 0);
+}
+function artMuckStriderRat(){
+   return sceneWrap(`<ellipse cx="44" cy="64" rx="24" ry="14" fill="#8a8477" opacity="0.85"/><ellipse cx="44" cy="64" rx="24" ry="14" fill="#5f4632" opacity="0.3"/><circle cx="72" cy="52" r="12" fill="#8a8477"/><circle cx="65" cy="43" r="4.5" fill="#8a8477"/><circle cx="78" cy="43" r="4.5" fill="#8a8477"/><circle cx="76" cy="49" r="1.6" fill="#2b2b28" stroke="none"/><line x1="30" y1="76" x2="26" y2="90"/><line x1="44" y1="78" x2="44" y2="92"/><line x1="58" y1="76" x2="60" y2="90"/>`, 1);
+}
+function artRustFangedRat(){
+   return sceneWrap(`<ellipse cx="42" cy="62" rx="26" ry="15" fill="#8a8477"/><circle cx="74" cy="50" r="13" fill="#8a8477"/><circle cx="66" cy="40" r="5" fill="#8a8477"/><circle cx="80" cy="40" r="5" fill="#8a8477"/><path d="M68 54 L70 60 M76 54 L78 60" stroke="#f4efe4" stroke-width="2"/><circle cx="79" cy="47" r="1.8" fill="#2b2b28" stroke="none"/><line x1="28" y1="74" x2="24" y2="88"/><line x1="42" y1="76" x2="42" y2="90"/><line x1="56" y1="74" x2="60" y2="88"/>`, -1);
+}
+function artShadowSlickRat(){
+   return sceneWrap(`<ellipse cx="42" cy="62" rx="22" ry="13" fill="#2b2b28" opacity="0.8"/><circle cx="70" cy="50" r="11" fill="#2b2b28" opacity="0.8"/><circle cx="63" cy="41" r="4" fill="#2b2b28" opacity="0.8"/><circle cx="76" cy="41" r="4" fill="#2b2b28" opacity="0.8"/><circle cx="74" cy="47" r="1.6" fill="#d1a94e" stroke="none"/><path d="M18 62 Q6 56 10 44" fill="none"/><line x1="28" y1="72" x2="24" y2="86"/><line x1="42" y1="74" x2="42" y2="88"/><line x1="54" y1="72" x2="58" y2="86"/>`, 0);
+}
+function artQuickPawsRat(){
+   return sceneWrap(`<ellipse cx="44" cy="62" rx="22" ry="13" fill="#8a8477"/><circle cx="70" cy="50" r="11" fill="#8a8477"/><circle cx="63" cy="41" r="4" fill="#8a8477"/><circle cx="76" cy="41" r="4" fill="#8a8477"/><circle cx="74" cy="47" r="1.6" fill="#2b2b28" stroke="none"/><line x1="30" y1="72" x2="20" y2="80"/><line x1="44" y1="74" x2="44" y2="90"/><line x1="56" y1="72" x2="66" y2="80"/>`, 3);
+}
+function artGrateRunnerRat(){
+   return sceneWrap(`<ellipse cx="42" cy="64" rx="24" ry="14" fill="#8a8477"/><circle cx="70" cy="52" r="12" fill="#8a8477"/><circle cx="63" cy="43" r="4.5" fill="#8a8477"/><circle cx="76" cy="43" r="4.5" fill="#8a8477"/><circle cx="74" cy="49" r="1.6" fill="#2b2b28" stroke="none"/><path d="M22 54 L8 52 M22 60 L8 64" stroke-width="2.5"/><line x1="28" y1="76" x2="22" y2="92" stroke-width="3"/><line x1="42" y1="78" x2="42" y2="92" stroke-width="3"/><line x1="56" y1="76" x2="60" y2="92" stroke-width="3"/>`, -1);
+}
+function artScrapBladeRat(){
+   return sceneWrap(`<ellipse cx="42" cy="62" rx="22" ry="13" fill="#8a8477"/><circle cx="68" cy="50" r="11" fill="#8a8477"/><circle cx="61" cy="41" r="4" fill="#8a8477"/><circle cx="74" cy="41" r="4" fill="#8a8477"/><circle cx="72" cy="47" r="1.6" fill="#2b2b28" stroke="none"/><path d="M22 58 L8 54 L10 62 Z" fill="#b9b3a4"/><line x1="28" y1="72" x2="24" y2="86"/><line x1="42" y1="74" x2="42" y2="88"/><line x1="54" y1="72" x2="58" y2="86"/>`, 0);
+}
+function artSewerSoothsayerRat(){
+   return sceneWrap(`<ellipse cx="44" cy="64" rx="22" ry="13" fill="#8a8477" opacity="0.7"/><circle cx="70" cy="52" r="11" fill="#8a8477" opacity="0.7"/><circle cx="63" cy="43" r="4" fill="#8a8477" opacity="0.7"/><circle cx="76" cy="43" r="4" fill="#8a8477" opacity="0.7"/><circle cx="74" cy="49" r="1.6" fill="#b06a97" stroke="none"/><path d="M90 50 Q96 56 90 62" fill="none" stroke="#b06a97" stroke-width="2"/><line x1="30" y1="74" x2="26" y2="88"/><line x1="44" y1="76" x2="44" y2="90"/><line x1="58" y1="74" x2="62" y2="88"/>`, 1);
+}
+function artGlowMossRat(){
+   return sceneWrap(`<ellipse cx="42" cy="62" rx="26" ry="15" fill="#5c8a5c" opacity="0.8"/><circle cx="74" cy="50" r="13" fill="#5c8a5c" opacity="0.8"/><circle cx="66" cy="40" r="5" fill="#5c8a5c" opacity="0.8"/><circle cx="80" cy="40" r="5" fill="#5c8a5c" opacity="0.8"/><circle cx="42" cy="62" r="3" fill="#d1a94e" stroke="none"/><circle cx="79" cy="47" r="1.8" fill="#d1a94e" stroke="none"/><line x1="28" y1="74" x2="24" y2="88"/><line x1="42" y1="76" x2="42" y2="90"/><line x1="56" y1="74" x2="60" y2="88"/>`, -1);
+}
+function artSiltStepperRat(){
+   return sceneWrap(`<ellipse cx="44" cy="66" rx="24" ry="13" fill="#5f4632" opacity="0.7"/><circle cx="72" cy="54" r="12" fill="#5f4632" opacity="0.7"/><circle cx="65" cy="45" r="4.5" fill="#5f4632" opacity="0.7"/><circle cx="78" cy="45" r="4.5" fill="#5f4632" opacity="0.7"/><circle cx="76" cy="51" r="1.6" fill="#2b2b28" stroke="none"/><line x1="30" y1="76" x2="26" y2="90"/><line x1="44" y1="78" x2="44" y2="92"/><line x1="58" y1="76" x2="60" y2="90"/>`, 2);
+}
 function artQuarryDrone(){
    return sceneWrap(`<rect x="28" y="36" width="44" height="38" fill="#8a8477"/><circle cx="50" cy="30" r="14" fill="#b9b3a4"/><circle cx="44" cy="28" r="3" fill="#2b2b28" stroke="none"/><circle cx="56" cy="28" r="3" fill="#2b2b28" stroke="none"/><path d="M28 44 L14 40 M28 54 L14 58" stroke-width="3"/><path d="M72 44 L86 40 M72 54 L86 58" stroke-width="3"/><line x1="38" y1="74" x2="34" y2="92"/><line x1="62" y1="74" x2="66" y2="92"/><path d="M40 20 L38 8 M60 20 L62 8" stroke-width="3"/>`, -2);
 }
@@ -396,6 +469,42 @@ function artPickaxeGolem(){
 }
 function artQuarryRat(){
    return sceneWrap(`<ellipse cx="42" cy="66" rx="30" ry="17" fill="#5f4632"/><circle cx="76" cy="52" r="14" fill="#5f4632"/><circle cx="67" cy="41" r="5.5" fill="#5f4632"/><circle cx="83" cy="41" r="5.5" fill="#5f4632"/><circle cx="81" cy="49" r="2" fill="#2b2b28" stroke="none"/><line x1="87" y1="53" x2="98" y2="49"/><path d="M16 66 Q2 76 8 92" fill="none"/><circle cx="30" cy="60" r="2.2" fill="#d1a94e" stroke="none"/><circle cx="46" cy="70" r="2.2" fill="#d1a94e" stroke="none"/>`, -2);
+}
+/* Same gap-filling pass as Commons/Sewers above — 11 more Quarry
+regulars, same gnome stick-figure template (quarry gnomes, matching
+the surveyor/sergeant family) as every Quarry regular already uses. */
+function artQuarryForeman(){
+   return sceneWrap(`<path d="M50 10 L28 44 L72 44 Z" fill="#d1a94e"/><circle cx="50" cy="56" r="13" fill="#e0c49a"/><circle cx="43" cy="56" r="2" fill="#2b2b28" stroke="none"/><circle cx="57" cy="56" r="2" fill="#2b2b28" stroke="none"/><rect x="40" y="38" width="20" height="5" fill="#8a8477"/><line x1="50" y1="69" x2="50" y2="88"/><line x1="50" y1="76" x2="30" y2="84"/><line x1="50" y1="76" x2="70" y2="84"/><line x1="50" y1="88" x2="38" y2="98"/><line x1="50" y1="88" x2="62" y2="98"/>`, 0);
+}
+function artStoneHaulerGnome(){
+   return sceneWrap(`<path d="M50 14 L32 44 L68 44 Z" fill="#8a8477"/><circle cx="50" cy="56" r="13" fill="#e0c49a"/><circle cx="50" cy="78" r="16" fill="#b9b3a4"/><line x1="50" y1="69" x2="50" y2="64"/><line x1="36" y1="78" x2="24" y2="72"/><line x1="64" y1="78" x2="76" y2="72"/><line x1="50" y1="94" x2="40" y2="99"/><line x1="50" y1="94" x2="60" y2="99"/>`, 0);
+}
+function artScaffoldClimberGnome(){
+   return sceneWrap(`<line x1="20" y1="20" x2="20" y2="94" stroke-width="3"/><line x1="80" y1="20" x2="80" y2="94" stroke-width="3"/><line x1="20" y1="56" x2="80" y2="56" stroke-width="3"/><path d="M50 30 L36 56 L64 56 Z" fill="#5c8a5c"/><circle cx="50" cy="68" r="11" fill="#e0c49a"/><circle cx="44" cy="68" r="1.8" fill="#2b2b28" stroke="none"/><circle cx="56" cy="68" r="1.8" fill="#2b2b28" stroke="none"/><line x1="50" y1="79" x2="50" y2="94"/><line x1="50" y1="94" x2="40" y2="99"/><line x1="50" y1="94" x2="60" y2="99"/>`, 1);
+}
+function artBlastChargeGnome(){
+   return sceneWrap(`<path d="M50 12 L32 44 L68 44 Z" fill="#b5453f"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><rect x="66" y="52" width="8" height="22" fill="#8a5a3a" transform="rotate(14 70 63)"/><circle cx="76" cy="50" r="2" fill="#d1a94e" stroke="none"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="32" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, -2);
+}
+function artTunnelRunnerGnome(){
+   return sceneWrap(`<path d="M50 14 L34 44 L66 44 Z" fill="#3d5a80"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="86"/><line x1="50" y1="74" x2="32" y2="66"/><line x1="50" y1="74" x2="68" y2="80"/><line x1="50" y1="86" x2="34" y2="94"/><line x1="50" y1="86" x2="64" y2="96"/>`, -4);
+}
+function artRockslideDodgerGnome(){
+   return sceneWrap(`<path d="M50 12 L34 42 L66 42 Z" fill="#b06a97"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><circle cx="18" cy="70" r="6" fill="#8a8477"/><circle cx="26" cy="84" r="8" fill="#8a8477"/><line x1="50" y1="66" x2="50" y2="86"/><line x1="50" y1="72" x2="70" y2="66"/><line x1="50" y1="86" x2="40" y2="96"/><line x1="50" y1="86" x2="60" y2="96"/>`, 3);
+}
+function artChiselGnome(){
+   return sceneWrap(`<path d="M50 12 L34 44 L66 44 Z" fill="#8a8477"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="72" y2="60"/><rect x="70" y="54" width="5" height="14" fill="#b9b3a4" transform="rotate(30 72 61)"/><line x1="50" y1="74" x2="32" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, -1);
+}
+function artQuarrySurveyorApprentice(){
+   return sceneWrap(`<path d="M50 12 L30 42 L70 42 Z" fill="#5c8a5c" opacity="0.8"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><rect x="32" y="58" width="16" height="12" fill="#f4efe4"/><line x1="50" y1="66" x2="50" y2="88"/><line x1="50" y1="72" x2="32" y2="64"/><line x1="50" y1="72" x2="68" y2="80"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 2);
+}
+function artCrystalDivinerGnome(){
+   return sceneWrap(`<path d="M50 10 L32 42 L68 42 Z" fill="#3d5a80" opacity="0.8"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="86"/><line x1="50" y1="70" x2="76" y2="54"/><circle cx="78" cy="50" r="3" fill="#b06a97" stroke="none"/><line x1="50" y1="70" x2="30" y2="80"/><line x1="50" y1="86" x2="40" y2="96"/><line x1="50" y1="86" x2="60" y2="96"/>`, 0);
+}
+function artTremorSensingGnome(){
+   return sceneWrap(`<path d="M50 12 L32 44 L68 44 Z" fill="#8a8477" opacity="0.8"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="86"/><line x1="36" y1="74" x2="26" y2="70"/><line x1="64" y1="74" x2="74" y2="70"/><line x1="50" y1="86" x2="38" y2="94"/><line x1="50" y1="86" x2="62" y2="94"/><path d="M20 96 Q50 90 80 96" fill="none" stroke-width="2"/>`, -1);
+}
+function artDowsingRodGnome(){
+   return sceneWrap(`<path d="M50 12 L32 44 L68 44 Z" fill="#b06a97" opacity="0.8"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="78" y2="62"/><path d="M78 62 L84 58 M78 62 L84 66" stroke-width="2"/><line x1="50" y1="74" x2="32" y2="84"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 2);
 }
 /* Boss pass (rare:true, content.js) — an amber hazard-glow aura drawn
 first (behind everything), plus a hull/head/reach that crowds the
@@ -414,6 +523,42 @@ function artHoardRat(){
 }
 function artCeremonialArmor(){
    return sceneWrap(`<path d="M34 34 Q50 26 66 34 L64 78 Q50 86 36 78 Z" fill="#b9b3a4"/><path d="M40 28 Q50 18 60 28 L58 36 Q50 32 42 36 Z" fill="#8a8477"/><rect x="44" y="50" width="12" height="4" fill="#2b2b28" stroke="none"/><line x1="34" y1="40" x2="18" y2="56"/><line x1="18" y1="56" x2="24" y2="72"/><line x1="66" y1="40" x2="82" y2="56"/><line x1="82" y1="56" x2="76" y2="72"/><line x1="50" y1="86" x2="42" y2="99"/><line x1="50" y1="86" x2="58" y2="99"/>`, 0);
+}
+/* Same gap-filling pass as Commons/Sewers/Quarry above — 11 more Vault
+regulars, same gnome stick-figure template every Vault gnome already
+uses, a gold/treasure accent palette fitting the hoard theme. */
+function artTreasureDiverGnome(){
+   return sceneWrap(`<path d="M30 70 L70 70 L62 46 L38 46 Z" fill="#8a8477"/><path d="M50 10 L32 42 L68 42 Z" fill="#d1a94e"/><circle cx="50" cy="60" r="11" fill="#e0c49a"/><line x1="50" y1="71" x2="50" y2="88"/><line x1="50" y1="78" x2="32" y2="86"/><line x1="50" y1="78" x2="68" y2="86"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artAppraiserGnome(){
+   return sceneWrap(`<path d="M50 12 L32 44 L68 44 Z" fill="#8a8477"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><circle cx="44" cy="56" r="4" fill="none" stroke="#2b2b28" stroke-width="1.5"/><circle cx="56" cy="56" r="4" fill="none" stroke="#2b2b28" stroke-width="1.5"/><line x1="48" y1="56" x2="52" y2="56" stroke-width="1.5"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="68" y2="66"/><line x1="50" y1="74" x2="32" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artCoinCounterGnome(){
+   return sceneWrap(`<ellipse cx="50" cy="80" rx="30" ry="14" fill="#d1a94e" opacity="0.6"/><path d="M50 14 L32 46 L68 46 Z" fill="#b06a97"/><circle cx="50" cy="58" r="12" fill="#e0c49a"/><line x1="50" y1="70" x2="50" y2="82"/><line x1="50" y1="76" x2="32" y2="78"/><line x1="50" y1="76" x2="68" y2="78"/><circle cx="34" cy="84" r="3" fill="#d1a94e" stroke="none"/><circle cx="50" cy="88" r="3" fill="#d1a94e" stroke="none"/><circle cx="64" cy="84" r="3" fill="#d1a94e" stroke="none"/>`, 0);
+}
+function artWardKeeperGnome(){
+   return sceneWrap(`<circle cx="50" cy="56" r="40" fill="#d1a94e" opacity="0.15"/><path d="M50 14 L34 44 L66 44 Z" fill="#3d5a80"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="32" y2="80"/><line x1="50" y1="74" x2="68" y2="80"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artTrapDodgerGnome(){
+   return sceneWrap(`<line x1="20" y1="80" x2="80" y2="80" stroke-width="2" stroke-dasharray="4 4"/><path d="M50 10 L36 38 L64 38 Z" fill="#5c8a5c"/><circle cx="50" cy="50" r="11" fill="#e0c49a"/><line x1="50" y1="61" x2="50" y2="74"/><line x1="50" y1="66" x2="30" y2="58"/><line x1="50" y1="66" x2="70" y2="58"/><line x1="50" y1="74" x2="36" y2="88"/><line x1="50" y1="74" x2="64" y2="88"/>`, -4);
+}
+function artRuneReaderGnome(){
+   return sceneWrap(`<path d="M50 12 L32 44 L68 44 Z" fill="#b06a97" opacity="0.8"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="36" y2="86"/><line x1="50" y1="74" x2="70" y2="68"/><path d="M60 94 L64 86 L68 94 L64 90 Z" fill="#d1a94e" stroke="none"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 1);
+}
+function artLockPickerGnome(){
+   return sceneWrap(`<path d="M50 14 L34 44 L66 44 Z" fill="#2b2b28"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="86"/><line x1="50" y1="74" x2="72" y2="64"/><path d="M70 60 L76 58 L74 64 Z" fill="#b9b3a4"/><line x1="50" y1="74" x2="32" y2="82"/><line x1="50" y1="86" x2="40" y2="97"/><line x1="50" y1="86" x2="60" y2="97"/>`, -2);
+}
+function artVaultRunnerGnome(){
+   return sceneWrap(`<path d="M50 10 L34 38 L66 38 Z" fill="#3d5a80"/><circle cx="50" cy="50" r="11" fill="#e0c49a"/><line x1="50" y1="61" x2="50" y2="78"/><line x1="50" y1="66" x2="28" y2="56"/><line x1="50" y1="66" x2="72" y2="72"/><line x1="50" y1="78" x2="30" y2="88"/><line x1="50" y1="78" x2="70" y2="92"/>`, -6);
+}
+function artRelicWielderGnome(){
+   return sceneWrap(`<path d="M50 12 L32 44 L68 44 Z" fill="#8a8477"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="76" y2="58"/><circle cx="78" cy="54" r="4" fill="#d1a94e" stroke="none"/><line x1="50" y1="74" x2="32" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 0);
+}
+function artEchoChaserGnome(){
+   return sceneWrap(`<path d="M50 14 L32 46 L68 46 Z" fill="#b9b3a4"/><circle cx="50" cy="58" r="12" fill="#e0c49a"/><circle cx="50" cy="58" r="20" fill="none" stroke="#f4efe4" stroke-width="1.5" opacity="0.6"/><circle cx="50" cy="58" r="28" fill="none" stroke="#f4efe4" stroke-width="1.5" opacity="0.3"/><line x1="50" y1="70" x2="50" y2="90"/><line x1="50" y1="76" x2="32" y2="84"/><line x1="50" y1="76" x2="68" y2="84"/><line x1="50" y1="90" x2="40" y2="99"/><line x1="50" y1="90" x2="60" y2="99"/>`, 0);
+}
+function artCurseBreakerGnome(){
+   return sceneWrap(`<path d="M50 10 L32 42 L68 42 Z" fill="#2b2b28" opacity="0.85"/><circle cx="50" cy="54" r="12" fill="#e0c49a"/><line x1="50" y1="66" x2="50" y2="86"/><line x1="50" y1="72" x2="30" y2="64"/><path d="M26 58 Q22 62 26 66 Q30 62 26 58 Z" fill="#b06a97" stroke="none"/><line x1="50" y1="72" x2="70" y2="80"/><line x1="50" y1="86" x2="40" y2="96"/><line x1="50" y1="86" x2="60" y2="96"/>`, 1);
 }
 function artGnomeVizier(){
    return sceneWrap(`<path d="M50 10 L30 44 L70 44 Z" fill="#3d5a80"/><circle cx="50" cy="56" r="12" fill="#e0c49a"/><rect x="34" y="62" width="14" height="18" fill="#f4efe4"/><line x1="50" y1="68" x2="50" y2="88"/><line x1="50" y1="74" x2="34" y2="66"/><line x1="50" y1="74" x2="68" y2="82"/><line x1="50" y1="88" x2="40" y2="98"/><line x1="50" y1="88" x2="60" y2="98"/>`, 2);

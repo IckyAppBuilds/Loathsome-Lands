@@ -228,6 +228,16 @@ stat modifier per the comment above `monsters[]`, authored as the
 tier-1/1-stat baseline; `RARE_DROP_CHANCE`/`GEAR_DROP_CHANCE` roll each
 independently in `winCombat()`, and a dropped gearDrop then rolls a
 tier via `GEAR_DROP_TIER_CHANCE`/`rollGearDropTier()` — see combat.js).
+Per explicit correction, `gearDrop` is class-FREE (no `classRequired`)
+for every zone before Gnometropolis (Commons/Sewers/Quarry/Vault) —
+`classRequired` gear starts at Garrison/Rogues' Den/the Arcane Sanctum
+(Gnometropolis's own districts, tied to the class trial) and stays
+gated from there through the rest of the game. Per a later explicit
+request, each zone's own `monsters[]` entries (both pre-Gnometropolis
+and the class-gated zones already did) were also expanded so every
+zone's gearDrop set covers all 5 equip slots (all 3 classes too, where
+classRequired applies) — see each zone's own "gap-filling pass"
+comment, content.js, for the exact additions.
 
 Every monster/boss across ALL FIVE monster-data files (this one,
 mudroot-content.js, warrensear-content.js, emberwarren-content.js,
