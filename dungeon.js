@@ -16,6 +16,19 @@ emberwarren-content.js) and after combat.js/render.js (whose
 startCombat()/render() this file's functions call, though only inside
 function bodies, so — same as gauntlet.js's own note — that ordering
 is for readability, not correctness). */
+/* Per explicit request, every dungeon needs at least 10 fights with
+minibosses and trash mobs throughout, plus a rest stop partway through
+— each dungeon's own `regulars` array (prismdepths-content.js) now
+carries 10 entries (the original 3 trash + 7 more: 5 trash + 2
+miniboss-tier, rare:true) ahead of its own 1-entry `bosses` array (the
+true final boss), for 11 total stages. `restStage` is the stage INDEX
+(0-based, same indexing dungeonMonsterAtStage() already uses) that
+advanceDungeonRun() pauses BEFORE starting — i.e. the run halts right
+after the stage-(restStage-1) kill, which lands roughly at the
+midpoint of all 8 dungeons' own 11-stage run (index 6 — right after
+the first miniboss and a short trailing trash fight, right before the
+back half starts). See activeDungeonRun.resting/restInDungeon() below
+for the actual pause/resume mechanics. */
 const DUNGEONS = {
    embercrypt: {
       name: "Embercrypt",
@@ -28,6 +41,8 @@ const DUNGEONS = {
       enterLine: "You step into Embercrypt. Whatever's still burning in here has been burning a very long time.",
       midRunLine: (left) => `Deeper into Embercrypt — ${left} fight${left===1?'':'s'} left before whatever's keeping it lit.`,
       clearLine: "Embercrypt falls dark behind you, all at once, like something finally let go of a breath.",
+      restStage: 6,
+      restLine: "You find a stretch of cooled stone, dark enough to actually rest on. The forge-heat can wait.",
    },
    frostvault: {
       name: "Frostvault",
@@ -40,6 +55,8 @@ const DUNGEONS = {
       enterLine: "You step into Frostvault. Everything in here is exactly where it was left — including, maybe, you.",
       midRunLine: (left) => `Deeper into Frostvault — ${left} fight${left===1?'':'s'} left before whatever's keeping it still.`,
       clearLine: "Frostvault doesn't darken behind you so much as settle — one more thing filed, finally, under finished.",
+      restStage: 6,
+      restLine: "You find a hollow out of the wind, just warm enough to actually rest in.",
    },
    stormreach: {
       name: "Stormreach",
@@ -52,6 +69,8 @@ const DUNGEONS = {
       enterLine: "You step into Stormreach. Something up here is still talking. It's been a very long time since anyone answered.",
       midRunLine: (left) => `Deeper into Stormreach — ${left} fight${left===1?'':'s'} left before whatever's still broadcasting.`,
       clearLine: "Stormreach goes quiet behind you, all at once — whatever that signal was, it's finally been heard.",
+      restStage: 6,
+      restLine: "You find a dead spot in the wind, just long enough to actually rest in.",
    },
    /* Wave 2 — gated on quest18Complete, not quest17Complete. quest18,
    "Old Light, Older Debts" (town.js), is only OFFERED once every wave 1
@@ -69,6 +88,8 @@ const DUNGEONS = {
       enterLine: "You step into Verdant Hollow. Whatever this place used to grow, it's still growing — just slower, and without anyone to pick the harvest.",
       midRunLine: (left) => `Deeper into Verdant Hollow — ${left} fight${left===1?'':'s'} left before whatever's still tending it.`,
       clearLine: "Verdant Hollow settles back into its own slow green quiet, like it was only ever waiting for you to finish and leave.",
+      restStage: 6,
+      restLine: "You find a clearing the growth hasn't reclaimed yet, just long enough to actually rest in.",
    },
    duskward: {
       name: "Duskward",
@@ -81,6 +102,8 @@ const DUNGEONS = {
       enterLine: "You step into Duskward. The torches don't help much here — whatever's wrong with the light isn't a lighting problem.",
       midRunLine: (left) => `Deeper into Duskward — ${left} fight${left===1?'':'s'} left before whatever's keeping the dark company.`,
       clearLine: "Duskward doesn't get any brighter behind you. It just stops watching.",
+      restStage: 6,
+      restLine: "You find a spot the dark hasn't quite finished claiming, just long enough to actually rest in.",
    },
    ironloom: {
       name: "Ironloom",
@@ -93,6 +116,8 @@ const DUNGEONS = {
       enterLine: "You step into Ironloom. Something in here is still running, still weaving, still keeping perfect, pointless time.",
       midRunLine: (left) => `Deeper into Ironloom — ${left} fight${left===1?'':'s'} left before whatever's still keeping the pattern.`,
       clearLine: "Ironloom winds down behind you, gear by gear, into something almost like rest.",
+      restStage: 6,
+      restLine: "You find a stretch of stopped gears, quiet enough to actually rest against.",
    },
    /* Wave 3 — gated on quest19Complete. quest19, "The Last Two Rooms"
    (town.js), is only OFFERED once every wave 2 dungeon has been cleared
@@ -109,6 +134,8 @@ const DUNGEONS = {
       enterLine: "You step into Echo Chapel. Every sound you make comes back changed — a little slower, a little sadder, like the room's correcting you.",
       midRunLine: (left) => `Deeper into Echo Chapel — ${left} fight${left===1?'':'s'} left before whatever's still holding the note.`,
       clearLine: "Echo Chapel finally lets the note end. The silence after is somehow the loudest part.",
+      restStage: 6,
+      restLine: "You find a dead patch of silence, just long enough to actually rest in.",
    },
    sunkenarchive: {
       name: "Sunken Archive",
@@ -121,15 +148,23 @@ const DUNGEONS = {
       enterLine: "You step into the Sunken Archive. Everything in here was written down by something that expected to be read again.",
       midRunLine: (left) => `Deeper into the Sunken Archive — ${left} fight${left===1?'':'s'} left before whatever's still cataloguing you.`,
       clearLine: "The Sunken Archive goes quiet behind you — not empty, exactly. Just finished, for now, with what it had to say.",
+      restStage: 6,
+      restLine: "You find a reading alcove nobody's catalogued yet, just long enough to actually rest in.",
    },
 };
 
 /* Transient run state — mirrors gauntletProgress exactly (plain
 object/variable, never saved, reset on travelTo()/checkDefeat() same
 as every other mid-fight-only state: combatSubView, evasionActive,
-playerStatusEffect, gauntletProgress). { id, stage } — stage 0..
-(regulars.length-1) are the regular fights, stage===regulars.length
-onward are the bosses array, in order. */
+playerStatusEffect, gauntletProgress). { id, stage, resting } — stage
+0..(regulars.length-1) are the regular fights, stage===regulars.length
+onward are the bosses array, in order. `resting` is true only in the
+narrow window between the restStage-1 kill and the player clicking
+Rest (restInDungeon() below) — state.inCombat is false during that
+window (advanceDungeonRun() calls endCombat() instead of starting the
+next fight), same "paused, not finished" shape dungeonRunContinues
+already gives winCombat() (combat.js) to skip the normal victory
+banner without actually ending the run. */
 let activeDungeonRun = null;
 
 function isDungeonUnlocked(id){
@@ -185,14 +220,47 @@ victory-banner/endCombat() flow (mid-run) or let it play out as usual
 (the run's final kill) — see its own comment for why. */
 function advanceDungeonRun(){
    const { id } = activeDungeonRun;
+   const cfg = DUNGEONS[id];
    activeDungeonRun.stage++;
    if(activeDungeonRun.stage < dungeonStageCount(id)){
+      /* Rest stop — pause here instead of auto-chaining into the next
+      fight. endCombat() (combat.js) does the same cleanup a normal
+      fight-end would (classBuffFightsLeft ticks down once, evasionActive/
+      playerStatusEffect clear) without nulling activeDungeonRun itself,
+      so the run genuinely just pauses rather than ending. winCombat()'s
+      own dungeonRunContinues check (computed before this function runs)
+      is still true here — there ARE more stages left — so it skips its
+      OWN endCombat() call and just returns, same as the normal mid-run
+      case; this is the only place besides that final skip where a
+      dungeon kill doesn't immediately chain into startCombat(). */
+      if(cfg.restStage != null && activeDungeonRun.stage === cfg.restStage){
+         activeDungeonRun.resting = true;
+         endCombat();
+         log(cfg.restLine);
+         return false;
+      }
       startCombat(dungeonMonsterAtStage(id, activeDungeonRun.stage));
       return false;
    }
    grantDungeonTreasure(id);
    activeDungeonRun = null;
    return true;
+}
+
+/* Resumes a run paused at its own rest stop (restStage, above) — a
+full HP/MP restore (the whole point of a rest stop existing at all),
+then starts the next fight exactly like any other stage transition.
+Refuses outside that narrow window so a stray call (e.g. a second
+click) can't double-heal or desync the stage counter. */
+function restInDungeon(){
+   if(!activeDungeonRun || !activeDungeonRun.resting) return;
+   const { id, stage } = activeDungeonRun;
+   state.hp = state.maxHp;
+   state.mp = state.maxMp;
+   activeDungeonRun.resting = false;
+   log("Fully rested. Back into it.");
+   startCombat(dungeonMonsterAtStage(id, stage));
+   render();
 }
 
 /* One guaranteed item off that dungeon's own treasureTable (picked

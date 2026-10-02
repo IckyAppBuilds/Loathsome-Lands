@@ -598,7 +598,20 @@ constructs, a deliberate callback to the Moles' own machine theme);
 dungeons" rule) — **Echo Chapel** (sound/memory, a callback to the
 Warren's Ear's own Choir), **Sunken Archive** (knowledge/the Lucent's
 own history, the direct lead-in to the not-yet-built finale). Every
-dungeon shares the exact same shape: `<name>Regulars` (3), its own
+dungeon shares the exact same shape: `<name>Regulars` (10 — per a
+later explicit request that every dungeon run at least 10 fights with
+minibosses and trash mobs throughout: the original 3 trash + 5 more
+trash + 2 miniboss-tier entries, `rare:true` but NOT pushed into
+`NAMED_BOSSES`/`monsters[]` — same "stronger than trash, not the
+dungeon's own named final boss" role a zone-rare plays relative to a
+real boss. Minibosses only ever carry `buff`/`heal` skills, never
+`bolt` — their threat comes from their own higher beef/grit, sidestepping
+the "a bolt must hit harder than a normal swing" magnitude check regular
+`monsters[]` entries are held to elsewhere (moot here anyway, since
+dungeon monsters were never part of that check — see `TRASH_SKILL_
+CHANCE`'s own comment, content.js, for why regular trash NEVER gets a
+`debuff` skill; minibosses follow that same restriction too, reserving
+`debuff` for the dungeon's own true final boss alone), its own
 `rare:true` boss, and `<name>Treasure` (15 class-tagged items, one
 picked at random per clear — a full `SLOT_ORDER` row, core.js, for
 EACH of the 3 classes, per a later explicit request that a player be
@@ -623,11 +636,14 @@ monsters introduced, art.js), never the gnome/mole silhouettes — each
 dungeon just varies the palette for its own theme (ember red/orange,
 ice blue/white, storm purple/yellow, forest green/moss-olive, shadow-
 violet/pale lavender, bronze/brass, slate blue/pale sky, aged sepia/
-faded gold) — the underlying shape geometry (4 templates: a "crystal
-body," a "ghost head," a "low crawler," and a bigger "layered boss
-body") is byte-for-byte IDENTICAL across every dungeon's art functions,
-only the fill colors change, so a 9th dungeon's art is a fast, mostly-
-mechanical addition. Dungeon monsters carry `loot:null` always —
+faded gold) — the underlying shape geometry (the original 3 trash
+templates + a "layered boss body" for the true final boss, plus — from
+the 10-fight-minimum pass — 5 more trash variant shapes and 2
+miniboss-tier variant shapes, a scaled-down echo of the boss shape,
+smaller/lighter than the real thing) is byte-for-byte IDENTICAL across
+every dungeon's own art functions, only the fill colors change, so a
+9th dungeon's art is a fast, mostly-mechanical addition. Dungeon
+monsters carry `loot:null` always —
 treasure comes from the dungeon's own guaranteed end-of-run payout, not
 per-kill drops. Each boss reuses an existing mechanic (burn/freeze/
 poison debuff, or a bolt-heavy kit, in varied combinations with
@@ -655,12 +671,36 @@ flavor-line functions (`enterLine`/`midRunLine(left)`/`clearLine`).
 (render.js/town.js): each later wave unlocks by having cleared the
 PRIOR wave's dungeons themselves, not merely by completing the quest
 before it, per explicit request.
-`activeDungeonRun` (`{id, stage}`) is transient — never saved, same
-convention `gauntletProgress`/`combatSubView`/`evasionActive` already
-use — reset by `abandonDungeonRun()`, called from the same two spots
-`resetGauntlet()` already is (`travelTo()`/`checkDefeat()`, keyed on
-leaving the `'prismdepths'` screen rather than a per-dungeon zone,
+`activeDungeonRun` (`{id, stage, resting}`) is transient — never saved,
+same convention `gauntletProgress`/`combatSubView`/`evasionActive`
+already use — reset by `abandonDungeonRun()`, called from the same two
+spots `resetGauntlet()` already is (`travelTo()`/`checkDefeat()`, keyed
+on leaving the `'prismdepths'` screen rather than a per-dungeon zone,
 since every dungeon is entered from that one screen).
+
+**Rest stop** (per the "10+ fights with a rest stop partway through"
+request): each `DUNGEONS` entry's own `restStage` (a 0-based stage
+index, same indexing `dungeonMonsterAtStage()` uses) and `restLine`
+flavor string. `advanceDungeonRun()` pauses INSTEAD OF auto-chaining
+into the next fight once `activeDungeonRun.stage === cfg.restStage` —
+sets `resting: true`, calls `endCombat()` (same per-fight cleanup a
+normal fight-end gets: `classBuffFightsLeft` ticks down once,
+`evasionActive`/`playerStatusEffect` clear) WITHOUT nulling
+`activeDungeonRun` itself, so the run genuinely pauses rather than
+ending. `winCombat()`'s own `dungeonRunContinues` check is still true
+at that point (there ARE more stages left), so it skips its own
+`endCombat()`/victory-banner and just returns, same as any other
+mid-run kill — this is the only other place a dungeon kill doesn't
+immediately chain into `startCombat()`. `restInDungeon()` (player-
+triggered, the Rest button — `recast-btn`'s sibling but its own
+`dungeon-rest-box`/`restInDungeon()` pair, index.html/render.js) fully
+restores HP/MP, clears `resting`, and starts the next stage's fight —
+refuses outside that narrow window so a stray/double call can't
+double-heal or desync the stage counter. `syncCombatUI()`/`render.js`
+hides the Dungeon Board/Leave row and shows `dungeon-rest-box` instead
+whenever `activeDungeonRun.resting` is true, the same single-screen-
+takeover shape the Board itself already has over the normal Prism
+Depths screen.
 
 `enterDungeon(id)` starts stage 0 (refuses mid-combat/mid-run/off the
 `'prismdepths'` screen/not enough Biscuits — `devMode`-guarded the same
@@ -669,11 +709,14 @@ way `goAdventuring()` already is). `advanceDungeonRun()` — called from
 next stage's fight (`startCombat()`, same function every other forced
 fight already uses) or calls `grantDungeonTreasure(id)` and clears
 `activeDungeonRun`. A multi-stage run auto-chains straight through
-every regular+boss fight with NO button click between stages — deliberately
-different from gauntlets' own "click again when ready" UX, since a
-dungeon run is meant to play as one continuous push; only the run's
-FINAL kill shows the normal victory banner (see the "wasDungeonMonster
-&& dungeonRunContinues" branch, combat.js, right next to
+every regular+boss fight with NO button click between stages —
+deliberately different from gauntlets' own "click again when ready"
+UX, since a dungeon run is meant to play as one continuous push — with
+exactly ONE deliberate exception, the rest stop above, which DOES need
+a click (`restInDungeon()`) precisely because its whole point is
+giving the player a moment to actually stop. Only the run's FINAL kill
+shows the normal victory banner (see the "wasDungeonMonster &&
+dungeonRunContinues" branch, combat.js, right next to
 `wasBuildingTrialFight`'s own banner-skip logic).
 
 Wave 1's `requiredFlag` is `'quest17Complete'` — quest17, "What Light

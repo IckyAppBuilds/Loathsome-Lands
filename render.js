@@ -623,10 +623,18 @@ function syncBuildingScreens(ctx){
   have to disappear for it the same way the Palace's own
   Attack-the-gate button does mid-fight, rather than sitting there
   stacked on top of the normal combat screen. */
+  /* A paused rest stop (activeDungeonRun.resting, dungeon.js) reads as
+  !state.inCombat too (advanceDungeonRun() calls endCombat() to get
+  there) but isn't "back at the board" — it's its own screen
+  (dungeon-rest-box) that has to take over the same way the board
+  itself does, so every one of these also excludes it explicitly. */
+  const isDungeonResting = !!(activeDungeonRun && activeDungeonRun.resting);
   document.getElementById('prism-depths-entry-row').style.display = (ctx.isCrystalCity && state.quest17Complete && !state.inCombat) ? 'flex' : 'none';
-  document.getElementById('prism-depths-row').style.display = (ctx.isPrismDepths && !state.inCombat) ? 'flex' : 'none';
-  document.getElementById('dungeon-board').style.display = (ctx.isPrismDepths && !state.inCombat) ? 'block' : 'none';
-  if(ctx.isPrismDepths && !state.inCombat) renderDungeonBoard();
+  document.getElementById('prism-depths-row').style.display = (ctx.isPrismDepths && !state.inCombat && !isDungeonResting) ? 'flex' : 'none';
+  document.getElementById('dungeon-board').style.display = (ctx.isPrismDepths && !state.inCombat && !isDungeonResting) ? 'block' : 'none';
+  if(ctx.isPrismDepths && !state.inCombat && !isDungeonResting) renderDungeonBoard();
+  document.getElementById('dungeon-rest-box').style.display = (ctx.isPrismDepths && isDungeonResting) ? 'block' : 'none';
+  if(ctx.isPrismDepths && isDungeonResting) renderDungeonRestBox();
 
   document.getElementById('accept-quest3-btn').style.display = ctx.quest3State==='offer' ? '' : 'none';
   document.getElementById('brew-potion-btn').style.display = ctx.quest3State==='active' ? '' : 'none';
@@ -1367,6 +1375,18 @@ function renderDungeonBoard(){
     return `<div class="shop-item"><div style="flex:1;"><div class="name">${cfg.name}</div><div class="desc">${statusText} — costs ${cfg.biscuitCost} Biscuits</div></div><button class="btn-secondary ${canEnter?'btn-ready':''}" ${canEnter?'':'disabled'} onclick="enterDungeon('${id}')">${inThisRun ? 'In Progress' : 'Enter'}</button></div>`;
   }).join('');
   el.innerHTML = `<div class="block-title">Dungeon Board</div><div class="quest-desc">${state.prismShards} Prism Shard${state.prismShards===1?'':'s'}.</div>${rows}`;
+}
+
+/* The rest stop partway through a dungeon run (dungeon.js's own
+restStage/restInDungeon()) — shows while activeDungeonRun.resting is
+true, same single-purpose screen-takeover shape renderDungeonBoard()
+above already has. Just that dungeon's own flavor line (restLine) plus
+a flat statement of what the Rest button actually does — no stage
+counter here, dungeon-progress-row already shows that the moment
+combat resumes. */
+function renderDungeonRestBox(){
+   const cfg = DUNGEONS[activeDungeonRun.id];
+   document.getElementById('dungeon-rest-desc').textContent = `${cfg.restLine} Resting fully restores your HP and MP before you push on.`;
 }
 
 function capitalize(s){ return s.charAt(0).toUpperCase()+s.slice(1); }

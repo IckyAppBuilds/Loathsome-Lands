@@ -1454,6 +1454,212 @@ function artLastArchivist(){
    return sceneWrap(`<path d="M50 8 L80 40 L68 92 L32 92 L20 40 Z" fill="#2b2b28" opacity="0.75"/><path d="M50 8 L80 40 L50 50 Z" fill="#5a4a3a" opacity="0.7"/><path d="M50 8 L20 40 L50 50 Z" fill="#9c8560" opacity="0.6"/><path d="M50 50 L68 92 L32 92 Z" fill="#8a8477" opacity="0.5"/><circle cx="50" cy="50" r="6" fill="#9c8560" stroke="none"/><circle cx="50" cy="50" r="3" fill="#5a4a3a" stroke="none"/>`, 0);
 }
 
+/* ---------------- Act 3 dungeons — the "10+ fights, minibosses +
+rest stop" pass (dungeon.js/prismdepths-content.js) ---------------- */
+/* 56 more Prism Depths art functions — 7 per dungeon (5 new trash +
+2 miniboss-tier), same angular Lucent vocabulary/per-dungeon palette
+every function above already established, just 5 new trash silhouette
+variants (never reused within the same dungeon) plus 2 miniboss
+silhouettes (a scaled-down echo of the dungeon's own boss shape,
+smaller/lighter than the true final boss, bigger than any trash). */
+
+/* Embercrypt — ember red/orange (#b5453f/#c97b3d), continuing
+artSlagBoundHusk/artAshVeiledWatcher/artCinderHound/artEmberwright above. */
+function artAshBoundCrawler(){
+   return sceneWrap(`<path d="M50 12 L72 40 L60 84 L40 84 L28 40 Z" fill="#8a8477" opacity="0.55"/><path d="M50 12 L72 40 L50 46 Z" fill="#c97b3d" opacity="0.65"/><path d="M50 12 L28 40 L50 46 Z" fill="#b5453f" opacity="0.55"/><circle cx="50" cy="48" r="2.5" fill="#b5453f" stroke="none"/><line x1="40" y1="84" x2="36" y2="96" stroke-width="2.5"/><line x1="60" y1="84" x2="64" y2="96" stroke-width="2.5"/>`, 0);
+}
+function artSlagColossus(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#b5453f" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#c97b3d" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="#c97b3d" stroke="none"/><circle cx="50" cy="48" r="2.2" fill="#b5453f" stroke="none"/>`, 0);
+}
+function artCinderWrappedTender(){
+   return sceneWrap(`<path d="M50 18 L68 40 L62 68 L38 68 L32 40 Z" fill="#2b2b28" opacity="0.65"/><circle cx="42" cy="46" r="4" fill="#c97b3d" stroke="none"/><circle cx="58" cy="46" r="4" fill="#b5453f" stroke="none"/><path d="M38 68 L32 84 M62 68 L68 84" stroke-width="2.5"/>`, 0);
+}
+function artKilnSealedWarden(){
+   return sceneWrap(`<path d="M22 68 L40 52 L54 60 L70 46 L84 64 L68 78 L52 70 L36 80 Z" fill="#8a8477" opacity="0.5"/><path d="M40 52 L46 42 L54 52 Z" fill="#c97b3d" opacity="0.75"/><path d="M70 46 L78 38 L82 48 Z" fill="#b5453f" opacity="0.75"/><circle cx="48" cy="62" r="1.6" fill="#b5453f" stroke="none"/>`, 0);
+}
+function artEmberThreadedStalker(){
+   return sceneWrap(`<path d="M50 16 L70 42 L58 82 L42 82 L30 42 Z" fill="#8a8477" opacity="0.6"/><path d="M50 16 L70 42 L50 48 Z" fill="#b5453f" opacity="0.7"/><path d="M50 16 L30 42 L50 48 Z" fill="#c97b3d" opacity="0.6"/><circle cx="50" cy="50" r="2.8" fill="#c97b3d" stroke="none"/><line x1="42" y1="82" x2="38" y2="94" stroke-width="2.5"/><line x1="58" y1="82" x2="62" y2="94" stroke-width="2.5"/>`, 0);
+}
+function artCinderMagistrate(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#c97b3d" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#b5453f" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="none" stroke="#b5453f" stroke-width="2"/><circle cx="50" cy="48" r="2.2" fill="#c97b3d" stroke="none"/>`, 0);
+}
+function artForgeLockedSentry(){
+   return sceneWrap(`<path d="M50 20 L66 42 L60 66 L40 66 L34 42 Z" fill="#2b2b28" opacity="0.6"/><circle cx="43" cy="48" r="3.6" fill="#b5453f" stroke="none"/><circle cx="57" cy="48" r="3.6" fill="#c97b3d" stroke="none"/><path d="M40 66 L34 82 M60 66 L66 82" stroke-width="2.5"/>`, 0);
+}
+
+/* Frostvault — ice blue/white (#3d5a80/#f4efe4), continuing
+artGlassStillCustodian/artRimeCrustedDrifter/artFrostboundArchivist/
+artStillglassWarden above. */
+function artRimeLockedSentinel(){
+   return sceneWrap(`<path d="M50 12 L72 40 L60 84 L40 84 L28 40 Z" fill="#8a8477" opacity="0.55"/><path d="M50 12 L72 40 L50 46 Z" fill="#f4efe4" opacity="0.65"/><path d="M50 12 L28 40 L50 46 Z" fill="#3d5a80" opacity="0.55"/><circle cx="50" cy="48" r="2.5" fill="#3d5a80" stroke="none"/><line x1="40" y1="84" x2="36" y2="96" stroke-width="2.5"/><line x1="60" y1="84" x2="64" y2="96" stroke-width="2.5"/>`, 0);
+}
+function artGlacialCustodian(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#3d5a80" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#f4efe4" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="#f4efe4" stroke="none"/><circle cx="50" cy="48" r="2.2" fill="#3d5a80" stroke="none"/>`, 0);
+}
+function artFrostVeiledTender(){
+   return sceneWrap(`<path d="M50 18 L68 40 L62 68 L38 68 L32 40 Z" fill="#2b2b28" opacity="0.65"/><circle cx="42" cy="46" r="4" fill="#f4efe4" stroke="none"/><circle cx="58" cy="46" r="4" fill="#3d5a80" stroke="none"/><path d="M38 68 L32 84 M62 68 L68 84" stroke-width="2.5"/>`, 0);
+}
+function artIceBoundArchivist(){
+   return sceneWrap(`<path d="M22 68 L40 52 L54 60 L70 46 L84 64 L68 78 L52 70 L36 80 Z" fill="#8a8477" opacity="0.5"/><path d="M40 52 L46 42 L54 52 Z" fill="#f4efe4" opacity="0.75"/><path d="M70 46 L78 38 L82 48 Z" fill="#3d5a80" opacity="0.75"/><circle cx="48" cy="62" r="1.6" fill="#3d5a80" stroke="none"/>`, 0);
+}
+function artGlassSplinterStalker(){
+   return sceneWrap(`<path d="M50 16 L70 42 L58 82 L42 82 L30 42 Z" fill="#8a8477" opacity="0.6"/><path d="M50 16 L70 42 L50 48 Z" fill="#3d5a80" opacity="0.7"/><path d="M50 16 L30 42 L50 48 Z" fill="#f4efe4" opacity="0.6"/><circle cx="50" cy="50" r="2.8" fill="#f4efe4" stroke="none"/><line x1="42" y1="82" x2="38" y2="94" stroke-width="2.5"/><line x1="58" y1="82" x2="62" y2="94" stroke-width="2.5"/>`, 0);
+}
+function artRimeChancellor(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#f4efe4" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#3d5a80" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="none" stroke="#3d5a80" stroke-width="2"/><circle cx="50" cy="48" r="2.2" fill="#f4efe4" stroke="none"/>`, 0);
+}
+function artFrostlockedSentry(){
+   return sceneWrap(`<path d="M50 20 L66 42 L60 66 L40 66 L34 42 Z" fill="#2b2b28" opacity="0.6"/><circle cx="43" cy="48" r="3.6" fill="#3d5a80" stroke="none"/><circle cx="57" cy="48" r="3.6" fill="#f4efe4" stroke="none"/><path d="M40 66 L34 82 M60 66 L66 82" stroke-width="2.5"/>`, 0);
+}
+
+/* Stormreach — storm purple/yellow (#5a4a8a/#d1a94e), continuing
+artChargeSplitSentry/artWindwornHerald/artStormTideWalker/
+artUnansweredHerald above. */
+function artChargeSplitOutrider(){
+   return sceneWrap(`<path d="M50 12 L72 40 L60 84 L40 84 L28 40 Z" fill="#8a8477" opacity="0.55"/><path d="M50 12 L72 40 L50 46 Z" fill="#d1a94e" opacity="0.65"/><path d="M50 12 L28 40 L50 46 Z" fill="#5a4a8a" opacity="0.55"/><circle cx="50" cy="48" r="2.5" fill="#5a4a8a" stroke="none"/><line x1="40" y1="84" x2="36" y2="96" stroke-width="2.5"/><line x1="60" y1="84" x2="64" y2="96" stroke-width="2.5"/>`, 0);
+}
+function artGaleMarshal(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#5a4a8a" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#d1a94e" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="#d1a94e" stroke="none"/><circle cx="50" cy="48" r="2.2" fill="#5a4a8a" stroke="none"/>`, 0);
+}
+function artWindwornRelay(){
+   return sceneWrap(`<path d="M50 18 L68 40 L62 68 L38 68 L32 40 Z" fill="#2b2b28" opacity="0.65"/><circle cx="42" cy="46" r="4" fill="#d1a94e" stroke="none"/><circle cx="58" cy="46" r="4" fill="#5a4a8a" stroke="none"/><path d="M38 68 L32 84 M62 68 L68 84" stroke-width="2.5"/>`, 0);
+}
+function artStormTideKeeper(){
+   return sceneWrap(`<path d="M22 68 L40 52 L54 60 L70 46 L84 64 L68 78 L52 70 L36 80 Z" fill="#8a8477" opacity="0.5"/><path d="M40 52 L46 42 L54 52 Z" fill="#d1a94e" opacity="0.75"/><path d="M70 46 L78 38 L82 48 Z" fill="#5a4a8a" opacity="0.75"/><circle cx="48" cy="62" r="1.6" fill="#5a4a8a" stroke="none"/>`, 0);
+}
+function artChargeSplitOutlier(){
+   return sceneWrap(`<path d="M50 16 L70 42 L58 82 L42 82 L30 42 Z" fill="#8a8477" opacity="0.6"/><path d="M50 16 L70 42 L50 48 Z" fill="#5a4a8a" opacity="0.7"/><path d="M50 16 L30 42 L50 48 Z" fill="#d1a94e" opacity="0.6"/><circle cx="50" cy="50" r="2.8" fill="#d1a94e" stroke="none"/><line x1="42" y1="82" x2="38" y2="94" stroke-width="2.5"/><line x1="58" y1="82" x2="62" y2="94" stroke-width="2.5"/>`, 0);
+}
+function artStaticArchivist(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#d1a94e" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#5a4a8a" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="none" stroke="#5a4a8a" stroke-width="2"/><circle cx="50" cy="48" r="2.2" fill="#d1a94e" stroke="none"/>`, 0);
+}
+function artStormBoundSentry(){
+   return sceneWrap(`<path d="M50 20 L66 42 L60 66 L40 66 L34 42 Z" fill="#2b2b28" opacity="0.6"/><circle cx="43" cy="48" r="3.6" fill="#5a4a8a" stroke="none"/><circle cx="57" cy="48" r="3.6" fill="#d1a94e" stroke="none"/><path d="M40 66 L34 82 M60 66 L66 82" stroke-width="2.5"/>`, 0);
+}
+
+/* Verdant Hollow — forest green/moss-olive (#4a7a4a/#8ba23f),
+continuing artBrambleBoundSentinel/artSeedCaster/artMossGrownCaretaker/
+artRootboundWarden above. */
+function artVineChokedOutrider(){
+   return sceneWrap(`<path d="M50 12 L72 40 L60 84 L40 84 L28 40 Z" fill="#8a8477" opacity="0.55"/><path d="M50 12 L72 40 L50 46 Z" fill="#8ba23f" opacity="0.65"/><path d="M50 12 L28 40 L50 46 Z" fill="#4a7a4a" opacity="0.55"/><circle cx="50" cy="48" r="2.5" fill="#4a7a4a" stroke="none"/><line x1="40" y1="84" x2="36" y2="96" stroke-width="2.5"/><line x1="60" y1="84" x2="64" y2="96" stroke-width="2.5"/>`, 0);
+}
+function artBrambleSovereign(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#4a7a4a" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#8ba23f" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="#8ba23f" stroke="none"/><circle cx="50" cy="48" r="2.2" fill="#4a7a4a" stroke="none"/>`, 0);
+}
+function artSeedTender(){
+   return sceneWrap(`<path d="M50 18 L68 40 L62 68 L38 68 L32 40 Z" fill="#2b2b28" opacity="0.65"/><circle cx="42" cy="46" r="4" fill="#8ba23f" stroke="none"/><circle cx="58" cy="46" r="4" fill="#4a7a4a" stroke="none"/><path d="M38 68 L32 84 M62 68 L68 84" stroke-width="2.5"/>`, 0);
+}
+function artMossBoundKeeper(){
+   return sceneWrap(`<path d="M22 68 L40 52 L54 60 L70 46 L84 64 L68 78 L52 70 L36 80 Z" fill="#8a8477" opacity="0.5"/><path d="M40 52 L46 42 L54 52 Z" fill="#8ba23f" opacity="0.75"/><path d="M70 46 L78 38 L82 48 Z" fill="#4a7a4a" opacity="0.75"/><circle cx="48" cy="62" r="1.6" fill="#4a7a4a" stroke="none"/>`, 0);
+}
+function artThornvineLancer(){
+   return sceneWrap(`<path d="M50 16 L70 42 L58 82 L42 82 L30 42 Z" fill="#8a8477" opacity="0.6"/><path d="M50 16 L70 42 L50 48 Z" fill="#4a7a4a" opacity="0.7"/><path d="M50 16 L30 42 L50 48 Z" fill="#8ba23f" opacity="0.6"/><circle cx="50" cy="50" r="2.8" fill="#8ba23f" stroke="none"/><line x1="42" y1="82" x2="38" y2="94" stroke-width="2.5"/><line x1="58" y1="82" x2="62" y2="94" stroke-width="2.5"/>`, 0);
+}
+function artHollowCultivator(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#8ba23f" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#4a7a4a" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="none" stroke="#4a7a4a" stroke-width="2"/><circle cx="50" cy="48" r="2.2" fill="#8ba23f" stroke="none"/>`, 0);
+}
+function artBrambleLockedSentry(){
+   return sceneWrap(`<path d="M50 20 L66 42 L60 66 L40 66 L34 42 Z" fill="#2b2b28" opacity="0.6"/><circle cx="43" cy="48" r="3.6" fill="#4a7a4a" stroke="none"/><circle cx="57" cy="48" r="3.6" fill="#8ba23f" stroke="none"/><path d="M40 66 L34 82 M60 66 L66 82" stroke-width="2.5"/>`, 0);
+}
+
+/* Duskward — shadow-violet/pale lavender (#3a2f52/#9c8ab5), continuing
+artHollowEyedWatchman/artUnlitLanternbearer/artShadeStitchedMender/
+artLastCandle above. */
+function artDuskSplitSentry(){
+   return sceneWrap(`<path d="M50 12 L72 40 L60 84 L40 84 L28 40 Z" fill="#8a8477" opacity="0.55"/><path d="M50 12 L72 40 L50 46 Z" fill="#9c8ab5" opacity="0.65"/><path d="M50 12 L28 40 L50 46 Z" fill="#3a2f52" opacity="0.55"/><circle cx="50" cy="48" r="2.5" fill="#3a2f52" stroke="none"/><line x1="40" y1="84" x2="36" y2="96" stroke-width="2.5"/><line x1="60" y1="84" x2="64" y2="96" stroke-width="2.5"/>`, 0);
+}
+function artShadeRegent(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#3a2f52" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#9c8ab5" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="#9c8ab5" stroke="none"/><circle cx="50" cy="48" r="2.2" fill="#3a2f52" stroke="none"/>`, 0);
+}
+function artUnlitTender(){
+   return sceneWrap(`<path d="M50 18 L68 40 L62 68 L38 68 L32 40 Z" fill="#2b2b28" opacity="0.65"/><circle cx="42" cy="46" r="4" fill="#9c8ab5" stroke="none"/><circle cx="58" cy="46" r="4" fill="#3a2f52" stroke="none"/><path d="M38 68 L32 84 M62 68 L68 84" stroke-width="2.5"/>`, 0);
+}
+function artShadowStitchedKeeper(){
+   return sceneWrap(`<path d="M22 68 L40 52 L54 60 L70 46 L84 64 L68 78 L52 70 L36 80 Z" fill="#8a8477" opacity="0.5"/><path d="M40 52 L46 42 L54 52 Z" fill="#9c8ab5" opacity="0.75"/><path d="M70 46 L78 38 L82 48 Z" fill="#3a2f52" opacity="0.75"/><circle cx="48" cy="62" r="1.6" fill="#3a2f52" stroke="none"/>`, 0);
+}
+function artHollowEyedLancer(){
+   return sceneWrap(`<path d="M50 16 L70 42 L58 82 L42 82 L30 42 Z" fill="#8a8477" opacity="0.6"/><path d="M50 16 L70 42 L50 48 Z" fill="#3a2f52" opacity="0.7"/><path d="M50 16 L30 42 L50 48 Z" fill="#9c8ab5" opacity="0.6"/><circle cx="50" cy="50" r="2.8" fill="#9c8ab5" stroke="none"/><line x1="42" y1="82" x2="38" y2="94" stroke-width="2.5"/><line x1="58" y1="82" x2="62" y2="94" stroke-width="2.5"/>`, 0);
+}
+function artDuskChancellor(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#9c8ab5" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#3a2f52" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="none" stroke="#3a2f52" stroke-width="2"/><circle cx="50" cy="48" r="2.2" fill="#9c8ab5" stroke="none"/>`, 0);
+}
+function artUnlitSentry(){
+   return sceneWrap(`<path d="M50 20 L66 42 L60 66 L40 66 L34 42 Z" fill="#2b2b28" opacity="0.6"/><circle cx="43" cy="48" r="3.6" fill="#3a2f52" stroke="none"/><circle cx="57" cy="48" r="3.6" fill="#9c8ab5" stroke="none"/><path d="M40 66 L34 82 M60 66 L66 82" stroke-width="2.5"/>`, 0);
+}
+
+/* Ironloom — bronze/brass (#8a6a3f/#b5934a), continuing
+artCoiledTensioner/artLoomSpindle/artStitchWorker/artWarpLoomOverseer
+above. */
+function artGearSplitOutrider(){
+   return sceneWrap(`<path d="M50 12 L72 40 L60 84 L40 84 L28 40 Z" fill="#8a8477" opacity="0.55"/><path d="M50 12 L72 40 L50 46 Z" fill="#b5934a" opacity="0.65"/><path d="M50 12 L28 40 L50 46 Z" fill="#8a6a3f" opacity="0.55"/><circle cx="50" cy="48" r="2.5" fill="#8a6a3f" stroke="none"/><line x1="40" y1="84" x2="36" y2="96" stroke-width="2.5"/><line x1="60" y1="84" x2="64" y2="96" stroke-width="2.5"/>`, 0);
+}
+function artLoomChancellor(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#8a6a3f" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#b5934a" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="#b5934a" stroke="none"/><circle cx="50" cy="48" r="2.2" fill="#8a6a3f" stroke="none"/>`, 0);
+}
+function artThreadTender(){
+   return sceneWrap(`<path d="M50 18 L68 40 L62 68 L38 68 L32 40 Z" fill="#2b2b28" opacity="0.65"/><circle cx="42" cy="46" r="4" fill="#b5934a" stroke="none"/><circle cx="58" cy="46" r="4" fill="#8a6a3f" stroke="none"/><path d="M38 68 L32 84 M62 68 L68 84" stroke-width="2.5"/>`, 0);
+}
+function artSpindleKeeper(){
+   return sceneWrap(`<path d="M22 68 L40 52 L54 60 L70 46 L84 64 L68 78 L52 70 L36 80 Z" fill="#8a8477" opacity="0.5"/><path d="M40 52 L46 42 L54 52 Z" fill="#b5934a" opacity="0.75"/><path d="M70 46 L78 38 L82 48 Z" fill="#8a6a3f" opacity="0.75"/><circle cx="48" cy="62" r="1.6" fill="#8a6a3f" stroke="none"/>`, 0);
+}
+function artTensionLancer(){
+   return sceneWrap(`<path d="M50 16 L70 42 L58 82 L42 82 L30 42 Z" fill="#8a8477" opacity="0.6"/><path d="M50 16 L70 42 L50 48 Z" fill="#8a6a3f" opacity="0.7"/><path d="M50 16 L30 42 L50 48 Z" fill="#b5934a" opacity="0.6"/><circle cx="50" cy="50" r="2.8" fill="#b5934a" stroke="none"/><line x1="42" y1="82" x2="38" y2="94" stroke-width="2.5"/><line x1="58" y1="82" x2="62" y2="94" stroke-width="2.5"/>`, 0);
+}
+function artGearMagistrate(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#b5934a" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#8a6a3f" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="none" stroke="#8a6a3f" stroke-width="2"/><circle cx="50" cy="48" r="2.2" fill="#b5934a" stroke="none"/>`, 0);
+}
+function artLoomLockedSentry(){
+   return sceneWrap(`<path d="M50 20 L66 42 L60 66 L40 66 L34 42 Z" fill="#2b2b28" opacity="0.6"/><circle cx="43" cy="48" r="3.6" fill="#8a6a3f" stroke="none"/><circle cx="57" cy="48" r="3.6" fill="#b5934a" stroke="none"/><path d="M40 66 L34 82 M60 66 L66 82" stroke-width="2.5"/>`, 0);
+}
+
+/* Echo Chapel — slate blue/pale sky (#4a6a8a/#a8c4d9), continuing
+artResonanceWarden/artChimeCaster/artHumKeeper/artUnbrokenChord above. */
+function artResonanceOutrider(){
+   return sceneWrap(`<path d="M50 12 L72 40 L60 84 L40 84 L28 40 Z" fill="#8a8477" opacity="0.55"/><path d="M50 12 L72 40 L50 46 Z" fill="#a8c4d9" opacity="0.65"/><path d="M50 12 L28 40 L50 46 Z" fill="#4a6a8a" opacity="0.55"/><circle cx="50" cy="48" r="2.5" fill="#4a6a8a" stroke="none"/><line x1="40" y1="84" x2="36" y2="96" stroke-width="2.5"/><line x1="60" y1="84" x2="64" y2="96" stroke-width="2.5"/>`, 0);
+}
+function artChordMarshal(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#4a6a8a" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#a8c4d9" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="#a8c4d9" stroke="none"/><circle cx="50" cy="48" r="2.2" fill="#4a6a8a" stroke="none"/>`, 0);
+}
+function artHumTender(){
+   return sceneWrap(`<path d="M50 18 L68 40 L62 68 L38 68 L32 40 Z" fill="#2b2b28" opacity="0.65"/><circle cx="42" cy="46" r="4" fill="#a8c4d9" stroke="none"/><circle cx="58" cy="46" r="4" fill="#4a6a8a" stroke="none"/><path d="M38 68 L32 84 M62 68 L68 84" stroke-width="2.5"/>`, 0);
+}
+function artChimeKeeper(){
+   return sceneWrap(`<path d="M22 68 L40 52 L54 60 L70 46 L84 64 L68 78 L52 70 L36 80 Z" fill="#8a8477" opacity="0.5"/><path d="M40 52 L46 42 L54 52 Z" fill="#a8c4d9" opacity="0.75"/><path d="M70 46 L78 38 L82 48 Z" fill="#4a6a8a" opacity="0.75"/><circle cx="48" cy="62" r="1.6" fill="#4a6a8a" stroke="none"/>`, 0);
+}
+function artEchoLancer(){
+   return sceneWrap(`<path d="M50 16 L70 42 L58 82 L42 82 L30 42 Z" fill="#8a8477" opacity="0.6"/><path d="M50 16 L70 42 L50 48 Z" fill="#4a6a8a" opacity="0.7"/><path d="M50 16 L30 42 L50 48 Z" fill="#a8c4d9" opacity="0.6"/><circle cx="50" cy="50" r="2.8" fill="#a8c4d9" stroke="none"/><line x1="42" y1="82" x2="38" y2="94" stroke-width="2.5"/><line x1="58" y1="82" x2="62" y2="94" stroke-width="2.5"/>`, 0);
+}
+function artResonanceArchivist(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#a8c4d9" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#4a6a8a" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="none" stroke="#4a6a8a" stroke-width="2"/><circle cx="50" cy="48" r="2.2" fill="#a8c4d9" stroke="none"/>`, 0);
+}
+function artResonanceSentry(){
+   return sceneWrap(`<path d="M50 20 L66 42 L60 66 L40 66 L34 42 Z" fill="#2b2b28" opacity="0.6"/><circle cx="43" cy="48" r="3.6" fill="#4a6a8a" stroke="none"/><circle cx="57" cy="48" r="3.6" fill="#a8c4d9" stroke="none"/><path d="M40 66 L34 82 M60 66 L66 82" stroke-width="2.5"/>`, 0);
+}
+
+/* Sunken Archive — aged sepia/faded gold (#5a4a3a/#9c8560), continuing
+artMarginaliaWraith/artIndexWalker/artPageBinder/artLastArchivist above. */
+function artFootnoteOutrider(){
+   return sceneWrap(`<path d="M50 12 L72 40 L60 84 L40 84 L28 40 Z" fill="#8a8477" opacity="0.55"/><path d="M50 12 L72 40 L50 46 Z" fill="#9c8560" opacity="0.65"/><path d="M50 12 L28 40 L50 46 Z" fill="#5a4a3a" opacity="0.55"/><circle cx="50" cy="48" r="2.5" fill="#5a4a3a" stroke="none"/><line x1="40" y1="84" x2="36" y2="96" stroke-width="2.5"/><line x1="60" y1="84" x2="64" y2="96" stroke-width="2.5"/>`, 0);
+}
+function artArchiveWarden(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#5a4a3a" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#9c8560" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="#9c8560" stroke="none"/><circle cx="50" cy="48" r="2.2" fill="#5a4a3a" stroke="none"/>`, 0);
+}
+function artBindingTender(){
+   return sceneWrap(`<path d="M50 18 L68 40 L62 68 L38 68 L32 40 Z" fill="#2b2b28" opacity="0.65"/><circle cx="42" cy="46" r="4" fill="#9c8560" stroke="none"/><circle cx="58" cy="46" r="4" fill="#5a4a3a" stroke="none"/><path d="M38 68 L32 84 M62 68 L68 84" stroke-width="2.5"/>`, 0);
+}
+function artCitationKeeper(){
+   return sceneWrap(`<path d="M22 68 L40 52 L54 60 L70 46 L84 64 L68 78 L52 70 L36 80 Z" fill="#8a8477" opacity="0.5"/><path d="M40 52 L46 42 L54 52 Z" fill="#9c8560" opacity="0.75"/><path d="M70 46 L78 38 L82 48 Z" fill="#5a4a3a" opacity="0.75"/><circle cx="48" cy="62" r="1.6" fill="#5a4a3a" stroke="none"/>`, 0);
+}
+function artIndexLancer(){
+   return sceneWrap(`<path d="M50 16 L70 42 L58 82 L42 82 L30 42 Z" fill="#8a8477" opacity="0.6"/><path d="M50 16 L70 42 L50 48 Z" fill="#5a4a3a" opacity="0.7"/><path d="M50 16 L30 42 L50 48 Z" fill="#9c8560" opacity="0.6"/><circle cx="50" cy="50" r="2.8" fill="#9c8560" stroke="none"/><line x1="42" y1="82" x2="38" y2="94" stroke-width="2.5"/><line x1="58" y1="82" x2="62" y2="94" stroke-width="2.5"/>`, 0);
+}
+function artLastCataloguer(){
+   return sceneWrap(`<path d="M50 10 L78 40 L66 88 L34 88 L22 40 Z" fill="#2b2b28" opacity="0.7"/><path d="M50 10 L78 40 L50 48 Z" fill="#9c8560" opacity="0.65"/><path d="M50 10 L22 40 L50 48 Z" fill="#5a4a3a" opacity="0.55"/><circle cx="50" cy="48" r="5" fill="none" stroke="#5a4a3a" stroke-width="2"/><circle cx="50" cy="48" r="2.2" fill="#9c8560" stroke="none"/>`, 0);
+}
+function artArchiveSentry(){
+   return sceneWrap(`<path d="M50 20 L66 42 L60 66 L40 66 L34 42 Z" fill="#2b2b28" opacity="0.6"/><circle cx="43" cy="48" r="3.6" fill="#5a4a3a" stroke="none"/><circle cx="57" cy="48" r="3.6" fill="#9c8560" stroke="none"/><path d="M40 66 L34 82 M60 66 L66 82" stroke-width="2.5"/>`, 0);
+}
+
 function artEchoWraith(){
    return sceneWrap(`<path d="M50 22 Q68 30 66 54 Q64 78 50 84 Q36 78 34 54 Q32 30 50 22 Z" fill="#b06a97" opacity="0.55"/><path d="M46 26 Q64 34 62 58 Q60 82 46 88" fill="none" stroke="#3d5a80" stroke-width="2.5" opacity="0.6"/><circle cx="44" cy="44" r="3" fill="#f4efe4" stroke="none"/><circle cx="56" cy="44" r="3" fill="#f4efe4" stroke="none"/>`, 0);
 }

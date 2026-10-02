@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 36, date: 'October 1', title: 'A Longer Way Down', items: [
+      "New: every Prism Depths dungeon is now at least 11 fights long — trash mobs and 2 miniboss-tier encounters on the way to the final boss, instead of just 3 fights and done.",
+      "New: every dungeon now has a rest stop partway through — a chance to fully restore HP and MP before pushing on to the back half.",
+      ]},
    { id: 35, date: 'October 1', title: 'The Light Remembers Every Fit', items: [
       "New: 12 new monsters in the Crystal City — the zone now drops gear for all 5 equip slots, for all 3 classes.",
       "Every zone and every dungeon in the game now drops gear covering every equip slot for every class (or class-free, for the earliest zones) — nothing left with a gap.",
