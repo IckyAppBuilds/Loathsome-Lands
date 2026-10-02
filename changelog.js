@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 40, date: 'October 2', title: 'Plated, Not Padded', items: [
+      "New: a chunk of monsters across every zone and dungeon are now genuinely armored — lower HP, but noticeably harder to hurt per hit, a third build alongside the straightforward tank and the new evasive type.",
+      "Tip: armor and dodge can show up on the same fight roster now, so don't assume every tough-looking monster folds the same way.",
+      ]},
    { id: 39, date: 'October 2', title: 'Not Where You Last Saw It', items: [
       "New: about 1 in 3 monsters across every zone and dungeon are now genuinely evasive — lower HP, but hard to pin down, instead of everything being a straightforward tank or a straightforward puncher.",
       "Tip: if you keep whiffing on something, invest in Zip (stats, gear, or Card Shark's own kit) — dodge now cuts both ways between you and what you're fighting.",

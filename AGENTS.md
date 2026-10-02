@@ -332,8 +332,22 @@ derived hp/atk/armor changed), so this was a pure architecture change,
 not a balance change. The payoff: a monster's armor can now be tuned
 independently of its grit — a "heavily plated but fragile" archetype
 (high armor, low grit/HP) is possible the same way zip's own "evasive"
-archetype (high zip, low grit/HP) already is, just not yet authored
-anywhere. See monster-stats.js's own comment for the seeding math.
+archetype (high zip, low grit/HP) already is. See monster-stats.js's
+own comment for the seeding math.
+
+**That archetype is now authored too**, per an immediate follow-up
+request — 89 of the 211 monsters NOT already made evasive were
+converted: armor raised into a tier above ambient (never decreased),
+grit cut by the resulting marginal mitigation gain, same "preserve
+roughly how many turns it takes to kill this thing" principle the zip
+pass already established, just measured in damage-avoided-per-hit
+instead of hits-avoided-outright. A monster is never both evasive AND
+armored — kept mutually exclusive so neither low-HP archetype is
+strictly better than the other. Re-verified the same way: a live
+extraction diffed every monster's new armor/grit against the computed
+plan (zero mismatches) and the Prism Depths difficulty calibration was
+re-checked across all 8 dungeons. See monster-stats.js's own comment
+for the exact keyword/tier rules.
 
 The named bosses — every one of them (`gnomeCommander`/`diggerBot`/
 `gnomeKingsCaptain`/`gnomeKing`/the Adventurer's Trial's three themed
