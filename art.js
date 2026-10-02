@@ -864,6 +864,81 @@ function artVaultClerk(){
 function artAuditorInChief(){
    return sceneWrap(`<ellipse cx="50" cy="64" rx="25" ry="19" fill="#2b2b28"/><ellipse cx="50" cy="43" rx="13" ry="11" fill="#5f4632"/><path d="M41 39 Q36 30 29 32" fill="none" stroke-width="3.5"/><path d="M59 39 Q64 30 71 32" fill="none" stroke-width="3.5"/><line x1="72" y1="50" x2="82" y2="46" stroke="#b5453f" stroke-width="3"/><line x1="40" y1="82" x2="34" y2="96"/><line x1="60" y1="82" x2="66" y2="96"/>`, 0);
 }
+/* Same gap-filling, class-gated pass as the zones above — 24 more
+Warren's Ear regulars (12 Choir, 12 Ledger Vault), same mole-silhouette
+vocabulary every Warren's Ear monster already uses. */
+function artMoleChorister(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="24" ry="18" fill="#5f4632"/><ellipse cx="50" cy="44" rx="14" ry="12" fill="#5f4632"/><path d="M40 40 Q34 30 24 32" fill="none" stroke-width="3.5"/><path d="M60 40 Q66 30 76 32" fill="none" stroke-width="3.5"/><circle cx="50" cy="44" r="2.5" fill="#d1a94e" stroke="none"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artMoleBellRinger(){
+   return sceneWrap(`<ellipse cx="50" cy="26" rx="18" ry="16" fill="#8a8477" opacity="0.5"/><ellipse cx="50" cy="62" rx="24" ry="17" fill="#5f4632"/><ellipse cx="50" cy="44" rx="12" ry="10" fill="#5f4632"/><path d="M40 40 Q36 32 30 34" fill="none" stroke-width="3"/><path d="M60 40 Q64 32 70 34" fill="none" stroke-width="3"/><line x1="40" y1="78" x2="34" y2="92"/><line x1="60" y1="78" x2="66" y2="92"/>`, 0);
+}
+function artMoleStepCaller(){
+   return sceneWrap(`<ellipse cx="50" cy="58" rx="22" ry="15" fill="#5f4632"/><ellipse cx="50" cy="40" rx="11" ry="9" fill="#5f4632"/><path d="M40 36 Q36 28 30 30" fill="none" stroke-width="2.5"/><path d="M60 36 Q64 28 70 30" fill="none" stroke-width="2.5"/><line x1="40" y1="72" x2="30" y2="88" stroke-width="3"/><line x1="60" y1="72" x2="70" y2="88" stroke-width="3"/>`, 2);
+}
+function artMoleConductor(){
+   return sceneWrap(`<ellipse cx="46" cy="62" rx="24" ry="17" fill="#2b2b28" opacity="0.8"/><ellipse cx="46" cy="44" rx="12" ry="10" fill="#5f4632"/><path d="M38 40 Q34 32 28 34" fill="none" stroke-width="3"/><path d="M54 40 Q58 32 64 34" fill="none" stroke-width="3"/><line x1="64" y1="54" x2="86" y2="44" stroke-width="2.5"/><line x1="40" y1="78" x2="34" y2="92"/>`, -1);
+}
+function artMoleDescantSinger(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632" opacity="0.85"/><ellipse cx="50" cy="44" rx="12" ry="10" fill="#5f4632" opacity="0.85"/><path d="M40 40 Q36 32 30 34" fill="none" stroke-width="3"/><path d="M60 40 Q64 32 70 34" fill="none" stroke-width="3"/><circle cx="50" cy="64" r="20" fill="none" stroke="#d1a94e" stroke-width="1.5" opacity="0.4"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artMoleHarmonyWeaver(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="23" ry="17" fill="#5f4632" opacity="0.6"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632" opacity="0.6"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><path d="M30 64 Q50 56 70 64" fill="none" stroke="#b06a97" stroke-width="2" opacity="0.6"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artMoleQuickStepDancer(){
+   return sceneWrap(`<ellipse cx="50" cy="56" rx="21" ry="14" fill="#5f4632"/><ellipse cx="50" cy="38" rx="10" ry="8" fill="#5f4632"/><path d="M40 34 Q36 26 30 28" fill="none" stroke-width="2.5"/><path d="M60 34 Q64 26 70 28" fill="none" stroke-width="2.5"/><line x1="40" y1="70" x2="24" y2="84" stroke-width="3"/><line x1="60" y1="70" x2="76" y2="86" stroke-width="3"/>`, 4);
+}
+function artMoleTapDancer(){
+   return sceneWrap(`<ellipse cx="50" cy="90" rx="26" ry="5" fill="#2b2b28" opacity="0.3"/><ellipse cx="50" cy="60" rx="22" ry="16" fill="#5f4632"/><ellipse cx="50" cy="42" rx="11" ry="9" fill="#5f4632"/><path d="M40 38 Q36 30 30 32" fill="none" stroke-width="2.5"/><path d="M60 38 Q64 30 70 32" fill="none" stroke-width="2.5"/><line x1="40" y1="74" x2="34" y2="88"/><line x1="60" y1="74" x2="66" y2="88"/>`, 0);
+}
+function artMoleResonanceWarden(){
+   return sceneWrap(`<circle cx="50" cy="60" r="36" fill="#b06a97" opacity="0.1"/><ellipse cx="50" cy="62" rx="23" ry="17" fill="#5f4632"/><ellipse cx="50" cy="43" rx="12" ry="10" fill="#5f4632"/><path d="M40 39 Q36 31 30 33" fill="none" stroke-width="3"/><path d="M60 39 Q64 31 70 33" fill="none" stroke-width="3"/><line x1="40" y1="78" x2="34" y2="92"/><line x1="60" y1="78" x2="66" y2="92"/>`, 0);
+}
+function artMolePitchTuner(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><path d="M50 20 L48 36 M50 20 L52 36" stroke-width="2"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artMoleSilentChorister(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632" opacity="0.55"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632" opacity="0.55"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artMoleHymnCaster(){
+   return sceneWrap(`<ellipse cx="50" cy="60" rx="23" ry="17" fill="#5f4632"/><ellipse cx="50" cy="41" rx="12" ry="10" fill="#5f4632"/><path d="M40 37 Q36 29 30 31" fill="none" stroke-width="3"/><path d="M60 37 Q64 29 70 31" fill="none" stroke-width="3"/><path d="M50 78 L46 90 L54 90 Z" fill="#b06a97" stroke="none"/><line x1="40" y1="74" x2="34" y2="88"/>`, 0);
+}
+function artMoleVaultGuard(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="25" ry="18" fill="#5f4632"/><ellipse cx="50" cy="44" rx="13" ry="11" fill="#5f4632"/><path d="M40 40 Q36 32 30 34" fill="none" stroke-width="3"/><path d="M60 40 Q64 32 70 34" fill="none" stroke-width="3"/><line x1="20" y1="30" x2="80" y2="30" stroke-width="4" opacity="0.4"/><line x1="40" y1="78" x2="34" y2="92"/>`, 0);
+}
+function artMoleStrongboxBearer(){
+   return sceneWrap(`<ellipse cx="50" cy="62" rx="22" ry="16" fill="#5f4632" opacity="0.85"/><ellipse cx="50" cy="43" rx="12" ry="10" fill="#5f4632" opacity="0.85"/><rect x="36" y="58" width="28" height="18" fill="#8a5a3a"/><path d="M40 39 Q36 31 30 33" fill="none" stroke-width="3"/><path d="M60 39 Q64 31 70 33" fill="none" stroke-width="3"/>`, 0);
+}
+function artMoleVaultRunner(){
+   return sceneWrap(`<ellipse cx="50" cy="56" rx="21" ry="14" fill="#5f4632"/><ellipse cx="50" cy="38" rx="10" ry="8" fill="#5f4632"/><path d="M40 34 Q36 26 30 28" fill="none" stroke-width="2.5"/><path d="M60 34 Q64 26 70 28" fill="none" stroke-width="2.5"/><line x1="40" y1="70" x2="26" y2="86" stroke-width="3"/><line x1="60" y1="70" x2="74" y2="88" stroke-width="3"/>`, 5);
+}
+function artMoleSealBreaker(){
+   return sceneWrap(`<ellipse cx="46" cy="62" rx="24" ry="17" fill="#5f4632"/><ellipse cx="46" cy="44" rx="12" ry="10" fill="#5f4632"/><path d="M38 40 Q34 32 28 34" fill="none" stroke-width="3"/><path d="M54 40 Q58 32 64 34" fill="none" stroke-width="3"/><circle cx="76" cy="52" r="8" fill="#b5453f" opacity="0.6"/><line x1="40" y1="78" x2="34" y2="92"/>`, 0);
+}
+function artMoleCipherClerk(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><path d="M44 44 L46 46 M54 44 L56 46" stroke="#d1a94e" stroke-width="1.5"/><line x1="40" y1="80" x2="34" y2="94"/>`, 0);
+}
+function artMoleSafecracker(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632" opacity="0.75"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632" opacity="0.75"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><circle cx="50" cy="45" r="2" fill="#d1a94e" stroke="none"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artMoleLedgerRunner(){
+   return sceneWrap(`<ellipse cx="50" cy="56" rx="21" ry="14" fill="#5f4632"/><ellipse cx="50" cy="38" rx="10" ry="8" fill="#5f4632"/><path d="M40 34 Q36 26 30 28" fill="none" stroke-width="2.5"/><path d="M60 34 Q64 26 70 28" fill="none" stroke-width="2.5"/><rect x="60" y="48" width="10" height="8" fill="#f4efe4" transform="rotate(-10 65 52)"/><line x1="40" y1="70" x2="28" y2="86"/><line x1="60" y1="70" x2="72" y2="88"/>`, 4);
+}
+function artMoleStampDuelist(){
+   return sceneWrap(`<ellipse cx="46" cy="62" rx="22" ry="17" fill="#5f4632"/><ellipse cx="46" cy="44" rx="12" ry="10" fill="#5f4632"/><path d="M38 40 Q34 32 28 34" fill="none" stroke-width="3"/><path d="M54 40 Q58 32 64 34" fill="none" stroke-width="3"/><rect x="62" y="48" width="8" height="8" fill="#b5453f" opacity="0.6"/><rect x="72" y="56" width="8" height="8" fill="#3d5a80" opacity="0.6"/>`, 0);
+}
+function artMoleNumberSeer(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632" opacity="0.7"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632" opacity="0.7"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><circle cx="50" cy="45" r="2" fill="#b06a97" stroke="none"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artMoleVaultWarden(){
+   return sceneWrap(`<circle cx="50" cy="60" r="36" fill="#3d5a80" opacity="0.12"/><ellipse cx="50" cy="62" rx="23" ry="17" fill="#5f4632"/><ellipse cx="50" cy="43" rx="12" ry="10" fill="#5f4632"/><path d="M40 39 Q36 31 30 33" fill="none" stroke-width="3"/><path d="M60 39 Q64 31 70 33" fill="none" stroke-width="3"/><line x1="40" y1="78" x2="34" y2="92"/>`, 0);
+}
+function artMoleAccountTracer(){
+   return sceneWrap(`<ellipse cx="50" cy="58" rx="22" ry="15" fill="#5f4632"/><ellipse cx="50" cy="40" rx="11" ry="9" fill="#5f4632"/><path d="M40 36 Q36 28 30 30" fill="none" stroke-width="2.5"/><path d="M60 36 Q64 28 70 30" fill="none" stroke-width="2.5"/><line x1="20" y1="72" x2="80" y2="72" stroke-width="1.5" stroke-dasharray="3 3"/><line x1="40" y1="72" x2="34" y2="88"/>`, 0);
+}
+function artMoleSilentAuditor(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632" opacity="0.5"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632" opacity="0.5"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
 
 /* The Warren's Ear's own 2 zone-rares (ZONE_RARE_MONSTERS, content.js)
 — same mole silhouette vocabulary, a musical-note flourish for the
