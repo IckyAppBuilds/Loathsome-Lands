@@ -1,16 +1,16 @@
 # The Loathsome Lands — file map
 
 A single-page browser RPG. No build step, no bundler, no modules — plain
-HTML/CSS/`<script>` tags, all globals. 37 JS files load in a specific
+HTML/CSS/`<script>` tags, all globals. 38 JS files load in a specific
 order (see `index.html`'s `<script>` block, which documents this inline
 too):
 
 ```
 supabase (CDN)
 -> core.js -> icons.js -> art.js -> gnometropolis-art.js -> mudroot-art.js
--> warrensear-art.js -> emberwarren-art.js -> content.js -> mudroot-content.js
--> warrensear-content.js -> emberwarren-content.js -> gauntlet.js
--> crystalcity-content.js -> prismdepths-content.js -> dungeon.js
+-> warrensear-art.js -> emberwarren-art.js -> monster-stats.js -> content.js
+-> mudroot-content.js -> warrensear-content.js -> emberwarren-content.js
+-> gauntlet.js -> crystalcity-content.js -> prismdepths-content.js -> dungeon.js
 -> act2-shop.js -> item-tiers.js -> render.js
 -> render-shop.js -> render-character.js -> class-spells.js -> dev-tools.js
 -> auth.js -> save.js -> player-actions.js -> tutorial.js -> changelog.js
@@ -221,6 +221,28 @@ after art.js/mudroot-art.js/warrensear-art.js.
 Touch this file when: changing the Ember Warren square's own layout,
 or its two district backdrops.
 
+## monster-stats.js — every monster/boss's core stats, in one place
+`MONSTER_STATS`, a single object keyed by each monster's own exact
+`name` string, mapping to `{ beef, zip, grit, hoodoo, xp }` — the
+entire game's balance surface for the 355 monsters/bosses spread
+across content.js/mudroot-content.js/warrensear-content.js/
+emberwarren-content.js/crystalcity-content.js/prismdepths-content.js.
+Each of those 6 files' own monster object literals spread their entry
+here (`...MONSTER_STATS["<name>"]`) instead of hardcoding the 5 stat
+fields — see content.js's own comment (right above this file's
+mention) for the full history/verification of that refactor. Grouped
+by source file, then by zone within it, purely for human navigation
+when tuning — the object itself is flat, key order is irrelevant to
+the lookup. Loads immediately after emberwarren-art.js, before
+content.js (and every other monster-data file) — see index.html's own
+load-order comment for why (referenced by value at parse time, same
+requirement icons.js/art.js already have).
+
+Touch this file when: rebalancing any monster or boss's beef/zip/
+grit/hoodoo/xp. Don't touch it for anything else about a monster
+(name, zone, skills, art, loot/rareDrop/gearDrop) — those still live
+in that monster's own file.
+
 ## content.js — game data tables
 `monsters[]` (per-zone, each with its own optional `rareDrop` AND
 `gearDrop` — a monster-themed equip drop, own Diablo-style "of the ___"
@@ -239,25 +261,47 @@ zone's gearDrop set covers all 5 equip slots (all 3 classes too, where
 classRequired applies) — see each zone's own "gap-filling pass"
 comment, content.js, for the exact additions.
 
-Every monster/boss across ALL FIVE monster-data files (this one,
+Every monster/boss across ALL SIX monster-data files (this one,
 mudroot-content.js, warrensear-content.js, emberwarren-content.js,
-crystalcity-content.js — 92 objects total: the original 77 plus the 15
-always-available zone-rares added for the Bestiary feature, see
-`NAMED_BOSSES`/`ZONE_RARE_MONSTERS` below) is authored as a
-`beef`/`zip`/`grit`/`hoodoo` stat block, mirroring the player's own 4
-stats, REPLACING the old raw `hp`/`atkMin`/`atkMax`(/ad hoc
-`dodgeChance`) fields entirely — `deriveMonsterCombatStats()`
-(combat.js) turns these into the numbers `startCombat()` actually
-spawns with, via `statBonus()` same as every player formula. `hoodoo`
-is present in the data shape but has NO mechanical effect yet (a
-monster's `skills[]` keep their own hand-authored heal/bolt/debuff
-magnitude regardless of hoodoo — scaling those off it is an
-intentionally out-of-scope follow-up). The migration itself was
-formula-based (inverting each monster's OLD authored
-hp/atkMin/atkMax/dodgeChance through the same derive formulas to
-reproduce today's effective difficulty as closely as the math allows,
-not hand-retuned) — `xp`/`rare`/`skills[]`/`loot`/`rareDrop`/`gearDrop`/
-`art`/`zone`/`name` were untouched by it.
+crystalcity-content.js, prismdepths-content.js — 355 objects total) is
+authored as a `beef`/`zip`/`grit`/`hoodoo` stat block (plus `xp`),
+mirroring the player's own 4 stats, REPLACING the old raw
+`hp`/`atkMin`/`atkMax`(/ad hoc `dodgeChance`) fields entirely —
+`deriveMonsterCombatStats()` (combat.js) turns these into the numbers
+`startCombat()` actually spawns with, via `statBonus()` same as every
+player formula. `hoodoo` is present in the data shape but has NO
+mechanical effect yet (a monster's `skills[]` keep their own
+hand-authored heal/bolt/debuff magnitude regardless of hoodoo — scaling
+those off it is an intentionally out-of-scope follow-up).
+
+**Per a later explicit request ("I want to tune their stats" / "have
+the lookup table be part of the GitHub with the program referencing
+it"), every one of those 355 `beef`/`zip`/`grit`/`hoodoo`/`xp` blocks
+now lives in ONE place: `monster-stats.js`**, a single `MONSTER_STATS`
+object keyed by each monster's own exact `name` string (confirmed
+unique game-wide before this refactor — no two monsters anywhere share
+a name, checked mechanically, not by inspection). Every monster
+definition in all 6 files now reads `name:"<name>", ...MONSTER_STATS[
+"<name>"], zone:"...", skills:[...], ...` instead of hardcoding the 5
+stat fields inline — tuning any monster's difficulty is now editing
+one number in `monster-stats.js`, not finding the one object literal
+among 355 that happens to define it. This was a mechanical,
+behavior-preserving transformation (a scripted regex rewrite, verified
+by diffing every monster's own derived hp/atkMin/atkMax/xp before and
+after against a live extraction — zero differences across all 355
+entries) — nothing about zone, skills, art, loot/rareDrop/gearDrop,
+or any other field moved. `monster-stats.js` loads FIRST, immediately
+after the art files and before `content.js` (index.html) — same
+"referenced by value at parse time" ordering requirement icons.js/
+art.js already have, since every file's own monster array literal
+evaluates immediately and needs `MONSTER_STATS` to already exist.
+
+Touch `monster-stats.js` when: rebalancing ANY monster/boss's core
+stats (this is the only file that needs editing for that). Touch the
+6 content files themselves when: adding a brand-new monster (name,
+zone, skills, art, loot — plus one new entry in `monster-stats.js` for
+its stats), or changing anything about an EXISTING monster that isn't
+beef/zip/grit/hoodoo/xp.
 
 **`armor` is deliberately NOT part of a monster's authored data at
 all** — no `armor:` field lives on any of the 77 objects. It's derived

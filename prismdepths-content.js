@@ -45,13 +45,13 @@ original authoring; only this multiplier moved. */
 ZONE_DIFFICULTY.embercrypt = 15.5;
 
 const embercryptRegulars = [
-   { name:"a slag-bound husk, poured wrong and left to cool that way", beef:10, zip:0, grit:30, hoodoo:0, xp:52, zone:"embercrypt",
+   { name:"a slag-bound husk, poured wrong and left to cool that way", ...MONSTER_STATS["a slag-bound husk, poured wrong and left to cool that way"], zone:"embercrypt",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"cracks open along its own seams and burns brighter" } ],
     art: artSlagBoundHusk, loot:null },
-   { name:"an ash-veiled watcher, embers where its eyes should be", beef:10, zip:0, grit:31, hoodoo:0, xp:53, zone:"embercrypt",
+   { name:"an ash-veiled watcher, embers where its eyes should be", ...MONSTER_STATS["an ash-veiled watcher, embers where its eyes should be"], zone:"embercrypt",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:34, boltMax:44, flavor:"opens both ember-eyes at once and does not blink" } ],
     art: artAshVeiledWatcher, loot:null },
-   { name:"a cinder hound, three steps ahead of its own smoke", beef:11, zip:0, grit:29, hoodoo:0, xp:54, zone:"embercrypt",
+   { name:"a cinder hound, three steps ahead of its own smoke", ...MONSTER_STATS["a cinder hound, three steps ahead of its own smoke"], zone:"embercrypt",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:18, healMax:32, flavor:"rolls through its own embers and comes up unburnt" } ],
     art: artCinderHound, loot:null },
    /* Per explicit request, every dungeon needs at least 10 fights with
@@ -66,25 +66,25 @@ const embercryptRegulars = [
    bolt-magnitude check regular trash mobs are held to elsewhere in the
    game (not relevant here since dungeon monsters were never part of
    that check to begin with). */
-   { name:"an ash-bound crawler, smoke pooling where its feet should be", beef:10, zip:0, grit:31, hoodoo:0, xp:55, zone:"embercrypt",
+   { name:"an ash-bound crawler, smoke pooling where its feet should be", ...MONSTER_STATS["an ash-bound crawler, smoke pooling where its feet should be"], zone:"embercrypt",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:35, boltMax:45, flavor:"the pooled smoke ignites all at once" } ],
     art: artAshBoundCrawler, loot:null },
-   { name:"the Slag Colossus, built from everything the forge ever rejected", beef:12, zip:0, grit:38, hoodoo:0, xp:90, rare:true, zone:"embercrypt",
+   { name:"the Slag Colossus, built from everything the forge ever rejected", ...MONSTER_STATS["the Slag Colossus, built from everything the forge ever rejected"], rare:true, zone:"embercrypt",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.4, buffTurns:2, flavor:"packs on another layer of rejected slag" } ],
     art: artSlagColossus, loot:null },
-   { name:"a cinder-wrapped tender, still stoking a fire that isn't there", beef:11, zip:0, grit:30, hoodoo:0, xp:56, zone:"embercrypt",
+   { name:"a cinder-wrapped tender, still stoking a fire that isn't there", ...MONSTER_STATS["a cinder-wrapped tender, still stoking a fire that isn't there"], zone:"embercrypt",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:19, healMax:33, flavor:"stokes itself back up out of pure habit" } ],
     art: artCinderWrappedTender, loot:null },
-   { name:"a kiln-sealed warden, fused shut around its own heat", beef:11, zip:0, grit:31, hoodoo:0, xp:57, zone:"embercrypt",
+   { name:"a kiln-sealed warden, fused shut around its own heat", ...MONSTER_STATS["a kiln-sealed warden, fused shut around its own heat"], zone:"embercrypt",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:20, healMax:34, flavor:"reseals itself along the kiln-fused seam" } ],
     art: artKilnSealedWarden, loot:null },
-   { name:"an ember-threaded stalker, trailing sparks it never quite sheds", beef:11, zip:0, grit:30, hoodoo:0, xp:57, zone:"embercrypt",
+   { name:"an ember-threaded stalker, trailing sparks it never quite sheds", ...MONSTER_STATS["an ember-threaded stalker, trailing sparks it never quite sheds"], zone:"embercrypt",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:36, boltMax:46, flavor:"every trailing spark lands at once" } ],
     art: artEmberThreadedStalker, loot:null },
-   { name:"the Cinder Magistrate, still presiding over a court of ash", beef:13, zip:0, grit:40, hoodoo:0, xp:100, rare:true, zone:"embercrypt",
+   { name:"the Cinder Magistrate, still presiding over a court of ash", ...MONSTER_STATS["the Cinder Magistrate, still presiding over a court of ash"], rare:true, zone:"embercrypt",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:30, healMax:48, flavor:"rules its own wound out of order and seals it" } ],
     art: artCinderMagistrate, loot:null },
-   { name:"a forge-locked sentry, guarding a door that stopped mattering", beef:11, zip:0, grit:31, hoodoo:0, xp:58, zone:"embercrypt",
+   { name:"a forge-locked sentry, guarding a door that stopped mattering", ...MONSTER_STATS["a forge-locked sentry, guarding a door that stopped mattering"], zone:"embercrypt",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"braces against a door nothing's knocked on in years" } ],
     art: artForgeLockedSentry, loot:null },
    ];
@@ -96,7 +96,7 @@ mechanic the Ember Warren's own bosses already established, reused
 rather than reinvented, matching the "the Lucent taught the Moles this"
 thread the Act 3 plan calls for. */
 const emberwright = {
-   name:"the Emberwright, still tending a forge that isn't there anymore", beef:14, zip:0, grit:46, hoodoo:0, xp:135, rare:true, zone:"embercrypt",
+   name:"the Emberwright, still tending a forge that isn't there anymore", ...MONSTER_STATS["the Emberwright, still tending a forge that isn't there anymore"], rare:true, zone:"embercrypt",
    skills:[
       { type:'debuff', chance:0.22, debuffType:'burn', debuffTurns:3, dmgPerTurn:16, flavor:"presses a hand still shaped like tongs against you" },
       { type:'buff', chance:0.18, buffMult:1.5, buffTurns:2, flavor:"remembers, for one swing, exactly how this is done" },
@@ -163,37 +163,37 @@ Act 3 creature shares. */
 ZONE_DIFFICULTY.frostvault = 16.8;
 
 const frostvaultRegulars = [
-   { name:"a glass-still custodian, holding a pose it stopped finishing", beef:11, zip:0, grit:32, hoodoo:0, xp:56, zone:"frostvault",
+   { name:"a glass-still custodian, holding a pose it stopped finishing", ...MONSTER_STATS["a glass-still custodian, holding a pose it stopped finishing"], zone:"frostvault",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:20, healMax:35, flavor:"settles back into the exact shape it's supposed to be" } ],
     art: artGlassStillCustodian, loot:null },
-   { name:"a rime-crusted drifter, dragging cold that isn't really air", beef:11, zip:0, grit:33, hoodoo:0, xp:57, zone:"frostvault",
+   { name:"a rime-crusted drifter, dragging cold that isn't really air", ...MONSTER_STATS["a rime-crusted drifter, dragging cold that isn't really air"], zone:"frostvault",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:37, boltMax:47, flavor:"drags that cold straight through you" } ],
     art: artRimeCrustedDrifter, loot:null },
-   { name:"a frostbound archivist, filed under a temperature nothing should survive", beef:12, zip:0, grit:32, hoodoo:0, xp:58, zone:"frostvault",
+   { name:"a frostbound archivist, filed under a temperature nothing should survive", ...MONSTER_STATS["a frostbound archivist, filed under a temperature nothing should survive"], zone:"frostvault",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"cross-references its own cold against something colder" } ],
     art: artFrostboundArchivist, loot:null },
    /* Same gear-coverage-pass addition as Embercrypt's own comment above
    explains — 5 more trash + 2 miniboss-tier (rare:true, buff/heal
    only, never bolt). */
-   { name:"a rime-locked sentinel, frozen mid-step and still moving anyway", beef:11, zip:0, grit:33, hoodoo:0, xp:59, zone:"frostvault",
+   { name:"a rime-locked sentinel, frozen mid-step and still moving anyway", ...MONSTER_STATS["a rime-locked sentinel, frozen mid-step and still moving anyway"], zone:"frostvault",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:38, boltMax:48, flavor:"the frozen stride finally finishes landing" } ],
     art: artRimeLockedSentinel, loot:null },
-   { name:"the Glacial Custodian, keeping watch over a collection nobody's claiming", beef:13, zip:0, grit:40, hoodoo:0, xp:95, rare:true, zone:"frostvault",
+   { name:"the Glacial Custodian, keeping watch over a collection nobody's claiming", ...MONSTER_STATS["the Glacial Custodian, keeping watch over a collection nobody's claiming"], rare:true, zone:"frostvault",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.4, buffTurns:2, flavor:"adds one more layer of rime to its own collection" } ],
     art: artGlacialCustodian, loot:null },
-   { name:"a frost-veiled tender, patching cracks before they finish forming", beef:12, zip:0, grit:32, hoodoo:0, xp:60, zone:"frostvault",
+   { name:"a frost-veiled tender, patching cracks before they finish forming", ...MONSTER_STATS["a frost-veiled tender, patching cracks before they finish forming"], zone:"frostvault",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:21, healMax:36, flavor:"seals the crack before it's even finished forming" } ],
     art: artFrostVeiledTender, loot:null },
-   { name:"an ice-bound archivist, cataloguing cold it hasn't finished cataloguing", beef:12, zip:0, grit:33, hoodoo:0, xp:61, zone:"frostvault",
+   { name:"an ice-bound archivist, cataloguing cold it hasn't finished cataloguing", ...MONSTER_STATS["an ice-bound archivist, cataloguing cold it hasn't finished cataloguing"], zone:"frostvault",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:22, healMax:37, flavor:"files its own wound under \"resolved\"" } ],
     art: artIceBoundArchivist, loot:null },
-   { name:"a glass-splinter stalker, shedding edges that don't melt", beef:12, zip:0, grit:32, hoodoo:0, xp:61, zone:"frostvault",
+   { name:"a glass-splinter stalker, shedding edges that don't melt", ...MONSTER_STATS["a glass-splinter stalker, shedding edges that don't melt"], zone:"frostvault",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:39, boltMax:49, flavor:"every shed edge lands at once, none of them melted" } ],
     art: artGlassSplinterStalker, loot:null },
-   { name:"the Rime Chancellor, presiding over a hall that stopped thawing", beef:14, zip:0, grit:42, hoodoo:0, xp:105, rare:true, zone:"frostvault",
+   { name:"the Rime Chancellor, presiding over a hall that stopped thawing", ...MONSTER_STATS["the Rime Chancellor, presiding over a hall that stopped thawing"], rare:true, zone:"frostvault",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:32, healMax:50, flavor:"rules its own damage out of session and reseals" } ],
     art: artRimeChancellor, loot:null },
-   { name:"a frostlocked sentry, holding a post that froze shut around it", beef:12, zip:0, grit:33, hoodoo:0, xp:62, zone:"frostvault",
+   { name:"a frostlocked sentry, holding a post that froze shut around it", ...MONSTER_STATS["a frostlocked sentry, holding a post that froze shut around it"], zone:"frostvault",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"settles deeper into a post that isn't thawing" } ],
     art: artFrostlockedSentry, loot:null },
    ];
@@ -203,7 +203,7 @@ thread Embercrypt's own boss started, this time with the existing
 freeze debuff instead of burn (a near-perfect fit for "preservation"
 as a discipline — it doesn't hurt you, it just stops you). */
 const stillglassWarden = {
-   name:"the Stillglass Warden, holding the exact same shape since before anyone was counting", beef:15, zip:0, grit:49, hoodoo:0, xp:145, rare:true, zone:"frostvault",
+   name:"the Stillglass Warden, holding the exact same shape since before anyone was counting", ...MONSTER_STATS["the Stillglass Warden, holding the exact same shape since before anyone was counting"], rare:true, zone:"frostvault",
    skills:[
       { type:'debuff', chance:0.22, debuffType:'freeze', debuffTurns:3, dmgReduction:0.4, flavor:"holds you still exactly as long as it's holding itself" },
       { type:'heal', chance:0.18, healMin:22, healMax:38, flavor:"reseals a crack along its own glass" },
@@ -243,36 +243,36 @@ angular Lucent silhouette family. */
 ZONE_DIFFICULTY.stormreach = 18.2;
 
 const stormreachRegulars = [
-   { name:"a charge-split sentry, arguing with its own echo", beef:12, zip:0, grit:35, hoodoo:0, xp:60, zone:"stormreach",
+   { name:"a charge-split sentry, arguing with its own echo", ...MONSTER_STATS["a charge-split sentry, arguing with its own echo"], zone:"stormreach",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"and its echo agree on something, for once" } ],
     art: artChargeSplitSentry, loot:null },
-   { name:"a windworn herald, three words into a message it'll never finish", beef:12, zip:0, grit:36, hoodoo:0, xp:61, zone:"stormreach",
+   { name:"a windworn herald, three words into a message it'll never finish", ...MONSTER_STATS["a windworn herald, three words into a message it'll never finish"], zone:"stormreach",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:23, healMax:40, flavor:"patches itself on the same wind that's wearing it down" } ],
     art: artWindwornHerald, loot:null },
-   { name:"a storm-tide walker, never landing on the ground it's clearly standing on", beef:13, zip:0, grit:35, hoodoo:0, xp:62, zone:"stormreach",
+   { name:"a storm-tide walker, never landing on the ground it's clearly standing on", ...MONSTER_STATS["a storm-tide walker, never landing on the ground it's clearly standing on"], zone:"stormreach",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:41, boltMax:52, flavor:"brings the whole tide down in one strike" } ],
     art: artStormTideWalker, loot:null },
    /* Same gear-coverage-pass addition as Embercrypt's own comment
    explains — 5 more trash + 2 miniboss-tier. */
-   { name:"a charge-split outrider, arguing with an echo one beat ahead", beef:13, zip:0, grit:36, hoodoo:0, xp:63, zone:"stormreach",
+   { name:"a charge-split outrider, arguing with an echo one beat ahead", ...MONSTER_STATS["a charge-split outrider, arguing with an echo one beat ahead"], zone:"stormreach",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:42, boltMax:53, flavor:"the echo lands a beat before the real thing does" } ],
     art: artChargeSplitOutrider, loot:null },
-   { name:"the Gale Marshal, still rallying a storm front nobody's left to brief", beef:14, zip:0, grit:44, hoodoo:0, xp:100, rare:true, zone:"stormreach",
+   { name:"the Gale Marshal, still rallying a storm front nobody's left to brief", ...MONSTER_STATS["the Gale Marshal, still rallying a storm front nobody's left to brief"], rare:true, zone:"stormreach",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.4, buffTurns:2, flavor:"rallies a front that's been waiting a long time for the order" } ],
     art: artGaleMarshal, loot:null },
-   { name:"a windworn relay, patching a message it'll never finish sending", beef:13, zip:0, grit:35, hoodoo:0, xp:64, zone:"stormreach",
+   { name:"a windworn relay, patching a message it'll never finish sending", ...MONSTER_STATS["a windworn relay, patching a message it'll never finish sending"], zone:"stormreach",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:24, healMax:41, flavor:"patches the relay line enough to keep transmitting" } ],
     art: artWindwornRelay, loot:null },
-   { name:"a storm-tide keeper, mending the tide-line it's still holding", beef:13, zip:0, grit:36, hoodoo:0, xp:65, zone:"stormreach",
+   { name:"a storm-tide keeper, mending the tide-line it's still holding", ...MONSTER_STATS["a storm-tide keeper, mending the tide-line it's still holding"], zone:"stormreach",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:25, healMax:42, flavor:"mends the tide-line before it slips any further" } ],
     art: artStormTideKeeper, loot:null },
-   { name:"a charge-split outlier, arguing with two echoes now instead of one", beef:13, zip:0, grit:35, hoodoo:0, xp:65, zone:"stormreach",
+   { name:"a charge-split outlier, arguing with two echoes now instead of one", ...MONSTER_STATS["a charge-split outlier, arguing with two echoes now instead of one"], zone:"stormreach",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:43, boltMax:54, flavor:"both echoes finally agree, at your expense" } ],
     art: artChargeSplitOutlier, loot:null },
-   { name:"the Static Archivist, filing every charge that's ever passed through here", beef:15, zip:0, grit:46, hoodoo:0, xp:110, rare:true, zone:"stormreach",
+   { name:"the Static Archivist, filing every charge that's ever passed through here", ...MONSTER_STATS["the Static Archivist, filing every charge that's ever passed through here"], rare:true, zone:"stormreach",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:34, healMax:52, flavor:"files its own damage under a charge it's already catalogued" } ],
     art: artStaticArchivist, loot:null },
-   { name:"a storm-bound sentry, bracing against wind that never actually stops", beef:13, zip:0, grit:36, hoodoo:0, xp:66, zone:"stormreach",
+   { name:"a storm-bound sentry, bracing against wind that never actually stops", ...MONSTER_STATS["a storm-bound sentry, bracing against wind that never actually stops"], zone:"stormreach",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"leans harder into a wind that isn't letting up" } ],
     art: artStormBoundSentry, loot:null },
    ];
@@ -282,7 +282,7 @@ own theme) plus a rally buff, same "one signature mechanic" shape
 every named boss in the game already uses, no debuff this time since
 Embercrypt/Frostvault already covered burn/freeze between them. */
 const unansweredHerald = {
-   name:"the Unanswered Herald, still broadcasting something nobody built ears for", beef:16, zip:0, grit:52, hoodoo:0, xp:155, rare:true, zone:"stormreach",
+   name:"the Unanswered Herald, still broadcasting something nobody built ears for", ...MONSTER_STATS["the Unanswered Herald, still broadcasting something nobody built ears for"], rare:true, zone:"stormreach",
    skills:[
       { type:'bolt', chance:0.24, boltMin:48, boltMax:62, flavor:"finally gets an answer, and it is not a kind one" },
       { type:'buff', chance:0.18, buffMult:1.5, buffTurns:2, flavor:"catches a gust that shouldn't exist down here" },
@@ -322,36 +322,36 @@ silhouette family every Act 3 creature shares. */
 ZONE_DIFFICULTY.verdanthollow = 19.7;
 
 const verdantHollowRegulars = [
-   { name:"a bramble-bound sentinel, more vine than whatever it used to be", beef:13, zip:0, grit:38, hoodoo:0, xp:64, zone:"verdanthollow",
+   { name:"a bramble-bound sentinel, more vine than whatever it used to be", ...MONSTER_STATS["a bramble-bound sentinel, more vine than whatever it used to be"], zone:"verdanthollow",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"pulls its own growth tight and holds" } ],
     art: artBrambleBoundSentinel, loot:null },
-   { name:"a seed-caster, lobbing something that already took root", beef:13, zip:0, grit:39, hoodoo:0, xp:65, zone:"verdanthollow",
+   { name:"a seed-caster, lobbing something that already took root", ...MONSTER_STATS["a seed-caster, lobbing something that already took root"], zone:"verdanthollow",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:44, boltMax:56, flavor:"lets fly a pod that wasn't finished growing" } ],
     art: artSeedCaster, loot:null },
-   { name:"a moss-grown caretaker, tending a garden that stopped needing one", beef:14, zip:0, grit:38, hoodoo:0, xp:66, zone:"verdanthollow",
+   { name:"a moss-grown caretaker, tending a garden that stopped needing one", ...MONSTER_STATS["a moss-grown caretaker, tending a garden that stopped needing one"], zone:"verdanthollow",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:25, healMax:43, flavor:"folds back into its own green and knits shut" } ],
     art: artMossGrownCaretaker, loot:null },
    /* Same gear-coverage-pass addition as Embercrypt's own comment
    explains — 5 more trash + 2 miniboss-tier. */
-   { name:"a vine-choked outrider, dragging roots that haven't stopped growing", beef:14, zip:0, grit:39, hoodoo:0, xp:67, zone:"verdanthollow",
+   { name:"a vine-choked outrider, dragging roots that haven't stopped growing", ...MONSTER_STATS["a vine-choked outrider, dragging roots that haven't stopped growing"], zone:"verdanthollow",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:45, boltMax:57, flavor:"the dragged roots finally snap taut, straight at you" } ],
     art: artVineChokedOutrider, loot:null },
-   { name:"the Bramble Sovereign, still ruling a garden that outgrew its own gardener", beef:15, zip:0, grit:47, hoodoo:0, xp:105, rare:true, zone:"verdanthollow",
+   { name:"the Bramble Sovereign, still ruling a garden that outgrew its own gardener", ...MONSTER_STATS["the Bramble Sovereign, still ruling a garden that outgrew its own gardener"], rare:true, zone:"verdanthollow",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.4, buffTurns:2, flavor:"claims one more row of its own overgrown garden" } ],
     art: artBrambleSovereign, loot:null },
-   { name:"a seed-tender, mending the Hollow's own slow green wounds", beef:14, zip:0, grit:38, hoodoo:0, xp:68, zone:"verdanthollow",
+   { name:"a seed-tender, mending the Hollow's own slow green wounds", ...MONSTER_STATS["a seed-tender, mending the Hollow's own slow green wounds"], zone:"verdanthollow",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:26, healMax:44, flavor:"tends its own wound the same slow, green way" } ],
     art: artSeedTender, loot:null },
-   { name:"a moss-bound keeper, folding its own growth back into shape", beef:14, zip:0, grit:39, hoodoo:0, xp:69, zone:"verdanthollow",
+   { name:"a moss-bound keeper, folding its own growth back into shape", ...MONSTER_STATS["a moss-bound keeper, folding its own growth back into shape"], zone:"verdanthollow",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:27, healMax:45, flavor:"folds its own growth back over the damage" } ],
     art: artMossBoundKeeper, loot:null },
-   { name:"a thornvine lancer, loosing growth that hasn't finished sharpening", beef:14, zip:0, grit:38, hoodoo:0, xp:69, zone:"verdanthollow",
+   { name:"a thornvine lancer, loosing growth that hasn't finished sharpening", ...MONSTER_STATS["a thornvine lancer, loosing growth that hasn't finished sharpening"], zone:"verdanthollow",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:46, boltMax:58, flavor:"the half-sharp growth finishes the job on the way in" } ],
     art: artThornvineLancer, loot:null },
-   { name:"the Hollow Cultivator, tending rows that stopped needing tending", beef:16, zip:0, grit:49, hoodoo:0, xp:115, rare:true, zone:"verdanthollow",
+   { name:"the Hollow Cultivator, tending rows that stopped needing tending", ...MONSTER_STATS["the Hollow Cultivator, tending rows that stopped needing tending"], rare:true, zone:"verdanthollow",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:36, healMax:54, flavor:"tends its own row out of pure old habit" } ],
     art: artHollowCultivator, loot:null },
-   { name:"a bramble-locked sentry, holding a line the vines took over years ago", beef:14, zip:0, grit:39, hoodoo:0, xp:70, zone:"verdanthollow",
+   { name:"a bramble-locked sentry, holding a line the vines took over years ago", ...MONSTER_STATS["a bramble-locked sentry, holding a line the vines took over years ago"], zone:"verdanthollow",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"lets the vines pull its own line a little tighter" } ],
     art: artBrambleLockedSentry, loot:null },
    ];
@@ -361,7 +361,7 @@ debuff (state.playerStatusEffect, combat.js) — a natural fit for
 growth/binding that Embercrypt's burn and Frostvault's freeze hadn't
 covered yet. */
 const rootboundWarden = {
-   name:"the Rootbound Warden, holding the Hollow the only way it still can — by not letting go", beef:17, zip:0, grit:55, hoodoo:0, xp:165, rare:true, zone:"verdanthollow",
+   name:"the Rootbound Warden, holding the Hollow the only way it still can — by not letting go", ...MONSTER_STATS["the Rootbound Warden, holding the Hollow the only way it still can — by not letting go"], rare:true, zone:"verdanthollow",
    skills:[
       { type:'debuff', chance:0.22, debuffType:'poison', debuffTurns:3, dmgPerTurn:20, flavor:"wraps something old and patient around you" },
       { type:'heal', chance:0.18, healMin:25, healMax:42, flavor:"pulls itself back together, root by root" },
@@ -397,36 +397,36 @@ Lucent silhouette family. */
 ZONE_DIFFICULTY.duskward = 21.3;
 
 const duskwardRegulars = [
-   { name:"a hollow-eyed watchman, standing guard over nothing that's still there", beef:14, zip:0, grit:41, hoodoo:0, xp:68, zone:"duskward",
+   { name:"a hollow-eyed watchman, standing guard over nothing that's still there", ...MONSTER_STATS["a hollow-eyed watchman, standing guard over nothing that's still there"], zone:"duskward",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"draws the dark in closer, like a coat" } ],
     art: artHollowEyedWatchman, loot:null },
-   { name:"an unlit lanternbearer, carrying a light that went out a long time ago", beef:15, zip:0, grit:42, hoodoo:0, xp:69, zone:"duskward",
+   { name:"an unlit lanternbearer, carrying a light that went out a long time ago", ...MONSTER_STATS["an unlit lanternbearer, carrying a light that went out a long time ago"], zone:"duskward",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:48, boltMax:60, flavor:"the lantern flares once, wrong-colored and cold" } ],
     art: artUnlitLanternbearer, loot:null },
-   { name:"a shade-stitched mender, patching itself with borrowed dark", beef:15, zip:0, grit:41, hoodoo:0, xp:70, zone:"duskward",
+   { name:"a shade-stitched mender, patching itself with borrowed dark", ...MONSTER_STATS["a shade-stitched mender, patching itself with borrowed dark"], zone:"duskward",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:27, healMax:46, flavor:"pulls a little more shadow over the tear" } ],
     art: artShadeStitchedMender, loot:null },
    /* Same gear-coverage-pass addition as Embercrypt's own comment
    explains — 5 more trash + 2 miniboss-tier. */
-   { name:"a dusk-split sentry, standing watch over a door that's always closing", beef:15, zip:0, grit:42, hoodoo:0, xp:71, zone:"duskward",
+   { name:"a dusk-split sentry, standing watch over a door that's always closing", ...MONSTER_STATS["a dusk-split sentry, standing watch over a door that's always closing"], zone:"duskward",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:49, boltMax:61, flavor:"the door finishes closing right on top of you" } ],
     art: artDuskSplitSentry, loot:null },
-   { name:"the Shade Regent, still holding court in a hall nobody's left to enter", beef:16, zip:0, grit:50, hoodoo:0, xp:110, rare:true, zone:"duskward",
+   { name:"the Shade Regent, still holding court in a hall nobody's left to enter", ...MONSTER_STATS["the Shade Regent, still holding court in a hall nobody's left to enter"], rare:true, zone:"duskward",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.4, buffTurns:2, flavor:"calls the hall's own dark a little closer" } ],
     art: artShadeRegent, loot:null },
-   { name:"an unlit tender, patching a dark that keeps patching itself first", beef:15, zip:0, grit:41, hoodoo:0, xp:72, zone:"duskward",
+   { name:"an unlit tender, patching a dark that keeps patching itself first", ...MONSTER_STATS["an unlit tender, patching a dark that keeps patching itself first"], zone:"duskward",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:28, healMax:47, flavor:"the dark patches its own tear before you can press the advantage" } ],
     art: artUnlitTender, loot:null },
-   { name:"a shadow-stitched keeper, mending seams that keep unraveling anyway", beef:15, zip:0, grit:42, hoodoo:0, xp:73, zone:"duskward",
+   { name:"a shadow-stitched keeper, mending seams that keep unraveling anyway", ...MONSTER_STATS["a shadow-stitched keeper, mending seams that keep unraveling anyway"], zone:"duskward",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:29, healMax:48, flavor:"stitches the seam shut again, same as every other time" } ],
     art: artShadowStitchedKeeper, loot:null },
-   { name:"a hollow-eyed lancer, loosing a dark that arrives before it's thrown", beef:15, zip:0, grit:41, hoodoo:0, xp:73, zone:"duskward",
+   { name:"a hollow-eyed lancer, loosing a dark that arrives before it's thrown", ...MONSTER_STATS["a hollow-eyed lancer, loosing a dark that arrives before it's thrown"], zone:"duskward",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:50, boltMax:62, flavor:"the dark arrives before the throw even finishes" } ],
     art: artHollowEyedLancer, loot:null },
-   { name:"the Dusk Chancellor, presiding over a hall that gave up on light", beef:17, zip:0, grit:52, hoodoo:0, xp:120, rare:true, zone:"duskward",
+   { name:"the Dusk Chancellor, presiding over a hall that gave up on light", ...MONSTER_STATS["the Dusk Chancellor, presiding over a hall that gave up on light"], rare:true, zone:"duskward",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:38, healMax:56, flavor:"rules its own wound out of the record and reseals the dark over it" } ],
     art: artDuskChancellor, loot:null },
-   { name:"an unlit sentry, holding a post the dark swallowed years ago", beef:15, zip:0, grit:42, hoodoo:0, xp:74, zone:"duskward",
+   { name:"an unlit sentry, holding a post the dark swallowed years ago", ...MONSTER_STATS["an unlit sentry, holding a post the dark swallowed years ago"], zone:"duskward",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"lets the dark close a little further around its own post" } ],
     art: artUnlitSentry, loot:null },
    ];
@@ -436,7 +436,7 @@ no debuff" shape unansweredHerald (Stormreach) uses, reused deliberately
 here too: Duskward is meant to read as raw ominous power rather than a
 status effect, the most dangerous "preview" of the real Dimming. */
 const lastCandle = {
-   name:"the Last Candle, still burning down here for reasons nobody's left to remember", beef:18, zip:0, grit:58, hoodoo:0, xp:175, rare:true, zone:"duskward",
+   name:"the Last Candle, still burning down here for reasons nobody's left to remember", ...MONSTER_STATS["the Last Candle, still burning down here for reasons nobody's left to remember"], rare:true, zone:"duskward",
    skills:[
       { type:'bolt', chance:0.24, boltMin:52, boltMax:66, flavor:"goes out all at once, and something worse arrives in the dark" },
       { type:'buff', chance:0.18, buffMult:1.5, buffTurns:2, flavor:"gutters, then catches again, brighter than before" },
@@ -472,36 +472,36 @@ angular Lucent silhouette family. */
 ZONE_DIFFICULTY.ironloom = 23.0;
 
 const ironloomRegulars = [
-   { name:"a coiled tensioner, wound past anything it was built to hold", beef:15, zip:0, grit:44, hoodoo:0, xp:72, zone:"ironloom",
+   { name:"a coiled tensioner, wound past anything it was built to hold", ...MONSTER_STATS["a coiled tensioner, wound past anything it was built to hold"], zone:"ironloom",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"winds itself one notch tighter" } ],
     art: artCoiledTensioner, loot:null },
-   { name:"a loom-spindle, still weaving something nobody's wearing", beef:16, zip:0, grit:45, hoodoo:0, xp:73, zone:"ironloom",
+   { name:"a loom-spindle, still weaving something nobody's wearing", ...MONSTER_STATS["a loom-spindle, still weaving something nobody's wearing"], zone:"ironloom",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:51, boltMax:64, flavor:"snaps a thread straight at you, faster than thread should go" } ],
     art: artLoomSpindle, loot:null },
-   { name:"a stitch-worker, mending gears with thread that shouldn't hold metal", beef:16, zip:0, grit:44, hoodoo:0, xp:74, zone:"ironloom",
+   { name:"a stitch-worker, mending gears with thread that shouldn't hold metal", ...MONSTER_STATS["a stitch-worker, mending gears with thread that shouldn't hold metal"], zone:"ironloom",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:29, healMax:49, flavor:"binds the crack shut, thread over gear" } ],
     art: artStitchWorker, loot:null },
    /* Same gear-coverage-pass addition as Embercrypt's own comment
    explains — 5 more trash + 2 miniboss-tier. */
-   { name:"a gear-split outrider, throwing cogs that haven't finished spinning", beef:16, zip:0, grit:45, hoodoo:0, xp:75, zone:"ironloom",
+   { name:"a gear-split outrider, throwing cogs that haven't finished spinning", ...MONSTER_STATS["a gear-split outrider, throwing cogs that haven't finished spinning"], zone:"ironloom",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:52, boltMax:65, flavor:"the half-spun cog finishes its arc straight at you" } ],
     art: artGearSplitOutrider, loot:null },
-   { name:"the Loom Chancellor, still weighing a pattern nobody's left to approve", beef:17, zip:0, grit:53, hoodoo:0, xp:115, rare:true, zone:"ironloom",
+   { name:"the Loom Chancellor, still weighing a pattern nobody's left to approve", ...MONSTER_STATS["the Loom Chancellor, still weighing a pattern nobody's left to approve"], rare:true, zone:"ironloom",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.4, buffTurns:2, flavor:"approves its own pattern and winds itself tighter for it" } ],
     art: artLoomChancellor, loot:null },
-   { name:"a thread-tender, binding its own frayed edge with spare wire", beef:16, zip:0, grit:44, hoodoo:0, xp:76, zone:"ironloom",
+   { name:"a thread-tender, binding its own frayed edge with spare wire", ...MONSTER_STATS["a thread-tender, binding its own frayed edge with spare wire"], zone:"ironloom",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:30, healMax:50, flavor:"binds the fray shut with whatever wire's left" } ],
     art: artThreadTender, loot:null },
-   { name:"a spindle-keeper, re-threading a seam that keeps slipping loose", beef:16, zip:0, grit:45, hoodoo:0, xp:77, zone:"ironloom",
+   { name:"a spindle-keeper, re-threading a seam that keeps slipping loose", ...MONSTER_STATS["a spindle-keeper, re-threading a seam that keeps slipping loose"], zone:"ironloom",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:31, healMax:51, flavor:"re-threads the seam one more time, same as every time before" } ],
     art: artSpindleKeeper, loot:null },
-   { name:"a tension-lancer, loosing a coil wound tighter than it should hold", beef:16, zip:0, grit:44, hoodoo:0, xp:77, zone:"ironloom",
+   { name:"a tension-lancer, loosing a coil wound tighter than it should hold", ...MONSTER_STATS["a tension-lancer, loosing a coil wound tighter than it should hold"], zone:"ironloom",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:53, boltMax:66, flavor:"the overwound coil finally lets go, all at once" } ],
     art: artTensionLancer, loot:null },
-   { name:"the Gear Magistrate, presiding over a pattern that finished itself centuries ago", beef:18, zip:0, grit:55, hoodoo:0, xp:125, rare:true, zone:"ironloom",
+   { name:"the Gear Magistrate, presiding over a pattern that finished itself centuries ago", ...MONSTER_STATS["the Gear Magistrate, presiding over a pattern that finished itself centuries ago"], rare:true, zone:"ironloom",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:40, healMax:58, flavor:"files its own damage into a pattern that's already finished" } ],
     art: artGearMagistrate, loot:null },
-   { name:"a loom-locked sentry, holding a post the gears sealed shut around it", beef:16, zip:0, grit:45, hoodoo:0, xp:78, zone:"ironloom",
+   { name:"a loom-locked sentry, holding a post the gears sealed shut around it", ...MONSTER_STATS["a loom-locked sentry, holding a post the gears sealed shut around it"], zone:"ironloom",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"lets the gears seal its own post one notch tighter" } ],
     art: artLoomLockedSentry, loot:null },
    ];
@@ -511,7 +511,7 @@ const ironloomRegulars = [
 the Act 3 plan's own note on this dungeon specifically tying it back to
 the first wave's own mechanic. */
 const warpLoomOverseer = {
-   name:"the Warp-Loom Overseer, running a pattern it finished a long time ago", beef:19, zip:0, grit:61, hoodoo:0, xp:185, rare:true, zone:"ironloom",
+   name:"the Warp-Loom Overseer, running a pattern it finished a long time ago", ...MONSTER_STATS["the Warp-Loom Overseer, running a pattern it finished a long time ago"], rare:true, zone:"ironloom",
    skills:[
       { type:'debuff', chance:0.22, debuffType:'burn', debuffTurns:3, dmgPerTurn:24, flavor:"overdrives something that was never built to run this hot" },
       { type:'buff', chance:0.18, buffMult:1.5, buffTurns:2, flavor:"throws every gear back in sync at once" },
@@ -547,36 +547,36 @@ blue/pale sky over the same angular Lucent silhouette family. */
 ZONE_DIFFICULTY.echochapel = 24.9;
 
 const echoChapelRegulars = [
-   { name:"a resonance warden, holding one note longer than it should last", beef:16, zip:0, grit:47, hoodoo:0, xp:76, zone:"echochapel",
+   { name:"a resonance warden, holding one note longer than it should last", ...MONSTER_STATS["a resonance warden, holding one note longer than it should last"], zone:"echochapel",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"leans into its own echo until it holds steady" } ],
     art: artResonanceWarden, loot:null },
-   { name:"a chime-caster, ringing something that was never meant to be struck", beef:17, zip:0, grit:48, hoodoo:0, xp:77, zone:"echochapel",
+   { name:"a chime-caster, ringing something that was never meant to be struck", ...MONSTER_STATS["a chime-caster, ringing something that was never meant to be struck"], zone:"echochapel",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:55, boltMax:68, flavor:"strikes true, and the whole chapel strikes back with it" } ],
     art: artChimeCaster, loot:null },
-   { name:"a hum-keeper, stitching itself whole with its own held note", beef:17, zip:0, grit:47, hoodoo:0, xp:78, zone:"echochapel",
+   { name:"a hum-keeper, stitching itself whole with its own held note", ...MONSTER_STATS["a hum-keeper, stitching itself whole with its own held note"], zone:"echochapel",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:32, healMax:52, flavor:"hums the crack shut, one long unbroken note" } ],
     art: artHumKeeper, loot:null },
    /* Same gear-coverage-pass addition as Embercrypt's own comment
    explains — 5 more trash + 2 miniboss-tier. */
-   { name:"a resonance outrider, carrying a note one beat ahead of itself", beef:17, zip:0, grit:48, hoodoo:0, xp:79, zone:"echochapel",
+   { name:"a resonance outrider, carrying a note one beat ahead of itself", ...MONSTER_STATS["a resonance outrider, carrying a note one beat ahead of itself"], zone:"echochapel",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:56, boltMax:69, flavor:"the note catches up to itself right as it lands" } ],
     art: artResonanceOutrider, loot:null },
-   { name:"the Chord Marshal, still conducting a choir nobody's left to sing in", beef:18, zip:0, grit:56, hoodoo:0, xp:120, rare:true, zone:"echochapel",
+   { name:"the Chord Marshal, still conducting a choir nobody's left to sing in", ...MONSTER_STATS["the Chord Marshal, still conducting a choir nobody's left to sing in"], rare:true, zone:"echochapel",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.4, buffTurns:2, flavor:"brings the whole empty choir in on the downbeat" } ],
     art: artChordMarshal, loot:null },
-   { name:"a hum-tender, patching its own voice before the crack finishes ringing", beef:17, zip:0, grit:47, hoodoo:0, xp:80, zone:"echochapel",
+   { name:"a hum-tender, patching its own voice before the crack finishes ringing", ...MONSTER_STATS["a hum-tender, patching its own voice before the crack finishes ringing"], zone:"echochapel",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:33, healMax:53, flavor:"patches its own voice before the crack even finishes ringing" } ],
     art: artHumTender, loot:null },
-   { name:"a chime-keeper, re-striking a note that keeps slipping flat", beef:17, zip:0, grit:48, hoodoo:0, xp:81, zone:"echochapel",
+   { name:"a chime-keeper, re-striking a note that keeps slipping flat", ...MONSTER_STATS["a chime-keeper, re-striking a note that keeps slipping flat"], zone:"echochapel",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:34, healMax:54, flavor:"strikes the note again, finally true" } ],
     art: artChimeKeeper, loot:null },
-   { name:"an echo-lancer, loosing a sound that lands before it's struck", beef:17, zip:0, grit:47, hoodoo:0, xp:81, zone:"echochapel",
+   { name:"an echo-lancer, loosing a sound that lands before it's struck", ...MONSTER_STATS["an echo-lancer, loosing a sound that lands before it's struck"], zone:"echochapel",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:57, boltMax:70, flavor:"the sound lands a half-beat before the strike that made it" } ],
     art: artEchoLancer, loot:null },
-   { name:"the Resonance Archivist, cataloguing every note the chapel's ever held", beef:19, zip:0, grit:58, hoodoo:0, xp:130, rare:true, zone:"echochapel",
+   { name:"the Resonance Archivist, cataloguing every note the chapel's ever held", ...MONSTER_STATS["the Resonance Archivist, cataloguing every note the chapel's ever held"], rare:true, zone:"echochapel",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:42, healMax:60, flavor:"files its own wound under a note it's already catalogued" } ],
     art: artResonanceArchivist, loot:null },
-   { name:"a resonance sentry, holding a post the echo sealed shut around it", beef:17, zip:0, grit:48, hoodoo:0, xp:82, zone:"echochapel",
+   { name:"a resonance sentry, holding a post the echo sealed shut around it", ...MONSTER_STATS["a resonance sentry, holding a post the echo sealed shut around it"], zone:"echochapel",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"lets the echo seal its own post one note tighter" } ],
     art: artResonanceSentry, loot:null },
    ];
@@ -585,7 +585,7 @@ const echoChapelRegulars = [
 heal (the note stitching its own damage shut) — the first use of this
 particular combination, distinct from every boss before it. */
 const unbrokenChord = {
-   name:"the Unbroken Chord, still holding a note that should have ended centuries ago", beef:20, zip:0, grit:64, hoodoo:0, xp:195, rare:true, zone:"echochapel",
+   name:"the Unbroken Chord, still holding a note that should have ended centuries ago", ...MONSTER_STATS["the Unbroken Chord, still holding a note that should have ended centuries ago"], rare:true, zone:"echochapel",
    skills:[
       { type:'bolt', chance:0.24, boltMin:58, boltMax:72, flavor:"lets the note finally land, all at once" },
       { type:'heal', chance:0.18, healMin:28, healMax:46, flavor:"folds the damage back into the song and keeps singing" },
@@ -621,36 +621,36 @@ angular Lucent silhouette family. */
 ZONE_DIFFICULTY.sunkenarchive = 26.9;
 
 const sunkenArchiveRegulars = [
-   { name:"a marginalia-wraith, scrawled in the gaps of something older than it", beef:17, zip:0, grit:50, hoodoo:0, xp:80, zone:"sunkenarchive",
+   { name:"a marginalia-wraith, scrawled in the gaps of something older than it", ...MONSTER_STATS["a marginalia-wraith, scrawled in the gaps of something older than it"], zone:"sunkenarchive",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"underlines itself twice, for emphasis" } ],
     art: artMarginaliaWraith, loot:null },
-   { name:"an index-walker, citing a source that's about to cite you back", beef:18, zip:0, grit:51, hoodoo:0, xp:81, zone:"sunkenarchive",
+   { name:"an index-walker, citing a source that's about to cite you back", ...MONSTER_STATS["an index-walker, citing a source that's about to cite you back"], zone:"sunkenarchive",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:58, boltMax:72, flavor:"delivers the footnote directly, at speed" } ],
     art: artIndexWalker, loot:null },
-   { name:"a page-binder, re-stitching a spine that's been read too many times", beef:18, zip:0, grit:50, hoodoo:0, xp:82, zone:"sunkenarchive",
+   { name:"a page-binder, re-stitching a spine that's been read too many times", ...MONSTER_STATS["a page-binder, re-stitching a spine that's been read too many times"], zone:"sunkenarchive",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:34, healMax:55, flavor:"rebinds itself along the crease" } ],
     art: artPageBinder, loot:null },
    /* Same gear-coverage-pass addition as Embercrypt's own comment
    explains — 5 more trash + 2 miniboss-tier. */
-   { name:"a footnote-outrider, citing a source one line ahead of itself", beef:18, zip:0, grit:51, hoodoo:0, xp:83, zone:"sunkenarchive",
+   { name:"a footnote-outrider, citing a source one line ahead of itself", ...MONSTER_STATS["a footnote-outrider, citing a source one line ahead of itself"], zone:"sunkenarchive",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:59, boltMax:73, flavor:"the citation lands before the source even finishes printing" } ],
     art: artFootnoteOutrider, loot:null },
-   { name:"the Archive Warden, still guarding a collection nobody's left to steal", beef:19, zip:0, grit:59, hoodoo:0, xp:125, rare:true, zone:"sunkenarchive",
+   { name:"the Archive Warden, still guarding a collection nobody's left to steal", ...MONSTER_STATS["the Archive Warden, still guarding a collection nobody's left to steal"], rare:true, zone:"sunkenarchive",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.4, buffTurns:2, flavor:"adds one more lock to a collection nobody's trying to take" } ],
     art: artArchiveWarden, loot:null },
-   { name:"a binding-tender, re-stitching its own spine before the tear finishes", beef:18, zip:0, grit:50, hoodoo:0, xp:84, zone:"sunkenarchive",
+   { name:"a binding-tender, re-stitching its own spine before the tear finishes", ...MONSTER_STATS["a binding-tender, re-stitching its own spine before the tear finishes"], zone:"sunkenarchive",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:35, healMax:56, flavor:"re-stitches its own spine before the tear even finishes" } ],
     art: artBindingTender, loot:null },
-   { name:"a citation-keeper, re-filing a reference that keeps slipping loose", beef:18, zip:0, grit:51, hoodoo:0, xp:85, zone:"sunkenarchive",
+   { name:"a citation-keeper, re-filing a reference that keeps slipping loose", ...MONSTER_STATS["a citation-keeper, re-filing a reference that keeps slipping loose"], zone:"sunkenarchive",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:36, healMax:57, flavor:"re-files the reference, same as every time it slips" } ],
     art: artCitationKeeper, loot:null },
-   { name:"an index-lancer, delivering a footnote that arrives before the citation", beef:18, zip:0, grit:50, hoodoo:0, xp:85, zone:"sunkenarchive",
+   { name:"an index-lancer, delivering a footnote that arrives before the citation", ...MONSTER_STATS["an index-lancer, delivering a footnote that arrives before the citation"], zone:"sunkenarchive",
     skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:60, boltMax:74, flavor:"the footnote lands before the citation it was explaining" } ],
     art: artIndexLancer, loot:null },
-   { name:"the Last Cataloguer, still filing every page the Archive's ever held", beef:20, zip:0, grit:61, hoodoo:0, xp:135, rare:true, zone:"sunkenarchive",
+   { name:"the Last Cataloguer, still filing every page the Archive's ever held", ...MONSTER_STATS["the Last Cataloguer, still filing every page the Archive's ever held"], rare:true, zone:"sunkenarchive",
     skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:44, healMax:62, flavor:"files its own damage under a page it's already catalogued" } ],
     art: artLastCataloguer, loot:null },
-   { name:"an archive sentry, holding a post the dust sealed shut around it", beef:18, zip:0, grit:51, hoodoo:0, xp:86, zone:"sunkenarchive",
+   { name:"an archive sentry, holding a post the dust sealed shut around it", ...MONSTER_STATS["an archive sentry, holding a post the dust sealed shut around it"], zone:"sunkenarchive",
     skills:[ { type:'buff', chance:TRASH_SKILL_CHANCE, buffMult:1.3, buffTurns:2, flavor:"lets the dust seal its own post one layer thicker" } ],
     art: artArchiveSentry, loot:null },
    ];
@@ -660,7 +660,7 @@ const sunkenArchiveRegulars = [
 revelation rather than binding growth — the wave's closing note before
 the quest chain's own next step (not this pass's own scope). */
 const lastArchivist = {
-   name:"the Last Archivist, still cataloguing a collection nobody's left to read", beef:21, zip:0, grit:67, hoodoo:0, xp:205, rare:true, zone:"sunkenarchive",
+   name:"the Last Archivist, still cataloguing a collection nobody's left to read", ...MONSTER_STATS["the Last Archivist, still cataloguing a collection nobody's left to read"], rare:true, zone:"sunkenarchive",
    skills:[
       { type:'debuff', chance:0.22, debuffType:'poison', debuffTurns:3, dmgPerTurn:28, flavor:"files something slow and patient directly under your skin" },
       { type:'buff', chance:0.18, buffMult:1.5, buffTurns:2, flavor:"cross-references itself against its own best entry" },
