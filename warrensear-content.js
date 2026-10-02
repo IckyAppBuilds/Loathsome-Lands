@@ -17,7 +17,7 @@ const warrensEarMonsters = [
     rareDrop:{name:"the cantor's own perfect note, bottled", desc:"You've never heard silence sound so loud.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"cantor's resonant collar-plate of the Badger", desc:"Hums faintly whenever something's listening back.", type:"equip", slot:"chest", bonus:{beef:8}, classRequired:'Meathead', tier:'common', icon:iconVest} },
    { name:"an echo-mole, never quite where the sound says it is", ...MONSTER_STATS["an echo-mole, never quite where the sound says it is"], zone:"choir",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:27, healMax:50, flavor:"an echo of itself arrives a beat late, already patched up" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"an echo of itself arrives a beat late, already patched up" } ],
     art: artEchoMole, loot:{name:"warped echo-shell fragment", desc:"Whispers back whatever you last said, badly.", type:"junk", sell:14, icon:iconShellFragment},
     rareDrop:{name:"an echo that arrived before the sound did", desc:"You're choosing not to think about that too hard.", type:"luck", hpValue:26, mpValue:13, icon:iconClover},
     gearDrop:{name:"echo-mole's mis-timed warpaint wand of the Weasel", desc:"Casts the spell a half-second before you finish it.", type:"equip", slot:"weapon", bonus:{zip:8}, classRequired:'Card Shark', tier:'common', icon:iconWandStick} },
@@ -32,7 +32,7 @@ const warrensEarMonsters = [
     rareDrop:{name:"a ledger entry that approves itself, recursively", desc:"It's been auditing itself for years. It's winning.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"archivist's ledger-strapped greaves of the Badger", desc:"Every step filed in triplicate.", type:"equip", slot:"legs", bonus:{beef:8}, classRequired:'Meathead', tier:'common', icon:iconQuickstepTrousers} },
    { name:"a vault clerk, stamping things that don't need stamping", ...MONSTER_STATS["a vault clerk, stamping things that don't need stamping"], zone:"ledgervault",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:27, healMax:50, flavor:"over-stamps its own wound until it's technically fine" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"over-stamps its own wound until it's technically fine" } ],
     art: artVaultClerk, loot:{name:"over-stamped requisition form", desc:"Approved, denied, and approved again.", type:"junk", sell:14, icon:iconCoinPurse},
     rareDrop:{name:"the clerk's own personal rubber stamp of destiny", desc:"Whatever it stamps next, apparently, happens.", type:"luck", hpValue:26, mpValue:13, icon:iconClover},
     gearDrop:{name:"clerk's ink-stained boots of the Weasel", desc:"Tracks ink into every room you enter after this.", type:"equip", slot:"boots", bonus:{zip:8}, classRequired:'Card Shark', tier:'common', icon:iconGripBoots} },
@@ -52,7 +52,7 @@ const warrensEarMonsters = [
     rareDrop:{name:"a hymn sheet that's actually, perfectly sung", desc:"Every note landed. First time ever, probably.", type:"junk", sell:46, icon:iconFigurine},
     gearDrop:{name:"chorister's own lead-note helm of the Badger", desc:"Still humming faintly from the last performance.", type:"equip", slot:"head", bonus:{beef:8}, classRequired:'Meathead', tier:'common', icon:iconGuardHelm} },
    { name:"a mole bell-ringer, hauling a bell twice its size", ...MONSTER_STATS["a mole bell-ringer, hauling a bell twice its size"], zone:"choir",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:27, healMax:49, flavor:"rings the bell once and feels steadier for the toll" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"rings the bell once and feels steadier for the toll" } ],
     art: artMoleBellRinger, loot:{name:"a dented bell-clapper", desc:"Knocked loose from ringing far too hard.", type:"junk", sell:14, icon:iconWhistle},
     rareDrop:{name:"a clapper that rings true every single time", desc:"No dent, no wobble. Perfect tone.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"bell-ringer's braced greaves of the Badger", desc:"Built to brace against the recoil of a very large bell.", type:"equip", slot:"legs", bonus:{beef:7}, classRequired:'Meathead', tier:'common', icon:iconBurrowGreaves} },
@@ -72,7 +72,7 @@ const warrensEarMonsters = [
     rareDrop:{name:"a descant note that's genuinely, impressively clean", desc:"Hit it clean on the first try. Rare, for this singer.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"descant-singer's own high-note cap of the Weasel", desc:"Still ringing, very faintly, at an uncomfortable pitch.", type:"equip", slot:"head", bonus:{zip:7}, classRequired:'Card Shark', tier:'common', icon:iconCap} },
    { name:"a mole harmony-weaver, blending in just enough to vanish", ...MONSTER_STATS["a mole harmony-weaver, blending in just enough to vanish"], zone:"choir",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:26, healMax:48, flavor:"blends the wound into the harmony and it closes, unnoticed" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"blends the wound into the harmony and it closes, unnoticed" } ],
     art: artMoleHarmonyWeaver, loot:{name:"a woven harmony-thread", desc:"Blends into whatever's around it. Including, apparently, itself.", type:"junk", sell:14, icon:iconFeatherScale},
     rareDrop:{name:"a harmony-thread that's genuinely seamless", desc:"Can't tell where it starts or ends. Impressive weaving.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"harmony-weaver's own blended vest of the Weasel", desc:"Blends into whatever you're already wearing.", type:"equip", slot:"chest", bonus:{zip:7}, classRequired:'Card Shark', tier:'common', icon:iconVest} },
@@ -87,7 +87,7 @@ const warrensEarMonsters = [
     rareDrop:{name:"a tap-shoe keeping genuinely perfect rhythm", desc:"You can almost hear the beat now too.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"tap-dancer's own rhythmic boots of the Weasel", desc:"Click faintly in time with your own heartbeat.", type:"equip", slot:"boots", bonus:{zip:7}, classRequired:'Card Shark', tier:'common', icon:iconMismatchedBoots} },
    { name:"a mole resonance-warden, vibrating in sympathy with the hall", ...MONSTER_STATS["a mole resonance-warden, vibrating in sympathy with the hall"], zone:"choir",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:26, healMax:49, flavor:"vibrates in sympathy with the hall itself and knits back together" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"vibrates in sympathy with the hall itself and knits back together" } ],
     art: artMoleResonanceWarden, loot:{name:"a faintly vibrating wall-stone", desc:"Still humming along with whatever's singing nearby.", type:"junk", sell:14, icon:iconCapturedLight},
     rareDrop:{name:"a wall-stone resonating with something real", desc:"You can feel it through your boots, even standing still.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"resonance-warden's own humming vestment of the Loon", desc:"Vibrates faintly, in sympathy with whatever's nearby.", type:"equip", slot:"chest", bonus:{hoodoo:7}, classRequired:'Hexpert', tier:'common', icon:iconScorchRobe} },
@@ -97,7 +97,7 @@ const warrensEarMonsters = [
     rareDrop:{name:"a tuning fork that's genuinely, perfectly pitched", desc:"Everything around it seems to settle into tune.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"pitch-tuner's own fine-tuned leggings of the Loon", desc:"Hum a very faint, very specific note.", type:"equip", slot:"legs", bonus:{hoodoo:7}, classRequired:'Hexpert', tier:'common', icon:iconFeatherScale} },
    { name:"a mole silent-chorister, mouthing words with no sound", ...MONSTER_STATS["a mole silent-chorister, mouthing words with no sound"], zone:"choir",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:26, healMax:48, flavor:"mouths a silent hymn and the wound closes without a sound" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"mouths a silent hymn and the wound closes without a sound" } ],
     art: artMoleSilentChorister, loot:{name:"a voiceless hymn sheet", desc:"No words on it at all. Somehow still a hymn.", type:"junk", sell:14, icon:iconWhistle},
     rareDrop:{name:"a hymn sheet that sings itself, silently", desc:"You can feel the song more than hear it.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"silent-chorister's own voiceless boots of the Loon", desc:"Move in perfect silence, same as the singer who wore them.", type:"equip", slot:"boots", bonus:{hoodoo:7}, classRequired:'Hexpert', tier:'common', icon:iconWardedSlippers} },
@@ -113,7 +113,7 @@ const warrensEarMonsters = [
     rareDrop:{name:"a watch-log with something finally worth reporting", desc:"First real entry in this log in a very long time.", type:"junk", sell:46, icon:iconFigurine},
     gearDrop:{name:"vault-guard's own standing-watch helm of the Badger", desc:"Worn smooth from standing in exactly one spot, for years.", type:"equip", slot:"head", bonus:{beef:8}, classRequired:'Meathead', tier:'common', icon:iconGuardHelm} },
    { name:"a mole strongbox-bearer, hauling a ledger-chest built like armor", ...MONSTER_STATS["a mole strongbox-bearer, hauling a ledger-chest built like armor"], zone:"ledgervault",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:27, healMax:49, flavor:"sets the strongbox down and straightens its back, good as new" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"sets the strongbox down and straightens its back, good as new" } ],
     art: artMoleStrongboxBearer, loot:{name:"a dented strongbox corner", desc:"Reinforced like it's carrying something important. It is.", type:"junk", sell:14, icon:iconBiscuitTin},
     rareDrop:{name:"a strongbox corner that's somehow unscathed", desc:"Hasn't taken a dent in years. Well cared for.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"strongbox-bearer's own reinforced vest of the Badger", desc:"Built like the box it's named after. Nearly as heavy.", type:"equip", slot:"chest", bonus:{beef:7}, classRequired:'Meathead', tier:'common', icon:iconPalaceForgedPlate} },
@@ -133,7 +133,7 @@ const warrensEarMonsters = [
     rareDrop:{name:"a cipher page that's actually, finally decoded", desc:"Someone finally cracked it. Worth something, probably.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"cipher-clerk's own coded cap of the Weasel", desc:"Covered in numbers that only make sense to one reader.", type:"equip", slot:"head", bonus:{zip:7}, classRequired:'Card Shark', tier:'common', icon:iconCap} },
    { name:"a mole safecracker, listening for a click that isn't coming", ...MONSTER_STATS["a mole safecracker, listening for a click that isn't coming"], zone:"ledgervault",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:26, healMax:48, flavor:"hears a click that isn't there and somehow it still works" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"hears a click that isn't there and somehow it still works" } ],
     art: artMoleSafecracker, loot:{name:"a worn safecracking tool", desc:"Used on locks that technically don't need cracking.", type:"junk", sell:14, icon:iconPipeFitting},
     rareDrop:{name:"a safecracking tool that's actually, properly earned its keep", desc:"Cracked something real this time.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"safecracker's own listening vest of the Weasel", desc:"Padded with tools for locks nobody's supposed to open.", type:"equip", slot:"chest", bonus:{zip:7}, classRequired:'Card Shark', tier:'common', icon:iconVest} },
@@ -148,7 +148,7 @@ const warrensEarMonsters = [
     rareDrop:{name:"a stamp pad that lands two perfect stamps every time", desc:"Both hands, both perfectly placed. Impressive.", type:"junk", sell:46, icon:iconFigurine},
     gearDrop:{name:"stamp-duelist's own twin stamp-blades of the Weasel", desc:"One in each hand. Both still faintly inked.", type:"equip", slot:"weapon", bonus:{zip:8}, classRequired:'Card Shark', tier:'common', icon:iconCardShank} },
    { name:"a mole number-seer, reading a ledger that hasn't been written yet", ...MONSTER_STATS["a mole number-seer, reading a ledger that hasn't been written yet"], zone:"ledgervault",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:26, healMax:48, flavor:"reads its own recovery off a page that hasn't been written yet" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"reads its own recovery off a page that hasn't been written yet" } ],
     art: artMoleNumberSeer, loot:{name:"a page from a ledger not yet written", desc:"Blank, except for one number that keeps changing.", type:"junk", sell:14, icon:iconVizierLedger},
     rareDrop:{name:"a page that's finally, fully written out", desc:"Whatever it predicted, it's already happened.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"number-seer's own foresighted circlet of the Loon", desc:"Shows numbers that haven't been counted yet.", type:"equip", slot:"head", bonus:{hoodoo:7}, classRequired:'Hexpert', tier:'common', icon:iconChampionCrown} },
@@ -163,7 +163,7 @@ const warrensEarMonsters = [
     rareDrop:{name:"a debt-ledger that's finally, fully traced and settled", desc:"Whatever was owed, it's accounted for now.", type:"junk", sell:46, icon:iconFigurine},
     gearDrop:{name:"account-tracer's own debt-marked leggings of the Loon", desc:"Covered in tally-marks tracing a debt through the walls.", type:"equip", slot:"legs", bonus:{hoodoo:8}, classRequired:'Hexpert', tier:'common', icon:iconFeatherScale} },
    { name:"a mole silent-auditor, never once making a sound", ...MONSTER_STATS["a mole silent-auditor, never once making a sound"], zone:"ledgervault",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:26, healMax:48, flavor:"audits its own injury in complete silence, and it's gone" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"audits its own injury in complete silence, and it's gone" } ],
     art: artMoleSilentAuditor, loot:{name:"a silent audit report", desc:"No sound, no notes, somehow still thorough.", type:"junk", sell:14, icon:iconVizierLedger},
     rareDrop:{name:"a silent audit that uncovers something real", desc:"Not a sound the whole time. Found it anyway.", type:"junk", sell:44, icon:iconFigurine},
     gearDrop:{name:"silent-auditor's own noiseless boots of the Loon", desc:"Move through the vault without a single sound.", type:"equip", slot:"boots", bonus:{hoodoo:7}, classRequired:'Hexpert', tier:'common', icon:iconWardedSlippers} },
@@ -189,7 +189,7 @@ const tunnelMoleInformant = {
 };
 const seniorClerk = {
    name:"a senior clerk, guarding a very particular ledger", ...MONSTER_STATS["a senior clerk, guarding a very particular ledger"], rare:true, zone:"bureau",
-   skills:[ { type:'heal', chance:0.20, healMin:12, healMax:18, flavor:"cites a procedural delay and buys itself time" } ],
+   skills:[ { type:'heal', chance:0.20, healPercentMin:0.05, healPercentMax:0.07, flavor:"cites a procedural delay and buys itself time" } ],
    art: artSeniorClerk, loot:null
 };
 
@@ -209,7 +209,7 @@ const committeeAuditor = {
 };
 const vaultKeeper = {
    name:"the vault keeper, the only door in the Warren's Ear that was never meant to open", ...MONSTER_STATS["the vault keeper, the only door in the Warren's Ear that was never meant to open"], rare:true, zone:"ledgervault",
-   skills:[ { type:'heal', chance:0.20, healMin:14, healMax:20, flavor:"seals itself back up along an old, familiar seam" } ],
+   skills:[ { type:'heal', chance:0.20, healPercentMin:0.05, healPercentMax:0.07, flavor:"seals itself back up along an old, familiar seam" } ],
    art: artVaultKeeper, loot:null
 };
 

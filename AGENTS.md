@@ -377,6 +377,54 @@ zip/grit/armor/xp confirmed untouched) and the Prism Depths calibration
 was re-checked, with particular attention to Meathead/Card Shark win
 rates since they face the new resistance with no way to bypass it.
 
+**Every monster `heal` skill scales off ITS OWN maxHp now, not a flat
+hand-picked number** — per explicit request ("a boss with 2000+ health
+healing for 30 means nothing"). `healMin`/`healMax` (a flat amount,
+loosely re-tuned per zone by hand as content got added) drifted
+further and further behind the game's own HP growth the deeper content
+went — a live audit before this fix found trash-tier heals already at
+a healthy 8-30% of their own HP, but late Prism Depths dungeon bosses
+down at 0.6-1.7% of theirs (one as low as 44-62 flat HP against an
+8312 HP pool). Replaced with `healPercentMin`/`healPercentMax`
+(content.js, every `type:'heal'` skill in all 6 monster-data files) —
+a fraction of `state.monster.maxHp`, read by `useMonsterSkill()`
+(combat.js). Tiered by category the same way the zip/armor/hoodoo
+archetype passes above are: 8-12% for regular/dungeon-trash (left
+alone — the live audit found these already meaningful), 5-7% for
+zone-boss/dungeon-miniboss, 6-9% for dungeon-boss — `chance` is
+completely untouched, only the magnitude basis changed. `bolt` skills
+are NOT part of this change — still a hand-computed flat amount, see
+the comment above `TRASH_SKILL_CHANCE`'s own paragraph.
+
+The boss/miniboss tiers went through one retuning pass before landing
+here: a first attempt (10-14%/12-16%) was caught by the same Prism
+Depths re-verification every stat pass above runs — several dungeon
+finals with a self-heal (Stillglass Warden/frostvault, Rootbound
+Warden/verdanthollow, Unbroken Chord/echochapel) went from a reliable
+100% toolkit win rate straight to 0-7%, because a self-heal that
+large, procced repeatedly over a long boss fight, can out-heal a
+class's own real DPS rather than just being "a real chunk of health"
+once per use. Halving it to 5-7%/6-9% restored every one of those
+to ~100% while still landing 5-8x above the old flat numbers'
+effective percentage. One known pre-existing rough edge survived
+even at the retuned tier: Sunken Archive's Card Shark matchup at its
+own recommended level (already the single tightest matchup in the
+game before this pass, ~30% toolkit win rate at n=40) dropped to 0%
+— stacking a modest, now-real self-heal on top of a margin that was
+already razor-thin tips it over. Not fixed here; it's the same
+pre-existing difficulty-curve gap the hoodoo archetype pass above
+already flagged rather than patched, since actually fixing it is a
+different task (that one class/dungeon/level combination's own damage
+curve) than "give every monster's heal a real floor."
+
+Stubborn Recovery (Meathead's own late-game heal spell, `spells`
+further down) got the SAME kind of fix for the SAME underlying reason,
+just on the player side — see its own comment, content.js/combat.js,
+for the full before/after (it went through an intermediate Beef-
+scaled version first, which overcorrected into healing for more than
+the caster's own max HP at high Beef, before landing on
+`healPercentOfMaxHp`).
+
 The named bosses — every one of them (`gnomeCommander`/`diggerBot`/
 `gnomeKingsCaptain`/`gnomeKing`/the Adventurer's Trial's three themed
 fights, `trialChampion`/`casinoChampion`/`hoodooChampion`/the three
@@ -431,9 +479,11 @@ full reasoning). Reuses the exact same `monsterRetaliate()`/
 Restricted to `heal`/`buff`/`bolt` only; `debuff` (burn/poison/freeze)
 stays boss-exclusive, a "this is a real fight" signal. Every trash
 skill shares one `chance` (`TRASH_SKILL_CHANCE = 0.12`, well below a
-boss's own 0.15-0.25), and its heal/bolt magnitude is hand-computed
-per monster from that monster's own zone-scaled atk/hp (not an
-arbitrary number) — `TRASH_SKILL_CHANCE` has to be declared BEFORE
+boss's own 0.15-0.25). A `bolt` skill's magnitude is still hand-
+computed per monster from that monster's own zone-scaled atk (not an
+arbitrary number); a `heal` skill's is NOT any more — see
+`healPercentMin`/`healPercentMax`'s own paragraph further down for why
+that changed. `TRASH_SKILL_CHANCE` has to be declared BEFORE
 `const monsters = [` specifically because it's referenced inside that
 array literal (evaluated immediately at parse time, unlike
 `MONSTER_ARMOR_PER_GRIT`-style constants that live further down this
@@ -486,25 +536,34 @@ only class with two Act 2 spells, `arcanelance` (damage) and
 replacing it — Meathead/Card Shark still get exactly one Act 2 spell
 each) — `illusion` shares Card Shark's `smokescreen` mechanic exactly,
 via the shared `state.evasionActive` flag, combat.js. `shout`
-(Meathead)/`heal` (`stubbornrecovery` specifically, NOT
-`mendcharm`/Hexpert's own early heal) can carry optional
-`shieldScaleStat`+`shieldScalePerPoint`/`healScaleStat`+
-`healScalePerPoint`+`healScaleSkillPerLevel` fields — read generically
-by `castSpell()`'s own `'shout'`/`'heal'` branches (combat.js), absent
-= 0 bonus = the original flat behavior, so `mendcharm` is untouched.
-Added after a live dungeon playtest (Act 3's Prism Depths) found
-Stubborn Recovery/Shout's flat numbers "functionally decorative"
-against a late-game HP pool in the thousands — the exact gap that let
-a fully-geared-and-spelled Meathead still lose to the Sunken Archive
-while Hoodoo-scaled `wardcharm` kept Hexpert viable at the same
-dungeon/level. Scaled off each spell's own class's primary stat (Beef)
-the same two-part way `wardcharm` scales off Hoodoo below, deliberately
-reversing an earlier, explicit "keep Shout flat so Beef investment
-doesn't double-dip into healing too" design call that a real playtest
+(Meathead) can carry an optional `shieldScaleStat`+
+`shieldScalePerPoint` pair — read generically by `castSpell()`'s own
+`'shout'` branch (combat.js), absent = 0 bonus = the original flat
+behavior. Added after a live dungeon playtest (Act 3's Prism Depths)
+found Shout's flat shield "functionally decorative" against a
+late-game hit in the hundreds — scaled off Beef (Meathead's own
+primary stat) the same two-part way `wardcharm` scales off Hoodoo
+below, deliberately reversing an earlier, explicit "keep Shout flat so
+Beef investment doesn't double-dip" design call that a real playtest
 showed was solving the wrong problem — see `shout`'s own comment,
-combat.js, for the full before/after reasoning; `ward`'s own formula
-(`8 + statBonus(stat)*2 + classSkillLevel*10`) is likewise generalized
-— `wardScaleStat` defaults to `'hoodoo'`, so `wardcharm` is
+combat.js, for the full before/after reasoning.
+
+`heal` (`stubbornrecovery` specifically, NOT `mendcharm`/Hexpert's own
+early heal) carries `healPercentOfMaxHp`+`healPercentPerSkillLevel`
+instead — a FRACTION of `state.maxHp`, not a stat-scaled flat amount —
+read generically by `castSpell()`'s own `'heal'` branch (combat.js),
+absent/0 for `mendcharm` so it's untouched and still just reads
+`healValue` flat. This went through the SAME beef-scaling treatment
+Shout got first (same playtest, same "functionally decorative" finding
+against a late-game HP pool in the thousands), then got explicitly
+corrected back off of it: Beef has no ceiling tied to the player's own
+HP, so a heavily-invested Meathead could out-heal their own max HP in
+one cast. Pegging the heal to `maxHp` itself (which Grit already
+drives via `recomputeMaxStats()`, player-actions.js) fixes both
+problems at once — always a sane fraction of the CURRENT HP pool,
+whatever level that pool happens to be at. `ward`'s own formula
+(`8 + statBonus(stat)*2 + classSkillLevel*10`) is a third, still
+stat-scaled shape — `wardScaleStat` defaults to `'hoodoo'`, so `wardcharm` is
 byte-for-byte unchanged, and the `classSkillLevel` bonus now applies
 whenever `state.classTitle===spell.classRequired` instead of being
 hardcoded to `'Hexpert'` specifically. This is what let Card Shark's

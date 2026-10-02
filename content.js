@@ -77,7 +77,7 @@ per-monster number. */
 const TRASH_SKILL_CHANCE = 0.12;
 const monsters = [
    { name:"a disgruntled compost gnome", ...MONSTER_STATS["a disgruntled compost gnome"], zone:"commons",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:1, healMax:1, flavor:"digs a fresh handful of compost into the wound, muttering about nutrients" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"digs a fresh handful of compost into the wound, muttering about nutrients" } ],
     art: artCompostGnome, loot:{name:"fistful of righteous soil", desc:"Smells like victory and mulch.", type:"junk", sell:1, icon:iconSoil},
     rareDrop:{name:"gnome-sized medal of composting excellence", desc:"Awarded by nobody. Cherished anyway.", type:"junk", sell:10, icon:iconFigurine},
     gearDrop:{name:"compost-crusted trowel of the Badger", desc:"Sharpened on rocks, mostly by accident.", type:"equip", slot:"weapon", bonus:{beef:1}, tier:'common', icon:iconRakeShank} },
@@ -92,7 +92,7 @@ const monsters = [
     rareDrop:{name:"actually-lucky fishing lure", desc:"This one's clearly caught something, at some point.", type:"junk", sell:11, icon:iconFigurine},
     gearDrop:{name:"waterlogged fishing hat of the Loon", desc:"Smells like pond. You get used to it.", type:"equip", slot:"head", bonus:{hoodoo:1}, tier:'common', icon:iconPotLid} },
    { name:"a gnome cavalry unit, mounted on a garden snail", ...MONSTER_STATS["a gnome cavalry unit, mounted on a garden snail"], zone:"commons",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:1, healMax:2, flavor:"the snail pauses just long enough for a breather" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"the snail pauses just long enough for a breather" } ],
     art: artGnomeSnail, loot:{name:"spiral shell fragment", desc:"Still faintly slimy.", type:"junk", sell:3, icon:iconShellFragment},
     rareDrop:{name:"snail-slime polished pebble", desc:"Smooth as glass. Smells faintly of victory.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
     gearDrop:{name:"snail-shell breastplate of the Badger", desc:"Surprisingly load-bearing, for a shell.", type:"equip", slot:"chest", bonus:{beef:1}, tier:'common', icon:iconVest} },
@@ -111,7 +111,7 @@ const monsters = [
    Arcane Sanctum (Gnometropolis's own districts, tied to the class
    trial) are where classRequired gear actually starts. */
    { name:"a gnome beekeeper, trailing an unbothered swarm", ...MONSTER_STATS["a gnome beekeeper, trailing an unbothered swarm"], zone:"commons",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:1, healMax:2, flavor:"the swarm patches the gap in the veil before it even notices" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"the swarm patches the gap in the veil before it even notices" } ],
     art: artGnomeBeekeeper, loot:{name:"dented beekeeper's veil", desc:"Smells like smoke and quiet confidence.", type:"junk", sell:3, icon:iconPotLid},
     rareDrop:{name:"a jar of suspiciously potent honey", desc:"One spoonful and you feel ready for anything.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
     gearDrop:{name:"beekeeper's veil-dented hood of the Badger", desc:"Still smells faintly of smoke.", type:"equip", slot:"head", bonus:{beef:1}, tier:'common', icon:iconPotLid} },
@@ -131,7 +131,7 @@ const monsters = [
     rareDrop:{name:"a proclamation that's actually worth reading", desc:"Whoever wrote this one meant it.", type:"junk", sell:10, icon:iconFigurine},
     gearDrop:{name:"herald's crumpled hat of the Weasel", desc:"Been announced at by this hat more than once.", type:"equip", slot:"head", bonus:{zip:1}, tier:'common', icon:iconCap} },
    { name:"a gnome tailor, pins still in both sleeves", ...MONSTER_STATS["a gnome tailor, pins still in both sleeves"], zone:"commons",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:1, healMax:2, flavor:"stitches the tear shut with whatever thread's closest" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"stitches the tear shut with whatever thread's closest" } ],
     art: artGnomeTailor, loot:{name:"pin-cushion, mostly pins", desc:"You'll find out the hard way if you squeeze it.", type:"junk", sell:3, icon:iconCoatButton},
     rareDrop:{name:"a perfectly tailored good luck charm", desc:"Fits exactly right. Unsettlingly right.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
     gearDrop:{name:"tailor's pin-cushion vest of the Weasel", desc:"Mind the pins. There are always more pins.", type:"equip", slot:"chest", bonus:{zip:1}, tier:'common', icon:iconVest} },
@@ -141,7 +141,7 @@ const monsters = [
     rareDrop:{name:"the duelist's own undefeated streak, framed", desc:"Every win was against a bush. Still counts, apparently.", type:"junk", sell:12, icon:iconFigurine},
     gearDrop:{name:"duelist's bent foil of the Weasel", desc:"Still carries the dents from a particularly stubborn hedge.", type:"equip", slot:"weapon", bonus:{zip:1}, tier:'common', icon:iconCardShank} },
    { name:"a gnome librarian, overdue fines decades deep", ...MONSTER_STATS["a gnome librarian, overdue fines decades deep"], zone:"commons",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:1, healMax:1, flavor:"consults a footnote and feels inexplicably better" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"consults a footnote and feels inexplicably better" } ],
     art: artGnomeLibrarian, loot:{name:"overdue library card", desc:"The fines alone could fund a small army.", type:"junk", sell:2, icon:iconVizierLedger},
     rareDrop:{name:"a book that's actually worth the fine", desc:"Finally, one worth the wait.", type:"junk", sell:10, icon:iconFigurine},
     gearDrop:{name:"librarian's dog-eared cardigan of the Loon", desc:"Smells like old paper and quiet judgment.", type:"equip", slot:"chest", bonus:{hoodoo:1}, tier:'common', icon:iconScorchRobe} },
@@ -156,7 +156,7 @@ const monsters = [
     rareDrop:{name:"a genuinely rare mushroom, glowing faintly", desc:"Finally, one the forager actually identified correctly.", type:"luck", hpValue:9, mpValue:5, icon:iconClover},
     gearDrop:{name:"forager's mismatched boots of the Loon", desc:"Picked up one mushroom stain per outing, give or take.", type:"equip", slot:"boots", bonus:{hoodoo:1}, tier:'common', icon:iconMismatchedBoots} },
    { name:"a gnome fortune-teller, reading tea leaves upside down", ...MONSTER_STATS["a gnome fortune-teller, reading tea leaves upside down"], zone:"commons",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:1, healMax:2, flavor:"reads a fortune that's suspiciously, specifically helpful" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"reads a fortune that's suspiciously, specifically helpful" } ],
     art: artGnomeFortuneTeller, loot:{name:"soggy tea leaves", desc:"Definitely spell something. Probably not anything good.", type:"junk", sell:2, icon:iconLure},
     rareDrop:{name:"a fortune that actually comes true", desc:"Said you'd find something valuable today. Rude, but accurate.", type:"junk", sell:10, icon:iconFigurine},
     gearDrop:{name:"fortune-teller's crooked wand of the Loon", desc:"Points at whatever the fortune said it would.", type:"equip", slot:"weapon", bonus:{hoodoo:1}, tier:'common', icon:iconWandStick} },
@@ -166,7 +166,7 @@ const monsters = [
     rareDrop:{name:"rat king's tiny crown", desc:"Delusions of grandeur, it turns out, were warranted.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
     gearDrop:{name:"rat-gnawed divining rod of the Loon", desc:"Points at whatever it feels like, confidently.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, tier:'common', icon:iconWandStick} },
    { name:"a rat wearing a bottlecap as a helmet", ...MONSTER_STATS["a rat wearing a bottlecap as a helmet"], zone:"sewers",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:2, healMax:3, flavor:"straightens the dented bottlecap and soldiers on" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"straightens the dented bottlecap and soldiers on" } ],
     art: artRatHelmet, loot:{name:"dented bottlecap helmet", desc:"Barely fits a rat. Definitely doesn't fit you.", type:"junk", sell:3, icon:iconBottlecapHelmet},
     rareDrop:{name:"helmet dented in a suspiciously lucky pattern", desc:"Every dent lines up with a near-miss.", type:"junk", sell:15, icon:iconFigurine},
     gearDrop:{name:"bottlecap-studded skullcap of the Badger", desc:"Rat-sized, once. Stretched since.", type:"equip", slot:"head", bonus:{beef:2}, tier:'common', icon:iconPotLid} },
@@ -193,7 +193,7 @@ const monsters = [
     rareDrop:{name:"a pipe segment that's somehow still warm", desc:"Warm pipes in a sewer. You decide not to investigate.", type:"junk", sell:14, icon:iconFigurine},
     gearDrop:{name:"crawler's bowlegged greaves of the Badger", desc:"Shaped by years of squeezing through tight pipe.", type:"equip", slot:"legs", bonus:{beef:2}, tier:'common', icon:iconBurrowGreaves} },
    { name:"a muck-strider rat, surprisingly sure-footed in sludge", ...MONSTER_STATS["a muck-strider rat, surprisingly sure-footed in sludge"], zone:"sewers",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:2, healMax:4, flavor:"wades into its own muck and comes out steadier" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"wades into its own muck and comes out steadier" } ],
     art: artMuckStriderRat, loot:{name:"sludge-caked whisker", desc:"Keeps its balance even caked in the stuff.", type:"junk", sell:3, icon:iconOreGrit},
     rareDrop:{name:"a sludge-proof good luck charm", desc:"Still works, even covered in muck.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
     gearDrop:{name:"muck-strider's suction boots of the Badger", desc:"Never once slip, no matter how deep the sludge.", type:"equip", slot:"boots", bonus:{beef:2}, tier:'common', icon:iconGripBoots} },
@@ -208,7 +208,7 @@ const monsters = [
     rareDrop:{name:"a grate key that opens more than one grate", desc:"Shouldn't work on all of them. Does anyway.", type:"junk", sell:14, icon:iconFigurine},
     gearDrop:{name:"shadow-slick rat's own slick cap of the Weasel", desc:"Still damp. Still somehow fits through anything.", type:"equip", slot:"head", bonus:{zip:2}, tier:'common', icon:iconCap} },
    { name:"a quick-paws rat, light on its feet in the muck", ...MONSTER_STATS["a quick-paws rat, light on its feet in the muck"], zone:"sewers",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:2, healMax:4, flavor:"dances back out of range and catches its breath" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"dances back out of range and catches its breath" } ],
     art: artQuickPawsRat, loot:{name:"a suspiciously clean paw-print", desc:"Not one speck of muck on it. Impressive, honestly.", type:"junk", sell:3, icon:iconOreGrit},
     rareDrop:{name:"a pair of genuinely quick paw-prints, framed", desc:"The fastest thing in the sewers, by its own account.", type:"junk", sell:14, icon:iconFigurine},
     gearDrop:{name:"quick-paws rat's own light leggings of the Weasel", desc:"Barely touch the muck at all.", type:"equip", slot:"legs", bonus:{zip:2}, tier:'common', icon:iconTrousers} },
@@ -218,7 +218,7 @@ const monsters = [
     rareDrop:{name:"a grate that's somehow always unlocked for it", desc:"Never explained how. Never asked twice.", type:"junk", sell:15, icon:iconFigurine},
     gearDrop:{name:"grate-runner's own sure-grip boots of the Weasel", desc:"Never once miss a foothold, grate or no grate.", type:"equip", slot:"boots", bonus:{zip:2}, tier:'common', icon:iconMismatchedBoots} },
    { name:"a scrap-blade rat, armed with a shard of tin", ...MONSTER_STATS["a scrap-blade rat, armed with a shard of tin"], zone:"sewers",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:2, healMax:3, flavor:"presses the flat of the tin shard against the wound, oddly gently" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"presses the flat of the tin shard against the wound, oddly gently" } ],
     art: artScrapBladeRat, loot:{name:"a bent tin shard", desc:"Sharp enough to be concerning, dull enough to be fine.", type:"junk", sell:3, icon:iconPipeFitting},
     rareDrop:{name:"a tin shard with a genuine edge", desc:"Actually sharp, for once. The rat seemed surprised too.", type:"junk", sell:14, icon:iconFigurine},
     gearDrop:{name:"scrap-blade rat's own tin shiv of the Weasel", desc:"Bent twice, still holds an edge.", type:"equip", slot:"weapon", bonus:{zip:2}, tier:'common', icon:iconCardShank} },
@@ -233,12 +233,12 @@ const monsters = [
     rareDrop:{name:"a chunk of moss that never stops glowing", desc:"Been glowing since you picked it up. Hasn't dimmed once.", type:"junk", sell:15, icon:iconFigurine},
     gearDrop:{name:"glow-moss rat's own luminous vest of the Loon", desc:"Gives off just enough light to read by, barely.", type:"equip", slot:"chest", bonus:{hoodoo:2}, tier:'common', icon:iconScorchRobe} },
    { name:"a silt-stepper rat, leaving no print in the muck", ...MONSTER_STATS["a silt-stepper rat, leaving no print in the muck"], zone:"sewers",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:2, healMax:4, flavor:"settles into the silt and it closes seamlessly around the wound" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"settles into the silt and it closes seamlessly around the wound" } ],
     art: artSiltStepperRat, loot:{name:"undisturbed silt, somehow", desc:"Should have a print in it. Doesn't.", type:"junk", sell:3, icon:iconOreGrit},
     rareDrop:{name:"a patch of silt that remembers every step", desc:"Shows a perfect trail, just this once.", type:"junk", sell:14, icon:iconFigurine},
     gearDrop:{name:"silt-stepper rat's own silent boots of the Loon", desc:"Leave the silt exactly as they found it.", type:"equip", slot:"boots", bonus:{hoodoo:2}, tier:'common', icon:iconWardedSlippers} },
    { name:"a wind-up quarry drone, badly wound", ...MONSTER_STATS["a wind-up quarry drone, badly wound"], zone:"quarry",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:2, healMax:5, flavor:"rewinds its own spring with a pained creak" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"rewinds its own spring with a pained creak" } ],
     art: artQuarryDrone, loot:{name:"stripped brass gear", desc:"Still spins if you flick it. Mostly for fun now.", type:"junk", sell:4, icon:iconGear},
     rareDrop:{name:"drone's still-humming power core", desc:"Warm, faintly ticking, best not examined too closely.", type:"junk", sell:19, icon:iconFigurine},
     gearDrop:{name:"drone's stripped control wand of the Badger", desc:"Still beeps if you squeeze it just right.", type:"equip", slot:"weapon", bonus:{beef:3}, tier:'common', icon:iconVizierScepter} },
@@ -253,7 +253,7 @@ const monsters = [
     rareDrop:{name:"fist-sized nugget of pure stubbornness", desc:"Heavier than it should be. Refuses to be dropped.", type:"junk", sell:20, icon:iconFigurine},
     gearDrop:{name:"golem's chipped chest-plating of the Loon", desc:"Held together by spite, same as the rest of it.", type:"equip", slot:"chest", bonus:{hoodoo:3}, tier:'common', icon:iconClockworkPlate} },
    { name:"a rock-crusted quarry rat, huge for some reason", ...MONSTER_STATS["a rock-crusted quarry rat, huge for some reason"], zone:"quarry",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:3, healMax:5, flavor:"licks a wound closed, entirely unbothered" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"licks a wound closed, entirely unbothered" } ],
     art: artQuarryRat, loot:{name:"fistful of ore-flecked grit", desc:"Somewhere between dirt and treasure. Mostly dirt.", type:"junk", sell:4, icon:iconOreGrit},
     rareDrop:{name:"rat-gnawed lucky pebble (not a rabbit's foot)", desc:"The rat was very clear on that point, somehow.", type:"luck", hpValue:12, mpValue:6, icon:iconClover},
     gearDrop:{name:"ore-crusted quarry boots of the Badger", desc:"Better footing than they have any right to give.", type:"equip", slot:"boots", bonus:{beef:3}, tier:'common', icon:iconGripBoots} },
@@ -265,7 +265,7 @@ const monsters = [
     rareDrop:{name:"a work order that's actually finished", desc:"Every box checked. Nobody believes it.", type:"junk", sell:18, icon:iconFigurine},
     gearDrop:{name:"foreman's dented hard-hat of the Tortoise", desc:"Been shouted under more than it's ever been dropped on.", type:"equip", slot:"head", bonus:{grit:3}, tier:'common', icon:iconGuardHelm} },
    { name:"a stone-hauler gnome, built like the rocks it carries", ...MONSTER_STATS["a stone-hauler gnome, built like the rocks it carries"], zone:"quarry",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:3, healMax:5, flavor:"sets the boulder down and rolls its shoulders back into place" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"sets the boulder down and rolls its shoulders back into place" } ],
     art: artStoneHaulerGnome, loot:{name:"a fist-sized hauling stone", desc:"Could probably bench press this. Could not.", type:"junk", sell:4, icon:iconOreGrit},
     rareDrop:{name:"a stone that's suspiciously easy to lift", desc:"Should weigh a ton. Feels like a pebble.", type:"junk", sell:18, icon:iconFigurine},
     gearDrop:{name:"stone-hauler's braced chest-wrap of the Tortoise", desc:"Held together by sheer stubbornness and rope.", type:"equip", slot:"chest", bonus:{grit:3}, tier:'common', icon:iconPalaceForgedPlate} },
@@ -280,7 +280,7 @@ const monsters = [
     rareDrop:{name:"a charge that somehow never actually goes off", desc:"Still ticking, metaphorically. You're not opening it.", type:"junk", sell:19, icon:iconFigurine},
     gearDrop:{name:"blast-gnome's scorch-flecked vest of the Weasel", desc:"Survived more close calls than it should have.", type:"equip", slot:"chest", bonus:{zip:3}, tier:'common', icon:iconVest} },
    { name:"a tunnel-runner gnome, quick through narrow shafts", ...MONSTER_STATS["a tunnel-runner gnome, quick through narrow shafts"], zone:"quarry",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:3, healMax:4, flavor:"ducks into a side-shaft and comes back out steadier" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"ducks into a side-shaft and comes back out steadier" } ],
     art: artTunnelRunnerGnome, loot:{name:"a scrap of shaft-marking chalk", desc:"Marks a trail only the runner could follow.", type:"junk", sell:4, icon:iconSurveyMap},
     rareDrop:{name:"a chalk mark leading somewhere actually useful", desc:"For once, the trail goes somewhere worth going.", type:"junk", sell:17, icon:iconFigurine},
     gearDrop:{name:"runner's narrow-fit leggings of the Weasel", desc:"Tailored tight enough to clear the narrowest shaft.", type:"equip", slot:"legs", bonus:{zip:3}, tier:'common', icon:iconTrousers} },
@@ -295,7 +295,7 @@ const monsters = [
     rareDrop:{name:"a chisel that cuts stone like butter", desc:"Whatever it's made of, it isn't regular steel.", type:"junk", sell:18, icon:iconFigurine},
     gearDrop:{name:"chisel-gnome's own striking tool of the Weasel", desc:"Worn down to a fine, deadly point.", type:"equip", slot:"weapon", bonus:{zip:3}, tier:'common', icon:iconCardShank} },
    { name:"a quarry surveyor's apprentice gnome, reading maps upside down too", ...MONSTER_STATS["a quarry surveyor's apprentice gnome, reading maps upside down too"], zone:"quarry",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:3, healMax:4, flavor:"consults the upside-down map for medical advice, somehow correctly" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"consults the upside-down map for medical advice, somehow correctly" } ],
     art: artQuarrySurveyorApprentice, loot:{name:"a half-finished survey sketch", desc:"The proportions are all wrong. Confidently so.", type:"junk", sell:4, icon:iconSurveyMap},
     rareDrop:{name:"a survey sketch that's actually accurate", desc:"The apprentice got one right. Frame it.", type:"junk", sell:17, icon:iconFigurine},
     gearDrop:{name:"apprentice's own crooked cap of the Tortoise", desc:"Worn sideways. On purpose, probably.", type:"equip", slot:"head", bonus:{grit:3}, tier:'common', icon:iconCap} },
@@ -305,7 +305,7 @@ const monsters = [
     rareDrop:{name:"a divining rod that actually finds something", desc:"Pointed at a real vein, for once.", type:"junk", sell:18, icon:iconFigurine},
     gearDrop:{name:"diviner's twitch-worn leggings of the Tortoise", desc:"Scuffed from being yanked sideways, constantly.", type:"equip", slot:"legs", bonus:{grit:3}, tier:'common', icon:iconFeatherScale} },
    { name:"a tremor-sensing gnome, feeling the rock before it falls", ...MONSTER_STATS["a tremor-sensing gnome, feeling the rock before it falls"], zone:"quarry",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:3, healMax:4, flavor:"feels the tremor coming and braces before it lands" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"feels the tremor coming and braces before it lands" } ],
     art: artTremorSensingGnome, loot:{name:"a faintly vibrating pebble", desc:"Still humming from the last tremor.", type:"junk", sell:4, icon:iconOreGrit},
     rareDrop:{name:"a pebble that predicts the next tremor exactly", desc:"Would be more useful if anyone believed it.", type:"junk", sell:17, icon:iconFigurine},
     gearDrop:{name:"tremor-sensor's own grounded boots of the Tortoise", desc:"Feel every shake before it happens.", type:"equip", slot:"boots", bonus:{grit:3}, tier:'common', icon:iconWardedSlippers} },
@@ -325,7 +325,7 @@ const monsters = [
     rareDrop:{name:"the sentinel's other eye, still watching", desc:"You can feel it tracking you from the bottom of your pack.", type:"junk", sell:26, icon:iconFigurine},
     gearDrop:{name:"sentinel's cracked faceplate of the Loon", desc:"One eye socket. Still watching, faithfully.", type:"equip", slot:"head", bonus:{hoodoo:4}, tier:'common', icon:iconChampionCrown} },
    { name:"a hoard-rat, absolutely covered in gold flecks", ...MONSTER_STATS["a hoard-rat, absolutely covered in gold flecks"], zone:"vault",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:4, healMax:8, flavor:"burrows into its own hoard and comes back patched up" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"burrows into its own hoard and comes back patched up" } ],
     art: artHoardRat, loot:{name:"gold-dusted whisker", desc:"Rich by rat standards.", type:"junk", sell:6, icon:iconGoldWhisker},
     rareDrop:{name:"fistful of the hoard-rat's actual hoard", desc:"It was surprisingly well-organized, for a rat.", type:"junk", sell:28, icon:iconFigurine},
     gearDrop:{name:"gold-flecked greaves of the Badger", desc:"Surprisingly light, for how much they're worth.", type:"equip", slot:"legs", bonus:{beef:4}, tier:'common', icon:iconBurrowGreaves} },
@@ -342,12 +342,12 @@ const monsters = [
     rareDrop:{name:"a genuine gold nugget, somehow", desc:"The diver finally found real treasure. Shame it's yours now.", type:"junk", sell:24, icon:iconFigurine},
     gearDrop:{name:"diver's dented treasure-helm of the Tortoise", desc:"Dented from a hundred chest-lids slamming shut too early.", type:"equip", slot:"head", bonus:{grit:4}, tier:'common', icon:iconGuardHelm} },
    { name:"a gnome appraiser, squinting hard at everything", ...MONSTER_STATS["a gnome appraiser, squinting hard at everything"], zone:"vault",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:4, healMax:7, flavor:"appraises its own wound as \"not that bad, actually\"" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"appraises its own wound as \"not that bad, actually\"" } ],
     art: artAppraiserGnome, loot:{name:"a loupe, permanently fogged", desc:"Hasn't correctly appraised anything in years.", type:"junk", sell:6, icon:iconSentinelEye},
     rareDrop:{name:"an appraisal that's actually correct", desc:"For once, the number means something.", type:"junk", sell:24, icon:iconFigurine},
     gearDrop:{name:"appraiser's squint-worn spectacles of the Tortoise", desc:"Everything looks slightly more valuable through these.", type:"equip", slot:"head", bonus:{grit:4}, tier:'common', icon:iconChampionCrown} },
    { name:"a gnome coin-counter, buried under its own hoard", ...MONSTER_STATS["a gnome coin-counter, buried under its own hoard"], zone:"vault",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:4, healMax:7, flavor:"digs itself out of the coin pile, slightly richer and slightly better" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"digs itself out of the coin pile, slightly richer and slightly better" } ],
     art: artCoinCounterGnome, loot:{name:"a single counted coin", desc:"Counted eleven times already. Still counting.", type:"junk", sell:6, icon:iconGoldWhisker},
     rareDrop:{name:"a coin that counts itself", desc:"Saves the gnome a lot of effort. You're keeping it.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
     gearDrop:{name:"coin-counter's padded vest of the Badger", desc:"Lined with pockets. All of them full.", type:"equip", slot:"chest", bonus:{beef:4}, tier:'common', icon:iconVest} },
@@ -372,7 +372,7 @@ const monsters = [
     rareDrop:{name:"a lock-pick that opens absolutely anything", desc:"Doesn't fit most locks. Opens them anyway.", type:"junk", sell:23, icon:iconFigurine},
     gearDrop:{name:"lock-picker's silent boots of the Loon", desc:"Barely make a sound, even on loose gravel.", type:"equip", slot:"boots", bonus:{hoodoo:4}, tier:'common', icon:iconWardedSlippers} },
    { name:"a gnome vault-runner, racing the closing door", ...MONSTER_STATS["a gnome vault-runner, racing the closing door"], zone:"vault",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:4, healMax:7, flavor:"slides under the closing door and comes up breathless but fine" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"slides under the closing door and comes up breathless but fine" } ],
     art: artVaultRunnerGnome, loot:{name:"a scrap of door-seal gasket", desc:"Nearly didn't make it out with this one either.", type:"junk", sell:6, icon:iconPipeFitting},
     rareDrop:{name:"a stopwatch that's always exactly one second ahead", desc:"Explains a lot about how it keeps making it out.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
     gearDrop:{name:"vault-runner's own sprint boots of the Loon", desc:"Scorched slightly at the heels. Worth it, apparently.", type:"equip", slot:"boots", bonus:{hoodoo:4}, tier:'common', icon:iconMismatchedBoots} },
@@ -382,7 +382,7 @@ const monsters = [
     rareDrop:{name:"a relic that still remembers what it's for", desc:"Hums faintly, like it's waiting to be asked properly.", type:"junk", sell:25, icon:iconFigurine},
     gearDrop:{name:"relic-wielder's own misused scepter of the Badger", desc:"Was ceremonial, once. Isn't anymore.", type:"equip", slot:"weapon", bonus:{beef:4}, tier:'common', icon:iconThroneScepter} },
    { name:"a gnome echo-chaser, following sounds that aren't there", ...MONSTER_STATS["a gnome echo-chaser, following sounds that aren't there"], zone:"vault",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:4, healMax:7, flavor:"chases an echo of its own footsteps back to full health" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"chases an echo of its own footsteps back to full health" } ],
     art: artEchoChaserGnome, loot:{name:"a sound that doesn't match anything", desc:"You hear it sometimes. There's nothing there.", type:"junk", sell:6, icon:iconSentinelEye},
     rareDrop:{name:"an echo that's actually useful, for once", desc:"Tells you what's coming before it arrives.", type:"junk", sell:24, icon:iconFigurine},
     gearDrop:{name:"echo-chaser's own listening rod of the Weasel", desc:"Picks up footsteps from rooms that are empty.", type:"equip", slot:"weapon", bonus:{zip:4}, tier:'common', icon:iconHeirloomRod} },
@@ -397,7 +397,7 @@ const monsters = [
     rareDrop:{name:"vizier's uncanny hunch, bottled", desc:"It practically whispers good advice.", type:"luck", hpValue:18, mpValue:9, icon:iconClover},
     gearDrop:{name:"vizier's confiscated cane-wand of the Loon", desc:"Equal parts walking stick and unlicensed magic.", type:"equip", slot:"weapon", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconWandStick} },
    { name:"a heavily-armored gnome guard", ...MONSTER_STATS["a heavily-armored gnome guard"], zone:"garrison",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:9, healMax:16, flavor:"shrugs the dent out of its own armor" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"shrugs the dent out of its own armor" } ],
     art: artGnomeGuard, loot:{name:"dented guard-captain's shield-boss", desc:"Scratched from decades of very small, very serious duels.", type:"junk", sell:10, icon:iconShieldBoss},
     rareDrop:{name:"the guard-captain's ceremonial sash", desc:"Awarded for uninterrupted vigilance. Interrupted now.", type:"junk", sell:32, icon:iconFigurine},
     gearDrop:{name:"guard's dented vambrace-plating of the Badger", desc:"Decades of very small, very serious duels.", type:"equip", slot:"chest", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconClockworkPlate} },
@@ -421,7 +421,7 @@ const monsters = [
    alongside its boots/head) so a full clear of a district doesn't just
    hand back 3 copies of the same slot. */
    { name:"a gnome drill sergeant, all bark and boot-camp", ...MONSTER_STATS["a gnome drill sergeant, all bark and boot-camp"], zone:"garrison",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:8, healMax:15, flavor:"field-dresses the wound mid-shout, never missing a beat" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"field-dresses the wound mid-shout, never missing a beat" } ],
     art: artGnomeDrillSergeant, loot:{name:"sergeant's dog-eared drill roster", desc:"Every recruit's name, and a demerit next to most of them.", type:"junk", sell:9, icon:iconDrillRoster},
     rareDrop:{name:"the sergeant's secret medal stash, garrison edition", desc:"Every one of them self-awarded. Some things never change.", type:"junk", sell:31, icon:iconFigurine},
     gearDrop:{name:"sergeant's barked-order banner-lance of the Badger", desc:"Doubles as a pointer for yelling at recruits.", type:"equip", slot:"weapon", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconBannerLance} },
@@ -436,7 +436,7 @@ const monsters = [
     rareDrop:{name:"hex-weaver's stabilized spark, bottled", desc:"Finally behaving itself, for once.", type:"luck", hpValue:19, mpValue:10, icon:iconClover},
     gearDrop:{name:"apprentice's scorch-marked robe-plating of the Loon", desc:"Fire-proofed the hard way, one mistake at a time.", type:"equip", slot:"chest", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconScorchRobe} },
    { name:"a gnome familiar, three sizes too ambitious", ...MONSTER_STATS["a gnome familiar, three sizes too ambitious"], zone:"sanctum",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:7, healMax:12, flavor:"shrinks briefly, then reinflates good as new" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"shrinks briefly, then reinflates good as new" } ],
     art: artGnomeFamiliar, loot:{name:"familiar's shed feather-scale", desc:"Not quite a feather. Not quite a scale either.", type:"junk", sell:8, icon:iconFeatherScale},
     rareDrop:{name:"the familiar's uncanny premonition, bottled", desc:"It saw this coming. It always does.", type:"luck", hpValue:19, mpValue:9, icon:iconClover},
     gearDrop:{name:"familiar-warded slippers of the Badger", desc:"Land softer than they have any right to.", type:"equip", slot:"boots", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconWardedSlippers} },
@@ -451,7 +451,7 @@ const monsters = [
    they're tied to the class trial itself, per explicit correction.
    12 more Garrison regulars. */
    { name:"a gnome quartermaster, counting rations nobody will eat", ...MONSTER_STATS["a gnome quartermaster, counting rations nobody will eat"], zone:"garrison",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:8, healMax:15, flavor:"rations out a field dressing like it's counting every scrap" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"rations out a field dressing like it's counting every scrap" } ],
     art: artGnomeQuartermaster, loot:{name:"a mis-counted ration crate", desc:"Off by exactly one, every single time.", type:"junk", sell:9, icon:iconBiscuitTin},
     rareDrop:{name:"a ration crate that's actually counted right", desc:"The quartermaster seemed personally offended by this.", type:"junk", sell:31, icon:iconFigurine},
     gearDrop:{name:"quartermaster's dented helm of the Badger", desc:"Doubles as a mess tin in a pinch.", type:"equip", slot:"head", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconGuardHelm} },
@@ -471,7 +471,7 @@ const monsters = [
     rareDrop:{name:"a vantage map that's actually accurate", desc:"Shows every blind spot in the garrison. Useful, unsettling.", type:"junk", sell:31, icon:iconFigurine},
     gearDrop:{name:"scout-sergeant's low-profile cap of the Weasel", desc:"Built to not be noticed. Working, apparently.", type:"equip", slot:"head", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconCap} },
    { name:"a gnome supply-raider, light-fingered even in uniform", ...MONSTER_STATS["a gnome supply-raider, light-fingered even in uniform"], zone:"garrison",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:8, healMax:14, flavor:"palms a field dressing off its own belt before anyone notices" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"palms a field dressing off its own belt before anyone notices" } ],
     art: artGnomeSupplyRaider, loot:{name:"a pilfered supply tag", desc:"Belongs to somebody. Not you, not anymore.", type:"junk", sell:9, icon:iconCoinPurse},
     rareDrop:{name:"a full requisition slip, somehow signed off", desc:"Nobody's sure how the raider got the paperwork approved.", type:"junk", sell:30, icon:iconFigurine},
     gearDrop:{name:"supply-raider's padded vest of the Weasel", desc:"Lined with pockets, every one of them suspiciously full.", type:"equip", slot:"chest", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconVest} },
@@ -486,7 +486,7 @@ const monsters = [
     rareDrop:{name:"a practice blade that's somehow battle-ready", desc:"Shouldn't be this sharp. Is.", type:"junk", sell:34, icon:iconFigurine},
     gearDrop:{name:"blade-sergeant's own drilled edge of the Weasel", desc:"Honed the same way every single day for years.", type:"equip", slot:"weapon", bonus:{zip:6}, classRequired:'Card Shark', tier:'common', icon:iconAceBlade} },
    { name:"a gnome war-chaplain, muttering battlefield blessings", ...MONSTER_STATS["a gnome war-chaplain, muttering battlefield blessings"], zone:"garrison",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:8, healMax:15, flavor:"mutters a blessing over the wound, whether it needs one or not" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"mutters a blessing over the wound, whether it needs one or not" } ],
     art: artGnomeWarChaplain, loot:{name:"a dog-eared blessing script", desc:"Half the words are made up. Works anyway.", type:"junk", sell:9, icon:iconVizierLedger},
     rareDrop:{name:"a blessing that actually does something", desc:"You felt that one land. Somewhere.", type:"junk", sell:31, icon:iconFigurine},
     gearDrop:{name:"war-chaplain's battle-scuffed circlet of the Loon", desc:"Blessed so many times it's started to show.", type:"equip", slot:"head", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconChampionCrown} },
@@ -501,7 +501,7 @@ const monsters = [
     rareDrop:{name:"a warding sigil that's fully finished", desc:"Whatever it wards against, you'd rather not find out.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"rune-marked scout's chalk-dusted leggings of the Loon", desc:"Covered knee to ankle in half-finished symbols.", type:"equip", slot:"legs", bonus:{hoodoo:6}, classRequired:'Hexpert', tier:'common', icon:iconFeatherScale} },
    { name:"a gnome ward-walker, patrolling a line only it can see", ...MONSTER_STATS["a gnome ward-walker, patrolling a line only it can see"], zone:"garrison",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:8, healMax:15, flavor:"steps back over its own ward-line and the wound closes" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"steps back over its own ward-line and the wound closes" } ],
     art: artGnomeWardWalker, loot:{name:"a faint boot-print, warded", desc:"Marks a line you can't quite see either.", type:"junk", sell:9, icon:iconPotLid},
     rareDrop:{name:"a ward-line that's actually visible, briefly", desc:"You saw it flare, just once. Unsettling.", type:"junk", sell:31, icon:iconFigurine},
     gearDrop:{name:"ward-walker's silent-step boots of the Loon", desc:"Leave the ward-line undisturbed, somehow.", type:"equip", slot:"boots", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconWardedSlippers} },
@@ -517,7 +517,7 @@ const monsters = [
     rareDrop:{name:"a card that's somehow not marked", desc:"Honest, for once. Almost suspicious on its own.", type:"junk", sell:30, icon:iconFigurine},
     gearDrop:{name:"card-shill's dented bowler of the Badger", desc:"Worn at a rakish angle, permanently.", type:"equip", slot:"head", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconBottlecapHelmet} },
    { name:"a gnome fence, moving goods nobody asks about", ...MONSTER_STATS["a gnome fence, moving goods nobody asks about"], zone:"roguesden",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:8, healMax:15, flavor:"patches itself up with goods it was definitely not supposed to keep" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"patches itself up with goods it was definitely not supposed to keep" } ],
     art: artGnomeFence, loot:{name:"an unmarked, unlabeled crate lid", desc:"No telling what was in it. Nobody's asking.", type:"junk", sell:9, icon:iconCoatButton},
     rareDrop:{name:"a crate that's actually worth what it claims", desc:"Shockingly, exactly as described.", type:"junk", sell:31, icon:iconFigurine},
     gearDrop:{name:"fence's padded smuggler's vest of the Badger", desc:"Lined with compartments for things that shouldn't fit.", type:"equip", slot:"chest", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconVest} },
@@ -537,12 +537,12 @@ const monsters = [
     rareDrop:{name:"a knife that's never once been dropped", desc:"The juggler's whole reputation rides on this one.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"knife-juggler's own favorite blade of the Weasel", desc:"The one that never gets dropped. Ever.", type:"equip", slot:"weapon", bonus:{zip:6}, classRequired:'Card Shark', tier:'common', icon:iconCardShank} },
    { name:"a gnome shadow-broker, dealing in favors nobody can trace", ...MONSTER_STATS["a gnome shadow-broker, dealing in favors nobody can trace"], zone:"roguesden",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:7, healMax:13, flavor:"calls in a favor and comes out ahead, as always" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"calls in a favor and comes out ahead, as always" } ],
     art: artGnomeShadowBroker, loot:{name:"an untraceable IOU note", desc:"Owed to somebody. Collectible by nobody.", type:"junk", sell:9, icon:iconCoinPurse},
     rareDrop:{name:"an IOU that's actually collectible", desc:"This one's good. You could cash this in.", type:"luck", hpValue:20, mpValue:10, icon:iconClover},
     gearDrop:{name:"shadow-broker's own unmarked chest-wrap of the Weasel", desc:"Carries more hidden pockets than it looks like it should.", type:"equip", slot:"chest", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconVest} },
    { name:"a gnome séance-caller, half-scamming and half-sincere", ...MONSTER_STATS["a gnome séance-caller, half-scamming and half-sincere"], zone:"roguesden",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:7, healMax:13, flavor:"consults a spirit that's almost certainly made up, and it works anyway" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"consults a spirit that's almost certainly made up, and it works anyway" } ],
     art: artGnomeSeanceCaller, loot:{name:"a tarnished séance bell", desc:"Rings for a spirit that may or may not be listening.", type:"junk", sell:9, icon:iconMendCharm},
     rareDrop:{name:"a séance that actually summons something", desc:"Nobody, including the caller, expected that to work.", type:"junk", sell:30, icon:iconFigurine},
     gearDrop:{name:"séance-caller's draped mantle of the Loon", desc:"Smells like incense and a sincere lack of confidence.", type:"equip", slot:"chest", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconScorchRobe} },
@@ -563,7 +563,7 @@ const monsters = [
     rareDrop:{name:"a battle-focus crystal that's actually stable", desc:"Doesn't scorch the hand holding it. Rare, for this district.", type:"junk", sell:31, icon:iconFigurine},
     gearDrop:{name:"battle-mage's scorched helm of the Badger", desc:"Singed from the inside, more than once.", type:"equip", slot:"head", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconGuardHelm} },
    { name:"a gnome spell-smith, forging hexes instead of swords", ...MONSTER_STATS["a gnome spell-smith, forging hexes instead of swords"], zone:"sanctum",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:8, healMax:15, flavor:"forges the wound shut with the same hammer it uses on hexes" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"forges the wound shut with the same hammer it uses on hexes" } ],
     art: artGnomeSpellSmith, loot:{name:"a half-forged hex-blade", desc:"More spell than sword, at this stage.", type:"junk", sell:9, icon:iconRakeShank},
     rareDrop:{name:"a fully forged hex-blade, genuinely sharp", desc:"Finished this one properly. You can feel it humming.", type:"junk", sell:31, icon:iconFigurine},
     gearDrop:{name:"spell-smith's forge-scarred chest-plate of the Badger", desc:"Scarred from forging more hexes than swords.", type:"equip", slot:"chest", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconPalaceForgedPlate} },
@@ -583,7 +583,7 @@ const monsters = [
     rareDrop:{name:"a shard that shows something actually useful", desc:"You can see where this is going. Literally.", type:"junk", sell:30, icon:iconFigurine},
     gearDrop:{name:"scrying apprentice's mirrored cap of the Weasel", desc:"Catches your own reflection from every angle.", type:"equip", slot:"head", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconCap} },
    { name:"a gnome glyph-cutter, carving wards faster than you can read them", ...MONSTER_STATS["a gnome glyph-cutter, carving wards faster than you can read them"], zone:"sanctum",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:8, healMax:15, flavor:"carves a quick healing glyph straight into its own palm" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"carves a quick healing glyph straight into its own palm" } ],
     art: artGnomeGlyphCutter, loot:{name:"a half-carved warding glyph", desc:"The chisel slipped. It still mostly works.", type:"junk", sell:9, icon:iconRakeShank},
     rareDrop:{name:"a glyph that's cleanly, perfectly carved", desc:"No slip this time. You can tell the difference.", type:"junk", sell:31, icon:iconFigurine},
     gearDrop:{name:"glyph-cutter's chisel-worn vest of the Weasel", desc:"Covered in half-finished practice glyphs.", type:"equip", slot:"chest", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconVest} },
@@ -598,12 +598,12 @@ const monsters = [
     rareDrop:{name:"a spell-die that rolls fair, for once", desc:"Genuinely random. The trick-caster seemed disappointed.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"trick-caster's own sleight-of-hand blade of the Weasel", desc:"You never quite see where it comes from.", type:"equip", slot:"weapon", bonus:{zip:6}, classRequired:'Card Shark', tier:'common', icon:iconCardShank} },
    { name:"a gnome oracle-in-training, guessing right more than it should", ...MONSTER_STATS["a gnome oracle-in-training, guessing right more than it should"], zone:"sanctum",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:7, healMax:12, flavor:"guesses correctly which wound to tend first, again" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"guesses correctly which wound to tend first, again" } ],
     art: artGnomeOracleInTraining, loot:{name:"a half-right prophecy scrap", desc:"Got the important part wrong. Close otherwise.", type:"junk", sell:8, icon:iconLure},
     rareDrop:{name:"a prophecy that's exactly, fully right", desc:"The oracle's finally earning the title.", type:"junk", sell:29, icon:iconFigurine},
     gearDrop:{name:"oracle-in-training's uncertain boots of the Loon", desc:"Never quite sure which foot goes first. Works out anyway.", type:"equip", slot:"boots", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconWardedSlippers} },
    { name:"a gnome ley-tapper, siphoning power it doesn't fully control", ...MONSTER_STATS["a gnome ley-tapper, siphoning power it doesn't fully control"], zone:"sanctum",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:9, healMax:16, flavor:"taps the ley-line for just a moment and feels brand new" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"taps the ley-line for just a moment and feels brand new" } ],
     art: artGnomeLeyTapper, loot:{name:"a leaking ley-siphon", desc:"Humming. Dripping, somehow, with raw hoodoo.", type:"junk", sell:11, icon:iconCapturedLight},
     rareDrop:{name:"a ley-siphon that's actually sealed tight", desc:"No leak this time. You're not sure where it all went.", type:"junk", sell:34, icon:iconFigurine},
     gearDrop:{name:"ley-tapper's own siphoning rod of the Loon", desc:"Still faintly warm, humming with borrowed power.", type:"equip", slot:"legs", bonus:{hoodoo:6}, classRequired:'Hexpert', tier:'common', icon:iconFeatherScale} },
@@ -625,7 +625,7 @@ const monsters = [
     rareDrop:{name:"a die that rolls exactly what's needed", desc:"The cheater's own trick, finally working for you.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"fate-cheater's own loaded wand of the Loon", desc:"The odds were never fair. Now they're yours.", type:"equip", slot:"weapon", bonus:{hoodoo:6}, classRequired:'Hexpert', tier:'common', icon:iconWandStick} },
    { name:"a gnome spell-runner, delivering hexes door to door", ...MONSTER_STATS["a gnome spell-runner, delivering hexes door to door"], zone:"sanctum",
-    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healMin:8, healMax:15, flavor:"delivers itself a quick patch-job, same route as always" } ],
+    skills:[ { type:'heal', chance:TRASH_SKILL_CHANCE, healPercentMin:0.08, healPercentMax:0.12, flavor:"delivers itself a quick patch-job, same route as always" } ],
     art: artGnomeSpellRunner, loot:{name:"an undelivered hex-package", desc:"Addressed to somebody who moved away years ago.", type:"junk", sell:9, icon:iconBottledFury},
     rareDrop:{name:"a hex-package that actually reaches its address", desc:"First successful delivery in recorded memory.", type:"junk", sell:31, icon:iconFigurine},
     gearDrop:{name:"spell-runner's worn delivery boots of the Weasel", desc:"Scuffed from a route that never quite ends.", type:"equip", slot:"boots", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconSpringBoots} },
@@ -685,7 +685,7 @@ artGnomeKingsCaptain() (art.js, separate task) — referenced by name now
 so that task knows what to add. */
 const gnomeKingsCaptain = {
    name:"the gnome king's captain, left to guard the retreat", ...MONSTER_STATS["the gnome king's captain, left to guard the retreat"], rare:true, zone:"vault",
-   skills:[ { type:'heal', chance:0.20, healMin:10, healMax:16, flavor:"digs in and patches his wounds, buying the King more time" } ],
+   skills:[ { type:'heal', chance:0.20, healPercentMin:0.05, healPercentMax:0.07, flavor:"digs in and patches his wounds, buying the King more time" } ],
    art: artGnomeKingsCaptain, loot:null
 };
 const VAULT_CAPTAIN_SPAWN_CHANCE = 0.03; /* was 0.05 -- see COMMANDER_SPAWN_CHANCE's own comment above. */
@@ -756,7 +756,7 @@ const palaceGuard1 = {
 };
 const palaceGuard2 = {
    name:"the inner ward-keeper, humming with old wards", ...MONSTER_STATS["the inner ward-keeper, humming with old wards"], rare:true, zone:"palace",
-   skills:[ { type:'heal', chance:0.20, healMin:8, healMax:14, flavor:"leans on an old ward and stitches herself back together" } ],
+   skills:[ { type:'heal', chance:0.20, healPercentMin:0.05, healPercentMax:0.07, flavor:"leans on an old ward and stitches herself back together" } ],
    art: artPalaceGuard2, loot:null
 };
 const palaceGuard3 = {
@@ -854,7 +854,7 @@ buy Hex Bolt for 15 Pop Tabs and finish the job with it). */
 const hoodooChampion = {
    name:"a spirit summoned from the bottom of the pot", ...MONSTER_STATS["a spirit summoned from the bottom of the pot"], rare:true,
    skills:[
-      { type:'heal', chance:0.18, healMin:12, healMax:20, flavor:"mutters over its own embers and knits its wounds shut" },
+      { type:'heal', chance:0.18, healPercentMin:0.05, healPercentMax:0.07, flavor:"mutters over its own embers and knits its wounds shut" },
       { type:'buff', chance:0.12, buffMult:1.6, buffTurns:3, flavor:"traces a sigil in the air, crackling with borrowed power" },
       { type:'bolt', chance:0.25, boltMin:11, boltMax:17, flavor:"flings a crackling hex" }
    ],
@@ -1373,7 +1373,10 @@ formula, swapped stat). The only type that costs a turn: it's the one
 case where castSpell() still calls monsterRetaliate(), matching a
 physical Attack. Combat-only — no monster to target from the Character
 page, see castSpell()'s top-line gate.
-- 'heal'   — restores state.hp by `healValue`.
+- 'heal'   — restores state.hp by `healValue` (a flat amount) plus,
+when present, a fraction of state.maxHp (`healPercentOfMaxHp`/
+`healPercentPerSkillLevel`, stubbornrecovery only — see its own
+comment further down).
 - 'ward'   — grants a flat, persistent shield (state.shield).
 - 'buff'   — no immediate combat effect. Sets state.classBuffFightsLeft
 = CLASS_BUFF_FIGHTS (castSpell(), combat.js), which powers up that
@@ -1493,20 +1496,23 @@ const spells = [
    /* Act 2's own trainers (Garrison/Rogues' Den/Arcane Sanctum,
    Gnometropolis) — see the comment above spells[] for why these three
    and not another copy of an existing type. */
-   /* healScaleStat/healScalePerPoint/healScaleSkillPerLevel (read
-   generically by castSpell()'s 'heal' branch, combat.js) — same
-   playtested-balance fix as Shout's own shieldScaleStat comment above:
-   this heal used to be a flat 35 regardless of level, which a real
-   dungeon playtest found "functionally decorative" against a late-game
-   HP pool in the thousands, in contrast to Hexpert's Hoodoo-scaled
-   Warding Charm. Scales off Beef (same stat Shout now scales off) plus
-   classSkillLevel, mirroring ward's own hoodoo+skillLevel shape, so a
-   Meathead's own stat/skill investment keeps this heal relevant instead
-   of falling behind the game's own damage curve. Mending Charm
-   (Hexpert's own early, cheap heal) deliberately has neither field —
-   it stays flat; it's an Act 1 utility spell, not this class's late-game
-   sustain tool the way Stubborn Recovery is for Meathead. */
-   { id:'stubbornrecovery', name:'Stubborn Recovery', desc:"You refuse to go down like that. Grit your teeth, shake it off, and keep going.", type:'heal', healValue:35, mpCost:8, price:300, classRequired:'Meathead', learnLocation:'garrison', healScaleStat:'beef', healScalePerPoint:4, healScaleSkillPerLevel:15, icon: iconStubbornRecovery },
+   /* healPercentOfMaxHp/healPercentPerSkillLevel (read generically by
+   castSpell()'s 'heal' branch, combat.js) — this heal used to be a
+   flat 35 regardless of level, found "functionally decorative" against
+   a late-game HP pool in the thousands; the fix TRIED first (scaling
+   off Beef, Meathead's own stat, the same way Shout's shield does) per
+   explicit correction overcorrected the other way — Beef is an
+   unbounded offense stat with no relationship to this class's own HP
+   pool, so a heavily-invested Meathead could out-heal their own maxHp
+   in one cast. Scaling off maxHp itself instead (which Grit already
+   drives, recomputeMaxStats(), player-actions.js) fixes both problems
+   at once: the heal is ALWAYS a real fraction of whatever this
+   character's current HP pool actually is, at level 1 or level 50,
+   never decorative and never absurd. Mending Charm (Hexpert's own
+   early, cheap heal) deliberately has neither field — it stays flat;
+   it's an Act 1 utility spell, not this class's late-game sustain tool
+   the way Stubborn Recovery is for Meathead. */
+   { id:'stubbornrecovery', name:'Stubborn Recovery', desc:"You refuse to go down like that. Grit your teeth, shake it off, and keep going.", type:'heal', mpCost:8, price:300, classRequired:'Meathead', learnLocation:'garrison', healPercentOfMaxHp:0.18, healPercentPerSkillLevel:0.04, icon: iconStubbornRecovery },
    { id:'smokescreen', name:'Smoke Screen', desc:"Kick up a cloud of grit and vanish into it — your dodge goes way up for the rest of this fight, as long as you don't swing back. One attack and the cloud clears.", type:'evade', mpCost:20, price:300, classRequired:'Card Shark', learnLocation:'roguesden', icon: iconSmokeScreen },
    { id:'arcanelance', name:'Arcane Lance', desc:"No flourish, no misdirection — just a thin, precise lance of raw arcane force.", type:'damage', dmgMin:14, dmgMax:22, mpCost:8, price:350, classRequired:'Hexpert', learnLocation:'sanctum', icon: iconArcaneLance },
    /* Hexpert's SECOND Act 2 spell — added alongside Arcane Lance rather

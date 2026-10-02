@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 42, date: 'October 2', title: 'A Fair Fight', items: [
+      "Fix: monster self-heals now restore a real percentage of their own health instead of a flat number — a boss with thousands of HP will actually feel it when they patch themselves up.",
+      "Fix: Stubborn Recovery (Meathead) now heals a percentage of your own max HP instead of scaling off Beef — it was ballooning into a heal bigger than your entire health bar for a heavily-invested Meathead.",
+      ]},
    { id: 41, date: 'October 2', title: 'A Grudge Against the Living', items: [
       "New: a chunk of monsters across every zone and dungeon are now genuinely ethereal — tougher to hit with a plain Attack or a weapon swing, but a Hexpert's spells go through them completely untouched.",
       "Tip: if a fight feels like it's shrugging off your hits for no reason, that's hoodoo resistance at work — it only blocks physical damage, so magic is the clean counter.",

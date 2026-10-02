@@ -551,7 +551,15 @@ monster with its own skills[] needs no new dispatch code here unless it
 introduces an actual new type. */
 function useMonsterSkill(skill){
    if(skill.type==='heal'){
-      const healAmt = randInt(skill.healMin, skill.healMax);
+      /* healPercentMin/healPercentMax (content.js, every heal skill's own
+      flavor text carries one) -- a fraction of THIS monster's own
+      maxHp, not a hand-authored flat amount. A flat heal that looked
+      reasonable at the zone it was written for became meaningless once
+      a boss's own HP pool scaled past it (2000+ HP healing for a flat
+      30 was functionally a no-op) -- tying it to maxHp means the heal
+      is always a real chunk of this specific fight's health bar,
+      whatever that bar's size turns out to be. */
+      const healAmt = Math.max(1, Math.round((skill.healPercentMin + Math.random() * (skill.healPercentMax - skill.healPercentMin)) * state.monster.maxHp));
       const before = state.monster.hp;
       state.monster.hp = Math.min(state.monster.maxHp, state.monster.hp + healAmt);
       log(`${capitalize(state.monster.name)} ${skill.flavor}. (+${state.monster.hp-before} HP)`);
@@ -880,25 +888,26 @@ if(spell.type==='damage'){
    }
 } else if(spell.type==='heal'){
    /* SPELL_UPGRADE_MULTIPLIER (content.js) applies to whichever single
-   number IS that spell's own effect — for 'heal' that's healValue
-   itself. Same isSpellUpgraded() check reused across every branch
-   below rather than re-deriving state.spellsUpgraded.includes(spell.id)
-   each time.
+   number IS that spell's own effect — for 'heal' that's the final
+   computed amount. Same isSpellUpgraded() check reused across every
+   branch below rather than re-deriving
+   state.spellsUpgraded.includes(spell.id) each time.
 
-   healScaleStat/healScalePerPoint/healScaleSkillPerLevel (content.js,
-   stubbornrecovery only — absent/0 for mendcharm, so this is a no-op
-   for Hexpert's own early heal) — added after a live dungeon playtest
-   found Stubborn Recovery's flat healValue "functionally decorative"
-   against a late-game HP pool in the thousands, the exact gap that let
-   a geared-and-spelled Meathead still lose to Sunken Archive while the
-   Hoodoo-scaled Warding Charm kept Hexpert viable at the same dungeon.
-   Scaled the same two-part way ward scales below (a flat stat term plus
-   a classSkillLevel term) for the same reason: investment should keep
-   paying off instead of flattening out. */
-   const healScaleBonus = spell.healScaleStat
-      ? Math.round(statBonus(eff[spell.healScaleStat]) * (spell.healScalePerPoint || 0) + state.classSkillLevel * (spell.healScaleSkillPerLevel || 0))
-      : 0;
-   const healAmt = Math.round((spell.healValue + healScaleBonus) * (isSpellUpgraded(spell.id) ? SPELL_UPGRADE_MULTIPLIER : 1));
+   healPercentOfMaxHp/healPercentPerSkillLevel (content.js,
+   stubbornrecovery only — both absent/0 for mendcharm, so this term is
+   just 0 for Hexpert's own early heal, which falls back to its flat
+   healValue below) heal a FRACTION of state.maxHp instead of a flat
+   amount. First attempt at fixing Stubborn Recovery's flat healValue
+   being "functionally decorative" against a late-game HP pool in the
+   thousands scaled it off Beef instead — per explicit correction, that
+   overcorrected: Beef is an unbounded offense stat with no ceiling
+   tied to the player's own HP, so a heavily-invested Meathead could
+   heal for more than their entire max HP in one cast. Pegging it to
+   maxHp itself (Grit's own job, recomputeMaxStats(), player-actions.js)
+   means the heal is always a sane fraction of THIS character's current
+   HP pool, at any level, never decorative and never absurd. */
+   const healPercent = (spell.healPercentOfMaxHp || 0) + state.classSkillLevel * (spell.healPercentPerSkillLevel || 0);
+   const healAmt = Math.round(((spell.healValue || 0) + state.maxHp * healPercent) * (isSpellUpgraded(spell.id) ? SPELL_UPGRADE_MULTIPLIER : 1));
    const before = state.hp;
    state.hp = Math.min(state.maxHp, state.hp+healAmt);
    log(`You cast ${spell.name} and patch yourself up. (+${state.hp-before} HP)`);
