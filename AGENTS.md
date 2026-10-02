@@ -238,6 +238,18 @@ content.js (and every other monster-data file) — see index.html's own
 load-order comment for why (referenced by value at parse time, same
 requirement icons.js/art.js already have).
 
+**Zip is a real archetype axis now, not a default-0 afterthought** —
+per explicit correction, 138 of these 355 entries were converted to a
+real "evasive" archetype (meaningful zip, grit pulled down by roughly
+the same fraction as the resulting dodge chance, so it's not strictly
+safer to fight, just swingier) after a live player noticed almost
+nothing in the game actually used `zipDodgeAndAccuracy()`'s own
+already-symmetric dodge formula (combat.js) despite it driving both
+the player's AND a monster's dodge chance identically — see this
+file's own top comment for the full before/after numbers, the keyword-
+based selection rule, and the explicit "pick an archetype on purpose"
+instruction for any new monster added from here on.
+
 Touch this file when: rebalancing any monster or boss's beef/zip/
 grit/hoodoo/xp. Don't touch it for anything else about a monster
 (name, zone, skills, art, loot/rareDrop/gearDrop) — those still live

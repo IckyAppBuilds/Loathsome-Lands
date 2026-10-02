@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 39, date: 'October 2', title: 'Not Where You Last Saw It', items: [
+      "New: about 1 in 3 monsters across every zone and dungeon are now genuinely evasive — lower HP, but hard to pin down, instead of everything being a straightforward tank or a straightforward puncher.",
+      "Tip: if you keep whiffing on something, invest in Zip (stats, gear, or Card Shark's own kit) — dodge now cuts both ways between you and what you're fighting.",
+      ]},
    { id: 38, date: 'October 2', title: 'A Deeper Depths', items: [
       "Fix: the Prism Depths' 8 dungeons actually demand gear, spells, and potions now — Embercrypt through Sunken Archive were all beatable with plain Attacks and no preparation.",
       "New: Card Shark finally has a shield spell — Ace in the Hole, taught at the Casino, scales with your own Zip.",
