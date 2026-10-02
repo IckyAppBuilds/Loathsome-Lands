@@ -582,12 +582,16 @@ dungeons" rule) — **Echo Chapel** (sound/memory, a callback to the
 Warren's Ear's own Choir), **Sunken Archive** (knowledge/the Lucent's
 own history, the direct lead-in to the not-yet-built finale). Every
 dungeon shares the exact same shape: `<name>Regulars` (3), its own
-`rare:true` boss, and `<name>Treasure` (3 class-tagged items, one
-picked at random per clear — each carries 4 total stats, primary + 3
-secondaries at roughly two-thirds the primary value in STAT_ROTATION
-order, content.js — per explicit correction, an 'epic' guaranteed drop
-needs to beat a 'rare' random gearDrop roll's own 3-stat ceiling, not
-ship with just the bare primary stat). Each sets its own
+`rare:true` boss, and `<name>Treasure` (15 class-tagged items, one
+picked at random per clear — a full `SLOT_ORDER` row, core.js, for
+EACH of the 3 classes, per a later explicit request that a player be
+able to gear out an entire class end-to-end from one dungeon's own
+drops alone, not just a single slot. Each carries 4 total stats,
+primary + 3 secondaries at roughly two-thirds the primary value in
+STAT_ROTATION order, content.js — per the earlier explicit correction,
+an 'epic' guaranteed drop needs to beat a 'rare' random gearDrop roll's
+own 3-stat ceiling, not ship with just the bare primary stat). Each
+dungeon sets its own
 `ZONE_DIFFICULTY.<name>` entry (content.js) at parse time — a plain
 mutation of an already-initialized object, NOT a `const` declared
 before its own use (that ordering mistake already happened once this
