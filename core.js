@@ -286,6 +286,17 @@ function createDefaultState(){
         being saved either — this only ever matters mid-fight, and a
         reload never resumes mid-fight. */
      evasionActive: null,
+     /* Whichever spell id castSpell() (combat.js) most recently cast —
+        read by the Hexpert-exclusive Recast button (recastLastSpell(),
+        combat.js) so a Hexpert can repeat their last spell without
+        reopening the Use menu every turn. Not reset by endCombat(): a
+        Hexpert's favorite spell staying remembered into the NEXT fight
+        too is the point, unlike evasionActive/playerStatusEffect above
+        which are genuinely meaningless outside the fight they were set
+        in. Same not-saved reasoning as those two regardless — a reload
+        never resumes mid-fight, and remembering a spell across a login
+        gap isn't worth a save-field. */
+     lastSpellCast: null,
      /* A boss's own 'debuff' skill (useMonsterSkill(), combat.js) inflicts
         this instead of just attacking that turn -- null, or
         { type:'burn'|'poison'|'freeze', turnsLeft, dmgPerTurn, dmgReduction }.

@@ -692,6 +692,18 @@ function closeSpellMenu(){
    render();
 }
 
+/* The Hexpert-exclusive Recast button (recast-btn, index.html) — just
+re-calls castSpell() with whatever's remembered in state.lastSpellCast,
+so it gets every one of that function's own guards (spellsKnown/MP/
+classRequired/inCombat) for free instead of duplicating them here.
+recast-btn's own visibility (syncCombatUI(), render.js) already keeps
+this from being clickable with no spell remembered or not enough MP,
+but the guard stays here too since nothing stops a stray call. */
+function recastLastSpell(){
+   if(!state.lastSpellCast) return;
+   castSpell(state.lastSpellCast);
+}
+
 /* The in-combat half of item use — mirrors castSpell()'s damage-spell
 branch: costs the turn (one monsterRetaliate() call), same "once per
 turn" rule Attack/Use already enforce. useItem() (player-actions.js)
@@ -736,6 +748,11 @@ function castSpell(id){
    }
 
 state.mp -= spell.mpCost;
+   /* Recorded AFTER every guard above (spellsKnown/mpCost/classRequired)
+   has already passed, so lastSpellCast only ever holds something this
+   class can legally recast — see state.lastSpellCast's own comment
+   (core.js) and recastLastSpell() below. */
+   state.lastSpellCast = id;
    const eff = getEffectiveStats();
    combatSubView = 'main';
 

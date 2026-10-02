@@ -1238,7 +1238,17 @@ one flag, so it has to be an id to know which spell's flavor
 text/Level-2-upgrade-bonus actually applies; `playerDodgeChance()`
 reads it, `evasionFlavorNoun()` turns it into "the smoke"/"the
 illusion" for log lines, `isSpellUpgraded(id)` checks
-`state.spellsUpgraded`)/
+`state.spellsUpgraded`)/`recastLastSpell` (the Hexpert-exclusive Recast
+button, `recast-btn`/index.html — per explicit request, lets a Hexpert
+repeat `state.lastSpellCast` (core.js — whichever spell id `castSpell()`
+most recently set, recorded AFTER all its own guards pass) without
+reopening the Use menu every turn; just re-calls `castSpell(state.
+lastSpellCast)`, so it inherits every one of that function's guards for
+free rather than duplicating them. `recast-btn`'s own visibility/label/
+disabled state is computed in `syncCombatUI()` (render.js) — hidden
+unless `state.classTitle==='Hexpert'` AND something's actually
+remembered, disabled (not hidden) once MP drops below that spell's own
+`mpCost` so the button doesn't flicker in and out turn to turn)/
 `CLASS_SPELL_LOCATION`/`CLASS_SPELL_TRAINER`/`learnSpell` (a spell's
 own `learnLocation` — content.js's `spells[]` — overrides
 `CLASS_SPELL_LOCATION`'s default, letting the same class have spells

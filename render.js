@@ -1008,6 +1008,19 @@ function syncCombatUI(ctx){
     const hasUsableItem = state.inventory.some(it => ['hp','mp','luck'].includes(it.type));
     document.getElementById('use-btn').disabled = !hasDamageSpell && !hasBuffSpell && !hasUsableItem;
   }
+  /* Recast button — Hexpert-exclusive (per explicit request), only
+  shows once state.lastSpellCast actually holds something this fight
+  (set by castSpell(), combat.js). Mirrors use-btn's own disabled
+  reasoning: greyed out rather than hidden once a spell IS remembered
+  but can no longer be afforded, so the button doesn't flicker in and
+  out of existence turn to turn. */
+  const recastBtn = document.getElementById('recast-btn');
+  const recastSpell = state.classTitle==='Hexpert' && state.lastSpellCast ? spells.find(s=>s.id===state.lastSpellCast) : null;
+  recastBtn.style.display = (state.inCombat && combatSubView==='main' && recastSpell) ? '' : 'none';
+  if(recastSpell){
+    recastBtn.textContent = `Recast ${recastSpell.name}`;
+    recastBtn.disabled = state.mp < recastSpell.mpCost;
+  }
   /* Garrison/Rogues' Den/Arcane Sanctum only get the Adventure! loop
   (CLASS_AREA_ZONES, combat.js) before quest7Complete — once converted,
   class-area-row below takes over as their only navigation, since
