@@ -1372,7 +1372,16 @@ function renderDungeonBoard(){
     const statusText = inThisRun
       ? `In progress — stage ${activeDungeonRun.stage + 1}/${dungeonStageCount(id)}`
       : `Cleared ${clears}x`;
-    return `<div class="shop-item"><div style="flex:1;"><div class="name">${cfg.name}</div><div class="desc">${statusText} — costs ${cfg.biscuitCost} Biscuits</div></div><button class="btn-secondary ${canEnter?'btn-ready':''}" ${canEnter?'':'disabled'} onclick="enterDungeon('${id}')">${inThisRun ? 'In Progress' : 'Enter'}</button></div>`;
+    /* Same advisory "Recommended: Level X+" tag the Map drawer's own
+    zone cards show (ZONE_LEVEL_RECOMMENDATION, content.js) — purely
+    informational, doesn't gate enterDungeon() itself, just tells the
+    player up front roughly what level this dungeon (and the gear it
+    drops, whose own levelReqBase sits right at this same number) is
+    actually meant for, so they're not guessing the way a real player's
+    own report found themselves doing. */
+    const rec = ZONE_LEVEL_RECOMMENDATION[id];
+    const recText = rec ? ` <span style="color:${state.level >= rec.min ? 'var(--tan)' : 'var(--red)'};">(Recommended: Level ${rec.min}+)</span>` : '';
+    return `<div class="shop-item"><div style="flex:1;"><div class="name">${cfg.name}</div><div class="desc">${statusText} — costs ${cfg.biscuitCost} Biscuits${recText}</div></div><button class="btn-secondary ${canEnter?'btn-ready':''}" ${canEnter?'':'disabled'} onclick="enterDungeon('${id}')">${inThisRun ? 'In Progress' : 'Enter'}</button></div>`;
   }).join('');
   el.innerHTML = `<div class="block-title">Dungeon Board</div><div class="quest-desc">${state.prismShards} Prism Shard${state.prismShards===1?'':'s'}.</div>${rows}`;
 }

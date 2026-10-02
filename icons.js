@@ -314,6 +314,13 @@ function iconArcaneFocus(){
 function iconShout(){
      return iconWrap(`<path d="M18 20 Q30 8 42 20 L42 40 Q30 52 18 40 Z" fill="#b5453f"/><path d="M46 16 Q56 24 46 32" fill="none" stroke-width="3"/><path d="M48 10 Q62 24 48 38" fill="none" stroke-width="2.5"/>`);
 }
+/* Card Shark's own Ace in the Hole (spells[], content.js) — a 'ward'
+type shield, same shimmering-barrier circle iconWardCharm uses, with
+an ace card tucked inside instead of a plain dot, in the class's own
+magenta rather than Hexpert's blue. */
+function iconAceInTheHole(){
+     return iconWrap(`<circle cx="30" cy="30" r="18" fill="#b06a97"/><rect x="22" y="16" width="16" height="22" rx="2" fill="#f4efe4" transform="rotate(-6 30 27)"/><circle cx="29" cy="22" r="2" fill="#2b2b28" stroke="none"/>`);
+}
 
 /* Act 2's own class spells (content.js's spells[], learnLocation) — same
 fixed palette as the 3 above, one icon apiece so each reads as distinct

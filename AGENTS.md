@@ -398,7 +398,20 @@ the same two-part way `wardcharm` scales off Hoodoo below, deliberately
 reversing an earlier, explicit "keep Shout flat so Beef investment
 doesn't double-dip into healing too" design call that a real playtest
 showed was solving the wrong problem — see `shout`'s own comment,
-combat.js, for the full before/after reasoning), `SPELL_UPGRADE_
+combat.js, for the full before/after reasoning; `ward`'s own formula
+(`8 + statBonus(stat)*2 + classSkillLevel*10`) is likewise generalized
+— `wardScaleStat` defaults to `'hoodoo'`, so `wardcharm` is
+byte-for-byte unchanged, and the `classSkillLevel` bonus now applies
+whenever `state.classTitle===spell.classRequired` instead of being
+hardcoded to `'Hexpert'` specifically. This is what let Card Shark's
+own `aceinthehole` ("Ace in the Hole," Casino-taught, `wardScaleStat:
+'zip'`) reuse the identical mechanic scaled off Zip instead of Hoodoo
+— added because Card Shark was the only class with ZERO heal/shield
+spell at all (just `loadeddice`'s buff and `smokescreen`'s evade,
+neither of which mitigates a hit), a gap that predated tonight but
+only became a measured dungeon-clearing failure once the Prism Depths
+ladder above was correctly retuned against a realistic level/gear
+baseline), `SPELL_UPGRADE_
 MULTIPLIER`/`SPELL_UPGRADE_BASE_COST`/`SPELL_UPGRADE_COST_PER_MP`/
 `spellUpgradeCost(spell)` (Hexpert's Arcane-Sanctum-only "Level 2"
 spell upgrade, `state.spellsUpgraded`/`upgradeSpell()`, combat.js — a
@@ -642,12 +655,48 @@ dungeon sets its own
 `ZONE_DIFFICULTY.<name>` entry (content.js) at parse time — a plain
 mutation of an already-initialized object, NOT a `const` declared
 before its own use (that ordering mistake already happened once this
-session — see `TRASH_SKILL_CHANCE`'s own comment, content.js) —
-continuing the same ~14%-per-step ratio all the way from Crystal
-City's own 7.5 ceiling through all 8 dungeons: 8.6 -> 9.8 -> 11.2 ->
-12.8 -> 14.6 -> 16.6 -> 18.9 -> 21.5. Treasure primary-stat values
-climb the gearDrop ladder's own +1-per-dungeon the same way, +11
-through +18. Every Act 3 creature shares one "Lucent-made"
+session — see `TRASH_SKILL_CHANCE`'s own comment, content.js).
+
+**RETUNED once already** — per a real player's own direct report
+(level 19, no issue clearing Embercrypt, its own gear several levels
+out of reach), the original ladder (a flat continuation of Crystal
+City's own ~14%-per-step ratio: 8.6 -> 9.8 -> 11.2 -> 12.8 -> 14.6 ->
+16.6 -> 18.9 -> 21.5) was verified LIVE (Playwright, forced RNG, a
+realistic "walked in with Act 2's own best shop gear, no dungeon loot
+yet, no spells/potions used" loadout) to let a bare-Attack Meathead
+clear comfortably at every single dungeon's own intended level — the
+opposite of what a dungeon is supposed to demand. Current ladder: 15.5
+-> 16.8 -> 18.2 -> 19.7 -> 21.3 -> 23.0 -> 24.9 -> 26.9, each value
+independently verified the same way across at least one melee class
+and Hexpert: a bare/no-resources run loses essentially every time at
+that dungeon's own `ZONE_LEVEL_RECOMMENDATION` min (content.js — now
+20/22/24/26/28/30/32/34, pulled down 2 levels per dungeon from the old
+raw-gearDrop-derived 22-36 to match where a character's level actually
+lands by the time they reach the Prism Depths, not an abstract
+"+1-gearDrop-per-dungeon" continuation), while a properly-geared-and-
+spelled run (that dungeon's own treasure + every known spell +
+potions) clears with real but survivable risk (roughly 20-85% HP
+remaining, never a guaranteed stomp either direction). Monster beef/
+grit stats themselves are UNCHANGED from their original authoring —
+only the multiplier and the level anchors moved. The ladder is no
+longer a clean fixed-percent-per-step sequence (a uniform multiplier
+would have either left the early dungeons just as trivial or pushed
+the already-tight late dungeons, Ironloom/Sunken Archive, back past
+their own ceiling for the weaker-sustain classes — see Card Shark's
+own `aceinthehole` spell, content.js, for the other half of that
+fix) — each value is independently calibrated, not derived from a
+formula, and should be re-verified the same way (not just bumped by a
+flat ratio) if touched again.
+
+Treasure primary-stat values still climb the gearDrop ladder's own
++1-per-dungeon, +11 through +18, UNCHANGED — only each item's own
+`levelReqBase` (120 items, 15 per dungeon — see `getGearRequirements()`'s
+own comment, item-tiers.js, for what this field overrides) moved,
+from the raw `primaryStat` down to `primaryStat - 1`, so the gear's
+EQUIP level requirement (`primaryStat*2`, or now `levelReqBase*2`)
+lines up with the same 2-level-lower `ZONE_LEVEL_RECOMMENDATION` floor
+above instead of sitting 2 levels past it. Every Act 3 creature shares
+one "Lucent-made"
 angular/faceted visual family (same vocabulary Crystal City's own
 monsters introduced, art.js), never the gnome/mole silhouettes — each
 dungeon just varies the palette for its own theme (ember red/orange,

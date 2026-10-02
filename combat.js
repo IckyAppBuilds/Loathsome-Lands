@@ -871,11 +871,17 @@ if(spell.type==='damage'){
    log(`You cast ${spell.name} and patch yourself up. (+${state.hp-before} HP)`);
 } else if(spell.type==='ward'){
    /* Grants a persistent shield (applyDamageToPlayer(), above) instead of
-   just softening this one retaliation — Hoodoo-scaled, boosted further
-   by classSkillLevel for a Hexpert (same lever that boosts their spell-
-   damage bonus). Stacks on repeat casts; only spent when something
-   actually hits. */
-   let shieldAmount = 8 + statBonus(eff.hoodoo)*2 + (state.classTitle==='Hexpert' ? state.classSkillLevel*10 : 0);
+   just softening this one retaliation — scaled off whichever stat this
+   spell's own wardScaleStat names (content.js; defaults to Hoodoo, so
+   Warding Charm's original formula is unchanged), boosted further by
+   classSkillLevel for whichever class actually owns this spell (that
+   class's own skill-investment lever, same as every other class-skill
+   bonus) rather than hardcoded to Hexpert specifically — generalized
+   so Card Shark's own Ace in the Hole (wardScaleStat:'zip') gets the
+   identical treatment Warding Charm always has. Stacks on repeat
+   casts; only spent when something actually hits. */
+   const wardStat = spell.wardScaleStat || 'hoodoo';
+   let shieldAmount = 8 + statBonus(eff[wardStat])*2 + (state.classTitle===spell.classRequired ? state.classSkillLevel*10 : 0);
    if(isSpellUpgraded(spell.id)) shieldAmount = Math.round(shieldAmount * SPELL_UPGRADE_MULTIPLIER);
    state.shield += shieldAmount;
    log(`You cast ${spell.name} — a shimmering barrier settles over you. (+${shieldAmount} Shield)`);

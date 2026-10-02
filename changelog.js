@@ -11,6 +11,12 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 38, date: 'October 2', title: 'A Deeper Depths', items: [
+      "Fix: the Prism Depths' 8 dungeons actually demand gear, spells, and potions now — Embercrypt through Sunken Archive were all beatable with plain Attacks and no preparation.",
+      "New: Card Shark finally has a shield spell — Ace in the Hole, taught at the Casino, scales with your own Zip.",
+      "Fix: every dungeon's own gear is now equippable close to the level you actually clear it at, instead of several levels further out.",
+      "New: the Dungeon Board now shows a recommended level for every dungeon.",
+      ]},
    { id: 37, date: 'October 2', title: 'Grit Your Teeth', items: [
       "Fix: Meathead's Shout and Stubborn Recovery now scale with your own Beef instead of staying flat forever — both stay genuinely useful at high levels instead of trailing off into nothing.",
       ]},

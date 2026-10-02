@@ -1016,8 +1016,27 @@ const ZONE_LEVEL_RECOMMENDATION = {
    emberwarren: { min:18 },
    /* A stub zone (deliberately just one leaf, no districts of its own
    yet) — same "guessed, not simulated" caveat as emberwarren's own
-   entry above, continuing the same +2ish-per-step pattern. */
-   crystalcity: { min:24 },
+   entry above. Corrected from an earlier guess of 24 down to 19 —
+   per a real player's own direct report, level 19 is exactly where
+   Crystal City/the Prism Depths are actually reached in practice, not
+   24; see embercrypt's own min below for the same correction applied
+   to the dungeon ladder right past this zone. */
+   crystalcity: { min:19 },
+   /* The Prism Depths' 8 dungeons (dungeon.js's own DUNGEONS registry)
+   — simulated the same way ZONE_DIFFICULTY itself was retuned (see
+   prismdepths-content.js's own embercrypt comment for the full
+   methodology): each min is the level a live playtest found actually
+   requires using spells/potions/this-tier gear to clear, not merely
+   the level a bare-Attack run happens to survive. +2 per dungeon,
+   matching the ladder's own escalation. */
+   embercrypt: { min:20 },
+   frostvault: { min:22 },
+   stormreach: { min:24 },
+   verdanthollow: { min:26 },
+   duskward: { min:28 },
+   ironloom: { min:30 },
+   echochapel: { min:32 },
+   sunkenarchive: { min:34 },
 };
 
 /* Chance, per kill, that a monster's own rareDrop (defined per entry in
@@ -1456,6 +1475,20 @@ const spells = [
    { id:'shout', name:'Shout', desc:"A bone-rattling battle cry that braces for impact instead of attacking — throws up a small shield.", type:'shout', mpCost:3, price:12, classRequired:'Meathead', shieldScaleStat:'beef', shieldScalePerPoint:3, icon: iconShout },
    { id:'adrenalinerush', name:'Adrenaline Rush', desc:"Floods your muscles with borrowed strength — hits harder than usual for your next few fights, not just this one.", type:'buff', mpCost:10, price:250, classRequired:'Meathead', icon: iconAdrenalineRush },
    { id:'loadeddice', name:'Loaded Dice', desc:"Tips the odds your way for a while — your opening strike is guaranteed to catch the next few fights' targets off guard.", type:'buff', mpCost:10, price:250, classRequired:'Card Shark', icon: iconLoadedDice },
+   /* Per a live dungeon playtest: Card Shark was the only class with
+   ZERO heal/shield spell at all (just Loaded Dice's buff and Smoke
+   Screen's evade, neither of which actually mitigates a hit the way
+   Meathead's Shout/Stubborn Recovery or Hexpert's Warding Charm/
+   Mending Charm do) — every other class had 2 Act 1 utility spells,
+   Card Shark had exactly 1. That gap was already real before tonight
+   (Meathead/Hexpert both had it from the start); it only became an
+   actual, measured loss (not just a theoretical gap) once dungeon
+   difficulty was retuned against a realistic level/gear baseline.
+   wardScaleStat:'zip' reuses castSpell()'s own 'ward' branch
+   (generalized below, combat.js) — same shape Warding Charm already
+   has, just scaled off Card Shark's own primary stat instead of
+   Hoodoo. */
+   { id:'aceinthehole', name:'Ace in the Hole', desc:"You've still got one more trick up your sleeve — throws up a shimmering barrier before anything can land.", type:'ward', mpCost:3, price:12, classRequired:'Card Shark', wardScaleStat:'zip', icon: iconAceInTheHole },
    { id:'arcanefocus', name:'Arcane Focus', desc:"Sharpens your Hoodoo to a fine point for a while — your spells bite harder for the next few fights.", type:'buff', mpCost:10, price:250, classRequired:'Hexpert', icon: iconArcaneFocus },
    /* Act 2's own trainers (Garrison/Rogues' Den/Arcane Sanctum,
    Gnometropolis) — see the comment above spells[] for why these three
