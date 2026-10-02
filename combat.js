@@ -850,8 +850,22 @@ if(spell.type==='damage'){
    number IS that spell's own effect — for 'heal' that's healValue
    itself. Same isSpellUpgraded() check reused across every branch
    below rather than re-deriving state.spellsUpgraded.includes(spell.id)
-   each time. */
-   const healAmt = Math.round(spell.healValue * (isSpellUpgraded(spell.id) ? SPELL_UPGRADE_MULTIPLIER : 1));
+   each time.
+
+   healScaleStat/healScalePerPoint/healScaleSkillPerLevel (content.js,
+   stubbornrecovery only — absent/0 for mendcharm, so this is a no-op
+   for Hexpert's own early heal) — added after a live dungeon playtest
+   found Stubborn Recovery's flat healValue "functionally decorative"
+   against a late-game HP pool in the thousands, the exact gap that let
+   a geared-and-spelled Meathead still lose to Sunken Archive while the
+   Hoodoo-scaled Warding Charm kept Hexpert viable at the same dungeon.
+   Scaled the same two-part way ward scales below (a flat stat term plus
+   a classSkillLevel term) for the same reason: investment should keep
+   paying off instead of flattening out. */
+   const healScaleBonus = spell.healScaleStat
+      ? Math.round(statBonus(eff[spell.healScaleStat]) * (spell.healScalePerPoint || 0) + state.classSkillLevel * (spell.healScaleSkillPerLevel || 0))
+      : 0;
+   const healAmt = Math.round((spell.healValue + healScaleBonus) * (isSpellUpgraded(spell.id) ? SPELL_UPGRADE_MULTIPLIER : 1));
    const before = state.hp;
    state.hp = Math.min(state.maxHp, state.hp+healAmt);
    log(`You cast ${spell.name} and patch yourself up. (+${state.hp-before} HP)`);
@@ -874,15 +888,23 @@ if(spell.type==='damage'){
    state.classBuffFightsLeft = buffFights;
    log(`You cast ${spell.name} — the next ${buffFights} fights are yours.`);
 } else if(spell.type==='shout'){
-   /* Meathead-exclusive — a small, mostly-flat shield, NOT scaled off
-   statBonus(beef) the way 'ward' scales off Hoodoo. Beef is this class's
-   primary combat stat already (playerAttack()'s own damage formula), so
-   scaling the shield off it too double-dipped the exact same investment
-   into a second, unrelated payoff — at high Beef the shield ballooned
-   into effective invincibility instead of the small "braces for impact"
-   utility it's meant to be. classSkillLevel still grows it a little,
-   same lever that grows MEATHEAD_DAMAGE_BONUS, just capped small. */
-   const shieldAmount = 5 + state.classSkillLevel*3;
+   /* Meathead-exclusive. Used to be deliberately flat (just
+   classSkillLevel*3) on the theory that scaling it off Beef too would
+   "double-dip" the same investment playerAttack()'s own damage formula
+   already rewards and balloon into effective invincibility — but a
+   live dungeon playtest found the opposite actually happened in
+   practice: late-game hits (200-400+ after mitigation against a
+   ~1400 HP pool) made this flat shield decorative, while Hexpert's
+   Hoodoo-scaled Warding Charm stayed relevant at the same level,
+   leaving a fully-geared-and-spelled Meathead still unable to clear
+   Sunken Archive. shieldScaleStat/shieldScalePerPoint (content.js) now
+   scale it off Beef the same two-part way ward scales off Hoodoo below
+   — a flat stat term plus the existing classSkillLevel term — tuned
+   small enough (coefficient 3, vs. ward's 2 off a typically-larger
+   Hoodoo investment) that it stays a "braces for impact" supplement to
+   gear/potions, not a replacement for them. */
+   const shieldScaleBonus = spell.shieldScaleStat ? statBonus(eff[spell.shieldScaleStat]) * (spell.shieldScalePerPoint || 0) : 0;
+   const shieldAmount = 5 + state.classSkillLevel*3 + shieldScaleBonus;
    state.shield += shieldAmount;
    log(`You let out a bone-rattling shout, bracing for whatever's coming. (+${shieldAmount} Shield)`);
 } else if(spell.type==='evade'){

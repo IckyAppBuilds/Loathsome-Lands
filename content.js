@@ -1444,14 +1444,36 @@ const spells = [
    { id:'mendcharm', name:'Mending Charm', desc:'Patches you up with muttered nonsense and surprising effectiveness.', type:'heal', healValue:10, mpCost:4, price:15, classRequired:'Hexpert', icon: iconMendCharm },
    { id:'wardcharm', name:'Warding Charm', desc:"Throws up a shimmering barrier that soaks up damage before it reaches you. Stacks if you're already shielded.", type:'ward', mpCost:3, price:12, classRequired:'Hexpert', icon: iconWardCharm },
    { id:'bottledfury', name:'Bottled Fury', desc:'Everything the potion ingredients were trying to tell you, unleashed at once.', type:'damage', mpCost:6, dmgMin:9, dmgMax:16, questReward:true, icon: iconBottledFury },
-   { id:'shout', name:'Shout', desc:"A bone-rattling battle cry that braces for impact instead of attacking — throws up a small shield.", type:'shout', mpCost:3, price:12, classRequired:'Meathead', icon: iconShout },
+   /* shieldScaleStat/shieldScalePerPoint (read generically by castSpell()'s
+   'shout' branch, combat.js) — added per a playtested balance finding:
+   this shield used to be a near-flat 5 + classSkillLevel*3 (max 14),
+   decorative against a late-game hit that can run 200-400+ after
+   mitigation, while Hexpert's own Warding Charm ('ward' type) already
+   scaled with Hoodoo and stayed relevant at any level. Scales off Beef
+   (Meathead's own defining stat) the same way ward scales off Hoodoo,
+   so investing in the class's main stat keeps this tool useful instead
+   of falling behind the game's own damage curve. */
+   { id:'shout', name:'Shout', desc:"A bone-rattling battle cry that braces for impact instead of attacking — throws up a small shield.", type:'shout', mpCost:3, price:12, classRequired:'Meathead', shieldScaleStat:'beef', shieldScalePerPoint:3, icon: iconShout },
    { id:'adrenalinerush', name:'Adrenaline Rush', desc:"Floods your muscles with borrowed strength — hits harder than usual for your next few fights, not just this one.", type:'buff', mpCost:10, price:250, classRequired:'Meathead', icon: iconAdrenalineRush },
    { id:'loadeddice', name:'Loaded Dice', desc:"Tips the odds your way for a while — your opening strike is guaranteed to catch the next few fights' targets off guard.", type:'buff', mpCost:10, price:250, classRequired:'Card Shark', icon: iconLoadedDice },
    { id:'arcanefocus', name:'Arcane Focus', desc:"Sharpens your Hoodoo to a fine point for a while — your spells bite harder for the next few fights.", type:'buff', mpCost:10, price:250, classRequired:'Hexpert', icon: iconArcaneFocus },
    /* Act 2's own trainers (Garrison/Rogues' Den/Arcane Sanctum,
    Gnometropolis) — see the comment above spells[] for why these three
    and not another copy of an existing type. */
-   { id:'stubbornrecovery', name:'Stubborn Recovery', desc:"You refuse to go down like that. Grit your teeth, shake it off, and keep going.", type:'heal', healValue:35, mpCost:8, price:300, classRequired:'Meathead', learnLocation:'garrison', icon: iconStubbornRecovery },
+   /* healScaleStat/healScalePerPoint/healScaleSkillPerLevel (read
+   generically by castSpell()'s 'heal' branch, combat.js) — same
+   playtested-balance fix as Shout's own shieldScaleStat comment above:
+   this heal used to be a flat 35 regardless of level, which a real
+   dungeon playtest found "functionally decorative" against a late-game
+   HP pool in the thousands, in contrast to Hexpert's Hoodoo-scaled
+   Warding Charm. Scales off Beef (same stat Shout now scales off) plus
+   classSkillLevel, mirroring ward's own hoodoo+skillLevel shape, so a
+   Meathead's own stat/skill investment keeps this heal relevant instead
+   of falling behind the game's own damage curve. Mending Charm
+   (Hexpert's own early, cheap heal) deliberately has neither field —
+   it stays flat; it's an Act 1 utility spell, not this class's late-game
+   sustain tool the way Stubborn Recovery is for Meathead. */
+   { id:'stubbornrecovery', name:'Stubborn Recovery', desc:"You refuse to go down like that. Grit your teeth, shake it off, and keep going.", type:'heal', healValue:35, mpCost:8, price:300, classRequired:'Meathead', learnLocation:'garrison', healScaleStat:'beef', healScalePerPoint:4, healScaleSkillPerLevel:15, icon: iconStubbornRecovery },
    { id:'smokescreen', name:'Smoke Screen', desc:"Kick up a cloud of grit and vanish into it — your dodge goes way up for the rest of this fight, as long as you don't swing back. One attack and the cloud clears.", type:'evade', mpCost:20, price:300, classRequired:'Card Shark', learnLocation:'roguesden', icon: iconSmokeScreen },
    { id:'arcanelance', name:'Arcane Lance', desc:"No flourish, no misdirection — just a thin, precise lance of raw arcane force.", type:'damage', dmgMin:14, dmgMax:22, mpCost:8, price:350, classRequired:'Hexpert', learnLocation:'sanctum', icon: iconArcaneLance },
    /* Hexpert's SECOND Act 2 spell — added alongside Arcane Lance rather

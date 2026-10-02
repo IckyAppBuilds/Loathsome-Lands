@@ -11,6 +11,9 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 37, date: 'October 2', title: 'Grit Your Teeth', items: [
+      "Fix: Meathead's Shout and Stubborn Recovery now scale with your own Beef instead of staying flat forever — both stay genuinely useful at high levels instead of trailing off into nothing.",
+      ]},
    { id: 36, date: 'October 1', title: 'A Longer Way Down', items: [
       "New: every Prism Depths dungeon is now at least 11 fights long — trash mobs and 2 miniboss-tier encounters on the way to the final boss, instead of just 3 fights and done.",
       "New: every dungeon now has a rest stop partway through — a chance to fully restore HP and MP before pushing on to the back half.",

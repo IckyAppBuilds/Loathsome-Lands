@@ -381,7 +381,24 @@ only class with two Act 2 spells, `arcanelance` (damage) and
 `illusion` (evade, added alongside it by explicit request rather than
 replacing it — Meathead/Card Shark still get exactly one Act 2 spell
 each) — `illusion` shares Card Shark's `smokescreen` mechanic exactly,
-via the shared `state.evasionActive` flag, combat.js), `SPELL_UPGRADE_
+via the shared `state.evasionActive` flag, combat.js. `shout`
+(Meathead)/`heal` (`stubbornrecovery` specifically, NOT
+`mendcharm`/Hexpert's own early heal) can carry optional
+`shieldScaleStat`+`shieldScalePerPoint`/`healScaleStat`+
+`healScalePerPoint`+`healScaleSkillPerLevel` fields — read generically
+by `castSpell()`'s own `'shout'`/`'heal'` branches (combat.js), absent
+= 0 bonus = the original flat behavior, so `mendcharm` is untouched.
+Added after a live dungeon playtest (Act 3's Prism Depths) found
+Stubborn Recovery/Shout's flat numbers "functionally decorative"
+against a late-game HP pool in the thousands — the exact gap that let
+a fully-geared-and-spelled Meathead still lose to the Sunken Archive
+while Hoodoo-scaled `wardcharm` kept Hexpert viable at the same
+dungeon/level. Scaled off each spell's own class's primary stat (Beef)
+the same two-part way `wardcharm` scales off Hoodoo below, deliberately
+reversing an earlier, explicit "keep Shout flat so Beef investment
+doesn't double-dip into healing too" design call that a real playtest
+showed was solving the wrong problem — see `shout`'s own comment,
+combat.js, for the full before/after reasoning), `SPELL_UPGRADE_
 MULTIPLIER`/`SPELL_UPGRADE_BASE_COST`/`SPELL_UPGRADE_COST_PER_MP`/
 `spellUpgradeCost(spell)` (Hexpert's Arcane-Sanctum-only "Level 2"
 spell upgrade, `state.spellsUpgraded`/`upgradeSpell()`, combat.js — a
