@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 43, date: 'October 2', title: 'Early Days, Evened Out', items: [
+      "Fix: Card Shark's basic Attack now actually scales off Zip instead of Beef — it was quietly using the wrong stat this whole time, which made Card Shark fall badly behind the other two classes as the game went on.",
+      "Fix: monsters in the Overgrown Commons through the Garrison/Rogues' Den/Arcane Sanctum were dying in well under one hit — those zones never got the difficulty pass every later zone already has. They're a real fight now.",
+      ]},
    { id: 42, date: 'October 2', title: 'A Fair Fight', items: [
       "Fix: monster self-heals now restore a real percentage of their own health instead of a flat number — a boss with thousands of HP will actually feel it when they patch themselves up.",
       "Fix: Stubborn Recovery (Meathead) now heals a percentage of your own max HP instead of scaling off Beef — it was ballooning into a heal bigger than your entire health bar for a heavily-invested Meathead.",

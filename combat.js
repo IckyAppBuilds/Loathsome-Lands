@@ -592,6 +592,18 @@ function useMonsterSkill(skill){
    }
 }
 
+/* Which stat drives playerAttack()'s own base damage roll, per class --
+previously hardcoded to Beef for every class, a leftover from before
+Card Shark/Hexpert existed. That left Card Shark's own basic Attack
+scaling off a stat it barely invests in (Zip only ever drove dodge/
+sneak-attack/double-attack, never damage) while Meathead's identical
+Attack scaled off its own primary stat just fine -- a live audit found
+Card Shark needing ~13 hits to kill a Crystal City monster where
+Meathead needed ~1, at the same level with equivalent gear. No entry
+(state.classTitle null, e.g. before a class is chosen) falls back to
+'beef', matching the original behavior exactly. */
+const CLASS_ATTACK_STAT = { 'Meathead':'beef', 'Card Shark':'zip', 'Hexpert':'hoodoo' };
+
 function playerAttack(){
    if(!state.inCombat) return;
    /* The active evade spell (castSpell()'s 'evade' branch) breaks the
@@ -635,7 +647,7 @@ function playerAttack(){
       return;
    }
 
-   let dmg = randInt(3,7) + (state.level-1) + statBonus(eff.beef);
+   let dmg = randInt(3,7) + (state.level-1) + statBonus(eff[CLASS_ATTACK_STAT[state.classTitle] || 'beef']);
    /* Freeze's own dmgMult (applyPlayerStatusEffectForTurn() above) saps
    this base roll before any class bonus multiplies it further, same
    ordering as every other per-turn modifier here. */
@@ -699,7 +711,7 @@ function playerAttack(){
    line below, gating on the FIRST swing's sneak-attack/stagger rolls
    only, same "landing it denies retaliation" rule as before. */
    if(state.classTitle === 'Card Shark' && Math.random() < CARD_SHARK_DOUBLE_ATTACK_CHANCE[state.classSkillLevel]){
-      const dmg2 = Math.round((randInt(3,7) + (state.level-1) + statBonus(eff.beef)) * statusFx.dmgMult);
+      const dmg2 = Math.round((randInt(3,7) + (state.level-1) + statBonus(eff[CLASS_ATTACK_STAT[state.classTitle] || 'beef'])) * statusFx.dmgMult);
       const { dodged: dodged2, dealt: dealt2 } = applyDamageToMonster(dmg2, false, false);
       if(dodged2){
          log(`Quick as a card trick, you come back around for a second swing with ${weaponName} — ${state.monster.name} slips out of the way again.`);

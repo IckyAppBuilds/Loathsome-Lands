@@ -87,7 +87,7 @@ const monsters = [
     rareDrop:{name:"stake-shaped good luck charm", desc:"Whittled by whoever this gnome escaped from.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
     gearDrop:{name:"stake-notched shin guard of the Weasel", desc:"Salvaged off the stake it was chained to.", type:"equip", slot:"legs", bonus:{zip:1}, tier:'common', icon:iconShinGuard} },
    { name:"a fishing gnome with an empty bucket", ...MONSTER_STATS["a fishing gnome with an empty bucket"], zone:"commons",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:2, boltMax:2, flavor:"hurls the empty bucket, lure and all" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:3, boltMax:3, flavor:"hurls the empty bucket, lure and all" } ],
     art: artGnomeFishing, loot:{name:"suspiciously confident lure", desc:"Has never once caught anything.", type:"junk", sell:2, icon:iconLure},
     rareDrop:{name:"actually-lucky fishing lure", desc:"This one's clearly caught something, at some point.", type:"junk", sell:11, icon:iconFigurine},
     gearDrop:{name:"waterlogged fishing hat of the Loon", desc:"Smells like pond. You get used to it.", type:"equip", slot:"head", bonus:{hoodoo:1}, tier:'common', icon:iconPotLid} },
@@ -121,7 +121,7 @@ const monsters = [
     rareDrop:{name:"the scarecrow's own lucky button eye", desc:"Watched over this field longer than anyone's been counting.", type:"junk", sell:11, icon:iconFigurine},
     gearDrop:{name:"scarecrow's stuffed trouser-leg of the Badger", desc:"Straw-packed. Surprisingly sturdy.", type:"equip", slot:"legs", bonus:{beef:1}, tier:'common', icon:iconTrousers} },
    { name:"a gnome plumber, wrench first into every problem", ...MONSTER_STATS["a gnome plumber, wrench first into every problem"], zone:"commons",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:4, boltMax:5, flavor:"swings the wrench like every problem is a stuck pipe" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:7, boltMax:9, flavor:"swings the wrench like every problem is a stuck pipe" } ],
     art: artGnomePlumber, loot:{name:"bent plumbing wrench", desc:"Fixed exactly one thing, once, by accident.", type:"junk", sell:2, icon:iconPipeFitting},
     rareDrop:{name:"a wrench that fixes everything on the first try", desc:"The plumber never figured out why. Neither will you.", type:"junk", sell:10, icon:iconFigurine},
     gearDrop:{name:"plumber's grease-stained boots of the Badger", desc:"Never quite dry. Never quite need to be.", type:"equip", slot:"boots", bonus:{beef:1}, tier:'common', icon:iconSpringBoots} },
@@ -136,7 +136,7 @@ const monsters = [
     rareDrop:{name:"a perfectly tailored good luck charm", desc:"Fits exactly right. Unsettlingly right.", type:"luck", hpValue:8, mpValue:4, icon:iconClover},
     gearDrop:{name:"tailor's pin-cushion vest of the Weasel", desc:"Mind the pins. There are always more pins.", type:"equip", slot:"chest", bonus:{zip:1}, tier:'common', icon:iconVest} },
    { name:"a gnome duelist, challenging shrubs to honor combat", ...MONSTER_STATS["a gnome duelist, challenging shrubs to honor combat"], zone:"commons",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:4, boltMax:6, flavor:"lunges at you the same way it lunges at hedges" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:7, boltMax:10, flavor:"lunges at you the same way it lunges at hedges" } ],
     art: artGnomeDuelist, loot:{name:"bent dueling foil", desc:"Undefeated, against shrubbery.", type:"junk", sell:3, icon:iconRakeTine},
     rareDrop:{name:"the duelist's own undefeated streak, framed", desc:"Every win was against a bush. Still counts, apparently.", type:"junk", sell:12, icon:iconFigurine},
     gearDrop:{name:"duelist's bent foil of the Weasel", desc:"Still carries the dents from a particularly stubborn hedge.", type:"equip", slot:"weapon", bonus:{zip:1}, tier:'common', icon:iconCardShank} },
@@ -151,7 +151,7 @@ const monsters = [
     rareDrop:{name:"a weathervane that's actually right, for once", desc:"Pointed true north. Everyone's still suspicious of it.", type:"junk", sell:11, icon:iconFigurine},
     gearDrop:{name:"weathervane-keeper's drafty trousers of the Loon", desc:"Lets in the wind from every direction at once.", type:"equip", slot:"legs", bonus:{hoodoo:1}, tier:'common', icon:iconTrousers} },
    { name:"a gnome mushroom-forager, convinced every one is edible", ...MONSTER_STATS["a gnome mushroom-forager, convinced every one is edible"], zone:"commons",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:4, boltMax:6, flavor:"flings a handful of foraged mushrooms, edible or not" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:7, boltMax:10, flavor:"flings a handful of foraged mushrooms, edible or not" } ],
     art: artGnomeForager, loot:{name:"foraged mushroom, probably fine", desc:"Probably. You're not eating it to find out.", type:"junk", sell:3, icon:iconSoil},
     rareDrop:{name:"a genuinely rare mushroom, glowing faintly", desc:"Finally, one the forager actually identified correctly.", type:"luck", hpValue:9, mpValue:5, icon:iconClover},
     gearDrop:{name:"forager's mismatched boots of the Loon", desc:"Picked up one mushroom stain per outing, give or take.", type:"equip", slot:"boots", bonus:{hoodoo:1}, tier:'common', icon:iconMismatchedBoots} },
@@ -161,7 +161,7 @@ const monsters = [
     rareDrop:{name:"a fortune that actually comes true", desc:"Said you'd find something valuable today. Rude, but accurate.", type:"junk", sell:10, icon:iconFigurine},
     gearDrop:{name:"fortune-teller's crooked wand of the Loon", desc:"Points at whatever the fortune said it would.", type:"equip", slot:"weapon", bonus:{hoodoo:1}, tier:'common', icon:iconWandStick} },
    { name:"a sewer rat with delusions of grandeur", ...MONSTER_STATS["a sewer rat with delusions of grandeur"], zone:"sewers",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:6, boltMax:7, flavor:"flings a gnawed pipe fitting with surprising venom" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:10, boltMax:12, flavor:"flings a gnawed pipe fitting with surprising venom" } ],
     art: artSewerRat, loot:{name:"slightly damp rat tail", desc:"You're not sure why you kept this.", type:"junk", sell:2, icon:iconRatTail},
     rareDrop:{name:"rat king's tiny crown", desc:"Delusions of grandeur, it turns out, were warranted.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
     gearDrop:{name:"rat-gnawed divining rod of the Loon", desc:"Points at whatever it feels like, confidently.", type:"equip", slot:"weapon", bonus:{hoodoo:2}, tier:'common', icon:iconWandStick} },
@@ -176,7 +176,7 @@ const monsters = [
     rareDrop:{name:"glowing sewer pearl", desc:"You don't ask how it got down here. Or how it glows.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
     gearDrop:{name:"rat-hide vest of the Weasel", desc:"Roomier than you'd expect. Best not to think why.", type:"equip", slot:"chest", bonus:{zip:2}, tier:'common', icon:iconVest} },
    { name:"three rats in a trenchcoat, unconvincingly", ...MONSTER_STATS["three rats in a trenchcoat, unconvincingly"], zone:"sewers",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:6, boltMax:7, flavor:"the bottom rat throws a wild haymaker that somehow connects" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:10, boltMax:12, flavor:"the bottom rat throws a wild haymaker that somehow connects" } ],
     art: artRatTrenchcoat, loot:{name:"comically oversized coat button", desc:"None of the three rats will admit to owning this.", type:"junk", sell:3, icon:iconCoatButton},
     rareDrop:{name:"the trenchcoat's secret inside pocket, still full", desc:"Whatever they were hiding, it's yours now.", type:"junk", sell:16, icon:iconFigurine},
     gearDrop:{name:"trenchcoat's spare trouser leg of the Loon", desc:"The other two rats never noticed it was missing.", type:"equip", slot:"legs", bonus:{hoodoo:2}, tier:'common', icon:iconQuickstepTrousers} },
@@ -188,7 +188,7 @@ const monsters = [
     rareDrop:{name:"the brawler's undefeated reflection", desc:"Still hasn't lost a fight against itself.", type:"junk", sell:14, icon:iconFigurine},
     gearDrop:{name:"brawler-rat's quilted vest of the Badger", desc:"Padded against hits that mostly never land.", type:"equip", slot:"chest", bonus:{beef:2}, tier:'common', icon:iconVest} },
    { name:"a drainpipe crawler, bowlegged from the pipes", ...MONSTER_STATS["a drainpipe crawler, bowlegged from the pipes"], zone:"sewers",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:6, boltMax:8, flavor:"kicks off a pipe wall for extra momentum" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:10, boltMax:14, flavor:"kicks off a pipe wall for extra momentum" } ],
     art: artDrainpipeCrawler, loot:{name:"flattened pipe segment", desc:"Shaped exactly like whatever it last crawled through.", type:"junk", sell:3, icon:iconPipeFitting},
     rareDrop:{name:"a pipe segment that's somehow still warm", desc:"Warm pipes in a sewer. You decide not to investigate.", type:"junk", sell:14, icon:iconFigurine},
     gearDrop:{name:"crawler's bowlegged greaves of the Badger", desc:"Shaped by years of squeezing through tight pipe.", type:"equip", slot:"legs", bonus:{beef:2}, tier:'common', icon:iconBurrowGreaves} },
@@ -198,7 +198,7 @@ const monsters = [
     rareDrop:{name:"a sludge-proof good luck charm", desc:"Still works, even covered in muck.", type:"luck", hpValue:10, mpValue:5, icon:iconClover},
     gearDrop:{name:"muck-strider's suction boots of the Badger", desc:"Never once slip, no matter how deep the sludge.", type:"equip", slot:"boots", bonus:{beef:2}, tier:'common', icon:iconGripBoots} },
    { name:"a rust-fanged rat, gnawing on a pipe like a weapon", ...MONSTER_STATS["a rust-fanged rat, gnawing on a pipe like a weapon"], zone:"sewers",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:7, boltMax:8, flavor:"swings the gnawed pipe like it's always been a weapon" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:12, boltMax:14, flavor:"swings the gnawed pipe like it's always been a weapon" } ],
     art: artRustFangedRat, loot:{name:"rust-flecked fang", desc:"Chewed through more metal than teeth should allow.", type:"junk", sell:4, icon:iconPipeFitting},
     rareDrop:{name:"a fang sharp enough to actually be useful", desc:"You could do something with this. You're not sure what yet.", type:"junk", sell:15, icon:iconFigurine},
     gearDrop:{name:"rust-fanged rat's own gnawed pipe of the Badger", desc:"Still has tooth marks all down the shaft.", type:"equip", slot:"weapon", bonus:{beef:2}, tier:'common', icon:iconPipeFitting} },
@@ -213,7 +213,7 @@ const monsters = [
     rareDrop:{name:"a pair of genuinely quick paw-prints, framed", desc:"The fastest thing in the sewers, by its own account.", type:"junk", sell:14, icon:iconFigurine},
     gearDrop:{name:"quick-paws rat's own light leggings of the Weasel", desc:"Barely touch the muck at all.", type:"equip", slot:"legs", bonus:{zip:2}, tier:'common', icon:iconTrousers} },
    { name:"a grate-runner rat, never missing a foothold", ...MONSTER_STATS["a grate-runner rat, never missing a foothold"], zone:"sewers",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:7, boltMax:8, flavor:"leaps off a grate for extra height on the swing" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:12, boltMax:14, flavor:"leaps off a grate for extra height on the swing" } ],
     art: artGrateRunnerRat, loot:{name:"a worn-smooth grate bar", desc:"Polished to a shine by a hundred quick footsteps.", type:"junk", sell:4, icon:iconPipeFitting},
     rareDrop:{name:"a grate that's somehow always unlocked for it", desc:"Never explained how. Never asked twice.", type:"junk", sell:15, icon:iconFigurine},
     gearDrop:{name:"grate-runner's own sure-grip boots of the Weasel", desc:"Never once miss a foothold, grate or no grate.", type:"equip", slot:"boots", bonus:{zip:2}, tier:'common', icon:iconMismatchedBoots} },
@@ -228,7 +228,7 @@ const monsters = [
     rareDrop:{name:"a prophecy that actually comes true", desc:"Said exactly what would happen next. Unsettling, but useful.", type:"junk", sell:14, icon:iconFigurine},
     gearDrop:{name:"soothsayer rat's own drain-whisper hood of the Loon", desc:"Still echoes faintly if you hold it to your ear.", type:"equip", slot:"head", bonus:{hoodoo:2}, tier:'common', icon:iconPotLid} },
    { name:"a glow-moss rat, faintly luminous in the dark", ...MONSTER_STATS["a glow-moss rat, faintly luminous in the dark"], zone:"sewers",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:6, boltMax:8, flavor:"flares a faint, sickly green for just a second" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:10, boltMax:14, flavor:"flares a faint, sickly green for just a second" } ],
     art: artGlowMossRat, loot:{name:"a scrap of glowing moss", desc:"Keeps glowing for a few hours after you pick it off.", type:"junk", sell:4, icon:iconCapturedLight},
     rareDrop:{name:"a chunk of moss that never stops glowing", desc:"Been glowing since you picked it up. Hasn't dimmed once.", type:"junk", sell:15, icon:iconFigurine},
     gearDrop:{name:"glow-moss rat's own luminous vest of the Loon", desc:"Gives off just enough light to read by, barely.", type:"equip", slot:"chest", bonus:{hoodoo:2}, tier:'common', icon:iconScorchRobe} },
@@ -248,7 +248,7 @@ const monsters = [
     rareDrop:{name:"compass that always points to safety", desc:"Not north. Safety. Somehow more useful.", type:"luck", hpValue:12, mpValue:6, icon:iconClover},
     gearDrop:{name:"surveyor's dented hard-hat of the Weasel", desc:"Confidently the wrong size. Sturdy anyway.", type:"equip", slot:"head", bonus:{zip:3}, tier:'common', icon:iconGuardHelm} },
    { name:"a pickaxe golem, held together by spite", ...MONSTER_STATS["a pickaxe golem, held together by spite"], zone:"quarry",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:11, boltMax:13, flavor:"swings its pickaxe in a wide, reckless arc" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:19, boltMax:22, flavor:"swings its pickaxe in a wide, reckless arc" } ],
     art: artPickaxeGolem, loot:{name:"chipped pickaxe head", desc:"Has seen better decades.", type:"junk", sell:5, icon:iconPickaxeHead},
     rareDrop:{name:"fist-sized nugget of pure stubbornness", desc:"Heavier than it should be. Refuses to be dropped.", type:"junk", sell:20, icon:iconFigurine},
     gearDrop:{name:"golem's chipped chest-plating of the Loon", desc:"Held together by spite, same as the rest of it.", type:"equip", slot:"chest", bonus:{hoodoo:3}, tier:'common', icon:iconClockworkPlate} },
@@ -270,12 +270,12 @@ const monsters = [
     rareDrop:{name:"a stone that's suspiciously easy to lift", desc:"Should weigh a ton. Feels like a pebble.", type:"junk", sell:18, icon:iconFigurine},
     gearDrop:{name:"stone-hauler's braced chest-wrap of the Tortoise", desc:"Held together by sheer stubbornness and rope.", type:"equip", slot:"chest", bonus:{grit:3}, tier:'common', icon:iconPalaceForgedPlate} },
    { name:"a scaffold-climber gnome, fearless about heights", ...MONSTER_STATS["a scaffold-climber gnome, fearless about heights"], zone:"quarry",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:8, boltMax:10, flavor:"drops straight off the scaffold onto you" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:14, boltMax:17, flavor:"drops straight off the scaffold onto you" } ],
     art: artScaffoldClimberGnome, loot:{name:"a loose scaffold bolt", desc:"Probably shouldn't have been loose.", type:"junk", sell:4, icon:iconPipeFitting},
     rareDrop:{name:"a bolt that was somehow load-bearing the whole time", desc:"The scaffold's still standing, against all odds.", type:"junk", sell:17, icon:iconFigurine},
     gearDrop:{name:"climber's rope-wrapped greaves of the Badger", desc:"Scuffed from a hundred scaffold landings.", type:"equip", slot:"legs", bonus:{beef:3}, tier:'common', icon:iconBurrowGreaves} },
    { name:"a blast-charge gnome, handling dynamite with alarming confidence", ...MONSTER_STATS["a blast-charge gnome, handling dynamite with alarming confidence"], zone:"quarry",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:8, boltMax:11, flavor:"lights a fuse that's definitely too short" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:14, boltMax:19, flavor:"lights a fuse that's definitely too short" } ],
     art: artBlastChargeGnome, loot:{name:"an unlit stick of mining charge", desc:"You carry this very, very carefully.", type:"junk", sell:5, icon:iconPipeFitting},
     rareDrop:{name:"a charge that somehow never actually goes off", desc:"Still ticking, metaphorically. You're not opening it.", type:"junk", sell:19, icon:iconFigurine},
     gearDrop:{name:"blast-gnome's scorch-flecked vest of the Weasel", desc:"Survived more close calls than it should have.", type:"equip", slot:"chest", bonus:{zip:3}, tier:'common', icon:iconVest} },
@@ -290,7 +290,7 @@ const monsters = [
     rareDrop:{name:"a pebble worn perfectly smooth by near-misses", desc:"This has dodged a lot of rockslides.", type:"luck", hpValue:12, mpValue:6, icon:iconClover},
     gearDrop:{name:"dodger's quick-step boots of the Weasel", desc:"Never once caught under a falling rock.", type:"equip", slot:"boots", bonus:{zip:3}, tier:'common', icon:iconSpringBoots} },
    { name:"a chisel-wielding gnome, striking with surprising precision", ...MONSTER_STATS["a chisel-wielding gnome, striking with surprising precision"], zone:"quarry",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:9, boltMax:11, flavor:"strikes with the precision of decades of stonework" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:15, boltMax:19, flavor:"strikes with the precision of decades of stonework" } ],
     art: artChiselGnome, loot:{name:"a worn stone chisel", desc:"Sharpened down to half its original size.", type:"junk", sell:4, icon:iconPickaxeHead},
     rareDrop:{name:"a chisel that cuts stone like butter", desc:"Whatever it's made of, it isn't regular steel.", type:"junk", sell:18, icon:iconFigurine},
     gearDrop:{name:"chisel-gnome's own striking tool of the Weasel", desc:"Worn down to a fine, deadly point.", type:"equip", slot:"weapon", bonus:{zip:3}, tier:'common', icon:iconCardShank} },
@@ -310,7 +310,7 @@ const monsters = [
     rareDrop:{name:"a pebble that predicts the next tremor exactly", desc:"Would be more useful if anyone believed it.", type:"junk", sell:17, icon:iconFigurine},
     gearDrop:{name:"tremor-sensor's own grounded boots of the Tortoise", desc:"Feel every shake before it happens.", type:"equip", slot:"boots", bonus:{grit:3}, tier:'common', icon:iconWardedSlippers} },
    { name:"a dowsing-rod gnome, pointing at veins nobody else sees", ...MONSTER_STATS["a dowsing-rod gnome, pointing at veins nobody else sees"], zone:"quarry",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:9, boltMax:12, flavor:"the rod snaps forward and drags its whole arm with it" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:15, boltMax:20, flavor:"the rod snaps forward and drags its whole arm with it" } ],
     art: artDowsingRodGnome, loot:{name:"a snapped-off dowsing rod tip", desc:"Pointed at something, once. Nobody's sure what.", type:"junk", sell:5, icon:iconVeinGemstone},
     rareDrop:{name:"a dowsing rod that found a real vein", desc:"Pointed true, for once in its career.", type:"junk", sell:19, icon:iconFigurine},
     gearDrop:{name:"dowsing gnome's own forked rod of the Loon", desc:"Still twitches faintly near anything valuable.", type:"equip", slot:"weapon", bonus:{hoodoo:3}, tier:'common', icon:iconWandStick} },
@@ -320,7 +320,7 @@ const monsters = [
     rareDrop:{name:"captured wisp of pure luck", desc:"It flickers approvingly whenever you make a good call.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
     gearDrop:{name:"wisp-charred conducting rod of the Weasel", desc:"Still warm. Hums when you're not paying attention.", type:"equip", slot:"weapon", bonus:{zip:4}, tier:'common', icon:iconHeirloomRod} },
    { name:"a stone sentinel, one eye still lit", ...MONSTER_STATS["a stone sentinel, one eye still lit"], zone:"vault",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:17, boltMax:21, flavor:"focuses its one lit eye into a narrow beam" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:29, boltMax:36, flavor:"focuses its one lit eye into a narrow beam" } ],
     art: artStoneSentinel, loot:{name:"fractured sentinel eye", desc:"Stopped watching. Eventually.", type:"junk", sell:7, icon:iconSentinelEye},
     rareDrop:{name:"the sentinel's other eye, still watching", desc:"You can feel it tracking you from the bottom of your pack.", type:"junk", sell:26, icon:iconFigurine},
     gearDrop:{name:"sentinel's cracked faceplate of the Loon", desc:"One eye socket. Still watching, faithfully.", type:"equip", slot:"head", bonus:{hoodoo:4}, tier:'common', icon:iconChampionCrown} },
@@ -362,12 +362,12 @@ const monsters = [
     rareDrop:{name:"a trap mechanism, fully intact and reusable", desc:"Could probably sell this back to whoever set it.", type:"junk", sell:23, icon:iconFigurine},
     gearDrop:{name:"dodger's trap-sprung leggings of the Weasel", desc:"Scuffed from more near-misses than you'd want to count.", type:"equip", slot:"legs", bonus:{zip:4}, tier:'common', icon:iconTrousers} },
    { name:"a gnome rune-reader, tracing symbols on the floor", ...MONSTER_STATS["a gnome rune-reader, tracing symbols on the floor"], zone:"vault",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:16, boltMax:20, flavor:"finishes the rune mid-trace and it goes off early" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:27, boltMax:34, flavor:"finishes the rune mid-trace and it goes off early" } ],
     art: artRuneReaderGnome, loot:{name:"a half-traced rune, still glowing", desc:"Incomplete. Still does something, apparently.", type:"junk", sell:6, icon:iconVeinGemstone},
     rareDrop:{name:"a fully traced rune, genuinely powerful", desc:"Finished this one properly. You can feel it.", type:"junk", sell:24, icon:iconFigurine},
     gearDrop:{name:"rune-reader's chalk-dusted greaves of the Weasel", desc:"Covered in half-finished symbols, knee to ankle.", type:"equip", slot:"legs", bonus:{zip:4}, tier:'common', icon:iconFeatherScale} },
    { name:"a gnome lock-picker, three steps ahead of every trap", ...MONSTER_STATS["a gnome lock-picker, three steps ahead of every trap"], zone:"vault",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:15, boltMax:19, flavor:"flicks a lock-pick at you with alarming precision" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:26, boltMax:32, flavor:"flicks a lock-pick at you with alarming precision" } ],
     art: artLockPickerGnome, loot:{name:"a bent lock-pick", desc:"Opened more locks than it had any right to.", type:"junk", sell:6, icon:iconPipeFitting},
     rareDrop:{name:"a lock-pick that opens absolutely anything", desc:"Doesn't fit most locks. Opens them anyway.", type:"junk", sell:23, icon:iconFigurine},
     gearDrop:{name:"lock-picker's silent boots of the Loon", desc:"Barely make a sound, even on loose gravel.", type:"equip", slot:"boots", bonus:{hoodoo:4}, tier:'common', icon:iconWardedSlippers} },
@@ -377,7 +377,7 @@ const monsters = [
     rareDrop:{name:"a stopwatch that's always exactly one second ahead", desc:"Explains a lot about how it keeps making it out.", type:"luck", hpValue:15, mpValue:8, icon:iconClover},
     gearDrop:{name:"vault-runner's own sprint boots of the Loon", desc:"Scorched slightly at the heels. Worth it, apparently.", type:"equip", slot:"boots", bonus:{hoodoo:4}, tier:'common', icon:iconMismatchedBoots} },
    { name:"a gnome relic-wielder, swinging something it doesn't understand", ...MONSTER_STATS["a gnome relic-wielder, swinging something it doesn't understand"], zone:"vault",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:17, boltMax:21, flavor:"swings the relic and something happens that it clearly didn't expect either" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:29, boltMax:36, flavor:"swings the relic and something happens that it clearly didn't expect either" } ],
     art: artRelicWielderGnome, loot:{name:"an inert ceremonial relic", desc:"Does nothing in your hands. Did something in its.", type:"junk", sell:7, icon:iconCeremonialGauntlet},
     rareDrop:{name:"a relic that still remembers what it's for", desc:"Hums faintly, like it's waiting to be asked properly.", type:"junk", sell:25, icon:iconFigurine},
     gearDrop:{name:"relic-wielder's own misused scepter of the Badger", desc:"Was ceremonial, once. Isn't anymore.", type:"equip", slot:"weapon", bonus:{beef:4}, tier:'common', icon:iconThroneScepter} },
@@ -392,7 +392,7 @@ const monsters = [
     rareDrop:{name:"a counter-charm that actually breaks something", desc:"You felt that one land. Something's different now.", type:"junk", sell:25, icon:iconFigurine},
     gearDrop:{name:"curse-breaker's own muttering wand of the Loon", desc:"Keeps talking, quietly, even when you're not using it.", type:"equip", slot:"weapon", bonus:{hoodoo:4}, tier:'common', icon:iconWandStick} },
    { name:"a gnome vizier, draped in stolen finery", ...MONSTER_STATS["a gnome vizier, draped in stolen finery"], zone:"sanctum",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:21, boltMax:26, flavor:"flings a fistful of stolen finery, pins and all" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:36, boltMax:44, flavor:"flings a fistful of stolen finery, pins and all" } ],
     art: artGnomeVizier, loot:{name:"vizier's confiscated ledger", desc:"Every debt in Gnometropolis, written in tiny cramped handwriting.", type:"junk", sell:9, icon:iconVizierLedger},
     rareDrop:{name:"vizier's uncanny hunch, bottled", desc:"It practically whispers good advice.", type:"luck", hpValue:18, mpValue:9, icon:iconClover},
     gearDrop:{name:"vizier's confiscated cane-wand of the Loon", desc:"Equal parts walking stick and unlicensed magic.", type:"equip", slot:"weapon", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconWandStick} },
@@ -407,7 +407,7 @@ const monsters = [
     rareDrop:{name:"burrow-worm's lucky cast-off tooth", desc:"Smooth, oddly warm, and very possibly why you're still standing.", type:"luck", hpValue:19, mpValue:9, icon:iconClover},
     gearDrop:{name:"worm-chewed tunneling boots of the Weasel", desc:"Already broken in. Not by you.", type:"equip", slot:"boots", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconBlessedBoots} },
    { name:"a rogue clockwork automaton, sparking wildly", ...MONSTER_STATS["a rogue clockwork automaton, sparking wildly"], zone:"roguesden",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:26, boltMax:33, flavor:"sparks wildly and lashes out in every direction at once" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:44, boltMax:56, flavor:"sparks wildly and lashes out in every direction at once" } ],
     art: artFeralAutomaton, loot:{name:"scorched servo joint", desc:"Still twitches, if you're not careful.", type:"junk", sell:11, icon:iconServoJoint},
     rareDrop:{name:"the automaton's still-warm power cell", desc:"Hums like it's not entirely done working yet.", type:"junk", sell:34, icon:iconFigurine},
     gearDrop:{name:"automaton's salvaged headplate of the Loon", desc:"Still sparks a little when it rains.", type:"equip", slot:"head", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconGuardHelm} },
@@ -431,7 +431,7 @@ const monsters = [
     rareDrop:{name:"the siege-crew's lucky firing pin", desc:"Pulled from a shot that somehow landed exactly right.", type:"luck", hpValue:20, mpValue:10, icon:iconClover},
     gearDrop:{name:"siege-crew's scorched greaves of the Weasel", desc:"Singed. Still faster than running barefoot.", type:"equip", slot:"boots", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconScorchedGreaves} },
    { name:"an apprentice hex-weaver, sparks flying every wrong direction", ...MONSTER_STATS["an apprentice hex-weaver, sparks flying every wrong direction"], zone:"sanctum",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:21, boltMax:26, flavor:"flings a half-finished spell that goes off anyway" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:36, boltMax:44, flavor:"flings a half-finished spell that goes off anyway" } ],
     art: artHexWeaver, loot:{name:"singed spellbook page", desc:"The diagram is half-right. That's the problem.", type:"junk", sell:9, icon:iconSpellbookPage},
     rareDrop:{name:"hex-weaver's stabilized spark, bottled", desc:"Finally behaving itself, for once.", type:"luck", hpValue:19, mpValue:10, icon:iconClover},
     gearDrop:{name:"apprentice's scorch-marked robe-plating of the Loon", desc:"Fire-proofed the hard way, one mistake at a time.", type:"equip", slot:"chest", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconScorchRobe} },
@@ -461,7 +461,7 @@ const monsters = [
     rareDrop:{name:"a training badge that means something, for once", desc:"Actually earned this one. Feels different.", type:"luck", hpValue:20, mpValue:10, icon:iconClover},
     gearDrop:{name:"recruit's stiff new greaves of the Badger", desc:"Not broken in yet. Will be, eventually.", type:"equip", slot:"legs", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconBurrowGreaves} },
    { name:"a gnome drillfield runner, somehow always last to formation", ...MONSTER_STATS["a gnome drillfield runner, somehow always last to formation"], zone:"garrison",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:27, boltMax:33, flavor:"sprints in late and swings twice as hard to make up for it" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:46, boltMax:56, flavor:"sprints in late and swings twice as hard to make up for it" } ],
     art: artGnomeDrillfieldRunner, loot:{name:"a scuffed drillfield marker", desc:"Knocked over. Again.", type:"junk", sell:10, icon:iconDrillRoster},
     rareDrop:{name:"a marker that's never once been knocked over", desc:"The runner finally made formation on time. Miracles happen.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"runner's scuffed field-boots of the Badger", desc:"Worn through at the heel from constant catching-up.", type:"equip", slot:"boots", bonus:{beef:6}, classRequired:'Meathead', tier:'common', icon:iconGripBoots} },
@@ -476,12 +476,12 @@ const monsters = [
     rareDrop:{name:"a full requisition slip, somehow signed off", desc:"Nobody's sure how the raider got the paperwork approved.", type:"junk", sell:30, icon:iconFigurine},
     gearDrop:{name:"supply-raider's padded vest of the Weasel", desc:"Lined with pockets, every one of them suspiciously full.", type:"equip", slot:"chest", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconVest} },
    { name:"a gnome perimeter-runner, circling the garrison walls", ...MONSTER_STATS["a gnome perimeter-runner, circling the garrison walls"], zone:"garrison",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:27, boltMax:34, flavor:"comes around the corner at a dead sprint, already swinging" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:46, boltMax:58, flavor:"comes around the corner at a dead sprint, already swinging" } ],
     art: artGnomePerimeterRunner, loot:{name:"a worn perimeter-patrol token", desc:"Another lap. Always another lap.", type:"junk", sell:10, icon:iconCoinPurse},
     rareDrop:{name:"a patrol token for a lap that actually mattered", desc:"Caught something, this time.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"perimeter-runner's quickstep leggings of the Weasel", desc:"Scuffed smooth from a thousand laps.", type:"equip", slot:"legs", bonus:{zip:6}, classRequired:'Card Shark', tier:'common', icon:iconQuickstepTrousers} },
    { name:"a gnome blade-sergeant, drilled past the point of hesitation", ...MONSTER_STATS["a gnome blade-sergeant, drilled past the point of hesitation"], zone:"garrison",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:28, boltMax:35, flavor:"doesn't hesitate, hasn't in years, drilled it clean out" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:48, boltMax:60, flavor:"doesn't hesitate, hasn't in years, drilled it clean out" } ],
     art: artGnomeBladeSergeant, loot:{name:"a drill-notched practice blade", desc:"Used for training. Used hard.", type:"junk", sell:11, icon:iconCardShank},
     rareDrop:{name:"a practice blade that's somehow battle-ready", desc:"Shouldn't be this sharp. Is.", type:"junk", sell:34, icon:iconFigurine},
     gearDrop:{name:"blade-sergeant's own drilled edge of the Weasel", desc:"Honed the same way every single day for years.", type:"equip", slot:"weapon", bonus:{zip:6}, classRequired:'Card Shark', tier:'common', icon:iconAceBlade} },
@@ -496,7 +496,7 @@ const monsters = [
     rareDrop:{name:"a signal that actually gets through", desc:"Clear as day, for once. Worth something to someone.", type:"junk", sell:30, icon:iconFigurine},
     gearDrop:{name:"signal-caster's static-charged vestment of the Loon", desc:"Crackles faintly whenever a new order comes through.", type:"equip", slot:"chest", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconScorchRobe} },
    { name:"a gnome rune-marked scout, tracing wards into the dirt", ...MONSTER_STATS["a gnome rune-marked scout, tracing wards into the dirt"], zone:"garrison",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:27, boltMax:33, flavor:"finishes a ward mid-trace and it goes off early, straight at you" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:46, boltMax:56, flavor:"finishes a ward mid-trace and it goes off early, straight at you" } ],
     art: artGnomeRuneMarkedScout, loot:{name:"a half-traced warding sigil", desc:"Scratched into the dirt. Still faintly glowing.", type:"junk", sell:10, icon:iconVeinGemstone},
     rareDrop:{name:"a warding sigil that's fully finished", desc:"Whatever it wards against, you'd rather not find out.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"rune-marked scout's chalk-dusted leggings of the Loon", desc:"Covered knee to ankle in half-finished symbols.", type:"equip", slot:"legs", bonus:{hoodoo:6}, classRequired:'Hexpert', tier:'common', icon:iconFeatherScale} },
@@ -506,7 +506,7 @@ const monsters = [
     rareDrop:{name:"a ward-line that's actually visible, briefly", desc:"You saw it flare, just once. Unsettling.", type:"junk", sell:31, icon:iconFigurine},
     gearDrop:{name:"ward-walker's silent-step boots of the Loon", desc:"Leave the ward-line undisturbed, somehow.", type:"equip", slot:"boots", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconWardedSlippers} },
    { name:"a gnome battle-conjurer, channeling something ugly", ...MONSTER_STATS["a gnome battle-conjurer, channeling something ugly"], zone:"garrison",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:28, boltMax:35, flavor:"channels something it clearly isn't fully in control of" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:48, boltMax:60, flavor:"channels something it clearly isn't fully in control of" } ],
     art: artGnomeBattleConjurer, loot:{name:"a scorched conjuring focus", desc:"Channeled one thing too many, by the look of it.", type:"junk", sell:11, icon:iconArcaneFocus},
     rareDrop:{name:"a conjuring focus that's actually stable", desc:"Doesn't scorch your hand to hold it. Progress.", type:"junk", sell:34, icon:iconFigurine},
     gearDrop:{name:"battle-conjurer's own channeling rod of the Loon", desc:"Still warm from the last thing it channeled.", type:"equip", slot:"weapon", bonus:{hoodoo:6}, classRequired:'Hexpert', tier:'common', icon:iconWandStick} },
@@ -532,7 +532,7 @@ const monsters = [
     rareDrop:{name:"an ignition switch that actually starts something real", desc:"Wherever that engine was going, it's finally going there.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"getaway-driver's scuffed boots of the Badger", desc:"Worn smooth on the pedal side.", type:"equip", slot:"boots", bonus:{beef:6}, classRequired:'Meathead', tier:'common', icon:iconSpringBoots} },
    { name:"a gnome knife-juggler, three blades in and not stopping", ...MONSTER_STATS["a gnome knife-juggler, three blades in and not stopping"], zone:"roguesden",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:27, boltMax:34, flavor:"loses count of the blades and just throws all of them" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:46, boltMax:58, flavor:"loses count of the blades and just throws all of them" } ],
     art: artGnomeKnifeJuggler, loot:{name:"a dropped juggling knife", desc:"Dulled from practice. Still throws true.", type:"junk", sell:10, icon:iconDiceFlail},
     rareDrop:{name:"a knife that's never once been dropped", desc:"The juggler's whole reputation rides on this one.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"knife-juggler's own favorite blade of the Weasel", desc:"The one that never gets dropped. Ever.", type:"equip", slot:"weapon", bonus:{zip:6}, classRequired:'Card Shark', tier:'common', icon:iconCardShank} },
@@ -547,7 +547,7 @@ const monsters = [
     rareDrop:{name:"a séance that actually summons something", desc:"Nobody, including the caller, expected that to work.", type:"junk", sell:30, icon:iconFigurine},
     gearDrop:{name:"séance-caller's draped mantle of the Loon", desc:"Smells like incense and a sincere lack of confidence.", type:"equip", slot:"chest", bonus:{hoodoo:5}, classRequired:'Hexpert', tier:'common', icon:iconScorchRobe} },
    { name:"a gnome hex-dealer, selling curses by the dozen", ...MONSTER_STATS["a gnome hex-dealer, selling curses by the dozen"], zone:"roguesden",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:27, boltMax:34, flavor:"throws in a free curse with the purchase, no refunds" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:46, boltMax:58, flavor:"throws in a free curse with the purchase, no refunds" } ],
     art: artGnomeHexDealer, loot:{name:"a discount curse, lightly used", desc:"Mild side effects. Worked on the last three owners.", type:"junk", sell:10, icon:iconHexBolt},
     rareDrop:{name:"a curse with genuinely no side effects", desc:"The dealer seemed almost disappointed by this one.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"hex-dealer's own discount wand of the Loon", desc:"Comes with a lifetime guarantee. Terms unclear.", type:"equip", slot:"legs", bonus:{hoodoo:6}, classRequired:'Hexpert', tier:'common', icon:iconFeatherScale} },
@@ -573,7 +573,7 @@ const monsters = [
     rareDrop:{name:"a watch-log with something actually worth reporting", desc:"Finally, an entry that matters.", type:"junk", sell:30, icon:iconFigurine},
     gearDrop:{name:"arcane sentry's standing-watch greaves of the Badger", desc:"Worn smooth from standing in exactly one spot.", type:"equip", slot:"legs", bonus:{beef:5}, classRequired:'Meathead', tier:'common', icon:iconBurrowGreaves} },
    { name:"a gnome runeblade adept, swinging a sword that hums", ...MONSTER_STATS["a gnome runeblade adept, swinging a sword that hums"], zone:"sanctum",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:28, boltMax:35, flavor:"the runeblade hums louder right before it connects" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:48, boltMax:60, flavor:"the runeblade hums louder right before it connects" } ],
     art: artGnomeRuneblade, loot:{name:"a faintly humming rune-fragment", desc:"Broke off the blade. Still humming on its own.", type:"junk", sell:11, icon:iconVeinGemstone},
     rareDrop:{name:"a rune-fragment that's actually whole", desc:"Hums a lot louder than the broken ones.", type:"junk", sell:34, icon:iconFigurine},
     gearDrop:{name:"runeblade adept's own humming blade of the Badger", desc:"You can feel it vibrating even sheathed.", type:"equip", slot:"weapon", bonus:{beef:6}, classRequired:'Meathead', tier:'common', icon:iconAceBlade} },
@@ -593,7 +593,7 @@ const monsters = [
     rareDrop:{name:"a spell fragment that's fully, cleanly stolen", desc:"Works perfectly. Somebody's definitely missing this.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"conjure-thief's pilfered leggings of the Weasel", desc:"Lifted off someone who probably still wants them back.", type:"equip", slot:"legs", bonus:{zip:6}, classRequired:'Card Shark', tier:'common', icon:iconCutpurseLeggings} },
    { name:"a gnome trick-caster, every spell a sleight of hand", ...MONSTER_STATS["a gnome trick-caster, every spell a sleight of hand"], zone:"sanctum",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:27, boltMax:34, flavor:"the trick is there's no trick, it's just a real spell" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:46, boltMax:58, flavor:"the trick is there's no trick, it's just a real spell" } ],
     art: artGnomeTrickCaster, loot:{name:"a loaded spell-die", desc:"Weighted. Toward something unpleasant.", type:"junk", sell:10, icon:iconDiceFlail},
     rareDrop:{name:"a spell-die that rolls fair, for once", desc:"Genuinely random. The trick-caster seemed disappointed.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"trick-caster's own sleight-of-hand blade of the Weasel", desc:"You never quite see where it comes from.", type:"equip", slot:"weapon", bonus:{zip:6}, classRequired:'Card Shark', tier:'common', icon:iconCardShank} },
@@ -610,7 +610,7 @@ const monsters = [
    /* 5 remaining gaps (Rogues' Den M-weapon/CS-head/Hx-weapon, Sanctum
    CS-boots/Hx-head) left over from the district gap-filling pass above. */
    { name:"a gnome enforcer's cane-man, swinging something heavier than it looks", ...MONSTER_STATS["a gnome enforcer's cane-man, swinging something heavier than it looks"], zone:"roguesden",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:27, boltMax:34, flavor:"the cane's a lot heavier than it looks, and it looked heavy" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:46, boltMax:58, flavor:"the cane's a lot heavier than it looks, and it looked heavy" } ],
     art: artGnomeCaneMan, loot:{name:"a weighted walking cane", desc:"Not for walking. Never was.", type:"junk", sell:10, icon:iconDiceFlail},
     rareDrop:{name:"a cane with a genuinely hidden blade", desc:"The reveal would've been more impressive if you hadn't already guessed.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"cane-man's own weighted cane of the Badger", desc:"Heavier than it has any right to look.", type:"equip", slot:"weapon", bonus:{beef:6}, classRequired:'Meathead', tier:'common', icon:iconCatapultPeg} },
@@ -620,7 +620,7 @@ const monsters = [
     rareDrop:{name:"a perch-mark for a spot that actually matters", desc:"Overlooks the whole den from up there. Worth remembering.", type:"junk", sell:30, icon:iconFigurine},
     gearDrop:{name:"lookout's low-brim cap of the Weasel", desc:"Keeps the face in shadow, same as the rest of the job.", type:"equip", slot:"head", bonus:{zip:5}, classRequired:'Card Shark', tier:'common', icon:iconCap} },
    { name:"a gnome fate-cheater, rigging odds that were never fair anyway", ...MONSTER_STATS["a gnome fate-cheater, rigging odds that were never fair anyway"], zone:"roguesden",
-    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:27, boltMax:34, flavor:"rigs the odds of this swing too, same as everything else" } ],
+    skills:[ { type:'bolt', chance:TRASH_SKILL_CHANCE, boltMin:46, boltMax:58, flavor:"rigs the odds of this swing too, same as everything else" } ],
     art: artGnomeFateCheater, loot:{name:"a weighted set of fate-dice", desc:"Never land the way they should. Never have.", type:"junk", sell:10, icon:iconLoadedDice},
     rareDrop:{name:"a die that rolls exactly what's needed", desc:"The cheater's own trick, finally working for you.", type:"junk", sell:33, icon:iconFigurine},
     gearDrop:{name:"fate-cheater's own loaded wand of the Loon", desc:"The odds were never fair. Now they're yours.", type:"equip", slot:"weapon", bonus:{hoodoo:6}, classRequired:'Hexpert', tier:'common', icon:iconWandStick} },
@@ -661,7 +661,7 @@ gnomeCommander to keep it a step up in difficulty even though all
 three named hunts now share the same DIGGERBOT_SPAWN_CHANCE. */
 const diggerBot = {
    name:"a runaway digger-bot, venting steam", ...MONSTER_STATS["a runaway digger-bot, venting steam"], rare:true, zone:"sewers",
-   skills:[ { type:'bolt', chance:0.22, boltMin:7, boltMax:12, flavor:"vents a scalding jet of built-up steam" } ],
+   skills:[ { type:'bolt', chance:0.22, boltMin:12, boltMax:20, flavor:"vents a scalding jet of built-up steam" } ],
    art: artDiggerBot, loot:null
 };
 const DIGGERBOT_SPAWN_CHANCE = 0.03; /* was 0.05 -- see COMMANDER_SPAWN_CHANCE's own comment above. */
@@ -919,13 +919,34 @@ the Ember Warren, a decisive jump sized for a character with several
 fully-tempered (+5) items rather than another small nudge. Act 1's own
 zones (commons through vault) and the three Gnometropolis districts are
 untouched by this second pass — this is scoped to Act 2's Mole Wars
-content specifically, per explicit request. */
+content specifically, per explicit request.
+
+A THIRD correction, much later, closes the exact gap that second pass
+explicitly left open: commons/sewers/quarry/vault/garrison/roguesden/
+sanctum never got either correction above, and a live audit (per an
+explicit "I am doing wayyy too much damage" report) found exactly why
+— average hits-to-kill a regular monster across that whole bracket sat
+at 0.55-0.75 (most things died in well under one hit) at every level
+from 1 through 10, then jumped straight to a healthy 1.0-1.4 the moment
+Root Cellar's own, already-corrected numbers kicked in at level 12.
+Same root cause as every other "old content didn't track a later
+change" fix this project has made — these 7 zones' own HP just never
+got the correction their neighbors did. A uniform x1.7 (chosen so the
+WHOLE bracket's hits-to-kill lands in that same healthy ~1.0-1.3 band,
+verified per-zone) preserves the bracket's own existing relative
+spacing exactly (it's one scalar on an already-monotonic sequence) and
+stays comfortably under Root Cellar's 4.29, so zone order/difficulty
+progression is untouched. `palace` is deliberately EXCLUDED and stays
+at the original 2.48 — every one of its own monsters is `rare:true`
+(the Palace Gauntlet, a boss-rush with no regular trash at all), a
+different, already-tuned/tested system this bracket's fix has nothing
+to do with. */
 /* crystalcity (quest16's own capstone reveal) is deliberately its own
 LEAF zone, not a hub with sub-districts like every Act 2 area before
 it — a genuine "stub," per explicit instruction, meant to be expanded
 later rather than fully fleshed out now. Continues the difficulty
 ladder one more step past foundry/gearworks. */
-const ZONE_DIFFICULTY = { commons:1, sewers:1.17, quarry:1.61, vault:2.01, garrison:2.48, roguesden:2.48, sanctum:2.48, palace:2.48, rootcellar:4.29, bureau:4.29, mudflats:4.97, choir:5.74, ledgervault:5.74, foundry:6.61, gearworks:6.61, crystalcity:7.5 };
+const ZONE_DIFFICULTY = { commons:1.7, sewers:1.99, quarry:2.74, vault:3.42, garrison:4.22, roguesden:4.22, sanctum:4.22, palace:2.48, rootcellar:4.29, bureau:4.29, mudflats:4.97, choir:5.74, ledgervault:5.74, foundry:6.61, gearworks:6.61, crystalcity:7.5 };
 
 /* Display names for each adventure zone, keyed by state.location/zone id —
 used by the Bounty Board (render.js) to spell out where a bounty's
@@ -1822,7 +1843,7 @@ const roguesDenEnforcer = {
 };
 const arcaneSanctumGuardian = {
    name:"the Arcane Sanctum's warden, muttering an unfinished spell", ...MONSTER_STATS["the Arcane Sanctum's warden, muttering an unfinished spell"], rare:true, zone:"sanctum",
-   skills:[ { type:'bolt', chance:0.25, boltMin:12, boltMax:18, flavor:"finally finishes the spell, unleashing a burst of raw arcane energy" } ],
+   skills:[ { type:'bolt', chance:0.25, boltMin:20, boltMax:31, flavor:"finally finishes the spell, unleashing a burst of raw arcane energy" } ],
    art: artArcaneSanctumGuardian, loot: PALACE_GATE_GEAR.find(g => g.classRequired === 'Hexpert')
 };
 

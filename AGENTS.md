@@ -406,16 +406,18 @@ large, procced repeatedly over a long boss fight, can out-heal a
 class's own real DPS rather than just being "a real chunk of health"
 once per use. Halving it to 5-7%/6-9% restored every one of those
 to ~100% while still landing 5-8x above the old flat numbers'
-effective percentage. One known pre-existing rough edge survived
-even at the retuned tier: Sunken Archive's Card Shark matchup at its
-own recommended level (already the single tightest matchup in the
-game before this pass, ~30% toolkit win rate at n=40) dropped to 0%
-— stacking a modest, now-real self-heal on top of a margin that was
-already razor-thin tips it over. Not fixed here; it's the same
-pre-existing difficulty-curve gap the hoodoo archetype pass above
-already flagged rather than patched, since actually fixing it is a
-different task (that one class/dungeon/level combination's own damage
-curve) than "give every monster's heal a real floor."
+effective percentage. One known pre-existing rough edge survived even
+at the retuned tier, at the TIME of this pass: Sunken Archive's Card
+Shark matchup at its own recommended level (already the single
+tightest matchup in the game before this pass, ~30% toolkit win rate
+at n=40) dropped to 0% — stacking a modest, now-real self-heal on top
+of a margin that was already razor-thin tipped it over. **This has
+since been fixed as a side effect of an unrelated later pass** — see
+`CLASS_ATTACK_STAT`'s own paragraph further down — once Card Shark's
+basic Attack scaled off its own stat instead of Beef, the SAME matchup
+jumped to ~93% (n=15); the margin was never actually unfixable, Card
+Shark was just chronically underpowered there for a reason that had
+nothing to do with heals.
 
 Stubborn Recovery (Meathead's own late-game heal spell, `spells`
 further down) got the SAME kind of fix for the SAME underlying reason,
@@ -491,7 +493,35 @@ file and are only read inside function bodies called later — declaring
 it after the array would throw a temporal-dead-zone ReferenceError the
 moment the array tried to evaluate it, a real bug caught once while
 building this). Flavor text is hand-written per monster to match the
-game's existing comedic voice, not templated. `ZONE_DIFFICULTY`/`ZONE_LABELS`, `noncombatEvents`/
+game's existing comedic voice, not templated.
+
+**`ZONE_DIFFICULTY`'s commons/sewers/quarry/vault/garrison/roguesden/
+sanctum entries went through a third correction pass**, per the same
+"I am doing wayyy too much damage" audit `CLASS_ATTACK_STAT` above
+came from. Two earlier corrections (this constant's own comment,
+content.js, has the full history) already caught the Mole Wars zones
+being too easy for a tempered character — but explicitly, deliberately
+left this bracket untouched both times. A live hits-to-kill audit
+found exactly why that gap mattered: commons through sanctum sat at
+0.55-0.75 hits to kill a regular monster (functionally one-shot) at
+every level from 1 through 10, for every class, then jumped straight
+to a healthy 1.0-1.4 the instant Root Cellar's own already-corrected
+numbers kicked in at level 12 — same "old content never tracked a
+later change" shape as every other fix in this file. A uniform x1.7 on
+just those 7 zones (content.js's own comment has the exact math) lands
+the whole bracket in that same ~1.0-1.3 band, preserves their existing
+relative spacing exactly (one scalar on an already-monotonic sequence),
+and stays under Root Cellar's own 4.29 so zone progression order is
+untouched. `palace` is deliberately excluded and stays at the original
+2.48 — every monster there is `rare:true` (the Palace Gauntlet, a
+boss-rush with no regular trash), a different, already-tuned system
+this fix has nothing to do with. One side effect that needed its own
+fix: raising atk alongside hp meant 35 `bolt`-skill monsters in these
+zones (all in this file — the other 6 monster-data files don't touch
+these zones) had their own hand-authored `boltMin`/`boltMax` fall
+behind the SAME way `heal` skills did before their own fix above; each
+was scaled by the same x1.7 to stay "a bit more than a bite from its
+own jaws," the rule their own convention has always followed. `ZONE_LABELS`, `noncombatEvents`/
 `hazardEvents`, `healItems`/`shopFoodItemsTier2`/`shopFoodItemsTier3`,
 `starterGear`, `shopGearItems`/`shopGearItemsTier2`/`shopGearItemsTier3`/
 `shopGearItemsTier4` (1/2/3/4 stats respectively — each tier up adds one
@@ -1473,7 +1503,21 @@ whatever a zippy monster's own dodge chance is, floored at
 `tickMonsterBuff`/`useMonsterSkill` (dispatches a monster's own
 `skills[]` entry by `type` — `'heal'`/`'buff'`/`'bolt'`/`'debuff'`, the
 last of which sets `state.playerStatusEffect` instead of attacking that
-turn)/`applyPlayerStatusEffectForTurn` (plays out one turn of a boss's
+turn)/`CLASS_ATTACK_STAT` (which stat drives `playerAttack()`'s own base
+damage roll, per class — `{'Meathead':'beef', 'Card Shark':'zip',
+'Hexpert':'hoodoo'}`, falling back to `'beef'` for no class, matching
+the ORIGINAL unconditional behavior this replaced. Per a live audit
+("I am doing wayyy too much damage"): `playerAttack()` had always used
+`eff.beef` no matter the class, a leftover from before Card Shark/
+Hexpert existed. Meathead's fine because Beef IS its own primary stat
+— but Card Shark's basic Attack was scaling off a stat it barely
+invests in (Zip only ever drove dodge/sneak-attack/double-attack,
+never damage), leaving it needing ~13 hits to kill a Crystal City
+monster where Meathead needed ~1 at the same level/gear. Read in BOTH
+of `playerAttack()`'s own damage rolls — the primary swing and Card
+Shark's own bonus second swing further down, which used to
+independently hardcode `eff.beef` a second time)/
+`applyPlayerStatusEffectForTurn` (plays out one turn of a boss's
 `'debuff'` — burn/poison deal their own damage to the player
 immediately, freeze instead hands back a `dmgMult` for the caller to
 apply to whatever it's about to deal that turn; called at the start of
