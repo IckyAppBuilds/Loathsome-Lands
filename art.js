@@ -908,6 +908,118 @@ function artSiltWalker(){
 function artMoleNotary(){
    return sceneWrap(`<ellipse cx="46" cy="64" rx="24" ry="18" fill="#5f4632"/><ellipse cx="46" cy="46" rx="13" ry="11" fill="#5f4632"/><path d="M38 42 Q34 34 28 36" fill="none" stroke-width="3"/><path d="M54 42 Q58 34 64 36" fill="none" stroke-width="3"/><rect x="68" y="46" width="14" height="14" fill="#b5453f" transform="rotate(-10 75 53)"/><line x1="75" y1="60" x2="75" y2="72" stroke-width="3"/>`, 0);
 }
+/* Same gap-filling, class-gated pass as the Gnometropolis districts
+above — 35 more Mudroot Warren regulars (12 Root Cellar, 12 Mudflats,
+11 Bureau), same mole-silhouette vocabulary every Mudroot Warren
+monster already uses. */
+function artRootCellarBrawler(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="28" ry="19" fill="#5f4632"/><ellipse cx="50" cy="44" rx="14" ry="11" fill="#5f4632"/><path d="M40 40 Q36 32 30 34" fill="none" stroke-width="3"/><path d="M60 40 Q64 32 70 34" fill="none" stroke-width="3"/><line x1="20" y1="30" x2="80" y2="30" stroke-width="4" opacity="0.5"/><line x1="40" y1="78" x2="34" y2="92"/><line x1="60" y1="78" x2="66" y2="92"/>`, 0);
+}
+function artTunnelBraceMole(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="26" ry="18" fill="#5f4632" opacity="0.85"/><ellipse cx="50" cy="46" rx="13" ry="10" fill="#5f4632" opacity="0.85"/><line x1="20" y1="20" x2="20" y2="90" stroke-width="3"/><line x1="80" y1="20" x2="80" y2="90" stroke-width="3"/><line x1="42" y1="80" x2="36" y2="94"/><line x1="58" y1="80" x2="64" y2="94"/>`, 0);
+}
+function artRootKickerMole(){
+   return sceneWrap(`<ellipse cx="46" cy="60" rx="24" ry="17" fill="#5f4632"/><ellipse cx="46" cy="42" rx="12" ry="10" fill="#5f4632"/><path d="M38 38 Q34 30 28 32" fill="none" stroke-width="3"/><path d="M54 38 Q58 30 64 32" fill="none" stroke-width="3"/><line x1="66" y1="74" x2="86" y2="68" stroke-width="4"/>`, -2);
+}
+function artPackedEarthMole(){
+   return sceneWrap(`<ellipse cx="50" cy="70" rx="30" ry="12" fill="#2b2b28" opacity="0.3"/><ellipse cx="50" cy="60" rx="26" ry="18" fill="#5f4632"/><ellipse cx="50" cy="42" rx="13" ry="11" fill="#5f4632"/><path d="M40 38 Q36 30 30 32" fill="none" stroke-width="3"/><path d="M60 38 Q64 30 70 32" fill="none" stroke-width="3"/><line x1="40" y1="76" x2="36" y2="90" stroke-width="4"/><line x1="60" y1="76" x2="64" y2="90" stroke-width="4"/>`, 0);
+}
+function artQuickClawMole(){
+   return sceneWrap(`<ellipse cx="44" cy="62" rx="22" ry="16" fill="#5f4632"/><ellipse cx="44" cy="44" rx="11" ry="9" fill="#5f4632"/><path d="M36 40 Q32 32 26 34" fill="none" stroke-width="2.5"/><path d="M52 40 Q56 32 62 34" fill="none" stroke-width="2.5"/><line x1="64" y1="56" x2="84" y2="50" stroke-width="3"/><line x1="64" y1="64" x2="82" y2="70" stroke-width="3"/>`, 2);
+}
+function artNarrowShaftMole(){
+   return sceneWrap(`<line x1="26" y1="14" x2="26" y2="94" stroke-width="3"/><line x1="74" y1="14" x2="74" y2="94" stroke-width="3"/><ellipse cx="50" cy="62" rx="20" ry="16" fill="#5f4632"/><ellipse cx="50" cy="44" rx="10" ry="9" fill="#5f4632"/><line x1="40" y1="76" x2="36" y2="90"/><line x1="60" y1="76" x2="64" y2="90"/>`, 0);
+}
+function artLooseSoilMole(){
+   return sceneWrap(`<ellipse cx="50" cy="80" rx="34" ry="8" fill="#a97c53" opacity="0.4"/><ellipse cx="50" cy="62" rx="25" ry="17" fill="#5f4632"/><ellipse cx="50" cy="43" rx="12" ry="10" fill="#5f4632"/><path d="M40 39 Q36 31 30 33" fill="none" stroke-width="3"/><path d="M60 39 Q64 31 70 33" fill="none" stroke-width="3"/><line x1="40" y1="78" x2="34" y2="92"/><line x1="60" y1="78" x2="66" y2="92"/>`, 0);
+}
+function artRootBladeMole(){
+   return sceneWrap(`<ellipse cx="44" cy="62" rx="24" ry="17" fill="#5f4632"/><ellipse cx="44" cy="44" rx="12" ry="10" fill="#5f4632"/><path d="M36 40 Q32 32 26 34" fill="none" stroke-width="3"/><path d="M52 40 Q56 32 62 34" fill="none" stroke-width="3"/><path d="M64 56 L88 48 L86 56 L66 62 Z" fill="#b9b3a4"/><line x1="40" y1="78" x2="34" y2="92"/>`, -1);
+}
+function artDeepListeningMole(){
+   return sceneWrap(`<ellipse cx="50" cy="62" rx="24" ry="17" fill="#5f4632" opacity="0.8"/><ellipse cx="50" cy="42" rx="14" ry="12" fill="#5f4632" opacity="0.8"/><path d="M36 36 Q30 26 20 28" fill="none" stroke-width="3.5"/><path d="M64 36 Q70 26 80 28" fill="none" stroke-width="3.5"/><circle cx="50" cy="42" r="2" fill="#d1a94e" stroke="none"/><line x1="42" y1="78" x2="36" y2="92"/><line x1="58" y1="78" x2="64" y2="92"/>`, 0);
+}
+function artRootWardedMole(){
+   return sceneWrap(`<circle cx="50" cy="60" r="36" fill="#d1a94e" opacity="0.12"/><ellipse cx="50" cy="62" rx="24" ry="17" fill="#5f4632"/><ellipse cx="50" cy="43" rx="12" ry="10" fill="#5f4632"/><path d="M40 39 Q36 31 30 33" fill="none" stroke-width="3"/><path d="M60 39 Q64 31 70 33" fill="none" stroke-width="3"/><line x1="40" y1="78" x2="34" y2="92"/><line x1="60" y1="78" x2="66" y2="92"/>`, 0);
+}
+function artSilentDiggerMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="24" ry="17" fill="#5f4632" opacity="0.65"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632" opacity="0.65"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artCellarConjurorMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="24" ry="17" fill="#5f4632"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><circle cx="50" cy="84" r="4" fill="#b06a97" stroke="none"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artMudflatBrawler(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="30" ry="20" fill="#5f4632"/><ellipse cx="50" cy="46" rx="15" ry="12" fill="#5f4632"/><ellipse cx="50" cy="66" rx="30" ry="20" fill="#8a5a3a" opacity="0.3"/><path d="M40 42 Q36 34 30 36" fill="none" stroke-width="3.5"/><path d="M60 42 Q64 34 70 36" fill="none" stroke-width="3.5"/><line x1="40" y1="82" x2="34" y2="96"/><line x1="60" y1="82" x2="66" y2="96"/>`, 0);
+}
+function artSiltPackedMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="28" ry="19" fill="#5f4632"/><ellipse cx="50" cy="64" rx="28" ry="19" fill="#b9b3a4" opacity="0.3"/><ellipse cx="50" cy="44" rx="13" ry="11" fill="#5f4632"/><path d="M40 40 Q36 32 30 34" fill="none" stroke-width="3"/><path d="M60 40 Q64 32 70 34" fill="none" stroke-width="3"/><line x1="40" y1="78" x2="34" y2="92"/><line x1="60" y1="78" x2="66" y2="92"/>`, 0);
+}
+function artBogStriderMole(){
+   return sceneWrap(`<ellipse cx="50" cy="90" rx="36" ry="6" fill="#3d5a80" opacity="0.25"/><ellipse cx="50" cy="58" rx="24" ry="17" fill="#5f4632"/><ellipse cx="50" cy="40" rx="12" ry="10" fill="#5f4632"/><path d="M40 36 Q36 28 30 30" fill="none" stroke-width="3"/><path d="M60 36 Q64 28 70 30" fill="none" stroke-width="3"/><line x1="40" y1="74" x2="32" y2="92"/><line x1="60" y1="74" x2="68" y2="92"/>`, 0);
+}
+function artTideClubMole(){
+   return sceneWrap(`<ellipse cx="44" cy="62" rx="24" ry="17" fill="#5f4632"/><ellipse cx="44" cy="43" rx="12" ry="10" fill="#5f4632"/><path d="M36 39 Q32 31 26 33" fill="none" stroke-width="3"/><path d="M52 39 Q56 31 62 33" fill="none" stroke-width="3"/><rect x="62" y="52" width="10" height="26" fill="#3d5a80" opacity="0.7" transform="rotate(20 67 65)"/><line x1="40" y1="78" x2="34" y2="92"/>`, -1);
+}
+function artReedMaskedMole(){
+   return sceneWrap(`<line x1="24" y1="20" x2="20" y2="90" stroke-width="2" opacity="0.5"/><line x1="34" y1="16" x2="30" y2="90" stroke-width="2" opacity="0.5"/><line x1="70" y1="16" x2="74" y2="90" stroke-width="2" opacity="0.5"/><ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632" opacity="0.85"/><ellipse cx="50" cy="46" rx="11" ry="9" fill="#5f4632" opacity="0.85"/><line x1="40" y1="78" x2="34" y2="92"/><line x1="60" y1="78" x2="66" y2="92"/>`, 0);
+}
+function artSiltSlickMole(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="25" ry="17" fill="#5f4632" opacity="0.6"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632" opacity="0.6"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><ellipse cx="50" cy="64" rx="25" ry="17" fill="none" stroke="#f4efe4" stroke-width="1.5" opacity="0.4"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artTideRunnerMole(){
+   return sceneWrap(`<ellipse cx="50" cy="58" rx="22" ry="15" fill="#5f4632"/><ellipse cx="50" cy="40" rx="11" ry="9" fill="#5f4632"/><path d="M40 36 Q36 28 30 30" fill="none" stroke-width="2.5"/><path d="M60 36 Q64 28 70 30" fill="none" stroke-width="2.5"/><line x1="40" y1="72" x2="26" y2="88" stroke-width="3"/><line x1="60" y1="72" x2="74" y2="90" stroke-width="3"/>`, 3);
+}
+function artMudskipperMole(){
+   return sceneWrap(`<ellipse cx="50" cy="86" rx="30" ry="6" fill="#3d5a80" opacity="0.2"/><ellipse cx="50" cy="56" rx="22" ry="15" fill="#5f4632"/><ellipse cx="50" cy="38" rx="11" ry="9" fill="#5f4632"/><path d="M40 34 Q36 26 30 28" fill="none" stroke-width="2.5"/><path d="M60 34 Q64 26 70 28" fill="none" stroke-width="2.5"/><line x1="40" y1="70" x2="30" y2="84"/><line x1="60" y1="70" x2="70" y2="84"/>`, 4);
+}
+function artBogWardedMole(){
+   return sceneWrap(`<circle cx="50" cy="60" r="36" fill="#3d5a80" opacity="0.1"/><ellipse cx="50" cy="62" rx="24" ry="17" fill="#5f4632"/><ellipse cx="50" cy="43" rx="12" ry="10" fill="#5f4632"/><path d="M40 39 Q36 31 30 33" fill="none" stroke-width="3"/><path d="M60 39 Q64 31 70 33" fill="none" stroke-width="3"/><line x1="40" y1="78" x2="34" y2="92"/><line x1="60" y1="78" x2="66" y2="92"/>`, 0);
+}
+function artReedCharmMole(){
+   return sceneWrap(`<line x1="24" y1="20" x2="20" y2="90" stroke-width="2" opacity="0.5"/><line x1="76" y1="20" x2="80" y2="90" stroke-width="2" opacity="0.5"/><ellipse cx="50" cy="64" rx="23" ry="16" fill="#5f4632"/><ellipse cx="50" cy="46" rx="12" ry="10" fill="#5f4632"/><circle cx="50" cy="46" r="2.5" fill="#b06a97" stroke="none"/><line x1="40" y1="78" x2="34" y2="92"/><line x1="60" y1="78" x2="66" y2="92"/>`, 0);
+}
+function artSiltStepMole(){
+   return sceneWrap(`<ellipse cx="50" cy="66" rx="24" ry="16" fill="#5f4632" opacity="0.7"/><ellipse cx="50" cy="48" rx="12" ry="10" fill="#5f4632" opacity="0.7"/><path d="M40 44 Q36 36 30 38" fill="none" stroke-width="3"/><path d="M60 44 Q64 36 70 38" fill="none" stroke-width="3"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artTideConjurorMole(){
+   return sceneWrap(`<ellipse cx="50" cy="58" rx="24" ry="17" fill="#5f4632"/><ellipse cx="50" cy="40" rx="12" ry="10" fill="#5f4632"/><path d="M40 36 Q36 28 30 30" fill="none" stroke-width="3"/><path d="M60 36 Q64 28 70 30" fill="none" stroke-width="3"/><circle cx="50" cy="82" r="5" fill="#3d5a80" opacity="0.5" stroke="none"/><line x1="40" y1="74" x2="34" y2="90"/><line x1="60" y1="74" x2="66" y2="90"/>`, 0);
+}
+function artMoleEnforcer(){
+   return sceneWrap(`<ellipse cx="46" cy="62" rx="24" ry="18" fill="#5f4632"/><ellipse cx="46" cy="44" rx="13" ry="11" fill="#5f4632"/><path d="M38 40 Q34 32 28 34" fill="none" stroke-width="3"/><path d="M54 40 Q58 32 64 34" fill="none" stroke-width="3"/><rect x="68" y="44" width="14" height="16" fill="#b5453f" transform="rotate(-8 75 52)"/><line x1="40" y1="78" x2="34" y2="92"/>`, 0);
+}
+function artMoleBailiff(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="16" fill="#5f4632" opacity="0.85"/><ellipse cx="50" cy="46" rx="11" ry="9" fill="#5f4632" opacity="0.85"/><path d="M40 42 Q36 34 30 36" fill="none" stroke-width="3"/><path d="M60 42 Q64 34 70 36" fill="none" stroke-width="3"/><line x1="40" y1="78" x2="34" y2="92"/><line x1="60" y1="78" x2="66" y2="92"/>`, 0);
+}
+function artMoleCollectionsRunner(){
+   return sceneWrap(`<ellipse cx="50" cy="56" rx="20" ry="14" fill="#5f4632"/><ellipse cx="50" cy="38" rx="10" ry="8" fill="#5f4632"/><path d="M40 34 Q36 26 30 28" fill="none" stroke-width="2.5"/><path d="M60 34 Q64 26 70 28" fill="none" stroke-width="2.5"/><line x1="40" y1="70" x2="26" y2="86" stroke-width="3"/><line x1="60" y1="70" x2="74" y2="88" stroke-width="3"/>`, 5);
+}
+function artMoleRepoAgent(){
+   return sceneWrap(`<ellipse cx="46" cy="62" rx="24" ry="18" fill="#5f4632"/><ellipse cx="46" cy="44" rx="13" ry="11" fill="#5f4632"/><path d="M38 40 Q34 32 28 34" fill="none" stroke-width="3"/><path d="M54 40 Q58 32 64 34" fill="none" stroke-width="3"/><rect x="66" y="48" width="16" height="12" fill="#f4efe4" transform="rotate(14 74 54)"/><line x1="40" y1="78" x2="34" y2="92"/>`, 0);
+}
+function artMoleFilingClerk(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="17" fill="#5f4632"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><rect x="38" y="58" width="24" height="5" fill="#f4efe4" stroke="none"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artMoleCourier(){
+   return sceneWrap(`<ellipse cx="50" cy="56" rx="21" ry="14" fill="#5f4632"/><ellipse cx="50" cy="38" rx="10" ry="8" fill="#5f4632"/><path d="M40 34 Q36 26 30 28" fill="none" stroke-width="2.5"/><path d="M60 34 Q64 26 70 28" fill="none" stroke-width="2.5"/><rect x="60" y="48" width="10" height="8" fill="#f4efe4" transform="rotate(-10 65 52)"/><line x1="40" y1="70" x2="28" y2="86"/><line x1="60" y1="70" x2="72" y2="88"/>`, 4);
+}
+function artMoleShortcutTaker(){
+   return sceneWrap(`<ellipse cx="50" cy="60" rx="22" ry="16" fill="#5f4632" opacity="0.75"/><ellipse cx="50" cy="42" rx="11" ry="9" fill="#5f4632" opacity="0.75"/><path d="M40 38 Q36 30 30 32" fill="none" stroke-width="2.5"/><path d="M60 38 Q64 30 70 32" fill="none" stroke-width="2.5"/><line x1="40" y1="74" x2="30" y2="90" stroke-width="3"/><line x1="60" y1="74" x2="72" y2="92" stroke-width="3"/>`, 0);
+}
+function artMoleLetterOpener(){
+   return sceneWrap(`<ellipse cx="46" cy="62" rx="22" ry="17" fill="#5f4632"/><ellipse cx="46" cy="44" rx="12" ry="10" fill="#5f4632"/><path d="M38 40 Q34 32 28 34" fill="none" stroke-width="3"/><path d="M54 40 Q58 32 64 34" fill="none" stroke-width="3"/><path d="M64 54 L86 48 L84 54 L66 58 Z" fill="#b9b3a4"/><line x1="40" y1="78" x2="34" y2="92"/>`, 0);
+}
+function artMoleRecordsKeeper(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="17" fill="#5f4632" opacity="0.7"/><ellipse cx="50" cy="45" rx="13" ry="11" fill="#5f4632" opacity="0.7"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><rect x="40" y="38" width="20" height="5" fill="#d1a94e" stroke="none"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
+function artMoleComplianceOfficer(){
+   return sceneWrap(`<circle cx="50" cy="58" r="36" fill="#b06a97" opacity="0.1"/><ellipse cx="50" cy="60" rx="22" ry="16" fill="#5f4632"/><ellipse cx="50" cy="42" rx="11" ry="9" fill="#5f4632"/><path d="M40 38 Q36 30 30 32" fill="none" stroke-width="3"/><path d="M60 38 Q64 30 70 32" fill="none" stroke-width="3"/><line x1="40" y1="74" x2="34" y2="88"/><line x1="60" y1="74" x2="66" y2="88"/>`, 0);
+}
+function artMoleAppealsProcessor(){
+   return sceneWrap(`<ellipse cx="46" cy="62" rx="22" ry="17" fill="#5f4632"/><ellipse cx="46" cy="44" rx="12" ry="10" fill="#5f4632"/><path d="M38 40 Q34 32 28 34" fill="none" stroke-width="3"/><path d="M54 40 Q58 32 64 34" fill="none" stroke-width="3"/><rect x="66" y="46" width="16" height="14" fill="#b5453f" opacity="0.6" transform="rotate(-6 74 53)"/><line x1="40" y1="78" x2="34" y2="92"/>`, 0);
+}
+function artMoleNightAuditor(){
+   return sceneWrap(`<ellipse cx="50" cy="64" rx="22" ry="17" fill="#5f4632" opacity="0.6"/><ellipse cx="50" cy="45" rx="12" ry="10" fill="#5f4632" opacity="0.6"/><path d="M40 41 Q36 33 30 35" fill="none" stroke-width="3"/><path d="M60 41 Q64 33 70 35" fill="none" stroke-width="3"/><circle cx="50" cy="45" r="2" fill="#d1a94e" stroke="none"/><line x1="40" y1="80" x2="34" y2="94"/><line x1="60" y1="80" x2="66" y2="94"/>`, 0);
+}
 
 /* The Ember Warren's mole rig (emberwarren-content.js) -- same mole
 silhouette vocabulary as every warren above, dressed in forge/machine
