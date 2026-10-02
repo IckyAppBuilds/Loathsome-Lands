@@ -313,21 +313,27 @@ stats (this is the only file that needs editing for that). Touch the
 6 content files themselves when: adding a brand-new monster (name,
 zone, skills, art, loot — plus one new entry in `monster-stats.js` for
 its stats), or changing anything about an EXISTING monster that isn't
-beef/zip/grit/hoodoo/xp.
+beef/zip/grit/hoodoo/armor/xp.
 
-**`armor` is deliberately NOT part of a monster's authored data at
-all** — no `armor:` field lives on any of the 77 objects. It's derived
-purely from `grit` + whether the monster is `rare:true`, by
-`deriveMonsterCombatStats()`, exactly like hp/atk/dodge already are:
-`MONSTER_ARMOR_PER_GRIT` (regular trash) / `MONSTER_RARE_ARMOR_PER_GRIT`
-(any rare monster — steeper, since a boss should feel tougher than a
-wild encounter of similar raw grit) — two tunable constants,
-content.js, control the WHOLE bestiary's armor curve at once. This
-replaced an earlier version (shipped, then superseded the same session)
-that hand-picked a literal `armor:N` on 9 "marquee" bosses and left
-everyone else at 0 — moved to a pure derivation specifically so the
-entire bestiary gets a real, consistent value with zero per-monster
-authoring, rather than an ever-growing hand-picked exception list.
+**`armor` IS part of a monster's authored data now** — per explicit
+request ("monsters should also have an armor stat"), every one of the
+355 `MONSTER_STATS` entries (monster-stats.js) carries its own `armor`
+field, read straight off by `deriveMonsterCombatStats()` exactly like
+beef/zip/grit/hoodoo already are. This is the THIRD shape armor has
+taken this project: first a hand-picked literal `armor:N` on 9
+"marquee" bosses (0 everywhere else), then a pure derivation from
+`grit` + `rare:true` through two tunable constants (`MONSTER_ARMOR_
+PER_GRIT`/`MONSTER_RARE_ARMOR_PER_GRIT`, both now deleted — nothing
+reads them anymore), now a real authored field again — but unlike the
+first attempt, every one of the 355 monsters got seeded with exactly
+what the derivation formula would have produced for its grit/rare at
+the moment of the switch (a live extraction confirmed zero monsters'
+derived hp/atk/armor changed), so this was a pure architecture change,
+not a balance change. The payoff: a monster's armor can now be tuned
+independently of its grit — a "heavily plated but fragile" archetype
+(high armor, low grit/HP) is possible the same way zip's own "evasive"
+archetype (high zip, low grit/HP) already is, just not yet authored
+anywhere. See monster-stats.js's own comment for the seeding math.
 
 The named bosses — every one of them (`gnomeCommander`/`diggerBot`/
 `gnomeKingsCaptain`/`gnomeKing`/the Adventurer's Trial's three themed

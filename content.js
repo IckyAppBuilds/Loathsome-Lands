@@ -64,7 +64,7 @@ stays reserved for named bosses, a "this is a real fight" signal).
 TRASH_SKILL_CHANCE is the one shared chance every trash skill uses —
 declared here, ahead of this array, since it's referenced inside the
 array literal itself (evaluated immediately at parse time, unlike the
-MONSTER_ARMOR_PER_GRIT-style constants further down this file, which
+MONSTER_HP_PER_GRIT-style constants further down this file, which
 only get read inside function bodies called later — a `const`
 declared after this point would still throw a temporal-dead-zone
 ReferenceError the moment this array tried to evaluate it). Each
@@ -2219,25 +2219,23 @@ reaching (or exceeding) 100%. */
 const ARMOR_REDUCTION_COEFFICIENT = 0.02;
 const ARMOR_REDUCTION_CAP = 0.6;
 
-/* A monster's own armor is NOT an authored field (unlike beef/zip/grit/
-hoodoo above) — it's derived purely from grit + whether it's rare:true,
-by deriveMonsterCombatStats() (combat.js), the same place hp/atk/dodge
-already get derived. This was tried the other way first (a hand-picked
-armor:N literal on a short list of "marquee" bosses, 0 on everyone else)
-and replaced with this formula specifically so the WHOLE bestiary gets a
-real, consistent armor value from exactly 2 tunable constants instead of
-dozens of one-off literals or an ever-growing hand-picked exception list.
-Rare monsters get a noticeably steeper per-grit rate than regular trash —
-same reasoning dodgeChance/skills[] always used (a boss should feel
-different from a wild encounter of similar raw toughness), just applied
-here as a multiplier instead of a per-monster flag. Sanity-checked
-against the real data: weakest trash (grit~6) -> armor 1 (~2% mitigation,
-negligible); toughest regular trash (grit~26) -> armor 4 (~11%); the
-earliest rare hunt (grit 20) -> armor 5 (~14%); the single highest-grit
-monster in the game, warrenMother (grit 37) -> armor 9 (~28%) — climbs
-with difficulty at both ends without ever approaching ARMOR_REDUCTION_CAP. */
-const MONSTER_ARMOR_PER_GRIT = 0.15;
-const MONSTER_RARE_ARMOR_PER_GRIT = 0.25;
+/* A monster's own armor WAS derived purely from grit + whether it's
+rare:true (two flat per-grit rate constants that used to live here),
+not an authored field — tried a hand-picked armor:N literal on a short
+list of "marquee" bosses first, 0 on everyone else, then replaced BOTH
+of those with a formula so the whole bestiary got a real, consistent
+value. Per explicit later request ("monsters should also have an armor
+stat"), it's now a third thing: a genuine authored field, `armor`, in
+MONSTER_STATS (monster-stats.js) right alongside beef/zip/grit/hoodoo —
+deriveMonsterCombatStats() (combat.js) just reads it straight off the
+template now, no formula left here at all. Every monster was seeded
+with exactly what the old formula would have produced for its grit/
+rare at the time of the switch, so this was a pure architecture change,
+not a balance change — see monster-stats.js's own comment for the
+seeding math and how to deliberately diverge a monster's armor from
+its grit going forward (a heavily-plated-but-fragile archetype, not
+yet authored anywhere, the armor-side mirror of zip's own evasive
+archetype). */
 
 /* The Inn — chance restAtInn() (game.js) restores the player without
 consuming a Biscuit. 1.0 at max level = rest is always free. */

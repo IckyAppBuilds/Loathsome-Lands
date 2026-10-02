@@ -227,23 +227,29 @@ convention as devMode. Reset to 'main' whenever combat starts/ends so a
 leftover open spellbook never bleeds into the next fight. */
 let combatSubView = 'main';
 
-/* Turns a monster template's beef/zip/grit/hoodoo (content.js — replaced
-the old raw hp/atkMin/atkMax/dodgeChance fields entirely) into the numbers
-startCombat() below actually spawns with, via statBonus() (core.js) same
-as every player-side formula. No "level" term — unlike the player, a
-monster's own stats don't grow over time, so its combat numbers are pure
-functions of grit/beef/zip. hoodoo is deliberately unused here (see its
-own comment, content.js) — a monster's skills[] keep their own
-hand-authored magnitude regardless of hoodoo.
+/* Turns a monster template's beef/zip/grit/hoodoo/armor (content.js —
+replaced the old raw hp/atkMin/atkMax/dodgeChance fields entirely) into
+the numbers startCombat() below actually spawns with, via statBonus()
+(core.js) same as every player-side formula. No "level" term — unlike
+the player, a monster's own stats don't grow over time, so its combat
+numbers are pure functions of grit/beef/zip/armor. hoodoo is
+deliberately unused here (see its own comment, content.js) — a
+monster's skills[] keep their own hand-authored magnitude regardless of
+hoodoo.
 
-armor is derived here too (from grit + m.rare), NOT read off an authored
-field — a monster object never carries its own armor: N literal at all.
-Rare monsters use a steeper per-grit rate (MONSTER_RARE_ARMOR_PER_GRIT)
-than regular trash (MONSTER_ARMOR_PER_GRIT), same "a boss should feel
-different from a wild encounter of similar toughness" reasoning
-dodgeChance/skills[] already apply via other means — see the constants'
-own comment, content.js, for why this replaced an earlier hand-picked-
-per-boss version. */
+armor is read straight off MONSTER_STATS (monster-stats.js) as its own
+authored field now, same as beef/zip/grit/hoodoo — NOT derived from grit
+the way it used to be (a flat per-grit rate, steeper for m.rare, with no
+way to tune a monster's armor independently of its HP). Per explicit
+request ("monsters should also have an armor stat"): every one of the
+355 monsters was seeded with its own PRE-existing derived value (so this
+pass changed nothing about actual combat numbers, same "expose it, then
+let it be tuned independently" shape the zip archetype pass used) —
+see monster-stats.js's own comment for the exact seeding formula and
+how to deliberately diverge a monster's armor from its grit going
+forward (a "heavily plated but fragile" archetype, the armor-side
+mirror of zip's own "fast but fragile" evasive archetype, is now
+possible but not yet authored anywhere). */
 /* Zip's one formula, shared by both dodge AND accuracy, on both sides —
 see ZIP_DODGE_COEFFICIENT/ZIP_DODGE_CAP's own comment (content.js) for
 why this single function covers all four uses: the player's own dodge
@@ -264,7 +270,7 @@ function deriveMonsterCombatStats(m){
    const atkMin = Math.max(1, Math.round(atkCenter * (1 - MONSTER_ATK_SPREAD)));
    const atkMax = Math.max(atkMin, Math.round(atkCenter * (1 + MONSTER_ATK_SPREAD)));
    const dodgeChance = zipDodgeAndAccuracy(m.zip);
-   const armor = Math.round((m.grit || 0) * (m.rare ? MONSTER_RARE_ARMOR_PER_GRIT : MONSTER_ARMOR_PER_GRIT));
+   const armor = m.armor || 0;
    return { hp, atkMin, atkMax, dodgeChance, armor };
 }
 
