@@ -559,14 +559,18 @@ Touch this file when: adding a new multi-boss gauntlet, or changing how
 an existing one's guards/finalBoss/approach/reset mechanics work.
 
 ## crystalcity-content.js — The Crystal City (Act 2 capstone, quest16) monster data
-`crystalCityMonsters` (3 regulars — `crystalSentinel`/`geodeCrawler`/
-`echoWraith` — same `.push()`-onto-`monsters`/`BOUNTY_TEMPLATES` shape
-as every other zone's own roster; gearDrop bonus +10, one step past the
-Ember Warren's own +9). Deliberately a STUB, same as Mudroot Warren/the
-Ember Warren before their own first quest — no rare hunt/boss of its
-own yet. First zone with a genuinely new visual identity (angular
-crystalline shapes, not the mole silhouette every Act 2 monster before
-it used — see the comment above `artCrystalSentinel`, art.js) signaling
+`crystalCityMonsters` (15 regulars — the original 3 (`crystalSentinel`/
+`geodeCrawler`/`echoWraith`) plus 12 more added in the "every zone/
+dungeon drops gear for every slot, every class" pass — same
+`.push()`-onto-`monsters`/`BOUNTY_TEMPLATES` shape as every other
+zone's own roster; gearDrop bonus +10, one step past the Ember Warren's
+own +9, and now a full 5-slot x 3-class matrix, same as every
+Gnometropolis-onward zone). Still a STUB apart from that, same as
+Mudroot Warren/the Ember Warren before their own first quest — no rare
+hunt/boss of its own yet. First zone with a genuinely new visual
+identity (angular crystalline shapes, not the mole silhouette every
+Act 2 monster before it used — see the comment above
+`artCrystalSentinel`, art.js) signaling
 this is the first taste of whatever comes after the Mole Wars, not
 another warren. Also extends `noncombatEvents`/`hazardEvents` with a
 `crystalcity` entry. Loads after content.js/icons.js/art.js.

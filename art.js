@@ -1266,6 +1266,48 @@ function artGeodeCrawler(){
    return sceneWrap(`<path d="M18 78 L34 56 L50 66 L66 52 L84 78 Z" fill="#8a8477"/><path d="M30 74 L36 62 L44 70 Z" fill="#b06a97" opacity="0.8"/><path d="M52 70 L60 58 L68 68 Z" fill="#f4efe4" opacity="0.7"/><circle cx="40" cy="74" r="2" fill="#d1a94e" stroke="none"/><circle cx="60" cy="72" r="2" fill="#d1a94e" stroke="none"/>`, 0);
 }
 
+/* 12 more Crystal City regulars (gear-coverage pass) — same angular
+Lucent-crystal faceted vocabulary as artCrystalSentinel/artGeodeCrawler/
+artEchoWraith above, same 4-color palette (#3d5a80 blue, #b06a97
+purple, #f4efe4 near-white, #8a8477 grey, #d1a94e gold accent), no new
+colors introduced. */
+function artLatticeGolem(){
+   return sceneWrap(`<path d="M50 18 L72 44 L64 78 L36 78 L28 44 Z" fill="#8a8477" opacity="0.85"/><path d="M50 18 L72 44 L50 50 Z" fill="#3d5a80" opacity="0.5"/><path d="M50 18 L28 44 L50 50 Z" fill="#f4efe4" opacity="0.4"/><line x1="36" y1="78" x2="32" y2="92" stroke-width="3.5"/><line x1="64" y1="78" x2="68" y2="92" stroke-width="3.5"/>`, 0);
+}
+function artShardTreader(){
+   return sceneWrap(`<path d="M50 22 L70 46 L60 80 L40 80 L30 46 Z" fill="#3d5a80" opacity="0.8"/><path d="M50 22 L70 46 L50 54 Z" fill="#f4efe4" opacity="0.5"/><circle cx="50" cy="54" r="3" fill="#d1a94e" stroke="none"/><line x1="40" y1="80" x2="36" y2="94" stroke-width="3"/><line x1="60" y1="80" x2="64" y2="94" stroke-width="3"/>`, 0);
+}
+function artGlassFootedWanderer(){
+   return sceneWrap(`<path d="M50 24 L68 48 L56 78 L44 78 L32 48 Z" fill="#f4efe4" opacity="0.6"/><path d="M50 24 L68 48 L50 56 Z" fill="#8a8477" opacity="0.5"/><circle cx="44" cy="92" r="2" fill="#d1a94e" stroke="none"/><circle cx="56" cy="92" r="2" fill="#d1a94e" stroke="none"/><line x1="44" y1="78" x2="44" y2="92" stroke-width="3"/><line x1="56" y1="78" x2="56" y2="92" stroke-width="3"/>`, 0);
+}
+function artPrismFistedBrawler(){
+   return sceneWrap(`<path d="M50 16 L74 42 L62 80 L38 80 L26 42 Z" fill="#3d5a80" opacity="0.85"/><path d="M50 16 L74 42 L50 48 Z" fill="#d1a94e" opacity="0.5"/><path d="M62 60 L82 50 L80 64 Z" fill="#f4efe4" opacity="0.7"/><path d="M38 60 L18 50 L20 64 Z" fill="#f4efe4" opacity="0.7"/><line x1="38" y1="80" x2="34" y2="94" stroke-width="3.5"/><line x1="62" y1="80" x2="66" y2="94" stroke-width="3.5"/>`, 0);
+}
+function artFacetDancer(){
+   return sceneWrap(`<path d="M50 24 L66 46 L56 76 L44 76 L34 46 Z" fill="#b06a97" opacity="0.65"/><path d="M50 24 L66 46 L50 52 Z" fill="#f4efe4" opacity="0.5"/><path d="M50 24 L34 46 L50 52 Z" fill="#3d5a80" opacity="0.4"/><line x1="44" y1="76" x2="40" y2="90" stroke-width="2.5"/><line x1="56" y1="76" x2="60" y2="90" stroke-width="2.5"/>`, 5);
+}
+function artRefractedDuelist(){
+   return sceneWrap(`<path d="M46 22 L68 44 L58 76 L38 76 L28 44 Z" fill="#3d5a80" opacity="0.75"/><path d="M46 22 L68 44 L46 50 Z" fill="#b06a97" opacity="0.5"/><line x1="68" y1="56" x2="88" y2="48" stroke="#f4efe4" stroke-width="2.5"/><line x1="38" y1="76" x2="34" y2="90" stroke-width="2.5"/><line x1="58" y1="76" x2="62" y2="90" stroke-width="2.5"/>`, 0);
+}
+function artGlintStepWraith(){
+   return sceneWrap(`<path d="M50 26 L64 46 L54 72 L46 72 L36 46 Z" fill="#f4efe4" opacity="0.5"/><path d="M50 26 L64 46 L50 52 Z" fill="#b06a97" opacity="0.4"/><circle cx="30" cy="30" r="1.8" fill="#d1a94e" stroke="none"/><circle cx="72" cy="26" r="1.8" fill="#d1a94e" stroke="none"/><line x1="46" y1="72" x2="34" y2="88" stroke-width="2.5"/><line x1="54" y1="72" x2="66" y2="88" stroke-width="2.5"/>`, 5);
+}
+function artSplinterBladeWisp(){
+   return sceneWrap(`<path d="M46 24 L64 44 L54 74 L38 74 L30 44 Z" fill="#3d5a80" opacity="0.7"/><path d="M46 24 L64 44 L46 50 Z" fill="#f4efe4" opacity="0.5"/><line x1="64" y1="52" x2="84" y2="42" stroke="#d1a94e" stroke-width="2.5"/>`, 5);
+}
+function artLucentOracle(){
+   return sceneWrap(`<path d="M50 24 L66 46 L56 76 L44 76 L34 46 Z" fill="#8a8477" opacity="0.6"/><path d="M50 24 L66 46 L50 52 Z" fill="#3d5a80" opacity="0.5"/><circle cx="50" cy="52" r="3.5" fill="none" stroke="#d1a94e" stroke-width="1.5"/><line x1="44" y1="76" x2="40" y2="90" stroke-width="2.5"/><line x1="56" y1="76" x2="60" y2="90" stroke-width="2.5"/>`, 0);
+}
+function artGlowWardedRemnant(){
+   return sceneWrap(`<path d="M50 20 L70 44 L60 78 L40 78 L30 44 Z" fill="#b06a97" opacity="0.55"/><path d="M50 20 L70 44 L50 50 Z" fill="#f4efe4" opacity="0.5"/><path d="M40 60 Q50 54 60 60" fill="none" stroke="#d1a94e" stroke-width="2" opacity="0.7"/><line x1="40" y1="78" x2="36" y2="92" stroke-width="3"/><line x1="60" y1="78" x2="64" y2="92" stroke-width="3"/>`, 0);
+}
+function artBentLightStalker(){
+   return sceneWrap(`<path d="M46 20 L70 44 L60 80 L38 80 L26 44 Z" fill="#3d5a80" opacity="0.8"/><path d="M46 20 L70 44 L46 50 Z" fill="#b06a97" opacity="0.5"/><path d="M60 60 Q74 64 70 50" fill="none" stroke="#f4efe4" stroke-width="2" opacity="0.6"/><line x1="38" y1="80" x2="34" y2="94" stroke-width="3.5"/><line x1="60" y1="80" x2="64" y2="94" stroke-width="3.5"/>`, 0);
+}
+function artSilentFacet(){
+   return sceneWrap(`<path d="M50 26 L64 46 L54 72 L46 72 L36 46 Z" fill="#8a8477" opacity="0.45"/><path d="M50 26 L64 46 L50 52 Z" fill="#f4efe4" opacity="0.4"/><line x1="46" y1="72" x2="40" y2="86" stroke-width="2.5"/><line x1="54" y1="72" x2="60" y2="86" stroke-width="2.5"/>`, 0);
+}
+
 /* ---------------- Act 3: the Prism Depths — Embercrypt ---------------- */
 /* Every Act 3 creature shares one "Lucent-made" visual family — the
 same angular/faceted vocabulary artCrystalSentinel/artGeodeCrawler
