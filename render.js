@@ -438,8 +438,10 @@ function syncBuildingScreens(ctx){
   if(ctx.isGarrison && !state.inCombat && state.quest7Complete){
     renderClassSpellList('garrison-spell-list', 'Meathead');
     renderClassSkillUpgrade('garrison-classskill-block', 'Meathead');
+    renderSpellUpgradeBlock('garrison-spell-upgrade-block', 'Meathead');
   } else {
     document.getElementById('garrison-classskill-block').style.display = 'none';
+    document.getElementById('garrison-spell-upgrade-block').style.display = 'none';
   }
 
   /* Hi-Lo (hilo.js) — same "own uncluttered screen" shape Blackjack
@@ -454,8 +456,10 @@ function syncBuildingScreens(ctx){
   if(ctx.isRoguesden && !state.inCombat && state.quest7Complete && !atHiLoTable){
     renderClassSpellList('roguesden-spell-list', 'Card Shark');
     renderClassSkillUpgrade('roguesden-classskill-block', 'Card Shark');
+    renderSpellUpgradeBlock('roguesden-spell-upgrade-block', 'Card Shark');
   } else {
     document.getElementById('roguesden-classskill-block').style.display = 'none';
+    document.getElementById('roguesden-spell-upgrade-block').style.display = 'none';
   }
   document.getElementById('roguesden-hilo-entry-row').style.display = (ctx.isRoguesden && !state.inCombat && state.quest7Complete && !atHiLoTable) ? 'flex' : 'none';
   document.getElementById('hilo-table').style.display = (ctx.isRoguesden && atHiLoTable) ? 'block' : 'none';
@@ -472,7 +476,7 @@ function syncBuildingScreens(ctx){
   if(ctx.isSanctum && !state.inCombat && state.quest7Complete){
     renderClassSpellList('sanctum-spell-list', 'Hexpert');
     renderClassSkillUpgrade('sanctum-classskill-block', 'Hexpert');
-    renderSpellUpgradeBlock('sanctum-spell-upgrade-block');
+    renderSpellUpgradeBlock('sanctum-spell-upgrade-block', 'Hexpert');
   } else {
     document.getElementById('sanctum-classskill-block').style.display = 'none';
     document.getElementById('sanctum-spell-upgrade-block').style.display = 'none';
@@ -1027,7 +1031,7 @@ function syncCombatUI(ctx){
   recastBtn.style.display = (state.inCombat && combatSubView==='main' && recastSpell) ? '' : 'none';
   if(recastSpell){
     recastBtn.textContent = `Recast ${recastSpell.name}`;
-    recastBtn.disabled = state.mp < recastSpell.mpCost;
+    recastBtn.disabled = state.mp < spellEffectiveMpCost(recastSpell);
   }
   /* Garrison/Rogues' Den/Arcane Sanctum only get the Adventure! loop
   (CLASS_AREA_ZONES, combat.js) before quest7Complete — once converted,

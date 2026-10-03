@@ -484,7 +484,7 @@ function renderHoodooShop(){
     const btn = known
     ? `<button class="btn-secondary" disabled>Known</button>`
       : `<button class="btn-secondary" ${canAfford?'':'disabled'} onclick="learnSpell('${spell.id}')">Learn — ${spell.price} Pop Tabs</button>`;
-    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP to cast)</div>${btn}</div>`;
+    div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spellEffectiveMpCost(spell)} MP to cast)</div>${btn}</div>`;
     el.appendChild(div);
   });
 

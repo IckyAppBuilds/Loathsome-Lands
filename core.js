@@ -277,7 +277,7 @@ function createDefaultState(){
         the two spells share this one flag safely (a player only ever
         has one class, so only one of the two could ever be known/cast
         anyway) while still picking the right flavor text and the right
-        per-spell upgrade check (state.spellsUpgraded, below) at the
+        per-spell upgrade level (state.spellUpgradeLevel, below) at the
         point it's actually read. Cleared by endCombat() (so it never
         survives into the next fight) and by playerAttack()/a cast
         damage spell (so swinging back breaks it immediately) — see
@@ -307,15 +307,17 @@ function createDefaultState(){
         off of), not real-time turns. Same not-saved reasoning as
         evasionActive right above — this only ever matters mid-fight. */
      playerStatusEffect: null,
-     /* Which spells (by id) have been leveled up to "Level 2" — Hexpert's
-        own Arcane Sanctum-exclusive upgrade, per explicit request: EVERY
-        spell a Hexpert knows is eligible, not just the ones actually
-        taught there, and unlike state.spellsKnown this is a genuine
-        permanent progression choice, so — unlike evasionActive/
-        playerStatusEffect above — it IS part of serializeState() (save.js).
-        See SPELL_UPGRADE_MULTIPLIER's own comment (content.js) for what
-        it actually does to each spell type. */
-     spellsUpgraded: [],
+     /* Each known spell's own upgrade level (by id, 0-SPELL_UPGRADE_MAX_LEVEL,
+        missing/0 = never upgraded) — bought one level at a time at that
+        class's own Act 2 district (CLASS_UPGRADE_LOCATION, content.js),
+        per explicit request: "instead of skills scaling, let's have
+        them be upgradable... 5 times, where they do more but cost more
+        MP." Unlike state.spellsKnown this is a genuine permanent
+        progression choice, so — unlike evasionActive/playerStatusEffect
+        above — it IS part of serializeState() (save.js). See
+        SPELL_UPGRADE_POWER_PER_LEVEL/MP_PER_LEVEL's own comment
+        (content.js) for what each level actually does. */
+     spellUpgradeLevel: {},
      /* The highest CHANGELOG entry id (changelog.js) this player has
         already been shown, checked once per login (checkChangelogOnLogin(),
         called from enterGameAfterAuth(), auth.js) — null covers both a

@@ -433,8 +433,8 @@ below — the normal Zip-based roll, plus EVASION_DODGE_BONUS
 spell's own id (castSpell()'s 'evade' branch below), capped at
 EVASION_DODGE_CAP instead of the normal 0.5 ceiling so Smoke Screen/
 Illusion actually deliver the "dramatic" boost they're meant to.
-Whichever spell is active gets its own Level 2 check here
-(state.spellsUpgraded, core.js) — the bonus itself is what a Hexpert's
+Whichever spell is active gets its own upgrade level read here
+(spellUpgradeMultiplier(), below) — the bonus itself is what a
 Sanctum-bought Illusion upgrade actually scales, since 'evade' has no
 other single number to bump the way damage/heal/ward do. */
 /* Per explicit request, zip is accuracy as well as dodge — whichever
@@ -453,7 +453,7 @@ function playerDodgeChance(){
    const attackerAccuracy = state.monster ? zipDodgeAndAccuracy(state.monster.zip) : 0;
    const base = Math.max(0, zipDodgeAndAccuracy(eff.zip) - attackerAccuracy);
    if(!state.evasionActive) return base;
-   const bonus = state.spellsUpgraded.includes(state.evasionActive) ? EVASION_DODGE_BONUS * SPELL_UPGRADE_MULTIPLIER : EVASION_DODGE_BONUS;
+   const bonus = EVASION_DODGE_BONUS * spellUpgradeMultiplier(state.evasionActive);
    return Math.min(EVASION_DODGE_CAP, base + bonus);
 }
 /* "the smoke"/"the illusion" — the one word that differs between Smoke
@@ -463,11 +463,25 @@ sentence per spell. */
 function evasionFlavorNoun(){
    return state.evasionActive === 'illusion' ? 'the illusion' : 'the smoke';
 }
-/* Shared by every branch in castSpell() below that scales its own
-effect off SPELL_UPGRADE_MULTIPLIER (content.js) — Hexpert's Level 2
-Arcane Sanctum upgrade, per spell id. */
-function isSpellUpgraded(id){
-   return state.spellsUpgraded.includes(id);
+/* The 5-level spell-upgrade ladder (SPELL_UPGRADE_MAX_LEVEL/
+POWER_PER_LEVEL/MP_PER_LEVEL, content.js) — state.spellUpgradeLevel
+(core.js) maps a spell id to its current level, 0 (never upgraded) to
+SPELL_UPGRADE_MAX_LEVEL. spellUpgradeMultiplier() is what every branch
+in castSpell() below multiplies its own effect by — 1 at level 0 (a
+no-op, so an un-upgraded spell is byte-for-byte its base value), rising
+15% per level bought. spellEffectiveMpCost() is the OTHER half of the
+fix this ladder exists for: MP cost rises right alongside the effect
+(20%/level) instead of staying flat forever while power keeps growing
+for free — see upgradeSpell()'s own comment, further down, for the
+purchase flow. */
+function spellUpgradeLevel(id){
+   return state.spellUpgradeLevel[id] || 0;
+}
+function spellUpgradeMultiplier(id){
+   return 1 + spellUpgradeLevel(id) * SPELL_UPGRADE_POWER_PER_LEVEL;
+}
+function spellEffectiveMpCost(spell){
+   return Math.round(spell.mpCost * (1 + spellUpgradeLevel(spell.id) * SPELL_UPGRADE_MP_PER_LEVEL));
 }
 
 /* A monster's default turn: try to hit the player, worn down by the
@@ -789,7 +803,10 @@ function castSpell(id){
    type (heal/ward/shout/buff) is also castable from the Character page
    (renderCastableSpellsBlock(), class-spells.js), not just mid-combat. */
    if((spell.type==='damage' || spell.type==='evade') && !state.inCombat) return;
-   if(!state.spellsKnown.includes(id) || state.mp < spell.mpCost) return;
+   /* The actual MP cost, not spell.mpCost's own base value — rises with
+   this spell's own upgrade level (spellEffectiveMpCost(), above). */
+   const mpCost = spellEffectiveMpCost(spell);
+   if(!state.spellsKnown.includes(id) || state.mp < mpCost) return;
    /* Defense-in-depth: learnSpell() already refuses to teach a buff spell
    to the wrong class, but a crafted castSpell() call could still try to
    cast one it never learned via the normal flow — refuse with a message
@@ -800,7 +817,7 @@ function castSpell(id){
       return;
    }
 
-state.mp -= spell.mpCost;
+state.mp -= mpCost;
    /* Recorded AFTER every guard above (spellsKnown/mpCost/classRequired)
    has already passed, so lastSpellCast only ever holds something this
    class can legally recast — see state.lastSpellCast's own comment
@@ -843,12 +860,12 @@ if(spell.type==='damage'){
    }
    let dmg = Math.round((randInt(spell.dmgMin, spell.dmgMax) + (state.level-1) + statBonus(eff.hoodoo)) * statusFx.dmgMult);
    if(state.classTitle === 'Hexpert') dmg += HEXPERT_SPELL_DMG_BONUS[state.classSkillLevel];
-   /* This spell's own Level 2 upgrade (SPELL_UPGRADE_MULTIPLIER,
-   content.js) — applied here, after the flat class bonus but before
-   the Arcane Focus multiplier below, so it scales the base roll +
-   passive bonus together, same ordering reasoning as that multiplier's
-   own comment just below. */
-   if(isSpellUpgraded(spell.id)) dmg = Math.round(dmg * SPELL_UPGRADE_MULTIPLIER);
+   /* This spell's own upgrade level (spellUpgradeMultiplier(), above) —
+   applied here, after the flat class bonus but before the Arcane Focus
+   multiplier below, so it scales the base roll + passive bonus
+   together, same ordering reasoning as that multiplier's own comment
+   just below. */
+   dmg = Math.round(dmg * spellUpgradeMultiplier(spell.id));
    /* Arcane Focus buff (content.js's spells[], classRequired:'Hexpert') —
    applied AFTER the flat HEXPERT_SPELL_DMG_BONUS line above so the
    multiplier scales the whole total (base roll + passive bonus), not
@@ -899,69 +916,54 @@ if(spell.type==='damage'){
       }
    }
 } else if(spell.type==='heal'){
-   /* SPELL_UPGRADE_MULTIPLIER (content.js) applies to whichever single
+   /* spellUpgradeMultiplier() (above) applies to whichever single
    number IS that spell's own effect — for 'heal' that's the final
-   computed amount. Same isSpellUpgraded() check reused across every
-   branch below rather than re-deriving
-   state.spellsUpgraded.includes(spell.id) each time.
+   computed amount.
 
-   healPercentOfMaxHp/healPercentPerSkillLevel (content.js,
-   stubbornrecovery only — both absent/0 for mendcharm, so this term is
-   just 0 for Hexpert's own early heal, which falls back to its flat
-   healValue below) heal a FRACTION of state.maxHp instead of a flat
-   amount. First attempt at fixing Stubborn Recovery's flat healValue
-   being "functionally decorative" against a late-game HP pool in the
-   thousands scaled it off Beef instead — per explicit correction, that
-   overcorrected: Beef is an unbounded offense stat with no ceiling
-   tied to the player's own HP, so a heavily-invested Meathead could
-   heal for more than their entire max HP in one cast. Pegging it to
-   maxHp itself (Grit's own job, recomputeMaxStats(), player-actions.js)
-   means the heal is always a sane fraction of THIS character's current
-   HP pool, at any level, never decorative and never absurd. */
-   const healPercent = (spell.healPercentOfMaxHp || 0) + state.classSkillLevel * (spell.healPercentPerSkillLevel || 0);
-   const healAmt = Math.round(((spell.healValue || 0) + state.maxHp * healPercent) * (isSpellUpgraded(spell.id) ? SPELL_UPGRADE_MULTIPLIER : 1));
+   healPercentOfMaxHp (content.js, stubbornrecovery only — absent/0 for
+   mendcharm, so this term is just 0 for Hexpert's own early heal, which
+   falls back to its flat healValue below) heals a FRACTION of
+   state.maxHp instead of a flat amount. Earlier shapes (flat, then
+   Beef-scaled) are history now, covered in this spell's own comment,
+   content.js — pegging it to maxHp means the base heal is always a
+   sane fraction of THIS character's current HP pool; the
+   spellUpgradeMultiplier() term below is the only way it grows
+   further, and that costs real MP every level (spellEffectiveMpCost(),
+   above) instead of scaling for free. */
+   const healPercent = spell.healPercentOfMaxHp || 0;
+   const healAmt = Math.round(((spell.healValue || 0) + state.maxHp * healPercent) * spellUpgradeMultiplier(spell.id));
    const before = state.hp;
    state.hp = Math.min(state.maxHp, state.hp+healAmt);
    log(`You cast ${spell.name} and patch yourself up. (+${state.hp-before} HP)`);
 } else if(spell.type==='ward'){
    /* Grants a persistent shield (applyDamageToPlayer(), above) instead of
    just softening this one retaliation — a fraction of state.maxHp
-   (shieldPercentOfMaxHp/shieldPercentPerSkillLevel, content.js), not a
-   raw-stat-scaled amount any more. A live playtest with a real,
-   heavily-invested character found the stat-scaled version (Hoodoo for
-   Warding Charm, Zip for Ace in the Hole) could produce a shield worth
-   several times the caster's OWN max HP once that stat got big enough
-   — see Warding Charm's own comment, content.js, for the exact numbers
-   and the full before/after. Pegging it to maxHp itself means it's
-   always a sane, bounded fraction of THIS character's current HP pool.
-   Stacks on repeat casts; only spent when something actually hits. */
-   const shieldPercent = (spell.shieldPercentOfMaxHp || 0) + state.classSkillLevel * (spell.shieldPercentPerSkillLevel || 0);
-   let shieldAmount = Math.round(state.maxHp * shieldPercent);
-   if(isSpellUpgraded(spell.id)) shieldAmount = Math.round(shieldAmount * SPELL_UPGRADE_MULTIPLIER);
+   (shieldPercentOfMaxHp, content.js), not a raw-stat-scaled amount any
+   more. Earlier shapes (flat, then Hoodoo/Zip-scaled) are history now,
+   covered in Warding Charm's own comment, content.js. Stacks on repeat
+   casts; only spent when something actually hits. */
+   const shieldPercent = spell.shieldPercentOfMaxHp || 0;
+   const shieldAmount = Math.round(state.maxHp * shieldPercent * spellUpgradeMultiplier(spell.id));
    state.shield += shieldAmount;
    log(`You cast ${spell.name} — a shimmering barrier settles over you. (+${shieldAmount} Shield)`);
 } else if(spell.type==='buff'){
    /* 'buff' has no single magnitude to scale the way heal/ward/damage
    do (its own effect — e.g. Arcane Focus's spell-damage multiplier —
    is hardcoded where THAT effect actually applies, not here), so its
-   own Level 2 upgrade instead extends how long it lasts. */
-   const buffFights = isSpellUpgraded(spell.id) ? Math.ceil(CLASS_BUFF_FIGHTS * SPELL_UPGRADE_MULTIPLIER) : CLASS_BUFF_FIGHTS;
+   own upgrade level instead extends how long it lasts. */
+   const buffFights = Math.ceil(CLASS_BUFF_FIGHTS * spellUpgradeMultiplier(spell.id));
    state.classBuffFightsLeft = buffFights;
    log(`You cast ${spell.name} — the next ${buffFights} fights are yours.`);
 } else if(spell.type==='shout'){
    /* Meathead-exclusive. Same percent-of-maxHp shape 'ward' just used
-   above (shieldPercentOfMaxHp/shieldPercentPerSkillLevel, content.js)
-   — went through two earlier, both broken shapes first: a near-flat
-   version was decorative late-game, then a Beef-scaled version (the
-   same fix 'ward' needed) produced a shield worth 300%+ of the
-   caster's own max HP for a heavily-invested Meathead. See Warding
-   Charm's own comment, content.js, for the full history. Shout's own
-   percentages are deliberately smaller than ward's (0.12/0.03 vs
-   0.15/0.035) — it was always meant to be the smaller, supplementary
-   one, a "braces for impact" add-on to gear/potions, not a
-   replacement for them. */
-   const shieldPercent = (spell.shieldPercentOfMaxHp || 0) + state.classSkillLevel * (spell.shieldPercentPerSkillLevel || 0);
-   const shieldAmount = Math.round(state.maxHp * shieldPercent);
+   above (shieldPercentOfMaxHp, content.js) — earlier shapes (flat, then
+   Beef-scaled) are history now, covered in Warding Charm's own
+   comment, content.js. Shout's own percentage is deliberately smaller
+   than ward's (0.12 vs 0.15) — it was always meant to be the smaller,
+   supplementary one, a "braces for impact" add-on to gear/potions, not
+   a replacement for them. */
+   const shieldPercent = spell.shieldPercentOfMaxHp || 0;
+   const shieldAmount = Math.round(state.maxHp * shieldPercent * spellUpgradeMultiplier(spell.id));
    state.shield += shieldAmount;
    log(`You let out a bone-rattling shout, bracing for whatever's coming. (+${shieldAmount} Shield)`);
 } else if(spell.type==='evade'){
@@ -1044,23 +1046,27 @@ function learnSpell(id){
    render();
 }
 
-/* Hexpert's own Level 2 spell upgrade, Arcane Sanctum-exclusive per
-explicit request — covers EVERY spell a Hexpert knows, not just the
-ones actually taught at the Sanctum (Hex Bolt/Bottled Fury/Mending
-Charm/Warding Charm were all learned elsewhere; a Hexpert's own
-Arcane Focus/Arcane Lance/Illusion were learned at Hoodoo/here).
-spellUpgradeCost()/SPELL_UPGRADE_MULTIPLIER (content.js) — one flat
-tier, applied per spell type in castSpell()'s own branches above. */
+/* The 5-level spell upgrade, bought at each class's own Act 2 district
+(CLASS_UPGRADE_LOCATION, content.js — Garrison/Rogues' Den/Sanctum for
+Meathead/Card Shark/Hexpert) — covers EVERY spell that class currently
+knows, not just the ones actually taught at that building (a Hexpert's
+own Hex Bolt/Bottled Fury/Mending Charm/Warding Charm were all learned
+at Hoodoo, for instance). One level at a time, up to
+SPELL_UPGRADE_MAX_LEVEL — spellUpgradeCost(spell, targetLevel) prices
+the NEXT level specifically (content.js), not the jump from 0, so the
+cost climbs as the player buys deeper into a single spell. */
 function upgradeSpell(id){
-   if(state.location !== 'sanctum' || state.classTitle !== 'Hexpert') return;
+   if(state.location !== CLASS_UPGRADE_LOCATION[state.classTitle]) return;
    const spell = spells.find(s=>s.id===id);
-   if(!spell || !state.spellsKnown.includes(id) || state.spellsUpgraded.includes(id)) return;
-   const cost = spellUpgradeCost(spell);
+   const currentLevel = spellUpgradeLevel(id);
+   if(!spell || !state.spellsKnown.includes(id) || currentLevel >= SPELL_UPGRADE_MAX_LEVEL) return;
+   const targetLevel = currentLevel + 1;
+   const cost = spellUpgradeCost(spell, targetLevel);
    if(state.popTabs < cost) return;
    state.popTabs -= cost;
-   state.spellsUpgraded.push(id);
+   state.spellUpgradeLevel[id] = targetLevel;
    clearLog();
-   log(`${spell.name} deepens — its own effect grows by ${Math.round((SPELL_UPGRADE_MULTIPLIER-1)*100)}%. (-${cost} Pop Tabs)`);
+   log(`${spell.name} deepens — Level ${targetLevel}/${SPELL_UPGRADE_MAX_LEVEL}, its own effect now ${Math.round((spellUpgradeMultiplier(id)-1)*100)}% stronger (and costs ${spellEffectiveMpCost(spell)} MP to cast). (-${cost} Pop Tabs)`);
    render();
    autosave();
 }

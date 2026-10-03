@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 46, date: 'October 3', title: 'Deepen Your Spells', items: [
+      "New: every class can now upgrade their own spells up to 5 times at their Act 2 district (Garrison/Rogues' Den/Arcane Sanctum) — each level makes the spell noticeably stronger, but costs more MP to cast too. Previously Hexpert-only.",
+      "Fix: Stubborn Recovery, Shout, Warding Charm, and Ace in the Hole used to get stronger for free as your shared class skill leveled up, with their own MP cost never budging — that free ride is gone, replaced by the new paid upgrade system above.",
+      ]},
    { id: 45, date: 'October 3', title: 'Earned, Not Given', items: [
       "Fix: Shout, Warding Charm, and Ace in the Hole could grant a shield worth several times your own max HP for a heavily-invested character — one cheap cast made you briefly unkillable. All three now grant a real, bounded percentage of your max HP instead.",
       "Fix: Zip's dodge cap (50%) was reachable almost by accident, from gear alone, with zero points actually spent on it. It now takes real, deliberate investment to get there — and every monster's own dodge/accuracy was re-tuned to match, so fights stay exactly as evasive as they were.",

@@ -33,8 +33,11 @@ function renderSpellMenu(){
       const div = document.createElement('div');
       div.className = 'shop-item';
       const iconSvg = spell.icon ? spell.icon() : '';
-      const canCast = state.mp >= spell.mpCost;
-      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div><button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${spell.mpCost} MP</button></div>`;
+      const mpCost = spellEffectiveMpCost(spell);
+      const canCast = state.mp >= mpCost;
+      const level = spellUpgradeLevel(spell.id);
+      const lvBadge = level > 0 ? ` <span class="qty-badge">Lv.${level}/${SPELL_UPGRADE_MAX_LEVEL}</span>` : '';
+      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}${lvBadge}</div><div class="desc">${spell.desc} (${mpCost} MP)</div><button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${mpCost} MP</button></div>`;
       list.appendChild(div);
     });
   }
@@ -57,7 +60,8 @@ function renderSpellMenu(){
       const div = document.createElement('div');
       div.className = 'shop-item';
       const iconSvg = spell.icon ? spell.icon() : '';
-      const canCast = state.mp >= spell.mpCost;
+      const mpCost = spellEffectiveMpCost(spell);
+      const canCast = state.mp >= mpCost;
       /* An evade spell (Smoke Screen/Illusion) shows "Active" while IT
       specifically is the one state.evasionActive names — same "tell
       the player there's nothing left to do here" signal the
@@ -65,13 +69,14 @@ function renderSpellMenu(){
       re-confirm the same flag, so there's no reason to invite it. */
       const btn = (spell.type==='evade' && state.evasionActive === spell.id)
       ? `<button class="btn-secondary" disabled>Active</button>`
-        : `<button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${spell.mpCost} MP</button>`;
-      /* Small "Lv.2" tag for a Hexpert's own Sanctum-upgraded spells
-      (state.spellsUpgraded, upgradeSpell(), combat.js) — same qty-badge
-      class this file already uses for the Pack's own ×N/+N inline
-      markers, just reused here for a compact upgrade indicator. */
-      const lvBadge = state.spellsUpgraded.includes(spell.id) ? ` <span class="qty-badge">Lv.2</span>` : '';
-      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}${lvBadge}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div>${btn}</div>`;
+        : `<button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${mpCost} MP</button>`;
+      /* Small "Lv.N" tag for a spell upgraded at its own class's
+      district (spellUpgradeLevel(), upgradeSpell(), combat.js) — same
+      qty-badge class this file already uses for the Pack's own ×N/+N
+      inline markers, just reused here for a compact upgrade indicator. */
+      const level = spellUpgradeLevel(spell.id);
+      const lvBadge = level > 0 ? ` <span class="qty-badge">Lv.${level}/${SPELL_UPGRADE_MAX_LEVEL}</span>` : '';
+      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}${lvBadge}</div><div class="desc">${spell.desc} (${mpCost} MP)</div>${btn}</div>`;
       list.appendChild(div);
     });
   }

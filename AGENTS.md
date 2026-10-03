@@ -94,9 +94,10 @@ new `<script>` tag for a new file.
   Tabs/Bounty Tokens, level/xp, the four core stats (beef/zip/grit/
   hoodoo), equipment, inventory, `location`, all six main quest flags
   plus the class-capstone Trial (now 3 tiers — see guild.js), Town
-  Lot/building-upgrade levels, the active bounty, `spellsUpgraded` (a
-  Hexpert's Sanctum-bought "Level 2" spells — permanent progression, so
-  unlike `state.evasionActive` it IS part of `serializeState()`), and
+  Lot/building-upgrade levels, the active bounty, `spellUpgradeLevel`
+  (each known spell's own 0-5 upgrade level, bought at that class's own
+  Act 2 district — permanent progression, so unlike `state.evasionActive`
+  it IS part of `serializeState()`), and
   the rare-drops log. `const state = createDefaultState();` is the live global; calling
   the factory again (see `resetToNewGameDev()`, dev-tools.js) is how a
   full reset works without needing to reassign the `const` binding.
@@ -608,44 +609,66 @@ via the shared `state.evasionActive` flag, combat.js.
 
 `heal` (`stubbornrecovery`, NOT `mendcharm`/Hexpert's own early heal)
 and `ward`/`shout` (`wardcharm`/`aceinthehole`/`shout`) all carry
-`healPercentOfMaxHp`/`shieldPercentOfMaxHp` +
-`healPercentPerSkillLevel`/`shieldPercentPerSkillLevel` now — a
-FRACTION of `state.maxHp`, not a stat-scaled amount, read generically
-by `castSpell()`'s own `'heal'`/`'ward'`/`'shout'` branches (combat.js;
+`healPercentOfMaxHp`/`shieldPercentOfMaxHp` now — a FRACTION of
+`state.maxHp`, not a stat-scaled amount, read generically by
+`castSpell()`'s own `'heal'`/`'ward'`/`'shout'` branches (combat.js;
 absent/0 for `mendcharm`, so it's untouched and still just reads
-`healValue` flat). All three went through the SAME two-step mistake
+`healValue` flat). All three went through the SAME multi-step mistake
 and fix: a flat/near-flat version was found "functionally decorative"
 against a late-game hit/HP pool in the hundreds-to-thousands, so each
 was changed to scale off the caster's own primary stat (Beef for
-Shout, Hoodoo for Warding Charm, Zip for Ace in the Hole, same
-two-part shape `8 + statBonus(stat)*2 + classSkillLevel*10` for the
-ward-type pair) — which then got proven wrong by a live playtest with
-a real, heavily-invested character: a single 3-MP Shout cast produced
-a shield worth 309% of the CASTER'S OWN max HP (Warding Charm/Ace in
-the Hole measured the same order of magnitude at comparable
-investment), trivializing every fight regardless of how the dungeon
-itself was tuned. Same fix Stubborn Recovery's own identical heal bug
-got: peg it to `maxHp` itself (which Grit already drives via
-`recomputeMaxStats()`, player-actions.js) instead of an unbounded
-primary stat — always a sane, bounded fraction of the CURRENT HP pool,
-whatever level that pool happens to be at. `shout`'s own percentages
-are deliberately smaller than `ward`'s (0.12/0.03 vs 0.15/0.035,
+Shout, Hoodoo for Warding Charm, Zip for Ace in the Hole) — which then
+got proven wrong by a live playtest with a real, heavily-invested
+character: a single 3-MP Shout cast produced a shield worth 309% of
+the CASTER'S OWN max HP, trivializing every fight regardless of how
+the dungeon itself was tuned. Pegged to `maxHp` itself instead (which
+Grit already drives via `recomputeMaxStats()`, player-actions.js) —
+always a sane, bounded base fraction of the CURRENT HP pool. `shout`'s
+own percentage is deliberately smaller than `ward`'s (0.12 vs 0.15,
 content.js) preserving the original "Shout is the smaller,
-supplementary one" intent from its own first fix. The `classSkillLevel`
-term now applies via `state.classSkillLevel` directly (no more
-`state.classTitle===spell.classRequired` guard — `castSpell()`'s own
-top-line check already guarantees that by the time any of these
-branches run). Ace in the Hole exists at all because Card Shark was
-the only class with ZERO heal/shield spell (just `loadeddice`'s buff
-and `smokescreen`'s evade, neither of which mitigates a hit), a gap
-that predated tonight but only became a measured dungeon-clearing
-failure once the Prism Depths ladder above was correctly retuned
-against a realistic level/gear baseline), `SPELL_UPGRADE_
-MULTIPLIER`/`SPELL_UPGRADE_BASE_COST`/`SPELL_UPGRADE_COST_PER_MP`/
-`spellUpgradeCost(spell)` (Hexpert's Arcane-Sanctum-only "Level 2"
-spell upgrade, `state.spellsUpgraded`/`upgradeSpell()`, combat.js — a
-flat +45% bump to each spell's own effect: damage/heal/ward magnitude,
-buff duration in fights, or evade's dodge bonus specifically),
+supplementary one" intent. A THIRD pass then removed each spell's own
+`...PerSkillLevel` field entirely — `state.classSkillLevel` used to add
+a further free bonus directly on top of the base percent, flagged
+directly ("Stubborn Recovery only costing 8 MP is essentially free as
+you level"); growth is now exclusively the paid 5-level spell-upgrade
+ladder below, which raises MP cost right alongside power instead of
+letting it ride free on the shared class-skill counter. Ace in the
+Hole exists at all because Card Shark was the only class with ZERO
+heal/shield spell (just `loadeddice`'s buff and `smokescreen`'s evade,
+neither of which mitigates a hit), a gap that predated the Prism
+Depths ladder's own retune but only became a measured dungeon-clearing
+failure once that retune landed against a realistic level/gear
+baseline.
+
+**The 5-level spell-upgrade ladder** (per explicit request: "instead
+of skills scaling, let's have them be upgradable... 5 times, where
+they do more but cost more MP") — `SPELL_UPGRADE_MAX_LEVEL`/
+`POWER_PER_LEVEL` (+15%/level, +75% at max)/`MP_PER_LEVEL` (+20%/level,
+double at max)/`BASE_COST`/`COST_PER_MP`, `spellUpgradeCost(spell,
+targetLevel)` (content.js), `spellUpgradeLevel(id)`/
+`spellUpgradeMultiplier(id)`/`spellEffectiveMpCost(spell)`/
+`upgradeSpell(id)` (combat.js). Replaced a single flat Hexpert-only
+"Level 2" tier entirely — now open to all 3 classes, one level at a
+time, each at their own Act 2 district (`CLASS_UPGRADE_LOCATION`,
+content.js — Garrison/Rogues' Den/Sanctum for Meathead/Card Shark/
+Hexpert, generalizing the Sanctum's own old exclusive privilege) for
+EVERY spell that class currently knows, not just the ones taught at
+that specific building. `state.spellUpgradeLevel` (an object, id ->
+0-5, core.js) replaced the old binary `state.spellsUpgraded` array; a
+save from before this change migrates each previously-upgraded spell
+to Level 1, not 5 or 0 (`hydrateState()`, save.js — that player paid
+for one tier's worth of Pop Tabs, not five). Cost to buy the NEXT
+level scales LINEARLY with the target level (not quadratic like
+`classSkillCost()` below) — a player upgrades several spells over the
+course of the game, not just one shared counter, so a quadratic-per-
+spell curve would compound into an unreasonable total sink.
+`spellEffectiveMpCost()` is read everywhere `spell.mpCost` used to be
+read directly — the cast gate/deduction in `castSpell()`, every UI
+listing (`renderClassSpellList()`/`renderCastableSpellsBlock()`,
+class-spells.js; `renderSpellMenu()`, render-character.js; the Hoodoo
+Doctor's own shop list, render-shop.js; the Recast button, render.js)
+— so a spell's displayed/charged cost always reflects its real current
+level, not its base value.
 `potionIngredients`, `veinIngredients`,
 `CLASS_TITLES` + each class's skill-bonus constants
 (`MEATHEAD_DAMAGE_BONUS`/`CARD_SHARK_DOUBLE_ATTACK_CHANCE`/
@@ -1281,13 +1304,17 @@ the same `castSpell()`, and both also call `isSpellCurrentlyUsable()`,
 render-character.js, so a known spell whose `classRequired` no longer
 matches `state.classTitle` — reachable via the dev tools' class
 override, not real play — is hidden instead of showing a Cast button
-that always silently refuses). `renderSpellUpgradeBlock(containerId)`
-— Arcane-Sanctum-only, Hexpert-only "Deepen Your Spells" shop, listing
-EVERY spell in `state.spellsKnown` (not filtered by `learnLocation`,
-since the point is upgrading a spell no matter where it was learned)
-with a Level 2 buy button (`upgradeSpell(id)`, combat.js,
-`spellUpgradeCost()`, content.js) that becomes a disabled "Upgraded"
-label once bought (`state.spellsUpgraded`).
+that always silently refuses). `renderSpellUpgradeBlock(containerId,
+classTitle)` — the "Deepen Your Spells" shop, now open to all 3
+classes at their own Act 2 district (same `classTitle` parameter
+pattern `renderClassSpellList()`/`renderClassSkillUpgrade()` above
+use), listing EVERY spell in `state.spellsKnown` (not filtered by
+`learnLocation`, since the point is upgrading a spell no matter where
+it was learned) with a buy button for the NEXT level
+(`upgradeSpell(id)`, combat.js, `spellUpgradeCost(spell, level+1)`,
+content.js) that becomes a disabled "Fully upgraded" label once Level
+`SPELL_UPGRADE_MAX_LEVEL` is reached (`spellUpgradeLevel(id)`,
+combat.js).
 
 Touch this file when: changing how a class spell trainer, the
 class-skill upgrade block, or the spell-upgrade block is displayed.
@@ -1344,9 +1371,13 @@ Account drawer's non-dev-tool content.
 
 ## save.js — the state<->save round-trip
 `allItemDefs`/`itemByName`/`serializeItem`/`hydrateItem`,
-`serializeState()`/`hydrateState()` (round-trips `state.spellsUpgraded`
-alongside `state.spellsKnown`, same shape/hydrate-filter — dropping any
-id that no longer matches a real `spells[]` entry), `saveGame`/`loadGame`/
+`serializeState()`/`hydrateState()` (round-trips `state.spellUpgradeLevel`
+alongside `state.spellsKnown` — dropping any id that no longer matches a
+real `spells[]` entry, same as `spellsKnown`'s own filter.
+`hydrateState()` ALSO migrates a save from before the 5-level ladder
+existed: an old-shape `spellsUpgraded` array gets each id mapped to
+Level 1 in the new object, not Level 5 or 0 — see its own comment for
+why), `saveGame`/`loadGame`/
 `manualSaveGame`/`manualLoadGame`/`autosave()` (debounced).
 
 Touch this file when: changing what gets saved/loaded — and remember
@@ -1589,11 +1620,11 @@ same ordering Card Shark's bonus swing uses in `playerAttack()`. Its
 `'evade'` branch sets `state.evasionActive` to the
 CAST SPELL'S OWN ID, not a boolean — Card Shark's Smoke Screen and
 Hexpert's Illusion, content.js, are two different spells sharing this
-one flag, so it has to be an id to know which spell's flavor
-text/Level-2-upgrade-bonus actually applies; `playerDodgeChance()`
+one flag, so it has to be an id to know which spell's flavor text/
+upgrade-level bonus actually applies; `playerDodgeChance()`
 reads it, `evasionFlavorNoun()` turns it into "the smoke"/"the
-illusion" for log lines, `isSpellUpgraded(id)` checks
-`state.spellsUpgraded`)/`recastLastSpell` (the Hexpert-exclusive Recast
+illusion" for log lines, `spellUpgradeMultiplier(id)` checks
+`state.spellUpgradeLevel[id]`)/`recastLastSpell` (the Hexpert-exclusive Recast
 button, `recast-btn`/index.html — per explicit request, lets a Hexpert
 repeat `state.lastSpellCast` (core.js — whichever spell id `castSpell()`
 most recently set, recorded AFTER all its own guards pass) without
@@ -1622,9 +1653,10 @@ itself is recorded, for the same "a log() before clearLog() just gets
 wiped" reason the rareDropsSeen bonus log already has to)/
 `endCombat` (also clears `state.playerStatusEffect` — scoped to a
 single fight, same as `state.evasionActive`)/`upgradeSpell(id)`
-(Arcane Sanctum + Hexpert-only — permanently deepens one already-known
-spell to "Level 2," `state.spellsUpgraded`/`spellUpgradeCost()`,
-content.js, for `SPELL_UPGRADE_MULTIPLIER`)/`DEFEAT_WAKE_UP_LOCATION`
+(bought one level at a time, up to `SPELL_UPGRADE_MAX_LEVEL`, at that
+class's own Act 2 district — `CLASS_UPGRADE_LOCATION`/
+`spellUpgradeCost(spell, targetLevel)`, content.js — for an already-known
+spell; writes `state.spellUpgradeLevel[id]`)/`DEFEAT_WAKE_UP_LOCATION`
 (keyed by `state.homeTown` — the place name AND rest-building a
 defeat's own wake-up line mentions, kept in sync with wherever
 `checkDefeat()` actually teleports the player)/`checkDefeat`/

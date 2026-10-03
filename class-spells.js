@@ -31,7 +31,7 @@ function renderClassSpellList(containerId, classTitle){
       const btn = known
       ? `<button class="btn-secondary" disabled>Known</button>`
         : `<button class="btn-secondary" ${canAfford?'':'disabled'} onclick="learnSpell('${spell.id}')">Learn — ${spell.price} Pop Tabs</button>`;
-      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spell.mpCost} MP to cast)</div>${btn}</div>`;
+      div.innerHTML = `<div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}</div><div class="desc">${spell.desc} (${spellEffectiveMpCost(spell)} MP to cast)</div>${btn}</div>`;
       el.appendChild(div);
    });
 }
@@ -86,21 +86,24 @@ function renderClassSkillUpgrade(containerId, classTitle){
    el.innerHTML = html;
 }
 
-/* Hexpert's own Level 2 spell-upgrade shop, Arcane Sanctum-exclusive
-per explicit request — lists EVERY spell the player currently knows
-(state.spellsKnown), not just the ones actually taught here, since the
-point is deepening spells learned anywhere (Hex Bolt/Bottled Fury/
-Mending Charm/Warding Charm at Hoodoo, Arcane Focus/Arcane Lance/
-Illusion at Hoodoo/here). A Hexpert can only ever know Hexpert-eligible
-spells to begin with (learnSpell()'s own classRequired gate, combat.js),
-so no extra type filter is needed beyond "known". One flat tier per
-spell (state.spellsUpgraded, core.js) — once bought, that row just
-shows "Upgraded", same shape the Class Skill block above uses once
-fully trained. */
-function renderSpellUpgradeBlock(containerId){
+/* The 5-level spell-upgrade shop — used to be Hexpert/Arcane-Sanctum
+only; generalized to all 3 classes, each at their own Act 2 district
+(CLASS_UPGRADE_LOCATION, content.js), per explicit request ("instead
+of skills scaling, let's have them be upgradable... 5 times, where
+they do more but cost more MP"). Lists EVERY spell the player
+currently knows (state.spellsKnown), not just the ones actually taught
+at THIS building, since the point is deepening spells learned anywhere
+(a Hexpert's own Hex Bolt/Bottled Fury/Mending Charm/Warding Charm are
+all learned at Hoodoo, for instance). A player can only ever know
+spells matching their own class to begin with (learnSpell()'s own
+classRequired gate, combat.js), so no extra type filter is needed
+beyond "known". Takes `classTitle` the same way renderClassSpellList()/
+renderClassSkillUpgrade() above do, so this block only ever shows at
+the RIGHT class's own district. */
+function renderSpellUpgradeBlock(containerId, classTitle){
    const el = document.getElementById(containerId);
    if(!el) return;
-   if(state.classTitle !== 'Hexpert' || state.spellsKnown.length===0){
+   if(state.classTitle !== classTitle || state.spellsKnown.length===0){
       el.style.display = 'none';
       el.innerHTML = '';
       return;
@@ -109,15 +112,17 @@ function renderSpellUpgradeBlock(containerId){
    const known = state.spellsKnown.map(id => spells.find(s=>s.id===id)).filter(Boolean);
    const rows = known.map(spell=>{
       const iconSvg = spell.icon ? spell.icon() : '';
-      const upgraded = state.spellsUpgraded.includes(spell.id);
-      const btn = upgraded
-      ? `<button class="btn-secondary" disabled>Upgraded</button>`
+      const level = spellUpgradeLevel(spell.id);
+      const lvBadge = level > 0 ? ` <span class="qty-badge">Lv.${level}/${SPELL_UPGRADE_MAX_LEVEL}</span>` : '';
+      const desc = `${spell.desc} (${spellEffectiveMpCost(spell)} MP${level>0?`, +${Math.round((spellUpgradeMultiplier(spell.id)-1)*100)}% effect`:''})`;
+      const btn = level >= SPELL_UPGRADE_MAX_LEVEL
+      ? `<button class="btn-secondary" disabled>Fully upgraded</button>`
         : (()=>{
-           const cost = spellUpgradeCost(spell);
+           const cost = spellUpgradeCost(spell, level+1);
            const canAfford = state.popTabs >= cost;
-           return `<button class="btn-secondary ${canAfford?'btn-ready':''}" ${canAfford?'':'disabled'} onclick="upgradeSpell('${spell.id}')">Level 2 — ${cost} Pop Tabs</button>`;
+           return `<button class="btn-secondary ${canAfford?'btn-ready':''}" ${canAfford?'':'disabled'} onclick="upgradeSpell('${spell.id}')">Level ${level+1} — ${cost} Pop Tabs</button>`;
         })();
-      return `<div class="shop-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}${upgraded?' <span class="qty-badge">Lv.2</span>':''}</div><div class="desc">${spell.desc}</div>${btn}</div></div>`;
+      return `<div class="shop-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}${lvBadge}</div><div class="desc">${desc}</div>${btn}</div></div>`;
    }).join('');
    el.innerHTML = `<div class="block-title">Deepen Your Spells</div>${rows}`;
 }
@@ -160,11 +165,14 @@ function renderCastableSpellsBlock(){
      : '';
    const rows = castable.map(spell=>{
       const iconSvg = spell.icon ? spell.icon() : '';
-      const canCast = state.mp >= spell.mpCost;
-      /* Same "Lv.2" tag as renderSpellMenu()'s own Buffs & Support rows
-      (render-character.js) for a Hexpert's Sanctum-upgraded spells. */
-      const lvBadge = state.spellsUpgraded.includes(spell.id) ? ` <span class="qty-badge">Lv.2</span>` : '';
-      return `<div class="shop-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}${lvBadge}</div><div class="desc">${spell.desc} (${spell.mpCost} MP)</div><button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${spell.mpCost} MP</button></div></div>`;
+      const mpCost = spellEffectiveMpCost(spell);
+      const canCast = state.mp >= mpCost;
+      /* Same "Lv.N" tag as renderSpellMenu()'s own Buffs & Support rows
+      (render-character.js) for a spell upgraded at its own class's
+      district (CLASS_UPGRADE_LOCATION, content.js). */
+      const level = spellUpgradeLevel(spell.id);
+      const lvBadge = level > 0 ? ` <span class="qty-badge">Lv.${level}/${SPELL_UPGRADE_MAX_LEVEL}</span>` : '';
+      return `<div class="shop-item"><div class="icon-box">${iconSvg}</div><div style="flex:1;"><div class="name">${spell.name}${lvBadge}</div><div class="desc">${spell.desc} (${mpCost} MP)</div><button class="btn-secondary" ${canCast?'':'disabled'} onclick="castSpell('${spell.id}')">Cast — ${mpCost} MP</button></div></div>`;
    }).join('');
    el.innerHTML = `<div class="block-title">Spells</div>${statusLine}${rows}`;
 }

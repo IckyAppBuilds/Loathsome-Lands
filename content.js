@@ -1395,9 +1395,8 @@ case where castSpell() still calls monsterRetaliate(), matching a
 physical Attack. Combat-only — no monster to target from the Character
 page, see castSpell()'s top-line gate.
 - 'heal'   — restores state.hp by `healValue` (a flat amount) plus,
-when present, a fraction of state.maxHp (`healPercentOfMaxHp`/
-`healPercentPerSkillLevel`, stubbornrecovery only — see its own
-comment further down).
+when present, a fraction of state.maxHp (`healPercentOfMaxHp`,
+stubbornrecovery only — see its own comment further down).
 - 'ward'   — grants a flat, persistent shield (state.shield).
 - 'buff'   — no immediate combat effect. Sets state.classBuffFightsLeft
 = CLASS_BUFF_FIGHTS (castSpell(), combat.js), which powers up that
@@ -1485,27 +1484,23 @@ rules make it a genuine tool rather than a free stat stick:
 const spells = [
    { id:'hexbolt', name:'Hex Bolt', desc:'A jagged little curse that stings more than it should.', type:'damage', mpCost:3, price:15, dmgMin:4, dmgMax:9, icon: iconHexBolt },
    { id:'mendcharm', name:'Mending Charm', desc:'Patches you up with muttered nonsense and surprising effectiveness.', type:'heal', healValue:10, mpCost:4, price:15, classRequired:'Hexpert', icon: iconMendCharm },
-   { id:'wardcharm', name:'Warding Charm', desc:"Throws up a shimmering barrier that soaks up damage before it reaches you. Stacks if you're already shielded.", type:'ward', mpCost:3, price:12, classRequired:'Hexpert', shieldPercentOfMaxHp:0.15, shieldPercentPerSkillLevel:0.035, icon: iconWardCharm },
+   { id:'wardcharm', name:'Warding Charm', desc:"Throws up a shimmering barrier that soaks up damage before it reaches you. Stacks if you're already shielded.", type:'ward', mpCost:3, price:12, classRequired:'Hexpert', shieldPercentOfMaxHp:0.15, icon: iconWardCharm },
    { id:'bottledfury', name:'Bottled Fury', desc:'Everything the potion ingredients were trying to tell you, unleashed at once.', type:'damage', mpCost:6, dmgMin:9, dmgMax:16, questReward:true, icon: iconBottledFury },
-   /* shieldPercentOfMaxHp/shieldPercentPerSkillLevel (read generically by
-   castSpell()'s 'shout'/'ward' branches, combat.js) — a fraction of
-   state.maxHp, not a raw-stat-scaled amount. This went through TWO
-   earlier shapes first: a near-flat 5 + classSkillLevel*3 (max 14) was
-   found decorative against a late-game hit, so it was changed to scale
-   off Beef (Meathead's own stat) the same way Warding Charm scaled off
-   Hoodoo — explicitly reversing an even earlier "don't scale this off
-   Beef, it'll double-dip with playerAttack()'s own damage formula and
-   balloon into effective invincibility" design call. A live playtest
-   with a real, heavily-invested Meathead (Beef 108) proved that
-   original worry right after all: one 3-MP Shout produced a shield
-   worth 309% of the caster's own max HP, trivializing every Embercrypt/
-   Frostvault fight regardless of how those dungeons were tuned. Same
-   fix as Stubborn Recovery's own identical bug (its own comment further
-   down) — peg it to maxHp itself instead of an unbounded primary stat,
-   slightly smaller than Warding Charm/Ace in the Hole's own percentage
-   (0.12/0.03 here vs 0.15/0.035 there) preserving the original "Shout
-   is the smaller, supplementary one" intent. */
-   { id:'shout', name:'Shout', desc:"A bone-rattling battle cry that braces for impact instead of attacking — throws up a small shield.", type:'shout', mpCost:3, price:12, classRequired:'Meathead', shieldPercentOfMaxHp:0.12, shieldPercentPerSkillLevel:0.03, icon: iconShout },
+   /* shieldPercentOfMaxHp (read generically by castSpell()'s 'shout'/
+   'ward' branches, combat.js) — a fraction of state.maxHp, not a
+   raw-stat-scaled amount. This went through several earlier shapes:
+   near-flat (decorative late-game) -> scaled off Beef, which a live
+   playtest with a real, heavily-invested Meathead (Beef 108) found
+   could produce a shield worth 309% of the caster's own max HP ->
+   pegged to maxHp instead, with classSkillLevel adding a further free
+   bonus on top -> that classSkillLevel term is ALSO gone now, replaced
+   by the paid 5-level spell-upgrade ladder above (SPELL_UPGRADE_
+   POWER_PER_LEVEL/MP_PER_LEVEL) — growth has to cost real MP every
+   time, not just happen automatically as the shared class skill
+   levels. Shout's own percentage is deliberately smaller than Warding
+   Charm/Ace in the Hole's (0.12 here vs 0.15 there), preserving the
+   original "Shout is the smaller, supplementary one" intent. */
+   { id:'shout', name:'Shout', desc:"A bone-rattling battle cry that braces for impact instead of attacking — throws up a small shield.", type:'shout', mpCost:3, price:12, classRequired:'Meathead', shieldPercentOfMaxHp:0.12, icon: iconShout },
    { id:'adrenalinerush', name:'Adrenaline Rush', desc:"Floods your muscles with borrowed strength — hits harder than usual for your next few fights, not just this one.", type:'buff', mpCost:10, price:250, classRequired:'Meathead', icon: iconAdrenalineRush },
    { id:'loadeddice', name:'Loaded Dice', desc:"Tips the odds your way for a while — your opening strike is guaranteed to catch the next few fights' targets off guard.", type:'buff', mpCost:10, price:250, classRequired:'Card Shark', icon: iconLoadedDice },
    /* Per a live dungeon playtest: Card Shark was the only class with
@@ -1517,33 +1512,37 @@ const spells = [
    (Meathead/Hexpert both had it from the start); it only became an
    actual, measured loss (not just a theoretical gap) once dungeon
    difficulty was retuned against a realistic level/gear baseline.
-   shieldPercentOfMaxHp/shieldPercentPerSkillLevel reuses castSpell()'s
-   own 'ward' branch (generalized below, combat.js) — same percent-of-
-   maxHp shape Warding Charm has, not scaled off any particular stat at
-   all any more (see Warding Charm's own comment for why a raw-stat
-   version of this was found broken). */
-   { id:'aceinthehole', name:'Ace in the Hole', desc:"You've still got one more trick up your sleeve — throws up a shimmering barrier before anything can land.", type:'ward', mpCost:3, price:12, classRequired:'Card Shark', shieldPercentOfMaxHp:0.15, shieldPercentPerSkillLevel:0.035, icon: iconAceInTheHole },
+   shieldPercentOfMaxHp reuses castSpell()'s own 'ward' branch
+   (generalized below, combat.js) — same percent-of-maxHp shape Warding
+   Charm has, not scaled off any particular stat at all any more (see
+   Warding Charm's own comment for why a raw-stat version of this was
+   found broken), and upgradable the same 5-level way at the Rogues'
+   Den (CLASS_UPGRADE_LOCATION above). */
+   { id:'aceinthehole', name:'Ace in the Hole', desc:"You've still got one more trick up your sleeve — throws up a shimmering barrier before anything can land.", type:'ward', mpCost:3, price:12, classRequired:'Card Shark', shieldPercentOfMaxHp:0.15, icon: iconAceInTheHole },
    { id:'arcanefocus', name:'Arcane Focus', desc:"Sharpens your Hoodoo to a fine point for a while — your spells bite harder for the next few fights.", type:'buff', mpCost:10, price:250, classRequired:'Hexpert', icon: iconArcaneFocus },
    /* Act 2's own trainers (Garrison/Rogues' Den/Arcane Sanctum,
    Gnometropolis) — see the comment above spells[] for why these three
    and not another copy of an existing type. */
-   /* healPercentOfMaxHp/healPercentPerSkillLevel (read generically by
-   castSpell()'s 'heal' branch, combat.js) — this heal used to be a
-   flat 35 regardless of level, found "functionally decorative" against
-   a late-game HP pool in the thousands; the fix TRIED first (scaling
-   off Beef, Meathead's own stat, the same way Shout's shield does) per
-   explicit correction overcorrected the other way — Beef is an
-   unbounded offense stat with no relationship to this class's own HP
-   pool, so a heavily-invested Meathead could out-heal their own maxHp
-   in one cast. Scaling off maxHp itself instead (which Grit already
-   drives, recomputeMaxStats(), player-actions.js) fixes both problems
-   at once: the heal is ALWAYS a real fraction of whatever this
-   character's current HP pool actually is, at level 1 or level 50,
-   never decorative and never absurd. Mending Charm (Hexpert's own
-   early, cheap heal) deliberately has neither field — it stays flat;
-   it's an Act 1 utility spell, not this class's late-game sustain tool
-   the way Stubborn Recovery is for Meathead. */
-   { id:'stubbornrecovery', name:'Stubborn Recovery', desc:"You refuse to go down like that. Grit your teeth, shake it off, and keep going.", type:'heal', mpCost:8, price:300, classRequired:'Meathead', learnLocation:'garrison', healPercentOfMaxHp:0.18, healPercentPerSkillLevel:0.04, icon: iconStubbornRecovery },
+   /* healPercentOfMaxHp (read generically by castSpell()'s 'heal'
+   branch, combat.js) — went through several earlier shapes: flat 35
+   (decorative late-game) -> scaled off Beef, which could out-heal the
+   caster's own max HP in one cast -> pegged to maxHp instead (Grit's
+   own job, recomputeMaxStats(), player-actions.js), with
+   classSkillLevel adding a further free bonus on top of THAT. That
+   last free ride is gone too now — flagged directly ("Stubborn
+   Recovery only costing 8 MP is essentially free as you level"): an
+   8-MP cast that gets stronger forever while never costing more MP
+   isn't a fixed formula problem, it's a missing cost problem. Growth
+   now comes from the same paid 5-level spell-upgrade ladder every
+   other scaling spell uses (SPELL_UPGRADE_POWER_PER_LEVEL/MP_PER_LEVEL
+   above) — each level raises the heal AND raises `mpCost` together, so
+   a fully-upgraded Stubborn Recovery costs real MP to match its real
+   power, not a flat 8 forever. Mending Charm (Hexpert's own early,
+   cheap heal) deliberately has neither this field nor an upgrade path
+   worth chasing early — it stays flat; it's an Act 1 utility spell,
+   not this class's late-game sustain tool the way Stubborn Recovery is
+   for Meathead. */
+   { id:'stubbornrecovery', name:'Stubborn Recovery', desc:"You refuse to go down like that. Grit your teeth, shake it off, and keep going.", type:'heal', mpCost:8, price:300, classRequired:'Meathead', learnLocation:'garrison', healPercentOfMaxHp:0.18, icon: iconStubbornRecovery },
    { id:'smokescreen', name:'Smoke Screen', desc:"Kick up a cloud of grit and vanish into it — your dodge goes way up for the rest of this fight, as long as you don't swing back. One attack and the cloud clears.", type:'evade', mpCost:20, price:300, classRequired:'Card Shark', learnLocation:'roguesden', icon: iconSmokeScreen },
    { id:'arcanelance', name:'Arcane Lance', desc:"No flourish, no misdirection — just a thin, precise lance of raw arcane force.", type:'damage', dmgMin:14, dmgMax:22, mpCost:8, price:350, classRequired:'Hexpert', learnLocation:'sanctum', icon: iconArcaneLance },
    /* Hexpert's SECOND Act 2 spell — added alongside Arcane Lance rather
@@ -1735,19 +1734,46 @@ evasion spell, below) started sharing the exact same mechanic — the
 old names would have been a lie the moment a second spell used them. */
 const EVASION_DODGE_BONUS = 0.5;
 const EVASION_DODGE_CAP = 0.92;
-/* The Level 2 spell-upgrade system, Hexpert-only, purchasable at the
-Arcane Sanctum for every spell they know regardless of which building
-originally taught it — per explicit request. One flat tier per spell
-(no deeper ladder): SPELL_UPGRADE_MULTIPLIER scales whichever single
-number is that spell's own "effect" (damage roll, heal value, shield
-amount, buff duration, or evasion's own dodge bonus — see castSpell(),
-combat.js, for exactly where each type applies it). Cost scales off the
-spell's own mpCost rather than a hand-typed price per spell, so a
-future spell needs no separate upgrade-cost entry to slot into this. */
-const SPELL_UPGRADE_MULTIPLIER = 1.45;
+/* The spell-upgrade system — per explicit request ("instead of skills
+scaling, let's have them be upgradable... 5 times, where they do more
+but cost more MP"). Used to be a single flat Hexpert-only "Level 2"
+tier, Arcane-Sanctum-exclusive; replaced entirely by a real 5-level
+ladder, open to all 3 classes at their own Act 2 district (
+CLASS_UPGRADE_LOCATION below), for every spell that class knows
+regardless of which building originally taught it.
+
+The actual problem this solves: `healPercentPerSkillLevel`/
+`shieldPercentPerSkillLevel` (Stubborn Recovery/Shout/Warding Charm/
+Ace in the Hole, their own entries below) used to let a spell's EFFECT
+grow for free as `state.classSkillLevel` rose, with the spell's own
+`mpCost` never moving — flagged directly ("Stubborn Recovery only
+costing 8 MP is essentially free as you level"). Those fields are gone
+now; every spell's magnitude is flat at `state.spellUpgradeLevel===0`
+and `state.classSkillLevel` keeps its OWN, separate job (the passive
+per-class procs — MEATHEAD_DAMAGE_BONUS and friends, further down —
+never touched this pass). Growth now costs something EVERY time:
+each of the 5 levels raises the spell's own effect by
+SPELL_UPGRADE_POWER_PER_LEVEL (+15%/level, +75% total at max) AND its
+own `mpCost` by SPELL_UPGRADE_MP_PER_LEVEL (+20%/level, double at max)
+— see `spellUpgradeMultiplier()`/`spellEffectiveMpCost()`, combat.js,
+for exactly how castSpell() reads both. Pop Tab cost to buy the NEXT
+level scales LINEARLY with the target level (not quadratic like
+classSkillCost() below) — a player upgrades several different spells
+over the course of the game, not just one shared counter, so a
+quadratic-per-spell curve would compound into an unreasonable total
+sink; still scales off the spell's own mpCost so a new spell needs no
+separate upgrade-cost entry to slot into this. */
+const SPELL_UPGRADE_MAX_LEVEL = 5;
+const SPELL_UPGRADE_POWER_PER_LEVEL = 0.15;
+const SPELL_UPGRADE_MP_PER_LEVEL = 0.2;
 const SPELL_UPGRADE_BASE_COST = 200;
 const SPELL_UPGRADE_COST_PER_MP = 20;
-function spellUpgradeCost(spell){ return SPELL_UPGRADE_BASE_COST + spell.mpCost * SPELL_UPGRADE_COST_PER_MP; }
+function spellUpgradeCost(spell, targetLevel){ return (SPELL_UPGRADE_BASE_COST + spell.mpCost * SPELL_UPGRADE_COST_PER_MP) * targetLevel; }
+/* Where each class buys spell upgrades — their own Act 2 Gnometropolis
+district, same building that used to be Hexpert/the Sanctum's own
+exclusive privilege, now symmetric across all 3 (renderSpellUpgradeBlock(),
+class-spells.js; upgradeSpell(), combat.js). */
+const CLASS_UPGRADE_LOCATION = { 'Meathead':'garrison', 'Card Shark':'roguesden', 'Hexpert':'sanctum' };
 /* Cost to go from `level` to `level+1` for the shared class-skill counter
 above — quadratic, same style as buildingUpgradeCost() below: 150/600/1350
 Pop Tabs. One cost curve shared across all 3 classes' single skill level. */
