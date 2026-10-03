@@ -11,6 +11,10 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 45, date: 'October 3', title: 'Earned, Not Given', items: [
+      "Fix: Shout, Warding Charm, and Ace in the Hole could grant a shield worth several times your own max HP for a heavily-invested character — one cheap cast made you briefly unkillable. All three now grant a real, bounded percentage of your max HP instead.",
+      "Fix: Zip's dodge cap (50%) was reachable almost by accident, from gear alone, with zero points actually spent on it. It now takes real, deliberate investment to get there — and every monster's own dodge/accuracy was re-tuned to match, so fights stay exactly as evasive as they were.",
+      ]},
    { id: 44, date: 'October 3', title: 'No More Free Kills', items: [
       "Fix: 4 of the Prism Depths' 8 dungeon bosses (Embercrypt, Stormreach, Duskward, Echo Chapel) were going down in just a few hits even before you'd earned that dungeon's own gear. All 4 are a real fight now, scaled to match the other 4.",
       ]},

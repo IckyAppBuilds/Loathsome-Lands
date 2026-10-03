@@ -925,17 +925,18 @@ if(spell.type==='damage'){
    log(`You cast ${spell.name} and patch yourself up. (+${state.hp-before} HP)`);
 } else if(spell.type==='ward'){
    /* Grants a persistent shield (applyDamageToPlayer(), above) instead of
-   just softening this one retaliation — scaled off whichever stat this
-   spell's own wardScaleStat names (content.js; defaults to Hoodoo, so
-   Warding Charm's original formula is unchanged), boosted further by
-   classSkillLevel for whichever class actually owns this spell (that
-   class's own skill-investment lever, same as every other class-skill
-   bonus) rather than hardcoded to Hexpert specifically — generalized
-   so Card Shark's own Ace in the Hole (wardScaleStat:'zip') gets the
-   identical treatment Warding Charm always has. Stacks on repeat
-   casts; only spent when something actually hits. */
-   const wardStat = spell.wardScaleStat || 'hoodoo';
-   let shieldAmount = 8 + statBonus(eff[wardStat])*2 + (state.classTitle===spell.classRequired ? state.classSkillLevel*10 : 0);
+   just softening this one retaliation — a fraction of state.maxHp
+   (shieldPercentOfMaxHp/shieldPercentPerSkillLevel, content.js), not a
+   raw-stat-scaled amount any more. A live playtest with a real,
+   heavily-invested character found the stat-scaled version (Hoodoo for
+   Warding Charm, Zip for Ace in the Hole) could produce a shield worth
+   several times the caster's OWN max HP once that stat got big enough
+   — see Warding Charm's own comment, content.js, for the exact numbers
+   and the full before/after. Pegging it to maxHp itself means it's
+   always a sane, bounded fraction of THIS character's current HP pool.
+   Stacks on repeat casts; only spent when something actually hits. */
+   const shieldPercent = (spell.shieldPercentOfMaxHp || 0) + state.classSkillLevel * (spell.shieldPercentPerSkillLevel || 0);
+   let shieldAmount = Math.round(state.maxHp * shieldPercent);
    if(isSpellUpgraded(spell.id)) shieldAmount = Math.round(shieldAmount * SPELL_UPGRADE_MULTIPLIER);
    state.shield += shieldAmount;
    log(`You cast ${spell.name} — a shimmering barrier settles over you. (+${shieldAmount} Shield)`);
@@ -948,23 +949,19 @@ if(spell.type==='damage'){
    state.classBuffFightsLeft = buffFights;
    log(`You cast ${spell.name} — the next ${buffFights} fights are yours.`);
 } else if(spell.type==='shout'){
-   /* Meathead-exclusive. Used to be deliberately flat (just
-   classSkillLevel*3) on the theory that scaling it off Beef too would
-   "double-dip" the same investment playerAttack()'s own damage formula
-   already rewards and balloon into effective invincibility — but a
-   live dungeon playtest found the opposite actually happened in
-   practice: late-game hits (200-400+ after mitigation against a
-   ~1400 HP pool) made this flat shield decorative, while Hexpert's
-   Hoodoo-scaled Warding Charm stayed relevant at the same level,
-   leaving a fully-geared-and-spelled Meathead still unable to clear
-   Sunken Archive. shieldScaleStat/shieldScalePerPoint (content.js) now
-   scale it off Beef the same two-part way ward scales off Hoodoo below
-   — a flat stat term plus the existing classSkillLevel term — tuned
-   small enough (coefficient 3, vs. ward's 2 off a typically-larger
-   Hoodoo investment) that it stays a "braces for impact" supplement to
-   gear/potions, not a replacement for them. */
-   const shieldScaleBonus = spell.shieldScaleStat ? statBonus(eff[spell.shieldScaleStat]) * (spell.shieldScalePerPoint || 0) : 0;
-   const shieldAmount = 5 + state.classSkillLevel*3 + shieldScaleBonus;
+   /* Meathead-exclusive. Same percent-of-maxHp shape 'ward' just used
+   above (shieldPercentOfMaxHp/shieldPercentPerSkillLevel, content.js)
+   — went through two earlier, both broken shapes first: a near-flat
+   version was decorative late-game, then a Beef-scaled version (the
+   same fix 'ward' needed) produced a shield worth 300%+ of the
+   caster's own max HP for a heavily-invested Meathead. See Warding
+   Charm's own comment, content.js, for the full history. Shout's own
+   percentages are deliberately smaller than ward's (0.12/0.03 vs
+   0.15/0.035) — it was always meant to be the smaller, supplementary
+   one, a "braces for impact" add-on to gear/potions, not a
+   replacement for them. */
+   const shieldPercent = (spell.shieldPercentOfMaxHp || 0) + state.classSkillLevel * (spell.shieldPercentPerSkillLevel || 0);
+   const shieldAmount = Math.round(state.maxHp * shieldPercent);
    state.shield += shieldAmount;
    log(`You let out a bone-rattling shout, bracing for whatever's coming. (+${shieldAmount} Shield)`);
 } else if(spell.type==='evade'){

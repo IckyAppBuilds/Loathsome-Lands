@@ -563,21 +563,37 @@ pool too before "armor on every piece of gear" replaced that with a
 guaranteed per-tier amount via `ensureGearArmor()` (item-tiers.js) on
 every item regardless of source, making a RANDOM armor roll here
 redundant), `MONSTER_HP_PER_GRIT`/`MONSTER_ATK_PER_BEEF`/
-`MONSTER_ATK_SPREAD`/`MONSTER_ARMOR_PER_GRIT`/`MONSTER_RARE_ARMOR_PER_GRIT`
-(the monster-stat-block derive formula's own tuning knobs — see
-`deriveMonsterCombatStats()`, combat.js — the last two are the entire
-tunable armor curve for the whole bestiary: a monster's armor is
-`grit * one of these two`, never an authored field, `rare:true`
-monsters using the steeper rate), `ZIP_DODGE_COEFFICIENT`/`ZIP_DODGE_CAP`
-(renamed from `MONSTER_DODGE_COEFFICIENT`/`MONSTER_DODGE_CAP` once zip's
-own formula — `zipDodgeAndAccuracy()`, combat.js — became shared by
-BOTH the player and monsters, on BOTH offense and defense: the same
-number is a combatant's own dodge chance AND, symmetrically, their
-ACCURACY against whoever they're attacking's dodge — per explicit
-request that zip "combat" the opponent's dodge chance in both
-directions, not just raise your own. See that function's own comment
-for the full 4-way breakdown) and `ARMOR_REDUCTION_
-COEFFICIENT`/`ARMOR_REDUCTION_CAP` (armor's own mitigation-fraction
+`MONSTER_ATK_SPREAD` (the monster-stat-block derive formula's own
+tuning knobs — see `deriveMonsterCombatStats()`, combat.js; armor is
+NOT derived here any more — `MONSTER_ARMOR_PER_GRIT`/`MONSTER_RARE_
+ARMOR_PER_GRIT` were deleted once armor became a real authored field,
+monster-stats.js's own comment has the full history), `ZIP_DODGE_
+COEFFICIENT`/`ZIP_DODGE_CAP` (renamed from `MONSTER_DODGE_COEFFICIENT`/
+`MONSTER_DODGE_CAP` once zip's own formula — `zipDodgeAndAccuracy()`,
+combat.js — became shared by BOTH the player and monsters, on BOTH
+offense and defense: the same number is a combatant's own dodge chance
+AND, symmetrically, their ACCURACY against whoever they're attacking's
+dodge — per explicit request that zip "combat" the opponent's dodge
+chance in both directions, not just raise your own. See that
+function's own comment for the full 4-way breakdown.
+
+**`ZIP_DODGE_COEFFICIENT` dropped ~43x (0.03 -> 0.0007)**, per a live
+report: a level-21 character with ZERO points spent on Zip (42 of it
+purely incidental, from gear secondaries) was already at the hard 0.5
+dodge cap — reachable by accident around zip 15, not by a real stat
+choice, for every class. Since this same coefficient also drives every
+MONSTER's own dodge/accuracy off a much smaller zip range (2-8), a
+straight reduction would have gutted the "evasive" archetype right
+along with the player fix (statBonus(8)*0.03=36% dodge would have
+collapsed to ~0.7% at a coefficient small enough to fix the player
+side alone) — fixed by remapping EVERY monster's own zip in lockstep
+to reproduce its exact old dodge/accuracy percentage under the new
+coefficient (monster-stats.js's own comment has the exact numbers), so
+none of that archetype-balance work was lost. Reaching the 0.5 cap now
+takes real investment (~zip 97, roughly a genuinely dedicated Card
+Shark's late-game total) instead of incidental gear secondaries.
+
+`ARMOR_REDUCTION_COEFFICIENT`/`ARMOR_REDUCTION_CAP` (armor's own mitigation-fraction
 formula, shared by both the player and monsters — see
 `armorDamageReduction()`, combat.js — reuses `statBonus()`'s own
 superlinear curve, capped so it hard-flatlines instead of ever
@@ -588,46 +604,43 @@ only class with two Act 2 spells, `arcanelance` (damage) and
 `illusion` (evade, added alongside it by explicit request rather than
 replacing it — Meathead/Card Shark still get exactly one Act 2 spell
 each) — `illusion` shares Card Shark's `smokescreen` mechanic exactly,
-via the shared `state.evasionActive` flag, combat.js. `shout`
-(Meathead) can carry an optional `shieldScaleStat`+
-`shieldScalePerPoint` pair — read generically by `castSpell()`'s own
-`'shout'` branch (combat.js), absent = 0 bonus = the original flat
-behavior. Added after a live dungeon playtest (Act 3's Prism Depths)
-found Shout's flat shield "functionally decorative" against a
-late-game hit in the hundreds — scaled off Beef (Meathead's own
-primary stat) the same two-part way `wardcharm` scales off Hoodoo
-below, deliberately reversing an earlier, explicit "keep Shout flat so
-Beef investment doesn't double-dip" design call that a real playtest
-showed was solving the wrong problem — see `shout`'s own comment,
-combat.js, for the full before/after reasoning.
+via the shared `state.evasionActive` flag, combat.js.
 
-`heal` (`stubbornrecovery` specifically, NOT `mendcharm`/Hexpert's own
-early heal) carries `healPercentOfMaxHp`+`healPercentPerSkillLevel`
-instead — a FRACTION of `state.maxHp`, not a stat-scaled flat amount —
-read generically by `castSpell()`'s own `'heal'` branch (combat.js),
-absent/0 for `mendcharm` so it's untouched and still just reads
-`healValue` flat. This went through the SAME beef-scaling treatment
-Shout got first (same playtest, same "functionally decorative" finding
-against a late-game HP pool in the thousands), then got explicitly
-corrected back off of it: Beef has no ceiling tied to the player's own
-HP, so a heavily-invested Meathead could out-heal their own max HP in
-one cast. Pegging the heal to `maxHp` itself (which Grit already
-drives via `recomputeMaxStats()`, player-actions.js) fixes both
-problems at once — always a sane fraction of the CURRENT HP pool,
-whatever level that pool happens to be at. `ward`'s own formula
-(`8 + statBonus(stat)*2 + classSkillLevel*10`) is a third, still
-stat-scaled shape — `wardScaleStat` defaults to `'hoodoo'`, so `wardcharm` is
-byte-for-byte unchanged, and the `classSkillLevel` bonus now applies
-whenever `state.classTitle===spell.classRequired` instead of being
-hardcoded to `'Hexpert'` specifically. This is what let Card Shark's
-own `aceinthehole` ("Ace in the Hole," Casino-taught, `wardScaleStat:
-'zip'`) reuse the identical mechanic scaled off Zip instead of Hoodoo
-— added because Card Shark was the only class with ZERO heal/shield
-spell at all (just `loadeddice`'s buff and `smokescreen`'s evade,
-neither of which mitigates a hit), a gap that predated tonight but
-only became a measured dungeon-clearing failure once the Prism Depths
-ladder above was correctly retuned against a realistic level/gear
-baseline), `SPELL_UPGRADE_
+`heal` (`stubbornrecovery`, NOT `mendcharm`/Hexpert's own early heal)
+and `ward`/`shout` (`wardcharm`/`aceinthehole`/`shout`) all carry
+`healPercentOfMaxHp`/`shieldPercentOfMaxHp` +
+`healPercentPerSkillLevel`/`shieldPercentPerSkillLevel` now — a
+FRACTION of `state.maxHp`, not a stat-scaled amount, read generically
+by `castSpell()`'s own `'heal'`/`'ward'`/`'shout'` branches (combat.js;
+absent/0 for `mendcharm`, so it's untouched and still just reads
+`healValue` flat). All three went through the SAME two-step mistake
+and fix: a flat/near-flat version was found "functionally decorative"
+against a late-game hit/HP pool in the hundreds-to-thousands, so each
+was changed to scale off the caster's own primary stat (Beef for
+Shout, Hoodoo for Warding Charm, Zip for Ace in the Hole, same
+two-part shape `8 + statBonus(stat)*2 + classSkillLevel*10` for the
+ward-type pair) — which then got proven wrong by a live playtest with
+a real, heavily-invested character: a single 3-MP Shout cast produced
+a shield worth 309% of the CASTER'S OWN max HP (Warding Charm/Ace in
+the Hole measured the same order of magnitude at comparable
+investment), trivializing every fight regardless of how the dungeon
+itself was tuned. Same fix Stubborn Recovery's own identical heal bug
+got: peg it to `maxHp` itself (which Grit already drives via
+`recomputeMaxStats()`, player-actions.js) instead of an unbounded
+primary stat — always a sane, bounded fraction of the CURRENT HP pool,
+whatever level that pool happens to be at. `shout`'s own percentages
+are deliberately smaller than `ward`'s (0.12/0.03 vs 0.15/0.035,
+content.js) preserving the original "Shout is the smaller,
+supplementary one" intent from its own first fix. The `classSkillLevel`
+term now applies via `state.classSkillLevel` directly (no more
+`state.classTitle===spell.classRequired` guard — `castSpell()`'s own
+top-line check already guarantees that by the time any of these
+branches run). Ace in the Hole exists at all because Card Shark was
+the only class with ZERO heal/shield spell (just `loadeddice`'s buff
+and `smokescreen`'s evade, neither of which mitigates a hit), a gap
+that predated tonight but only became a measured dungeon-clearing
+failure once the Prism Depths ladder above was correctly retuned
+against a realistic level/gear baseline), `SPELL_UPGRADE_
 MULTIPLIER`/`SPELL_UPGRADE_BASE_COST`/`SPELL_UPGRADE_COST_PER_MP`/
 `spellUpgradeCost(spell)` (Hexpert's Arcane-Sanctum-only "Level 2"
 spell upgrade, `state.spellsUpgraded`/`upgradeSpell()`, combat.js — a

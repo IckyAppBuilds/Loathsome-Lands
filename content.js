@@ -1485,18 +1485,27 @@ rules make it a genuine tool rather than a free stat stick:
 const spells = [
    { id:'hexbolt', name:'Hex Bolt', desc:'A jagged little curse that stings more than it should.', type:'damage', mpCost:3, price:15, dmgMin:4, dmgMax:9, icon: iconHexBolt },
    { id:'mendcharm', name:'Mending Charm', desc:'Patches you up with muttered nonsense and surprising effectiveness.', type:'heal', healValue:10, mpCost:4, price:15, classRequired:'Hexpert', icon: iconMendCharm },
-   { id:'wardcharm', name:'Warding Charm', desc:"Throws up a shimmering barrier that soaks up damage before it reaches you. Stacks if you're already shielded.", type:'ward', mpCost:3, price:12, classRequired:'Hexpert', icon: iconWardCharm },
+   { id:'wardcharm', name:'Warding Charm', desc:"Throws up a shimmering barrier that soaks up damage before it reaches you. Stacks if you're already shielded.", type:'ward', mpCost:3, price:12, classRequired:'Hexpert', shieldPercentOfMaxHp:0.15, shieldPercentPerSkillLevel:0.035, icon: iconWardCharm },
    { id:'bottledfury', name:'Bottled Fury', desc:'Everything the potion ingredients were trying to tell you, unleashed at once.', type:'damage', mpCost:6, dmgMin:9, dmgMax:16, questReward:true, icon: iconBottledFury },
-   /* shieldScaleStat/shieldScalePerPoint (read generically by castSpell()'s
-   'shout' branch, combat.js) — added per a playtested balance finding:
-   this shield used to be a near-flat 5 + classSkillLevel*3 (max 14),
-   decorative against a late-game hit that can run 200-400+ after
-   mitigation, while Hexpert's own Warding Charm ('ward' type) already
-   scaled with Hoodoo and stayed relevant at any level. Scales off Beef
-   (Meathead's own defining stat) the same way ward scales off Hoodoo,
-   so investing in the class's main stat keeps this tool useful instead
-   of falling behind the game's own damage curve. */
-   { id:'shout', name:'Shout', desc:"A bone-rattling battle cry that braces for impact instead of attacking — throws up a small shield.", type:'shout', mpCost:3, price:12, classRequired:'Meathead', shieldScaleStat:'beef', shieldScalePerPoint:3, icon: iconShout },
+   /* shieldPercentOfMaxHp/shieldPercentPerSkillLevel (read generically by
+   castSpell()'s 'shout'/'ward' branches, combat.js) — a fraction of
+   state.maxHp, not a raw-stat-scaled amount. This went through TWO
+   earlier shapes first: a near-flat 5 + classSkillLevel*3 (max 14) was
+   found decorative against a late-game hit, so it was changed to scale
+   off Beef (Meathead's own stat) the same way Warding Charm scaled off
+   Hoodoo — explicitly reversing an even earlier "don't scale this off
+   Beef, it'll double-dip with playerAttack()'s own damage formula and
+   balloon into effective invincibility" design call. A live playtest
+   with a real, heavily-invested Meathead (Beef 108) proved that
+   original worry right after all: one 3-MP Shout produced a shield
+   worth 309% of the caster's own max HP, trivializing every Embercrypt/
+   Frostvault fight regardless of how those dungeons were tuned. Same
+   fix as Stubborn Recovery's own identical bug (its own comment further
+   down) — peg it to maxHp itself instead of an unbounded primary stat,
+   slightly smaller than Warding Charm/Ace in the Hole's own percentage
+   (0.12/0.03 here vs 0.15/0.035 there) preserving the original "Shout
+   is the smaller, supplementary one" intent. */
+   { id:'shout', name:'Shout', desc:"A bone-rattling battle cry that braces for impact instead of attacking — throws up a small shield.", type:'shout', mpCost:3, price:12, classRequired:'Meathead', shieldPercentOfMaxHp:0.12, shieldPercentPerSkillLevel:0.03, icon: iconShout },
    { id:'adrenalinerush', name:'Adrenaline Rush', desc:"Floods your muscles with borrowed strength — hits harder than usual for your next few fights, not just this one.", type:'buff', mpCost:10, price:250, classRequired:'Meathead', icon: iconAdrenalineRush },
    { id:'loadeddice', name:'Loaded Dice', desc:"Tips the odds your way for a while — your opening strike is guaranteed to catch the next few fights' targets off guard.", type:'buff', mpCost:10, price:250, classRequired:'Card Shark', icon: iconLoadedDice },
    /* Per a live dungeon playtest: Card Shark was the only class with
@@ -1508,11 +1517,12 @@ const spells = [
    (Meathead/Hexpert both had it from the start); it only became an
    actual, measured loss (not just a theoretical gap) once dungeon
    difficulty was retuned against a realistic level/gear baseline.
-   wardScaleStat:'zip' reuses castSpell()'s own 'ward' branch
-   (generalized below, combat.js) — same shape Warding Charm already
-   has, just scaled off Card Shark's own primary stat instead of
-   Hoodoo. */
-   { id:'aceinthehole', name:'Ace in the Hole', desc:"You've still got one more trick up your sleeve — throws up a shimmering barrier before anything can land.", type:'ward', mpCost:3, price:12, classRequired:'Card Shark', wardScaleStat:'zip', icon: iconAceInTheHole },
+   shieldPercentOfMaxHp/shieldPercentPerSkillLevel reuses castSpell()'s
+   own 'ward' branch (generalized below, combat.js) — same percent-of-
+   maxHp shape Warding Charm has, not scaled off any particular stat at
+   all any more (see Warding Charm's own comment for why a raw-stat
+   version of this was found broken). */
+   { id:'aceinthehole', name:'Ace in the Hole', desc:"You've still got one more trick up your sleeve — throws up a shimmering barrier before anything can land.", type:'ward', mpCost:3, price:12, classRequired:'Card Shark', shieldPercentOfMaxHp:0.15, shieldPercentPerSkillLevel:0.035, icon: iconAceInTheHole },
    { id:'arcanefocus', name:'Arcane Focus', desc:"Sharpens your Hoodoo to a fine point for a while — your spells bite harder for the next few fights.", type:'buff', mpCost:10, price:250, classRequired:'Hexpert', icon: iconArcaneFocus },
    /* Act 2's own trainers (Garrison/Rogues' Den/Arcane Sanctum,
    Gnometropolis) — see the comment above spells[] for why these three
@@ -2233,8 +2243,31 @@ matter which side rolls it — per explicit request that zip "combat"
 the opponent's dodge chance both ways, not just raise your own. No
 longer MONSTER-only despite the name's history (this used to be
 monster-specific before the player's own dodge formula's identical
-0.03/0.5 got folded into the same shared function). */
-const ZIP_DODGE_COEFFICIENT = 0.03;
+0.03/0.5 got folded into the same shared function).
+
+**Retuned from 0.03, per a live report**: a level-21 character with
+ZERO points spent on Zip — 42 of it purely incidental, from gear
+secondaries — was already sitting at the hard 0.5 cap (statBonus(zip)
+only needs to clear ~16.7 to hit it, which a totally uninvested
+character crosses around zip=15). The cap was reachable by accident,
+not by a real stat choice, for every class. Since this coefficient
+also drives every MONSTER's own dodge/accuracy off the same tiny zip
+range (2-8), a straight reduction would have gutted the "evasive"
+archetype (monster-stats.js) right along with it — statBonus(8)*0.03
+=0.36 (36% dodge) would have collapsed to ~0.7% at a coefficient small
+enough to fix the player side alone. Fixed BOTH at once instead: this
+coefficient dropped ~43x (0.03 -> 0.0007) so reaching the 0.5 cap now
+takes real, deliberate investment (~zip 97, roughly what a genuinely
+dedicated Card Shark reaches late-game, not what anyone picks up by
+accident) while incidental/secondary-only zip reads as a modest,
+noticeable-but-not-dominant dodge (the reported 42 zip now lands at
+11%, not 50%) — and EVERY monster's own zip (monster-stats.js) was
+remapped in lockstep to reproduce its EXACT old dodge/accuracy
+percentage under the new coefficient (zip 2->30, 3->38, 4->50, 5->56,
+6->65, 7->74, 8->81 — see that file's own comment), so none of this
+session's archetype-balance work was lost, only re-expressed in the
+new, much larger zip range this coefficient now requires. */
+const ZIP_DODGE_COEFFICIENT = 0.0007;
 const ZIP_DODGE_CAP = 0.5;
 
 /* Armor — a brand new mitigation stat, shared by both the player (gear-only,
