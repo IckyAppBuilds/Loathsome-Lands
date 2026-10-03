@@ -427,6 +427,29 @@ scaled version first, which overcorrected into healing for more than
 the caster's own max HP at high Beef, before landing on
 `healPercentOfMaxHp`).
 
+**The 4 "evasive" Prism Depths dungeon bosses got their grit raised**
+(Emberwright/embercrypt, Unanswered Herald/stormreach, Last Candle/
+duskward, Unbroken Chord/echochapel — see monster-stats.js's own
+comment for the exact before/after numbers), per an explicit report
+("I should not be one hitting a boss"). The methodology gap: every
+earlier Prism Depths calibration this session tested "can you beat
+dungeon N" using dungeon N's OWN treasure gear — a fair test for "is
+this dungeon's gear worth farming," but the wrong one for "is the
+FIGHT TO GET that gear itself fair," since you can't have earned it
+yet. Re-tested with the gear a player would REALLY have — the
+PREVIOUS dungeon's own treasure (or Act 2's own Tier4 shop gear for
+Embercrypt, the first one) — and found the 4 evasive-archetype bosses
+(a lower-grit zip:8 trade-off from an earlier pass, never checked
+against this weaker baseline) died in 3-7 hits where their 4 armored
+siblings at the same ladder position took 11-27. Grit raised so all 8
+bosses now sit on one smoothly escalating hits-to-kill curve under
+that same realistic-gear assumption, no boss easier than the one
+before it. Explicitly did NOT touch zip/beef (the evasive archetype's
+own dodge identity, and a related finding — these bosses can also
+one/two-shot the PLAYER back under the same gear assumption, worse at
+Embercrypt than anywhere else — were both scoped out by explicit
+request; only the "player one-shots boss" direction was fixed here).
+
 The named bosses — every one of them (`gnomeCommander`/`diggerBot`/
 `gnomeKingsCaptain`/`gnomeKing`/the Adventurer's Trial's three themed
 fights, `trialChampion`/`casinoChampion`/`hoodooChampion`/the three

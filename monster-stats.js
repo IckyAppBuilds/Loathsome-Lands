@@ -162,7 +162,44 @@ computed plan (zero mismatches, and beef/zip/grit/armor/xp confirmed
 completely untouched by this pass) and the Prism Depths calibration was
 re-checked, with particular attention to Meathead/Card Shark win rates
 specifically since they're the two classes that face the new
-resistance without any way to bypass it. */
+resistance without any way to bypass it.
+
+**The 4 "evasive" Prism Depths dungeon bosses had their own grit
+raised** (Emberwright/embercrypt 29->53, Unanswered Herald/stormreach
+33->69, Last Candle/duskward 37->76, Unbroken Chord/echochapel 41->83)
+— per an explicit, concrete report ("I should not be one hitting a
+boss"). A clean audit (real combat, retaliation neutralized so a
+boss's own separately-tuned attack output couldn't contaminate the
+read, averaged over 20 trials per class/dungeon) measured how many
+hits each dungeon's own final boss actually takes assuming the gear a
+player would REALISTICALLY have at that point — the PREVIOUS dungeon's
+own treasure, not this one's (you can't have earned gear from a
+dungeon you haven't cleared yet; every earlier calibration pass this
+session tested "beat this dungeon" with THIS dungeon's own gear, which
+is a different, easier question). That audit found exactly why the
+report was accurate: the 4 evasive bosses (a lower-grit, zip:8
+archetype from an earlier pass — see this file's own "evasive
+archetype" section above, which never anticipated being checked
+against a WEAKER, not-yet-upgraded gear baseline) died in 3.25-7.3
+hits, while their 4 "armored" siblings at the same position in the
+ladder took 10.8-27.2 — Embercrypt specifically was the worst case,
+close enough to a real one/two-hit kill to match the report literally.
+Retuned each one's grit so hits-to-kill (same previous-dungeon-gear
+assumption) lands on a smoothly ESCALATING curve across the whole
+8-boss ladder (~9-11 at Embercrypt up to ~27 at Sunken Archive, no
+boss below the next-lowest one any more) — per the same report's
+"dungeons need to scale harder." zip/beef/armor/xp are untouched: the
+evasive archetype's own dodge-chance identity and the attack-output
+side of this finding (bosses can ALSO one/two-shot the player back,
+worst again at Embercrypt — 274% of a realistic level-20 character's
+own maxHp) were explicitly scoped OUT by request; only the "player
+one-shots boss" direction was in scope for this pass. Verified: the
+same previous-dungeon-gear audit now shows a clean escalating curve
+with no boss below ~9 hits; re-ran the Prism Depths calibration with
+each boss's OWN current-tier gear (the "after you've actually earned
+it" case) across all 3 classes — still 100% toolkit win rate
+everywhere, confirming the raise didn't tip any of the 4 into
+unbeatable. */
 const MONSTER_STATS = {
    /* ============ content.js ============ */
    // ---- Commons ----
@@ -508,7 +545,7 @@ const MONSTER_STATS = {
    "an ember-threaded stalker, trailing sparks it never quite sheds": { beef:11, zip:4, grit:26, hoodoo:0, armor:4, xp:57 },
    "the Cinder Magistrate, still presiding over a court of ash": { beef:13, zip:3, grit:40, hoodoo:11, armor:10, xp:100 },
    "a forge-locked sentry, guarding a door that stopped mattering": { beef:11, zip:2, grit:31, hoodoo:0, armor:5, xp:58 },
-   "the Emberwright, still tending a forge that isn't there anymore": { beef:14, zip:8, grit:29, hoodoo:0, armor:7, xp:135 },
+   "the Emberwright, still tending a forge that isn't there anymore": { beef:14, zip:8, grit:53, hoodoo:0, armor:7, xp:135 },
    // ---- Frostvault ----
    "a glass-still custodian, holding a pose it stopped finishing": { beef:11, zip:2, grit:27, hoodoo:0, armor:9, xp:56 },
    "a rime-crusted drifter, dragging cold that isn't really air": { beef:11, zip:2, grit:30, hoodoo:0, armor:7, xp:57 },
@@ -532,7 +569,7 @@ const MONSTER_STATS = {
    "a charge-split outlier, arguing with two echoes now instead of one": { beef:13, zip:5, grit:29, hoodoo:0, armor:4, xp:65 },
    "the Static Archivist, filing every charge that's ever passed through here": { beef:15, zip:3, grit:46, hoodoo:0, armor:12, xp:110 },
    "a storm-bound sentry, bracing against wind that never actually stops": { beef:13, zip:2, grit:32, hoodoo:0, armor:8, xp:66 },
-   "the Unanswered Herald, still broadcasting something nobody built ears for": { beef:16, zip:8, grit:33, hoodoo:0, armor:8, xp:155 },
+   "the Unanswered Herald, still broadcasting something nobody built ears for": { beef:16, zip:8, grit:69, hoodoo:0, armor:8, xp:155 },
    // ---- Verdant Hollow ----
    "a bramble-bound sentinel, more vine than whatever it used to be": { beef:13, zip:2, grit:36, hoodoo:0, armor:7, xp:64 },
    "a seed-caster, lobbing something that already took root": { beef:13, zip:2, grit:39, hoodoo:6, armor:6, xp:65 },
@@ -556,7 +593,7 @@ const MONSTER_STATS = {
    "a hollow-eyed lancer, loosing a dark that arrives before it's thrown": { beef:15, zip:3, grit:37, hoodoo:0, armor:6, xp:73 },
    "the Dusk Chancellor, presiding over a hall that gave up on light": { beef:17, zip:3, grit:52, hoodoo:0, armor:13, xp:120 },
    "an unlit sentry, holding a post the dark swallowed years ago": { beef:15, zip:2, grit:42, hoodoo:7, armor:6, xp:74 },
-   "the Last Candle, still burning down here for reasons nobody's left to remember": { beef:18, zip:8, grit:37, hoodoo:0, armor:9, xp:175 },
+   "the Last Candle, still burning down here for reasons nobody's left to remember": { beef:18, zip:8, grit:76, hoodoo:0, armor:9, xp:175 },
    // ---- Ironloom ----
    "a coiled tensioner, wound past anything it was built to hold": { beef:15, zip:4, grit:37, hoodoo:0, armor:6, xp:72 },
    "a loom-spindle, still weaving something nobody's wearing": { beef:16, zip:2, grit:41, hoodoo:0, armor:9, xp:73 },
@@ -580,7 +617,7 @@ const MONSTER_STATS = {
    "an echo-lancer, loosing a sound that lands before it's struck": { beef:17, zip:4, grit:40, hoodoo:0, armor:6, xp:81 },
    "the Resonance Archivist, cataloguing every note the chapel's ever held": { beef:19, zip:3, grit:58, hoodoo:0, armor:15, xp:130 },
    "a resonance sentry, holding a post the echo sealed shut around it": { beef:17, zip:2, grit:48, hoodoo:5, armor:7, xp:82 },
-   "the Unbroken Chord, still holding a note that should have ended centuries ago": { beef:20, zip:8, grit:41, hoodoo:0, armor:10, xp:195 },
+   "the Unbroken Chord, still holding a note that should have ended centuries ago": { beef:20, zip:8, grit:83, hoodoo:0, armor:10, xp:195 },
    // ---- Sunken Archive ----
    "a marginalia-wraith, scrawled in the gaps of something older than it": { beef:17, zip:5, grit:41, hoodoo:0, armor:6, xp:80 },
    "an index-walker, citing a source that's about to cite you back": { beef:18, zip:2, grit:51, hoodoo:0, armor:8, xp:81 },

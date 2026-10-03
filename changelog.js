@@ -11,6 +11,9 @@ own id. Only ever grows at the front — an entry's id, once shipped,
 never changes, since state.lastSeenChangelogVersion (core.js/save.js)
 is a saved player-specific number compared against it. */
 const CHANGELOG = [
+   { id: 44, date: 'October 3', title: 'No More Free Kills', items: [
+      "Fix: 4 of the Prism Depths' 8 dungeon bosses (Embercrypt, Stormreach, Duskward, Echo Chapel) were going down in just a few hits even before you'd earned that dungeon's own gear. All 4 are a real fight now, scaled to match the other 4.",
+      ]},
    { id: 43, date: 'October 2', title: 'Early Days, Evened Out', items: [
       "Fix: Card Shark's basic Attack now actually scales off Zip instead of Beef — it was quietly using the wrong stat this whole time, which made Card Shark fall badly behind the other two classes as the game went on.",
       "Fix: monsters in the Overgrown Commons through the Garrison/Rogues' Den/Arcane Sanctum were dying in well under one hit — those zones never got the difficulty pass every later zone already has. They're a real fight now.",
