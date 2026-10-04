@@ -471,9 +471,10 @@ in castSpell() below multiplies its own effect by — 1 at level 0 (a
 no-op, so an un-upgraded spell is byte-for-byte its base value), rising
 15% per level bought. spellEffectiveMpCost() is the OTHER half of the
 fix this ladder exists for: MP cost rises right alongside the effect
-(20%/level) instead of staying flat forever while power keeps growing
-for free — see upgradeSpell()'s own comment, further down, for the
-purchase flow. */
+(steeply — +300%/level, 16x base at max, SPELL_UPGRADE_MP_PER_LEVEL's
+own comment, content.js, for why it's this aggressive) instead of
+staying flat forever while power keeps growing for free — see
+upgradeSpell()'s own comment, further down, for the purchase flow. */
 function spellUpgradeLevel(id){
    return state.spellUpgradeLevel[id] || 0;
 }

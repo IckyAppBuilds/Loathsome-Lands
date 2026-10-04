@@ -643,8 +643,13 @@ baseline.
 **The 5-level spell-upgrade ladder** (per explicit request: "instead
 of skills scaling, let's have them be upgradable... 5 times, where
 they do more but cost more MP") — `SPELL_UPGRADE_MAX_LEVEL`/
-`POWER_PER_LEVEL` (+15%/level, +75% at max)/`MP_PER_LEVEL` (+20%/level,
-double at max)/`BASE_COST`/`COST_PER_MP`, `spellUpgradeCost(spell,
+`POWER_PER_LEVEL` (+15%/level, +75% at max)/`MP_PER_LEVEL` (steeply
+retuned per an immediate follow-up — "it should cost way more hoodoo,
+max level should be well over 100mp" — from +20%/level [double at max,
+a maxed Stubborn Recovery was still just 16 MP] to +300%/level, 16x
+base cost at max [Stubborn Recovery's own 8 MP base reaches 128 at
+max], its own comment, content.js, for the full reasoning)/`BASE_COST`/
+`COST_PER_MP`, `spellUpgradeCost(spell,
 targetLevel)` (content.js), `spellUpgradeLevel(id)`/
 `spellUpgradeMultiplier(id)`/`spellEffectiveMpCost(spell)`/
 `upgradeSpell(id)` (combat.js). Replaced a single flat Hexpert-only

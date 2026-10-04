@@ -1754,18 +1754,33 @@ per-class procs — MEATHEAD_DAMAGE_BONUS and friends, further down —
 never touched this pass). Growth now costs something EVERY time:
 each of the 5 levels raises the spell's own effect by
 SPELL_UPGRADE_POWER_PER_LEVEL (+15%/level, +75% total at max) AND its
-own `mpCost` by SPELL_UPGRADE_MP_PER_LEVEL (+20%/level, double at max)
-— see `spellUpgradeMultiplier()`/`spellEffectiveMpCost()`, combat.js,
-for exactly how castSpell() reads both. Pop Tab cost to buy the NEXT
-level scales LINEARLY with the target level (not quadratic like
-classSkillCost() below) — a player upgrades several different spells
-over the course of the game, not just one shared counter, so a
+own `mpCost` by SPELL_UPGRADE_MP_PER_LEVEL — see
+`spellUpgradeMultiplier()`/`spellEffectiveMpCost()`, combat.js, for
+exactly how castSpell() reads both.
+
+**MP_PER_LEVEL retuned per explicit follow-up** ("it should cost way
+more hoodoo, max level should be well over 100mp") — the first pass
+(+20%/level, double at max) left a maxed Stubborn Recovery at just 16
+MP, nowhere near a real resource commitment for a character who's
+actually invested in Hoodoo (the stat that drives max MP,
+recomputeMaxStats(), player-actions.js). +300%/level (16x base cost at
+max) puts Stubborn Recovery at 128 MP fully upgraded — genuinely
+requires real Hoodoo investment to sustain, not just Pop Tabs, the
+same way the heal/shield ITSELF already requires real Grit investment
+(maxHp) to matter. Scales off each spell's own base mpCost, same as
+before, so a cheaper spell (e.g. Shout/Warding Charm's 3 MP) still
+ends up costing less at max level than a pricier one (Stubborn
+Recovery/Arcane Lance's 8, or Smoke Screen/Illusion's 20) — the
+curve's STEEPNESS is shared, not the final number. Pop Tab cost to buy
+the NEXT level scales LINEARLY with the target level (not quadratic
+like classSkillCost() below) — a player upgrades several different
+spells over the course of the game, not just one shared counter, so a
 quadratic-per-spell curve would compound into an unreasonable total
 sink; still scales off the spell's own mpCost so a new spell needs no
 separate upgrade-cost entry to slot into this. */
 const SPELL_UPGRADE_MAX_LEVEL = 5;
 const SPELL_UPGRADE_POWER_PER_LEVEL = 0.15;
-const SPELL_UPGRADE_MP_PER_LEVEL = 0.2;
+const SPELL_UPGRADE_MP_PER_LEVEL = 3.0;
 const SPELL_UPGRADE_BASE_COST = 200;
 const SPELL_UPGRADE_COST_PER_MP = 20;
 function spellUpgradeCost(spell, targetLevel){ return (SPELL_UPGRADE_BASE_COST + spell.mpCost * SPELL_UPGRADE_COST_PER_MP) * targetLevel; }
